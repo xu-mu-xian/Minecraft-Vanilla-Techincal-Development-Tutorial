@@ -1,0 +1,950 @@
+#import "@preview/in-dexter:0.7.2": *
+#import "@preview/showybox:2.0.4": showybox
+#import "@preview/hydra:0.6.2": hydra
+#import "@preview/itemize:0.2.0" as el
+#import table: cell, header
+
+// 封面
+#[
+  #set page(
+    fill: rgb("#b34545"),
+  )
+  #align(center + horizon)[
+    #[
+      #set text(
+        fill: rgb("#e9dede"),
+        size: 2em,
+        weight: "bold"
+      )
+      #[
+        #set text(
+          font: "FZHeiTi GB18030L2"
+        )
+        原版技术性开发系列教程
+        #v(1em)
+        第#h(10pt)1#h(10pt)册
+        #v(2em)
+      ]
+    ]
+    #[
+      #set text(
+        fill: rgb("#e9dede"),
+        font: "Source Han Serif",
+        size: 4em,
+        weight: "bold"
+      )
+      命令系统
+      #v(1em)
+    ]
+    #[
+      #set text(
+        fill: rgb("#e9dede"),
+        font: "FZHeiTi GB18030L2",
+        size: 1.5em
+      )
+      徐木弦#h(1em)主编\
+      （急招：编写组成员）
+      #v(5em)
+    ]
+  ]
+]
+
+// 字体
+#set text(
+  font: (
+    (
+      name: "FZShuSong GB18030L2",
+      covers: regex("[·“”‘’…|/\[\]\{\}<>—]")
+    ),
+    "TeX Gyre Termes",
+    "FZShuSong GB18030L2"
+  ),
+  lang: "zh"
+)
+#show strong: it => {
+  set text(
+    font: ("TeX Gyre Termes", "FZHeiTi GB18030L2"),
+    weight: "bold", 
+    fill: red,
+  )
+  it 
+}
+
+// 段落
+#set par(
+  first-line-indent: (
+    all: true,
+    amount: 2em
+  ),
+  justify: true,
+  spacing: 0.65em
+)
+
+// 页面
+#set page(
+  header: context [
+    #counter(footnote).update(0)
+    #set text(
+      size: 0.8em
+    )
+    #if calc.rem(here().page(), 2) == 1 {
+      [
+        #set text(
+          font: "Source Han Serif",
+          weight: "bold"
+        )
+        #hydra(skip-starting: false, 1)
+        #h(1fr)
+        徐木弦原版技术性开发系列教程
+      ]
+    } else {
+      [
+        #set text(
+          font: "Source Han Serif",
+          weight: "bold"
+        )
+        徐木弦原版技术性开发系列教程
+        #h(1fr)
+        #hydra(2, skip-starting: false)
+      ]
+    }
+  ],
+  numbering: "1",
+  number-align: center,
+)
+
+// 有序列表
+#show: el.default-enum-list.with(
+  body-indent: 0em,
+  indent: 0.5em,
+  label-align: left,
+  label-width: 1.5em
+)
+#let c1 = counter("L1")
+#let c2 = counter("L2")
+#let c3 = counter("L3")
+#let item(level, body, new: false) = {
+  if new {
+    c1.update(0)
+    c2.update(0)
+    c3.update(0)
+  }
+  if level == 1 { c2.update(0); c3.update(0) }
+  else if level == 2 { c3.update(0) }
+  if level == 1 { c1.step() }
+  else if level == 2 { c2.step() }
+  else if level == 3 { c3.step() }
+  context {
+    let label-text = if level == 1 { c1.display("1.") }
+    else if level == 2 { c2.display("(1)") }
+    else if level == 3 { c3.display("①") }
+    else { c1.display("a.") }
+    let label-width = 1.5em
+    let gap = if level == 2 { 0.5em } else { 0em }
+    let left-indent = (level - 1) * 1.5em + 0.5em
+    set par(
+      first-line-indent: 0em, 
+      hanging-indent: label-width + gap, // 动态同步悬挂缩进
+    )
+    
+    pad(left: left-indent)[
+      #box(width: label-width)[#label-text]#h(gap)#body
+    ]
+  }
+}
+#let i1 = item.with(1)
+#let i2 = item.with(2)
+#let i3 = item.with(3)
+#let i4 = item.with(4)
+#show enum: it => {
+  set par(first-line-indent: 0em)
+  set text(
+    font: (
+      "TeX Gyre Termes",
+      "FZShuSong GB18030L2"
+    )
+  )
+  it
+}
+
+// 代码块
+#show raw: it => {
+  " " + box(
+    baseline: -1pt,
+    outset: (x: 2pt, y: 3pt),
+    fill: rgb("#fef2f2"),
+    stroke: 0.5pt + red,
+    radius: 2pt,
+    text(font: ("Consolas","FZShuSong GB18030L2"), size: 0.9em, it)
+  ) + " "
+}
+
+// 有编号代码行
+#let codeline = counter("codeline")
+#show figure.where(kind: "codebox"): it => {
+  set block(above: 1em, below: 1em)
+  it
+}
+#let codebox(body, label: none, supplement: none) = figure(
+  supplement: supplement,
+  kind: "codebox",
+  {
+    set align(left)
+    block(
+      clip: true,
+      fill: white,
+      height: auto,
+      stroke: 1pt + red,
+      radius: 6pt,
+      width: 100%,
+      grid(
+        columns: (1fr, auto),
+        column-gutter: 16pt,
+        block(
+          inset: 8pt,
+          width: 100%,
+          {
+            set text(
+              font: (
+                "Consolas",
+                "FZShuSong GB18030L2"
+              ),
+              size: 0.85em
+            )
+            body
+          }
+        ),
+        grid.cell(
+          align: horizon,
+          fill: rgb("#ff6565"),
+          inset: 8pt,
+          {
+            set text(
+              fill: white,
+              font: "Consolas",
+              size: 0.85em,
+              weight: "bold"
+            )
+            context[#counter(heading).get().at(0)] + "." + h(-0.5em) + [
+              #codeline.step()
+              #context codeline.display()
+            ]
+          }
+        )
+      )
+    ) + label
+  },
+  numbering: it => [#counter(heading).get().at(0).#(counter("codeline").get().at(0)+1)]
+)
+
+// 公式
+#show math.equation: it => {
+  set text(
+    font: "TeX Gyre Termes Math"
+  )
+  h(2pt) + it + h(2pt)
+}
+
+// 例题
+#let exa = counter("exa")
+#let example(question, solution) = {
+  exa.step()
+  showybox(
+    breakable: true,
+    footer: [
+      #h(-1em)
+      #box[
+        #box(
+          fill: rgb("#ffcece"),
+          inset: (
+            x: 0.5em,
+            y: 0.5em
+          ),
+          radius: 1em,
+          [解]
+        )
+        #h(-2.4em)
+        #box(
+          baseline: -2pt,
+          fill: rgb("#d71d1d"),
+          inset: (
+            x: 0.5em,
+            y: 0.5em
+          ),
+          radius: 1em,
+          [
+            #set text(
+              fill: white,
+              font: "Minecraft"
+            )
+            解
+          ]
+        )
+      ]
+      #h(1em)
+      #solution
+    ],
+    footer-style: (
+      color: black,
+      sep-thickness: 0pt
+    ),
+    frame: (
+      body-color: rgb("#ffcece"),
+      border-color: rgb("#d71d1d"),
+      footer-color: white,
+      title-color: rgb("#d71d1d"),
+      title-inset: (x: 0.6em, y: 0.5em)
+    ),
+    shadow: (
+      color: rgb("#ff6565"),
+      offset: 3pt
+    ),
+    title: {
+      set text(
+        font: "Minecraft"
+      )
+      [例] + context str(counter(heading).get().at(0)) + "." + context exa.display()
+    },
+    title-style: (
+      boxed-style: (
+        anchor: (
+          x: left,
+          y: horizon
+        ),
+        radius: 5pt
+      ),
+      color: white
+    )
+  )[
+    #show: block.with(breakable: true)
+    #question]
+}
+
+// 图片
+#show figure: set block(above: 1.5em, breakable: true)
+#set figure(numbering: it => str(counter(heading).get().at(0)) + "." + counter(image).display("1"))
+
+// 表格
+#let tab_numbering(.., desc) = {
+  context str(counter(heading).get().at(0)) + "." + counter(table).display("1")
+}
+#show figure.where(kind: table): set figure(gap: 0.3em)
+#show figure.where(kind: table): set figure.caption(position: top, separator: "  ")
+#show figure.caption: set text(font: ("TeX Gyre Termes", "FZHeiTi GB18030L2",), size: 0.85em, weight: "bold")
+#show figure.caption: set block(sticky: true)
+#set table(
+  align: center + horizon,
+  fill: (x, y) => if y == 0 { rgb("#ffffff00") }
+  else if y == 1 { rgb("#ff6565") }
+  else if calc.rem(y, 2) == 1 {
+    rgb("#fde9e9")
+  }
+  else {
+    rgb("#fff8f8")
+  },
+  gutter: 0.2em,
+  stroke: none,
+)
+#show table.cell: it => {
+  if it.y == 1 {
+    set text(
+      fill: white,
+      font: ("TeX Gyre Termes", "FZHeiTi GB18030L2"),
+      size: 0.85em,
+      weight: "bold"
+    )
+    it
+  }
+  else {
+    set text(
+      size: 0.85em
+    )
+    it
+  }
+}
+#let xubiao = state("xubiao")
+#show table: it => xubiao.update(false) + it
+#let general-table(
+  caption: [表格标题],
+  columns: auto,
+  colspan: 1,
+  header: (),
+  content: ()
+) = figure(
+  caption: caption,
+  numbering: tab_numbering,
+  table(
+    columns: columns,
+    table.header(
+      table.cell(
+        colspan: colspan,
+        {
+          context if xubiao.get() {
+            align(right)[续表]
+          } else {
+            v(-0.9em)
+            xubiao.update(true)
+          }
+        }
+      ),
+      ..header
+    ),
+    ..content
+  )
+)
+
+// 标题
+#show heading: set align(center)
+#show heading: set text(
+  font: (
+    "TeX Gyre Termes",
+    "Source Han Serif"
+  )
+)
+#show heading.where(level: 1): it => {
+  set text(size: 2em)
+  counter(image).update(1)
+  counter(table).update(1)
+  context codeline.update(0)
+  context exa.update(0)
+  pagebreak(weak: true)
+  block(v(5em) + it + v(2em))
+}
+#show heading.where(level: 2): it => {
+  set text(size: 1.8em)
+  block(v(2em) + it + v(1em))
+}
+#show heading.where(level: 3): it => {
+  set align(left)
+  set text(size: 1.4em)
+  block(v(0.2em) + it + v(0.6em))
+}
+#show heading.where(level: 4): it => {
+  set align(left)
+  set text(font: "FZHeiTi GB18030L2", size: 1em)
+  block(v(0.2em) + it + v(0.6em))
+}
+#let book-heading(..nums) = {
+  let level = nums.pos().len()
+  let space = h(0.8em)
+  if level == 1 {
+    let chapter-num = numbering("一", nums.at(0))
+    return "第" + chapter-num + "章" + space
+  } else if level == 2 {
+    return numbering("1.1", ..nums) + space
+  } else if level == 3 {
+    return numbering("1.1.1", ..nums) + space
+  } else if level == 4 {
+    return numbering("一、", nums.at(3))
+  } else {
+    return none
+  }
+}
+#set heading(
+  numbering: book-heading
+)
+
+// 脚注
+#set footnote(
+  numbering: " ①"
+)
+#show footnote.entry: it => {
+  let loc = it.note.location()
+  numbering(
+    "①  ",
+    ..counter(footnote).at(loc),
+  )
+  it.note.body
+}
+
+#heading(level: 1, numbering: none, outlined: false, [第一版序言])
+Minecraft拥有多种多样的玩法，生存、PVP、PVE、模组、建筑、红石电路这些为众多玩家所熟知的玩法自成体系，玩家可以自由选择其中的某一方面深入研究。在这些玩法中，比较默默无闻的一种玩法可能便是广义上的命令，即包含了MC-CMD（命令）、资源包和数据包的系统。
+
+在没有系统地接触命令系统前，玩家对于这个系统不了解、甚至完全没有意识到这个系统的存在都是有可能的。对于一些仅对命令系统做出更新的快照版本，一些玩家可能认为它们是“无用的”，即使这些更新在大部分情况下丰富了命令系统，使得服务器的运营、冒险地图及原版模组的制作更方便。在较为早期的版本中，命令更多依靠命令方块运行，这使得一些玩家错误地认为冒险地图或原版模组中的机关是由纯粹的红石电路运行的，并将这些机关的巧妙之处完全归结于红石电路的运作而完全忽略命令的作用。
+
+这是因为命令系统更多地呈现一种“在后台运行”的状态，玩家无法在明面上查看它们的运行逻辑，更多地只是感受它们带来的效果。其次，命令系统是一个“入门难、精通容易”的板块，学习的门槛较高，一些基本的概念，如权限等级、命名空间ID、加载等级、坐标、目标选择器、JSON、NBT、记分板等，都是难于理解而对命令学习至关重要的知识点。再者，普通玩家在接触到命令系统时，更多地是熟悉诸如`/kill`、`/gamemode`这类带有简单参数的命令写法，而不会深究命令中各参数的意义，浅尝辄止的行为让玩家不大可能形成命令系统是一个完备体系的认识。最后，玩家在游戏时一般不会启用命令，而大部分命令所需的权限等级较高（即需要启用命令才能使用），因此一般玩家很少会与命令产生接触。
+
+不过，命令系统应用范围极广，它对游戏的作用也是显而易见的，服务器的运行、冒险地图的制作、原版模组的制作均需要使用命令系统。对于游戏原有内容的修改和新内容的制作，如游戏外观的修改、粒子动画效果、自定义战利品、自定义物品等，均可以由命令系统来完成。命令系统提供了一个在不修改源代码的情况下的开发环境，使得Minecraft几乎成为了一款“无限”的游戏，唯一有限的也许便是玩家的想象力。同时，命令系统也极大地丰富了游戏社区、论坛。
+
+在历代版本更新中，命令系统也随之有过大大小小的改善。在早期的版本中，命令一般只能借由聊天栏和命令方块执行，而命令方块是一种红石元件，因此彼时命令的自动化执行对于红石电路的依赖性较强，只能将红石信号转化为命令执行的信号或条件。然而在后续的版本中，函数及数据包的问世使得命令能够脱离红石电路单独运行，并随着数据包的不断完善，命令系统的研究和应用则更加方便。一些冒险地图真正做到了零命令方块化，命令的执行全部转交给数据包完成。因此命令方块及红石电路的教程则放在了附录中，不使用数据包仅使用命令方块时可以参阅这些内容。
+
+对于这样一个较为完备的体系，笔者在前人既有教程的基础上，理清思路，加以整理，为之编写完整的命令教程。在内容安排上，优先讲述基本概念，如权限等级、命令执行上下文、命名空间ID、数据包标签、参数、区块及加载等级等，这些概念是能够执行命令的最基本条件。在绪论之后是命令系统的五大重要基础板块：坐标、目标选择器、JSON、NBT和记分板，这些内容是需要熟练掌握的基本功。在第七章，我们主要学习命令`/execute`，这条命令能够修改命令执行上下文，一般可以认为是整个命令系统中最强大的命令。一些零散的命令则放到了第八章中讲解。资源包和数据包则被安排到了其他教程中，这些内容是命令系统的进阶部分，一定程度上脱离了狭义的命令体系，却也是命令系统的精华部分。学有余力的读者可进行《资源包》和《数据包》两本教程的学习。
+
+在系统学习命令系统前，读者需要了解到的一点是，其他玩法领域可能更多地追求稳定的游戏环境，因此可能会选择旧的游戏版本。而命令系统随着版本更新不断完善，使得命令玩家不自觉地追求新版本，因此有关命令的讨论一般都基于最新版游戏。一些问题，诸如“在1.8版本中这个命令怎么写”，则可能得不到答复，因为命令系统在扁平化时经历了巨大的改动，使得改动前后几乎是两个完全不同的系统。同时，不同平台的命令系统也是不互通的，本教程仅适用于Java版，部分内容与基岩版不同，因此无法作为基岩版命令教学的参考。
+
+那么在学习命令之前需要掌握哪些预备知识呢？首先需要对原版的Minecraft有足够的了解，因为命令基本上涉及了游戏中的方方面面。其次可以适当学习一些英语，命令的参数中有大量的英语单词，如果熟悉它们的意思将会极大提升命令编写的效率。本教程在论述的过程中，会经常使用高等数学、线性代数和概率论与数理统计的语言，读者可先行了解与命令系统紧密相关的一些数学知识，如向量代数与空间解析几何、矩阵与变换、随机事件及概率分布等。计算机图形学的一些内容也包括在内。此外，大家还可以提前学习一些编程思想，建立严密的逻辑思维能力，懂得如何指挥电脑（游戏）进行工作。没有相关编程基础并不意味着完全不能学好命令，编程思维也可以在命令学习的过程中逐步建立。
+
+本教程仅作为基础教程使用，即仅介绍命令系统中所有的基本概念，并在此基础上进行一定的应用、扩展，其中应用层面主要面向冒险地图和原版模组的制作。一些较为高级的算法则不在本教程范围之内。其中带“\*”号的是选择性学习内容，它们所述的一些是不常用的内容，一些则是《资源包》或《数据包》两本教程的相关内容，想进修《资源包》和《数据包》的读者需留意这些带“\*”号知识点。
+
+限于笔者的知识水平，本教程必有一定疏漏之处，望广大读者斧正！
+#align(end)[编者]
+#align(end)[2024年1月24日]
+
+#heading(level: 1, numbering: none, outlined: false, [第二版序言])
+
+自2023年发布的1.19.4起，Minecraft的技术性开发板块进入了又一个新时代，这可谓是自2012年骇人更新加入命令方块、2018年水域更新扁平化以来第三次革命性的巨变。这次“巨变”的主要体现在于：逐步开放了很多API，即将很多固有注册表转为可写注册表，使得原先需要大量命令模拟的效果用数据包自定义即可，这无疑大大省去了技术性开发的成本。从这两年Minecraft Java版的更新迭代可以看出，Minecraft的开发重点逐渐地由加入新的实质性游戏内容转为对数据包、资源包的支持。新游戏内容更新的占比下降，技术性更新的占比上升。数据包、资源包的版本号更迭已由先前的一个大版本一次变为一个快照一次，迭代速度越来越快。以数据包为例，2022年数据包的版本号为10，彼时距数据包的加入仅过了四年多；而截止至2024年底，数据包的版本号已达到了61。
+
+许多玩家对自1.17以来的Minecraft开发极不满意，有些人认为Minecraft近几年并没有革命性的更新出现，每个版本的更新内容也极少，对游戏深度的挖掘不够，“敷衍了事”。对于每个快照更新介绍中大篇幅的技术性更新内容，大量玩家则视若无睹。这个现象直接反映了普通玩家对技术性开发这一板块认识的欠缺，正如第一版序言所说，“玩家对于这个系统不了解、甚至完全没有意识到这个系统的存在”。为此，对玩家进行技术性开发板块知识的普及很有必要。
+
+不得不承认的是，技术性开发确实是一种门槛较高的玩法，其学习成本较高，容错率低，开发周期长，且开发过程不可见，因此难于在社区中引起较大的讨论度。目前，各大社区平台仍然缺乏专门的技术性开发论坛，现有的教程也零碎且不完整。社区的讨论主要集中于原版游戏内容、Mods玩法等，鲜有技术性开发有关的资料，这使其搜索难度较大。技术性开发玩家通常“单打独斗”，缺少交流，进一步限制了有开发想法的玩家学习进步。为此，为已入门的技术性开发玩家编写系统性的、完整的教程很有必要。
+
+原版技术性开发的命令、资源包、数据包三个板块在本系列教程中分作三部分别讲述。对于其中的一些基本概念，如注册表、坐标、目标选择器、文本组件、NBT、记分板、属性、存档格式等，为了便于教程编纂，将其放在《命令系统》一书中与命令语法一起说明。命令是数据包的一个子集，用于函数中，数据包为它提供了程序化运行的环境。在早先的版本中，命令通常是红石电路的一个子集，用于命令方块中，由红石信号控制命令的执行。虽然现在主流的开发环境是数据包，但仍有玩家使用命令方块红石电路进行开发，因此本系列教程中仍保留对命令方块红石电路的讲解，《命令系统》书中的一些例子则提供了使用数据包和使用命令方块红石电路的两种解法，但侧重于使用数据包，而在《数据包》中则仅提供使用数据包的解法。资源包是相对较独立的一个板块，其内容中仅少部分与数据包有关联，对美术设计的要求较高，部分开发资源包的玩家专注于资源包，不会去开发数据包。然而在开发实践中数据包与资源包的联系却越来越紧密，仅依靠数据包能够实现的效果有限，与资源包配合开发能得到更好的效果。
+
+这一版的《命令系统》教程相较上一版而言，对调了一些章节使得教程整体的逻辑更合理。同时新增了一些章节，新增的内容大多拆分自原本的章节，但对这些被拆分的内容有了更详尽的叙述。原本教程中零散的内容在这一版中均尽可能地归到一类下。经过这些变动后，教程的整体章节较先前的版本有了很大的不同。产生这些变动的主要原因是文本组件的存储格式由JSON变为了SNBT，即使在数据包中文本组件仍使用JSON格式。从教程逻辑上讲，文本组件应合并至“NBT格式”一章，但上一版的“NBT格式”一章已有11个小节，内容量极其庞大，若再塞入文本组件的全部内容，只会使“NBT格式”一章显得更臃肿。况且属性、状态效果这些内容依照存储格式也归到了实体格式或物品堆叠组件格式之下，将这些归类的内容全部放入“NBT格式”一章更不适宜。于是，原本经典的的“绪论——坐标——目标选择器——原始JSON文本——NBT格式——记分板——命令`/execute`——杂项命令”的教程章节顺序已不适用。经过考虑，这一版的教程章节变动安排如下：
+
++ “绪论”、“坐标与区块”、“UUID与目标选择器”三章的顺序不变，仅调整这三章内部小节的顺序及编排。
+
++ 删去原本的“NBT格式”一章，并将其重命名为“NBT与JSON格式”，新的章节保留原本“NBT格式”一章的概述、NBT路径、命令`/data`的语法。同时将原本“原始JSON文本”一章的“JS对象表示法”一节移入新的“NBT与JSON格式”。随后将概述一节中涉及SNBT和JSON相互转换的内容移出，单独设置一个小节。
+
++ 将新的“NBT与JSON格式”提前至第四章，将“原始JSON文本”改名为“文本组件”并后移至第五章。“文本组件”一章将同时讲解其SNBT和JSON形式。
+
++ 对于从原本“NBT格式”一章中移出的其他内容，结合属性、状态效果，单独开设新的一章“存档格式”作为第六章，同时合并原本附录II“游戏文件”的内容至这一章的概述小节。新的“存档格式”包含命令存储格式、区域文件格式、方块实体格式、实体格式、属性格式、状态效果格式、标记格式、展示实体格式、交互实体格式、玩家格式和物品堆叠组件格式。
+
++ “记分板”、“命令的执行”、“其他分类的命令”分别顺延至第七、八、九章。“命令的执行”更名为“命令`/execute`”。
+
++ 由于章节合并，“其他分类的命令”中“状态效果”、“属性”两节被删除。
+
++ 删除原本的附录II“游戏文件”。
+
+受限于编者的知识水平，本教程一定有不足之处，望广大读者斧正！
+#align(end)[编者]
+#align(end)[2025年2月7日]
+
+#show outline.entry.where(level: 1): it => {
+  set text(
+    font: (
+      "TeX Gyre Termes",
+      "Source Han Serif"
+    ),
+    weight:"bold"
+  )
+  it
+}
+#show outline.entry.where(level: 4): it => {}
+#outline(title:"目  录",indent: 2em)
+
+#pagebreak()
+#counter(page).update(1)
+= 绪论
+原版技术性开发，Minecraft Wiki称为“Java版可自定义内容”，是由命令、资源包、数据包及相关的组件附件组合成的一个板块。技术性开发成果丰富，这些成果即是社区玩家常用的Mods、冒险地图、数据包、资源包、服务器等。Minecraft的技术性开发大致分为Mods开发和原版开发，其区别在于是否对游戏的源代码进行了修改。
+
+本系列教程针对的是原版技术性开发，这一部分玩家的工作方向通常为制作冒险地图、开发原版模组、制作资源包或者管理服务器。
+
+#pagebreak()
+
+== 注册表与数据值
+Minecraft有许多不同的游戏资源，如草方块、石头、箭、铁锹、猪等，对这些游戏资源进行分类，可以将草方块、石头分为方块，箭、铁锹分为物品，猪划分至实体。方块、物品、实体显然是区分这些游戏资源的“大类”。*注册表（Registry）*#index(display:"注册表（Registry）","zhucebiao")就是对不同资源进行分类管理的机制。除分类管理外，还需要给予每种资源一个独特的“身份证”，目的是与别的资源区分开来，唯一地映射到注册表内的给定值。这些“身份证”被称为游戏资源的数据值，或称ID。
+=== 注册表\*
+注册表可分为以下两类：*固有注册表（Built-in registry）*#index(display:"固有注册表（Built-in registry）","guyouzhucebiao")和*可写注册表（Writable registry）*#index(display:"可写注册表（Writable registry）","kexiezhucebiao")。无论资源位于什么类型的注册表，*游戏都只会识别已被注册的资源*。
+
+下面列举了Minecraft中所有的资源类型：
+==== 固有注册表
+固有注册表存储硬编码的游戏内容，除非修改源代码，否则其中的内容不可更改。
+#general-table(
+  caption: [固有注册表],
+  columns: (7fr, 4fr, 7fr, 2fr),
+  colspan: 4,
+  header:([注册表], [资源类型], [数据包路径], [默认值]),
+  content:([`ACTIVITY`], [生物AI], [`activity`], [],
+    [`ATTRIBUTE`], [属性], [`atrribute`], [],
+    [`ATTRIBUTE_TYPE`], [环境属性类型], [`attribute_type`], [],
+    [`BIOME_SOURCE`], [生物群系源], [`worldgen/biome_source`], [],
+    [`BLOCK`], [方块], [`block`], [`air`],
+    [`BLOCK_ENTITY_TYPE`], [方块实体类型], [`block_entity_type`], [`furnace`],
+    [`BLOCK_PREDICATE_TYPE`], [方块谓词类型], [`block_predicate_type`], [],
+    [`BLOCK_STATE_PROVIDER_TYPE`], [方块状态提供器类型], [`worldgen/block_state_provider_type`], [],
+    [`BLOCK_TYPE`], [方块类型], [`block_type`], [],
+    [`CARVER`], [雕刻器类型], [`worldgen/carver`], [],
+    [`CHUNK_GENERATOR`], [区块生成器类型], [`worldgen/chunk_generator`], [],
+    [`CHUNK_STATUS`], [区块状态], [`chunk_state`], [`empty`],
+    [`COMMAND_ARGUMENT_TYPE`], [命令参数类型], [`command_argument_type`], [],
+    [`CONSUME_EFFECT_TYPE`], [消耗使用效果类型], [`consume_effect_type`], [],
+    [`CREATIVE_MODE_TAB`], [创造标签页], [`creative_mode_tab`], [],
+    [`CUSTOM_STAT`], [统计信息], [`custom_stat`], [], 
+    [`DATA_COMPONENT_PREDICATE_TYPE`], [数据组件谓词类型], [`data_component_predicate_type`], [],
+    [`DATA_COMPONENT_TYPE`], [数据组件类型], [`data_component_type`], [],
+    [`DEBUG_SUBSCRIPTION`], [调试订阅], [`debug_description`], [], 
+    [`DECORATED_POT_PATTERN`], [饰纹陶罐图案类型], [`decorated_pot_pattern`], [], 
+    [`DENSITY_FUNCTION_TYPE`], [密度函数类型], [`worldgen/density_function_type`], [],
+    [`DIALOG_ACTION_TYPE`], [对话框操作类型], [`dialog_action_type`], [],
+    [`DIALOG_BODY_TYPE`], [对话框主体类型], [`dialog_body_type`], [],
+    [`DIALOG_TYPE`], [对话框类型], [`dialog_type`], [],
+    [`ENCHANTMENT_EFFECT_COMPONENT_TYPE`], [魔咒效果组件类型], [`enchantment_effect_component_type`], [],
+    [`ENCHANTMENT_ENTITY_EFFECT_TYPE`], [魔咒实体效果类型], [`enchantment_entity_effect_type`], [], 
+    [`ENCHANTMENT_LEVEL_BASED_VALUE_TYPE`], [魔咒等级依赖函数类型], [`enchantment_level_based_value_type`], [],
+    [`ENCHANTMENT_LOCATION_BASED_EFFECT_TYPE`], [魔咒位置依赖函数类型], [`enchantment_location_based_effect_type`], [],
+    [`ENCHANTMENT_PROVIDER_TYPE`], [魔咒提供器类型], [`enchantment_provider_type`], [],
+    [`ENCHANTMENT_VALUE_EFFECT_TYPE`], [魔咒值效果类型], [`enchantment_value_effect_type`], [],
+    [`ENVIRONMENT_ATTRIBUTE`], [环境属性], [`environment_attribute`], [],
+    [`ENTITY_SUB_PREDICATE_TYPE`], [实体子谓词类型], [`entity_sub_predicate_type`], [],
+    [`ENTITY_TYPE`], [实体类型], [`entity_type`], [`pig`], 
+    [`FEATURE`], [地物类型], [`worldgen/feature`], [],
+    [`FEATURE_SIZE_TYPE`], [树木生成的最小空间要求类型], [`worldgen/feature_size_type`], [],
+    [`FLOAT_PROVIDER_TYPE`], [浮点数提供器类型], [`float_provider_type`], [], 
+    [`FLUID`], [流体类型], [`fluid`], [`empty`],
+    [`FOLIAGE_PLACER_TYPE`], [树叶放置器类型], [`worldgen/foliage_placer_type`], [],
+    [`GAME_EVENT`], [游戏事件], [`game_event`], [`step`],
+    [`GAME_RULE`], [游戏规则], [`game_rule`], [`step`],
+    [`HEIGHT_PROVIDER_TYPE`], [高度提供器类型], [`height_provider_type`], [],
+    [`INCOMING_RPC_METHOD`], [服务端管理协议中的请求方法], [`incoming_rpc_methods`], [],
+    [`INPUT_CONTROL_TYPE`], [对话框输入控件类型], [`	input_control_types`], [],
+    [`INT_PROVIDER_TYPE`], [整数提供器类型], [`int_provider_type`], [],
+    [`ITEM`], [物品], [`item`], [`air`],
+    [`SLOT_SOURCE_TYPE`], [槽位源类型], [`slot_source_type`], [],
+    [`LOOT_CONDITION_TYPE`], [战利品表谓词类型], [`loot_condition_type`], [],
+    [`LOOT_FUNCTION_TYPE`], [物品修饰器类型], [`loot_function_type`], [],
+    [`LOOT_NBT_PROVIDER_TYPE`], [战利品表相关NBT源类型], [`loot_nbt_provider_type`], [],
+    [`LOOT_NUMBER_PROVIDER_TYPE`], [值提供器类型], [`loot_number_provider_type`], [],
+    [`LOOT_POOL_ENTRY_TYPE`], [抽取项类型], [`loot_pool_entry_type`], [],
+    [`LOOT_SCORE_PROVIDER_TYPE`], [分数提供器类型], [`loot_score_provider_type`], [],
+    [`MAP_DECORATION_TYPE`], [地图图标类型], [`map_decoration_type`], [],
+    [`MATERIAL_CONDITION`], [地表规则条件], [`worldgen/material_condition`], [],
+    [`MATERIAL_RULE`], [地表规则], [`worldgen/material_rule`], [],
+    [`MEMORY_MODULE_TYPE`], [生物记忆], [`memory_module_type`], [`dummy`],
+    [`MENU`], [屏幕类型], [`menu`], [],
+    [`MOB_EFFECT`], [状态效果], [`mob_effect`], [],
+    [`NUMBER_FORMAT_TYPE`], [记分板分数显示样式类型], [`number_format_type`], [],
+    [`OUTGOING_RPC_METHOD`], [服务端管理协议中的通知方法], [`outgoing_rpc_methods`], [],
+    [`PARTICLE_TYPE`], [粒子类型], [`particle_type`], [],
+    [`PLACEMENT_MODIFIER_TYPE`], [放置修饰器类型], [`worldgen/placement_modifier_type`], [],
+    [`PERMISSION_CHECK_TYPE`], [命令权限检查类型], [`permission_check_type`], [],
+    [`PERMISSION_TYPE`], [命令权限类型], [`permission_type`], [],
+    [`POINT_OF_INTEREST_TYPE`], [兴趣点类型], [`point_of_interest_type`], [],
+    [`POOL_ALIAS_BINDING`], [模板池映射], [`worldgen/pool_alias_binding`], [],
+    [`POSITION_SOURCE_TYPE`], [位置源类型], [`position_source_type`], [],
+    [`POS_RULE_TEST`], [位置规则测试类型], [`pos_rule_test`], [],
+    [`POTION`], [药水效果], [`potion`], [],
+    [`RECIPE_BOOK_CATEGORY`], [配方书分类标签], [`recipe_book_category`], [],
+    [`RECIPE_DISPLAY`], [预览配方类型], [`recipe_display`], [],
+    [`RECIPE_SERIALIZER`], [配方序列化/反序列化器], [`recipe_serializer`], [],
+    [`RECIPE_TYPE`], [配方类型], [`recipe_type`], [],
+    [`REGISTRY`], [注册表], [`root`], [],
+    [`ROOT_PLACER_TYPE`], [树根放置器类型], [`worldgen/root_placer_type`], [],
+    [`RULE_TEST`], [规则测试], [`rule_test`], [],
+    [`RULE_BLOCK_ENTITY_MODIFIER`], [方块实体数据修饰器], [`rule_block_entity_modifier`], [],
+    [`SENSOR_TYPE`], [感受器类型], [`sensor_type`], [],
+    [`SLOT_DISPLAY`], [预览槽位类型], [`slot_display`], [],
+    [`SOUND_EVENT`], [声音事件], [`sound_event`], [],
+    [`SPAWN_CONDITION_TYPE`], [通用变种选择器类型], [`spawn_condition_type`], [],
+    [`STAT_TYPE`], [统计类型], [`stat_type`], [],
+    [`STRUCTURE_PIECE`], [结构片段], [`worldgen/structure_piece`], [],
+    [`STRUCTURE_PLACEMENT`], [结构放置方式], [`worldgen/structure_placement`], [],
+    [`STRUCTURE_POOL_ELEMENT`], [结构模板池元素], [`worldgen/structure_pool_element`], [],
+    [`STRUCTURE_PROCESSOR`], [结构处理器], [`worldgen/structure_processor`], [],
+    [`STRUCTURE_TYPE`], [结构类型], [`worldgen/structure_type`], [],
+    [`TEST_ENVIRONMENT_DEFINITION_TYPE`], [测试环境类型], [`test_environment_definition_type`], [],
+    [`TEST_FUNCTION`], [硬编码测试函数], [`test_function`], [],
+    [`TEST_INSTANCE_TYPE`], [测试实例类型], [`test_instance_type`], [],
+    [`TICKET_TYPE`], [加载标签及计算标签类型], [`ticket_type`], [],
+    [`TREE_DECORATOR_TYPE`], [树额外装饰器类型], [`worldgen/tree_decorator_type`], [],
+    [`TRIGGER_TYPE`], [触发器类型], [`trigger_type`], [],
+    [`TRUNK_PLACER_TYPE`], [树干放置器类型], [`worldgen/trunk_placer_type`], [],
+    [`VILLAGER_PROFESSION`], [村民职业], [`villager_profession`], [`none`],
+    [`VILLAGER_TYPE`], [村民类型], [`villager_type`], [`plain`]
+  )
+)
+==== 可写注册表
+可写注册表允许数据包通过数据反序列化器向其中添加自定义（或称数据驱动）的游戏内容。
+#general-table(
+  caption: [可写注册表],
+  columns: (auto, auto, auto),
+  colspan: 3,
+  header:([注册表], [资源类型], [数据包路径]),
+  content: (
+    [`ADVANCEMENT`], [进度], [`advancement`],
+    [`BANNER_PATTERN`], [旗帜图案], [`banner_pattern`],
+    [`BIOME`], [生物群系], [`worldgen/biome`],
+    [`CAT_VARIANT`], [猫的变种], [`cat_variant`],
+    [`CHAT_TYPE`], [聊天类型], [`chat_type`],
+    [`CHICKEN_VARIANT`], [鸡的变种], [`chicken_variant`],
+    [`CONFIGURED_CARVER`], [已配置的雕刻器], [`worldgen/configured_carver`],
+    [`CONFIGURED_FEATURE`], [已配置的地物], [`worldgen/configured_feature`],
+    [`COW_VARIANT`], [牛的变种], [`cow_variant`], 
+    [`DAMAGE_TYPE`], [伤害类型], [`damage_type`],
+    [`DENSITY_FUNCTION`], [密度函数], [`worldgen/density_function`],
+    [`DIALOG`], [对话框], [`dialog`],
+    [`DIMENSION`], [维度], [`dimension`],
+    [`DIMENSION_TYPE`], [维度类型], [`dimension_type`],
+    [`ENCHANTMENT`], [魔咒数据格式], [`enchantment`],
+    [`ENCHANTMENT_PROVIDER`], [魔咒提供器], [`enchantment_provider`], [`FLAT_LEVEL_GENERATOR_PRESET`], [超平坦世界生成预设], [`worldgen/flat_level_generator_preset`],
+    [`FROG_VARIANT`], [青蛙的变种], [`frog_variant`],
+    [`INSTRUMENT`], [山羊角乐器], [`instrument`],
+    [`ITEM_MODIFIER`], [物品修饰器], [`item_modifier`],
+    [`JUKEBOX_SONG`], [唱片机曲目], [`jukebox_song`],
+    [`LEVEL_STEM`], [维度], [`dimension`],
+    [`LOOT_TABLE`], [战利品表], [`loot_table`],
+    [`MULTI_NOISE_BIOME_SOURCE_PARAMETER_LIST`], [多噪声参数列表], [`worldgen/multi_noise_biome_source_parameter_list`],
+    [`NOISE`], [噪声], [`worldgen/noise`],
+    [`NOISE_SETTINGS`], [噪声设置], [`worldgen/noise_settings`],
+    [`PAINTING_VARIANT`], [画的变种], [`painting_variant`],
+    [`PIG_VARIANT`], [猪的变种], [`pig_variant`],
+    [`PLACED_FEATURE`], [已放置的地物], [`worldgen/placed_feature`],
+    [`PREDICATE`], [谓词], [`predicate`],
+    [`PROCESSOR_LIST`], [处理器列表], [`worldgen/processor_list`],
+    [`RECIPE`], [配方], [`recipe`],
+    [`STRUCTURE`], [已配置的结构地物], [`worldgen/structure`],
+    [`STRUCTURE_SET`], [结构集], [`worldgen/structure_set`],
+    [`TEMPLATE_POOL`], [结构池], [`worldgen/template_pool`],
+    [`TEST_ENVIRONMENT`], [测试环境], [`test_environment`],
+    [`TEST_INSTANCE`], [测试实例], [`test_instance`],
+    [`TIMELINE`], [时间线], [`timeline`],
+    [`TRIAL_SPAWNER_CONFIG`], [试炼刷怪笼配置], [`trial_spawner`],
+    [`TRIM_MATERIAL`], [盔甲纹饰材料], [`trim_material`],
+    [`TRIM_PATTERN`], [盔甲纹饰图案], [`trim_pattern`],
+    [`WOLF_VARIANT`], [狼的变种], [`wolf_variant`],
+    [`WORLD_PRESET`], [世界预设], [`worldgen/world_preset`],
+    [`ZOMBIE_NAUTILUS_VARIANT`], [僵尸鹦鹉螺变种], [`zombie_nautilus_variant`]
+  )
+)
+==== 不属于任何注册表的游戏资源
+有一些游戏资源不属于任何注册表，这些资源包括数据包内的函数、结构模板以及资源包内的所有内容。这些资源类型中部分都与可写注册表的性质类似，即可以自定义写入资源；部分则不能增添新的资源，但可以修改已有资源的配置文件。
+#i1[数据包内容]
+#i2[函数：可写，即`function`路径下的内容。]
+#i2[结构模板：可写，即`structure`路径下的内容。]
+#i1[资源包内容]
+#i2[纹理图集：位于资源包内路径`atlases`。]
+#i2[方块状态：位于`blockstates`。]
+#i2[纹饰图案：位于`equipment`。]
+#i2[字体：可写，位于`font`。]
+#i2[物品模型映射：位于`items`。]
+#i2[模型：包括方块模型和物品模型，位于`models`。]
+#i2[粒子：位于`particles`。]
+#i2[着色器：可写，位于`shaders`。]
+#i2[后处理管线：位于`post_effect`。]
+#i2[声音：可写，位于`sounds`。]
+#i2[纹理：可写，位于`textures`。]
+#i1[属性修饰符：可写，存储于所属物品的堆叠组件内。]
+#i1[Boss栏：可写，存储于存档文件夹中的`level.dat`。]
+#i1[命令存储：可写，存储于存档文件夹中的`data\command_storage_minecraft.dat`。]
+#i1[随机序列：可写，存储于存档文件夹中各自维度的`data\random_sequences.dat`文件内。]
+
+=== 扁平化\*
+Minecraft的历次版本更新都会对某一些特定的系统进行优化和更改，比如：战斗更新对PVP机制进行了颠覆性的更改，使得1.9之前和之后的PVP是两个完全不同的系统。命令系统也经历过类似的大幅度更改，这便是随着水域更新进行的*扁平化（The flattening）*#index(display:"扁平化（The flattening）","bianpinghua")。
+
+在Minecraft开发之初，由于游戏资源的数量有限，只需要使用1字节就可以设置所有游戏资源的ID。在历次版本更新中，Minecraft的方块、物品数量越来越多，特别是自缤纷更新以来，方块的数量呈爆炸式增长。在扁平化之前，为了应对这些不断增多的游戏资源，一种解决办法是将一大类全部收归到某一个特定的ID中，用这个ID来表示这一类方块，然后在后面附加一个Damage值来表示这一类方块中的某一种。比如花岗岩属于石头一类，石头的数字ID为1，而花岗岩的Damage值为1，所以在旧版本中给予玩家一块花岗岩的命令为：
+#codebox("give @p 1 1 1")
+可以看到这条命令中有三个参数，第一个`1`为石头的ID，第二个`1`为数量，第三个`1`为Damage值。这种表示方式的底层逻辑是：在访问花岗岩时，必须先访问上一级的数字ID，再访问Damage值，如此才能映射至花岗岩这个值。
+
+缤纷更新做了一个小修改：即启用了部分英文ID，于是在1.8中给予玩家一块花岗岩的命令变为：
+#codebox("give @p stone 1 1")
+但是缤纷更新做出的这种更改是不完全的，虽然在命令的主体部分将数字ID替换成了英文ID，但是方块的Damage值仍然存在，这种一级ID——Damage值的映射方式没有改变。
+
+时间来到了2017年，水域更新加入了大量的游戏内容，原先的映射方式已不能适应新版本。于是，*Java版1.13的更新基本上删除了所有的数字ID，使得每一个游戏资源都有其独立的英文ID。同时也删除了用Damage值映射方块的办法，去除了中间层，使得资源的映射方式只需要一个键名即可，这一过程便被称作“扁平化”*#footnote[并非所有数字ID都被移除，至今Minecraft仍保留了部分需要使用数字ID的地方。]。比如，在1.13中给予玩家一块花岗岩的命令为：
+#codebox("give @p granite 1")
+其中参数`granite`为花岗岩的键名，`1`为物品数量。扁平化对所有需要ID的对象都进行了修改，包括但不限于方块、物品、实体、生物群系、粒子、声音事件和画。其具体内容可分为以下几类：
++ 拆分
+
+  拆分是最能体现扁平化过程的一类。此举移除了用于指定大类下某一种方块的Damage值，使得一类方块下的每一种方块都有其独立的ID。举例：`stone`一类共有七种不同的方块：石头、花岗岩、磨制花岗岩、闪长岩、磨制闪长岩、安山岩和磨制安山岩，分别对应0 \~ 6的Damage值。拆分后这七种方块都被给予了独立的ID：`stone`、`granite`、`polished_granite`、`diorite`、`polished_diorite`、`andesite`和`polished_andesite`。
++ 重命名
+
+  顾名思义，该类即对原有的英文ID进行重命名。有相当一部分重命名是为了迎合方块或物品的英文名称。举例：草方块在扁平化前的ID为`grass`，扁平化后被重命名为`grass_block`。
++ 重新分类
+
+  这种操作常见于台阶和由双台阶组成的完整方块。扁平化前的台阶和双台阶有两种不一样的ID，扁平化后取消双台阶的ID，并对台阶的下属分类进行拆分，同时取消相关的Damage值。举例：双木台阶被取消，统一更换为木制台阶，同时ID拆分为橡木、云杉、白桦、丛林木、金合欢和深色橡木。
++ 合并
+
+  合并常见于有不同方块状态的方块。举例：燃烧的熔炉和熔炉有不同的ID，现合并为熔炉一种，同时将是否燃烧设定为方块状态。
+=== 命名空间ID
+游戏资源的指定有一个前提是这些对象的ID相互之间不能混淆。数字ID及使用Damage值作区分的指定方法能够避免对象之间的冲突，但扁平化后这种指定方法便无效了。为此在当前的版本中统一使用*（赋）命名空间ID（Namespaced identifier）*#index(display: "（赋）命名空间ID（Namespaced identifier）", "mingmingkongjian")来映射注册表内的值。
+
+命名空间ID，又称*（赋）命名空间标识符*、*资源路径（Resource location）*#index(display: "资源路径（Resource location）", "ziyuanlujing")、*资源标识符（Resource identifier）*#index(display: "资源标识符（Resource identifier）", "ziyuanbiaoshifu")或*命名空间字符串（Namespaced string）*#index(display: "命名空间字符串（Namespaced string）", "mingmingkongjianzifuchuan")，是字符串化的映射方式。无论命名空间ID用于映射何种对象，它们都具有同一的表达方式：
+#codebox("<namespace>:<path>")
+其中的参数：
+
+`<namespace>`——命名空间。
+
+`<path>`——路径。
+
+在写法上，除用于分割命名空间和路径的冒号`:`外，其中所有的字符都只能为合法字符。合法字符包含以下几类：
++ 数字：`0123456789`；
++ 小写字母：`abcdefghijklmnopqrstuvwxyz`*（大写字母为非法字符）*；
++ 下划线：`_`；
++ 连字符：`-`；
++ 点：`.`。
+除此之外所有的字符均为非法字符，包括汉字、平假名、片假名、西里尔字母、希腊字母、制表符、几何图形符、`+`等符号。斜杠`/`比较特殊，它在命名空间中为非法字符，但是在路径中可用于分割目录的不同层级，以下会有详细说明。
+==== 命名空间ID的实际意义
+*命名空间（Namespace）*#index(display: "命名空间（Namespace）", "mingmingkongjian")是游戏资源的区界，它位于资源类型的父层级，所有来自Minecraft原版游戏的资源均位于命名空间`minecraft`。*通过不同的自定义命名空间可以将新增的内容和原版内容区分开来，以防止新内容和原版内容、新内容和其他新内容之间产生冲突。*例如，有两个命名空间ID`minecraft:something`和`custom:something`，它们指定的是两个不同的对象，因为它们的命名空间不同，前者为`minecraft`，后者为`custom`，即使两者拥有相同的路径（名称）`something`。
+
+部分游戏资源在命名空间下有一定的文件路径，尤其是资源包、数据包内容，这时就可以使用`/`以表明它们的文件路径。这里命名空间实际上是一个文件夹，这个文件夹的结构一般是`<命名空间>\<资源类型>\<文件夹1>\<文件夹2>\…\<文件名>.<后缀>`。若要映射到这个文件，则命名空间ID的写法为
+#codebox("<命名空间>:<文件夹1>/<文件夹2>/…<文件名>")
+注意以下几点：
++ 资源类型不作为命名空间ID的一部分；
++ 资源路径的子文件夹至文件之间的一系列路径必须完整；
++ 文件名后缀不写。
+下面举两个例子以说明之：
+#example(
+  [
+    有数据包函数文件路径为`minecraft\function\load.mcfunction`，试用命名空间ID指定之。
+  ],
+  [
+    这里`function`为资源类型，`.mcfunction`为文件的后缀。故命名空间ID为
+    #codebox("minecraft:load")
+  ]
+)
+#example(
+  [
+    有资源包纹理文件路径为`minecraft\textures\block\command_block_front.png`，试用命名空间ID指定之。
+  ],
+  [
+    这里`textures`为资源类型，`.png`是文件后缀，依照其路径将命名空间ID写为
+    #codebox("minecraft:block/command_block_front")
+  ]
+)
+==== 命名空间ID字符串的识别与一般写法
+命名空间ID是形如`<字符串>:<字符串>`的字符串，游戏在识别、调用相关对象时，如果冒号`:`存在，会将冒号前的内容视作命名空间，其中不能出现斜杠`/`；将冒号后的内容视作路径，可以出现斜杠。为了保证识别的正确性，整个字符串中最多只能出现一个冒号，否则识别会出现错误。如果冒号不存在，字符串的形式为`<字符串>`，则游戏会直接将整个字符串直接识别为路径，并默认命名空间为`minecraft`#footnote[原版游戏中大部分对象都使用命名空间`minecraft`，但是六种基本命令参数类型（@subsec:command_argument#h(-0.7em)）却使用命名空间`brigadier`。]，有些时候可以适当地减少书写命名空间，但省略命名空间的行为仍是不被建议的：虽然命名空间在原版大部分需要ID的地方上不是必须的，但在一些情况下命名空间是必须的，包括但不限于NBT路径中指定ID的节点。鉴于读者在实践的过程中可能会忘记必须添加命名空间的地方，或是混淆原版内容和自定义的内容，那么最好还是完整地书写命名空间ID。
+#example(
+  [
+    下列命名空间ID的识别结果为何？
+    #codebox("something") <code:namespaced_id_example_1>
+    #codebox("minecraft:something") <code:namespaced_id_example_2>
+    #codebox("custom:something") <code:namespaced_id_example_3>
+    #codebox("minecraft/custom:something") <code:namespaced_id_example_4>
+    #codebox("minecraft/something") <code:namespaced_id_example_5>
+    #codebox("minecraft:Something") <code:namespaced_id_example_6>
+    #codebox("minecraft:custom:something") <code:namespaced_id_example_7>
+  ],
+  [
+    以上各命名空间ID的识别结果列于下表：
+    #general-table(
+      caption: [命名空间ID的识别结果],
+      columns: (auto, auto, auto ,auto),
+      colspan: 4,
+      header:([命名空间ID], [识别的命名空间], [识别的路径], [识别结果]),
+      content: (
+        [@code:namespaced_id_example_1], [`minecraft`], [`something`], [`minecraft:something`],
+        [@code:namespaced_id_example_2], [`minecraft`], [`something`], [`minecraft:something`],
+        [@code:namespaced_id_example_3], [`custom`], [`something`], [`custom:something`],
+        [@code:namespaced_id_example_4], [-（含有非法字符`/`）], [-], [识别失败],
+        [@code:namespaced_id_example_5], [`minecraft`], [`minecraft/something`], [`minecraft:minecraft/something`],
+        [@code:namespaced_id_example_6], [`minecraft`], [-（含有非法字符`S`）], [识别失败],
+        [@code:namespaced_id_example_7], [-（冒号数量大于1）], [-], [识别失败]
+      )
+    )
+  ]
+)
+一般而言，命名空间和路径推荐的写法是*蛇形命名法（Snake case）*#index(display: "蛇形命名法（Snake case）", "shexingmingmingfa")，即当名称中含有多个单字时，以下划线`_`取代每一个空格的写法。蛇形命名法的书写仍需遵守合法字符的规定，不能出现大写字母。例如，下面的命名空间ID在命名空间和路径上均使用了蛇形命名法：
+#codebox("ancient_city:get_out")
+=== 数据包标签
+一个单独的命名空间ID只能映射至单独的一个对象，如果要同时映射多个对象，一般的做法是将对象分类，通过映射同一种类别的对象从而映射多个对象。这种将游戏资源分类的手段被称为*数据包标签（Tags in data packs）*#index(display: "数据包标签（Tags in data packs）", "shujubaobiaoqian")，简称*标签（Tag）*#index(display: "标签（Tag）", "biaoqian")由于命令系统存在多个名为“标签”的概念，笔者不建议使用这样的简称以防止与其他概念的混淆。。原版游戏有一些既有数据包标签，数据包标签的名称大多拥有实际的意义：例如，数据包标签`#fire`映射至两种方块，即`fire`（火焰）和`soul_fire`（灵魂火焰）；`#mineable/axe`映射至所有能被斧采集的方块。
+
+数据包标签的表示方式类似于命名空间ID，但需要在前面加上井号`#`，写法为
+#codebox("#<namespace>:<id>")
+例如`#minecraft:fire`。数据包标签映射的对象可以直接是一个游戏资源，如方块、实体等，也可以是另一个数据包标签。例如，数据包标签`#minecraft:mineable/axe`还包含了`#minecraft:planks`（所有种类的木板）、`#minecraft:signs`（所有种类的告示牌）等数据包标签。指定某数据包标签时，其映射的其他数据包标签下的对象也会被选择。但是同一个数据包标签映射的资源类型必须相同，不能将不同类型的对象放入一个数据包标签中，例如，猪和石头不能被放在同一个数据包标签中。
+
+数据包标签涵盖的对象类型非常广，包括方块、实体、物品、游戏事件、生物群系等。读者可以在既有数据包标签的基础上，使用数据包添加一些自定义的数据包标签。
+
+== 数据包
+
+== 资源包
+
+== 命令
+=== 命令参数 <subsec:command_argument>
+
+== 游戏机制
+游戏为命令提供了一个运行环境，为此命令系统不免受到游戏机制的制约。在时间上，命令受到游戏循环驱动的影响，以游戏刻为单位执行；在空间上，命令受到区块加载的影响，只能在允许运算的区块中执行。本节旨在介绍游戏加载、运行、更新的一些基本游戏机制。
+=== 端
+Minecraft的架构是*客户端-服务端模型*，顾名思义，Minecraft使用*客户端（Cilent）*#index(display:"客户端（Cilent）","kehuduan")和*服务（器）端（Server）*#index(display:"服务（器）端（Server）","fuwuduan")来运作自身。这两个*端（Sides）*#index(display:"端（Sides）","duan")之间的通信是由*封包（Packet）*#index(display:"封包（Packet）","fengbao")实现的。在网络工程中，这个概念一般译为“数据包”，而Minecraft中另有一个叫Datapack（数据包）的概念，故Packet在Minecraft技术性开发领域会特地译为“封包”。
+
+然而，仅通过客户端和服务端理解Minecraft的运作是远远不够的，因为Minecraft的架构还包括*物理端（Physical sides）*#index(display:"物理端（Physical sides）","wuliduan")和*逻辑端（Logical sides）*#index(display:"逻辑端（Logical sides）","luojiduan")，并且物理端和逻辑端分别具有各自的客户端和服务端。
+==== 物理客户端
+*物理客户端（Physical client）*#index(display:"物理客户端（Physical client）","wulikehuduan")是指下载游戏版本得到的`<version>.jar`文件，它的默认文件路径为`.minecraft\<版本号>\<version>.jar`。物理客户端包含了游戏的全部内容，也包含了内置的客户端和服务端，即*逻辑客户端（Logical client）*#index(display:"逻辑客户端（Logical client）","luojikehuduan")和*逻辑服务端（Logical server）*#index(display:"逻辑服务端（Logical server）","luojifuwuduan")，其中逻辑服务端又称*内置服务器（Integrated server，或译为集成服务端）*#index(display:"内置服务器（Integrated server）","neizhifuwuqi")。内置服务器会受到客户端的影响。
+
+逻辑客户端负责接收来自玩家的输入、处理资源包、渲染游戏画面，并将数据输送给逻辑服务端处理；逻辑服务端负责处理由客户端发送的数据，运行游戏逻辑。例如，当玩家在游戏中移动时，客户端会根据玩家输入的移动方向渲染玩家此时的游戏画面，同时又将玩家移动的信息通过封包发送给逻辑服务端，逻辑服务端计算玩家的坐标、玩家周围是否存在任何的碰撞箱阻止玩家移动，将计算结果通过封包返还给逻辑客户端，渲染玩家移动的游戏画面。客户端的渲染会与服务端产生不一致的情况，例如标记是一种仅存在于服务端的实体，在客户端上并不会渲染标记，参见@technical_entity。
+#figure(
+  caption: [逻辑客户端和逻辑服务端的运行流程],
+  image("图片/逻辑客户端和逻辑服务端的运行流程.png", width: 60%)
+)
+*即使是进行单人游戏，Minecraft依旧会在玩家进入本地世界时创建一个内置服务器，在本地世界关闭时内置服务器即被关闭。*这个内置服务器可以开放至局域网，从而将单人游戏开放为局域网联机的多人游戏。此时内置服务器拥有一个地址，其格式为
+#codebox("<IPv4地址>:<端口>")
+局域网联机的IPv4地址可由CMD的`ipconfig`命令查询。端口是一个数值，可以自由指定，范围为`0`至`65535`（含两端）。除了通过暂停游戏的对局域网开放选项外，玩家还可以通过命令`/publish`开放内置服务器，该命令所需权限等级为4，且仅能在单人游戏中使用，其语法为：
+#codebox("publish [<allowCommands>] [<gamemode>] [<port>]")
+其中的参数#footnote("括号中内容为该参数的类型及该参数类型在注册表内的命名空间ID，后续教程均如此。")：
+
+== 服务器
+
+== 带有简单参数的命令指引
+
+= 坐标
+Minecraft的游戏世界是三维的。在编写数据包的时候，有时需要确定实例所需的位置参数。这样的参数被称为*坐标（Coordinate）*#index(display:"坐标（Coordinate）","zuobiao")。本章将详细介绍各种坐标参数以及这些参数在命令上的应用。
+#pagebreak()
+== 坐标系与坐标
+Minecraft使用的空间直角坐标系是右手坐标系。在这种空间直角坐标系中，$x$轴和$z$轴所反映的是水平方向上的位置，$y$轴所反映的是垂直方向上的位置。其中，*$x$轴的正方向指向正东，而$z$轴的正方向指向正南*。
+#figure(
+  caption: [适用于Minecraft的空间直角坐标系],
+  image("图片/适用于Minecraft的空间直角坐标系.png"),
+)
+在命令参数中，可以用三个分量来表示某一点的位置，这是一个有序的实数三元组：
+#codebox("<x> <y> <z>")
+比如，用数学方法表示的点$(0,4,4)$在一些命令参数中直接表示为`0 4 4`。
+
+#example(
+  [
+    空间直角坐标系中有两个点$A(124.5,76,−64.29)$、$B(−10.003,80,−33.33)$，则$B$点在水平位置上位于$A$点的什么方向？
+  ],
+  [
+    $B$点$x$坐标位于$A$点$x$坐标的负方向，因此$B$点在东西方向上位于$A$点的西方；$B$点$z$坐标位于$A$点$z$坐标的正方向，因此$B$点在东西方向上位于$A$点的南方。综上所述，$B$点位于$A$点的西南方向。
+
+  ]
+)
+
+虽然不同的坐标表示方式基本一致，但不同的命令作用的对象不同，其坐标参数类型也不完全一致，下文将梳理命令系统使用的所有种类的坐标参数。
+
+=== 坐标的命令参数类型
+命令使用4种与坐标相关的参数类型：方块坐标`minecraft:block_pos`、三维坐标`minecraft:vec3`、平面方块坐标`minecraft:column_pos`和二维坐标`minecraft:vec2`。它们的关系和应用场景可以很清晰地列于下表：
+#general-table(
+  caption: [Minecraft中的坐标参数],
+  columns: 3,
+  colspan: 3,
+  header: ([], [一般应用于方块], [一般应用于非方块的游戏内容]),
+  content: ([三维], [`minecraft:block_pos`], [`minecraft:vec3`],[二维], [`minecraft:column_pos`], [`minecraft:vec2`])
+)
+
+==== 方块坐标
+坐标表示的是一个没有体积的点，而方块是有体积的，因此需要给方块规定一个基准点，用这个基准点的坐标来表示该对象的坐标。
+
+Minecraft规定：大部分方块的长、宽和高均为1米，体积为1立方米。用坐标系表示这些位置时，默认了方块的边长和坐标系的单位长度在数值上相等，这意味着坐标系的基本单位为米，或称为“格”。
+
+一个方块使用其*西北下角*的点作为它的*方块坐标（Block position）*#index(display:"方块坐标（Block position）","fangkuaizuobiao")。若一个方块的西北下角顶点坐标为$(x,y,z)$，则该方块的方块坐标记为$(x,y,z)$，而这个方块位于$(x,y,z)$和$(x+1,y+1,z+1)$这两个坐标围成的立体几何图形之间。
+#figure(
+  caption: [用方块这个方向的顶点来表示方块坐标],
+  image("图片/用方块这个方向的顶点来表示方块坐标.png", width: 35%)
+)
+由于方块的角总是位于整数坐标点，作为命令参数`minecraft:block_pos`的方块坐标一定是由三个整数构成的有序三元组。
+#example(
+  [
+    #h(-2em)如图所示，方块坐标为`0 0 0`的方块为哪一个？
+    #figure(caption: "", image("图片/方块坐标例题.png", width: 30%))
+  ],
+  [
+    方块坐标严格按照西北下角顶点来计算，而正西、正北分别是$x$轴和$z$轴的负方向，因此用方块坐标指示的方块位置，永远位于实际坐标的东南方向，且在垂直方向上位于上方，在空间直角坐标系中的反映即为$x$、$y$、$z$三个坐标轴的正方向。因此方块坐标为`0 0 0`的方块位于第一卦限，即方块$A$。
+
+  ]
+)
+
+==== 三维坐标
+*三维坐标（Three-dimensional coordinates）* #index(display:"三维坐标（Three-dimensional coordinates）","sanweizuobiao")是精确表示一个位置的坐标参数，命令参数类型为`minecraft:vec3`，用于表示坐标位置的三个元素均为双精度浮点数。三维坐标一般应用于实体，它也可能会在粒子生成和声音播放的时候被使用。例如，这是一个合法的三维坐标：
+#codebox("5.0 56.0 17.0")
+#h(-2em)这个坐标带有小数点，因为三维坐标的三个参数均是双精度浮点数。但是，这并不意味着三维坐标只能使用浮点数。也可以在三维坐标中使用整数形式，如：
+#codebox("5 56 17")
+注意，上述这两个坐标描述的位置并不是一致的。在实际操作中，却发现这个玩家位于三维坐标$(5.5,56.0,17.5)$。如图，可以观察到玩家的坐标发生了“偏移”，与实际坐标有所出入。其中$x$坐标和$z$坐标都发生了“偏移”，而$y$坐标不受影响。
+#figure(
+  caption: [整数坐标发生的“偏移”],
+  image("图片/整数坐标发生的“偏移”.png",width: 80%)
+)
+这些位置的偏移都位于相对方块两条对边的中心线上，这是因为三维坐标使用了*中心校准（Center correct）*#index(display:"中心校准（Center correct）","zhongxinjiaozhun")，即使用整数形式的三维坐标，当其某一个坐标参数为$n$（$n∈Z$）时，其实际坐标为$n−0.5$，这样可以使得实体位置与方块位置相适应。注意*中心校准仅适用于$x$坐标和$z$坐标。$y$坐标严格使用实际坐标*。
+
+注意这里不使用“三维坐标根据方块坐标位于方块中心”的说法，是因为三维坐标的三个参数中整数和浮点数形式可以混用，并且使用小数形式的参数严格遵循实际坐标，整数形式的参数则使用中心校准。比如，位于`5 56 17.0`的玩家实际位于$(5.5,56,17.0)$。
+
+==== 平面方块坐标
+故名思义，平面方块坐标`minecraft:column_pos`就是二维的方块坐标，以西北角的二维坐标作为一个方块纵列的平面坐标，两个元素均为整数。
+
+==== 二维坐标
+即只由$x$坐标和$z$坐标构成的*二维坐标（Two-dimensional coordinates）*#index(display:"二维坐标（Three-dimensional coordinates）","erweizuobiao")。二维坐标的命令参数类型为`minecraft:vec2`，两个元素均为双精度浮点数。二维坐标若为整数，则也使用中心校准。
+
+= 区块格式
+== 技术性实体 <technical_entity>
+
+#heading(level: 1, numbering: none, outlined: false, [索引])
+#columns(2)[
+  #make-index(use-page-counter: true)
+]
