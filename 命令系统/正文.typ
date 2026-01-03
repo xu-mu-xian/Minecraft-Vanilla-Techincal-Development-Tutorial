@@ -2,6 +2,7 @@
 #import "@preview/showybox:2.0.4": showybox
 #import "@preview/hydra:0.6.2": hydra
 #import "@preview/itemize:0.2.0" as el
+#import "@preview/subpar:0.2.2"
 #import table: cell, header
 
 // 封面
@@ -249,6 +250,7 @@
 #let exa = counter("exa")
 #let example(question, solution) = {
   exa.step()
+  block(height: 0pt, width: 0pt, sticky: true)
   showybox(
     breakable: true,
     footer: [
@@ -794,7 +796,7 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 命名空间ID是形如`<字符串>:<字符串>`的字符串，游戏在识别、调用相关对象时，如果冒号`:`存在，会将冒号前的内容视作命名空间，其中不能出现斜杠`/`；将冒号后的内容视作路径，可以出现斜杠。为了保证识别的正确性，整个字符串中最多只能出现一个冒号，否则识别会出现错误。如果冒号不存在，字符串的形式为`<字符串>`，则游戏会直接将整个字符串直接识别为路径，并默认命名空间为`minecraft`#footnote[原版游戏中大部分对象都使用命名空间`minecraft`，但是六种基本命令参数类型（@subsec:command_argument#h(-0.7em)）却使用命名空间`brigadier`。]，有些时候可以适当地减少书写命名空间，但省略命名空间的行为仍是不被建议的：虽然命名空间在原版大部分需要ID的地方上不是必须的，但在一些情况下命名空间是必须的，包括但不限于NBT路径中指定ID的节点。鉴于读者在实践的过程中可能会忘记必须添加命名空间的地方，或是混淆原版内容和自定义的内容，那么最好还是完整地书写命名空间ID。
 #example(
   [
-    下列命名空间ID的识别结果为何？
+    #h(-2em)下列命名空间ID的识别结果为何？
     #codebox("something") <code:namespaced_id_example_1>
     #codebox("minecraft:something") <code:namespaced_id_example_2>
     #codebox("custom:something") <code:namespaced_id_example_3>
@@ -838,7 +840,79 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 == 资源包
 
 == 命令
+*命令（Command）*#index(display: "命令（Command）", "mingling")，又称*控制台命令（Console command）*#index(display: "控制台命令（Console command）", "kongzhitaimingling")、*斜杠命令（Slash command）*#index(display: "斜杠命令（Slash command）", "xiegangmingling")或*MC-CMD*#index("MC-CMD")，*是一种高级的、通过输入具有特定语法文本以实现控制游戏本身运行的功能*。命令文本需要讲究严格的语法，不允许任何模糊的表达。目前MC-CMD已被正式确认为一种编程语言，名称为mcfunction，与C语言、Java、Python等并列——但这是一种只适用于游戏Minecraft内部的编程语言，无法与外部环境进行交互。
 === 命令参数 <subsec:command_argument>
+参数是命令的组成部分，每一条命令都由一个命令头和若干参数组成，参数之间用空格分隔，由此得到命令的通用格式：
+#codebox("<命令名> [<参数1>] [<参数2>] …")
+例如在下面的命令中，`say`是该命令的命令名，`Hello World!`是后续参数：
+#codebox("say Hello World!") <code:say_hello_world>
+在本教程中，为了方便解释命令中各参数的语法，会使用一系列括号或其他符号来表示这些参数的具体内容及可用性。为了使说明更加方便，本教程采用了和游戏本体、Minecraft Wiki一样的命令语法格式，如下表所示。
+#general-table(
+  caption: [语法指引格式],
+  columns: (1fr, 3fr, 5fr),
+  colspan: 3,
+  header:([语法], [含义], [举例]),
+  content: (
+    [`字面量`], [按字面量原样输入], [命令`/locate biome`中第2个参数`biome`即为字面量，编写命令时不要更改这个参数的写法。],
+    [`<参数>`], [需要使用一合适的值来替换该参数], [命令`/say <message>`的第2个参数需要用自定的值，比如`/say Hello World!`。],
+    [`[<参数>]`], [该参数是可选的，如果使用该参数，则需要使用一合适的值替换之], [命令`/summon <entity> [<pos>] [<nbt>]`中第3、4个参数可选，填写这些参数时需要用自定的值。],
+    [`(参数|参数)`], [（必须的）在显示的值中选择一个填写。语法介绍中这些值由竖线分隔], [命令`/time query (daytime|gametime|day)`的第3个参数是必填的，从`daytime`、`gametime`和`day`中选择一个填写。],
+    [`[参数|参数]`], [（可选的）在显示的值中选择一个填写。语法介绍中这些值由竖线分隔], [命令`/experience add <targets> <amount> [levels|points]`的第5个参数虽然不是必写的，但仍可以从参数`points`和`levels`中选择一个填写。],
+    [`-> 子命令`], [必须接入一条子命令], [命令`/execute positioned <pos> -> execute`的第6个参数是必填的，内容为命令`/execute`的一个子命令。],
+    [`-> [子命令]`], [可以接入一条子命令], [命令`/execute (if|unless) block <pos> <block> -> [execute]`的第7个参数可以填写`/execute`的子命令，也可以不填写。]
+  )
+)
+下面举一实例以说明之：
+#example(
+  [
+    #h(-2em)命令`/data`的一种语法如下所示：#codebox("data get (block <targetPos>|entity <target>|storage <target>) [<path>] [<scale>]")
+  ],
+  [
+    语法中`data`为命令名，`get`是字面量，这两者必须按语法指引中的字面量原样输入命令。
+    第3、4个参数必须从`block <targetPos>`、`entity <target>`和`storage <target>`中选则一种，且不得空缺。若使用`block <targetPos>`，则`block`按原样输入，后续使用`<targetPos>`的自定义值，但不得在`block`后续使用`<target>`参数，因为`<target>`是`entity`或`storage`的后续参数。第5、6个参数`[<path>]`、`[<scale>]`可选并自定义值。使用该语法且实际可行的命令可以是：
+    #codebox("data get entity @s SelectedItem") <code:grammar_guideline_example>
+    命令@code:grammar_guideline_example 使用了参数`entity`，`@s`是`<target>`使用的值，`SelectedItem`是`[<path>]`使用的值，参数`[<scale>]`未使用。
+  ]
+)
+为了使不同的命令具有不同的功能，它们使用的参数类型各不相同。有些命令作用的对象为实体，它们则会使用指定实体的参数，有些命令作用的对象为某一个坐标，则其使用坐标参数。游戏使用的命令参数有如布尔值、整型、函数、槽位值、坐标值、目标选择器、JSON、NBT等。一些复杂参数会在本教程后文呈现，下面列举的是基本参数，即在Brigadier中使用的六种基本数据类型：
+#i1(new: true)[*布尔值（Boolean）*#index(display: "布尔值（Boolean）", "buerzhi")]
+只有两种可用参数，为`true`和`false`，分别代表“是”与“否”。
+#i1[*整型（Integer）*#index(display: "整型（Integer）", "zhengxing")]
+使用32位整型数值，即介于`-2147483648`和`2147483647`之间的整数值，如`1`、`0`、`-1`等。不同命令中使用整型的参数规定的最大可用值和最小可用值不一致。
+#i1[*长整型（Long）*#index(display: "长整型（Long）", "changzhengxing")]
+使用64位整型数值，即介于`-9223372036854775808`和`9223372036854775807`之间的整数值。
+#i1[*单精度浮点数（Float）*#index(display: "单精度浮点数（Float）", "danjingdufudianshu")]
+使用占据4字节的浮点数，范围大约介于$-3.4×10^38$和$3.4×10^38$之间，在不同命令中使用单精度浮点数的参数规定的最大可用值和最小可用值不一致。一些单精度浮点数的示例有：`0`、`1.1`、`-1`、`.5`等，小数形式的整数部分可以省略。在命令参数中使用的浮点数暂时不支持科学计数法#footnote[参见#link("https://bugs.mojang.com/browse/MC/issues/MC-130925")[MC-130925]。]。
+#i1[*双精度浮点数（Double）*#index(display: "双精度浮点数（Double）", "shuangjingdufudianshu")]
+使用占据4字节的浮点数，范围大约介于$-1.8×10^108$和$1.8×10^108$之间。可以表示比单精度浮点数绝对值更大的有效数字。
+#i1[*字符串（String）*#index(display: "字符串（String）", "zifuchuan")]
+#i2[*单个词（Single word）*#index(display: "单个词（Single word）", "dangeci")]
+即不含空格的字符串，如`word`，若单个词的内容由多个词语组成，则一般使用下划线`_`连接相邻词，如`word_with_underscores`。
+#i2[*词组（Quotable phrase）*#index(display: "词组（Quotable phrase）", "cizu")]
+可以由双引号括起，如`"quoted phrase"`，也可以使用单引号来定义，如`'quoted phrase'`，此时单词之间可以有空格。
+#i2[*贪婪词组（Greedy phrase）*#index(display: "贪婪词组（Greedy phrase）", "tanlancizu")]
+这种形式的词组不带引号，任意使用空格。该形式的参数通常位于命令的末尾，将命令的剩余部分全部作为字符串参数。如：`words with spaces`。上文中命令@code:say_hello_world 就使用了这种参数。
+=== 命令的输入
+命令是一种文本输入，以下是可供命令输入的途径：
+#i1(new: true)[使用聊天栏输入命令]
+为了和普通的聊天文本区分开来，在聊天栏中输入命令时会在命令前加一个前缀`/`，此前缀必不可少。在不使用按键`T`召唤聊天栏时可以直接键入`/`输入命令，这是使玩家快速进入命令输入模式的一种办法。
+
+呼出聊天栏后，同样可以使用`↑`或`↓`键调用*命令历史（Command history）*#index(display: "命令历史（Command history）", "minglinglishi")，即先前键入的命令。如果之前输入的命令有语法错误的话，切换至该命令时依旧会有语法错误，不会自动更正，更不会因为含有语法错误就不显示该命令。这种快捷键在命令方块控制台中不适用。命令历史可以跨存档调用。
+
+在聊天栏输入命令时，`Tab`键可用于补全命令。未输入任何命令字符的时候，使用`Tab`键可以看到聊天栏上出现的一个命令列表（如@fig:using_tab_when_typing_command），鼠标滚轮有助于翻找需要的命令。
+#figure(
+  caption: [在聊天栏输入命令时使用`Tab`键],
+  image("图片/在聊天栏输入命令时使用Tab键.png", width: 20%)
+) <fig:using_tab_when_typing_command>
+读者可以直接在命令列表中点击需要的命令，或者如@fig:command_typing_a 所示，输入命令的前若干字符后使用`Tab`键补全。
+#subpar.grid(
+  figure(image("图片/命令输入过程a.png")
+  ), <fig:command_typing_a>,
+  figure(image("图片/命令输入过程b.png")),
+  columns: (1fr, 1fr),
+  caption: [命令输入过程],
+  numbering: ""
+)
 
 == 游戏机制
 游戏为命令提供了一个运行环境，为此命令系统不免受到游戏机制的制约。在时间上，命令受到游戏循环驱动的影响，以游戏刻为单位执行；在空间上，命令受到区块加载的影响，只能在允许运算的区块中执行。本节旨在介绍游戏加载、运行、更新的一些基本游戏机制。
