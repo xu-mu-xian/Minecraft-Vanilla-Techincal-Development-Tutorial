@@ -2,7 +2,7 @@
 #import "@preview/showybox:2.0.4": showybox
 #import "@preview/hydra:0.6.2": hydra
 #import "@preview/itemize:0.2.0" as el
-#import "@preview/subpar:0.2.2"
+
 #import table: cell, header
 
 // 封面
@@ -179,6 +179,15 @@
     text(font: ("Consolas","FZShuSong GB18030L2"), size: 0.9em, it)
   ) + " "
 }
+#show regex("([\p{P}\p{S}])(`[^`]+`)"): it => {
+  // 匹配：标点 + 代码块 -> 直接连接，不加空格
+  it
+}
+
+#show regex("(`[^`]+`)([\p{P}\p{S}])"): it => {
+  // 匹配：代码块 + 标点 -> 直接连接，不加空格
+  it
+}
 
 // 有编号代码行
 #let codeline = counter("codeline")
@@ -325,6 +334,20 @@
 // 图片
 #show figure: set block(above: 1.5em, breakable: true)
 #set figure(numbering: it => str(counter(heading).get().at(0)) + "." + counter(image).display("1"))
+#let sub-figure(align: center, caption: [子图片], columns: 2, gutter: 2em, label: none, rows: auto, ..images) = [
+  #figure(
+    caption: caption,
+    grid(
+      align: align,
+      columns: columns,
+      gutter: gutter,
+      rows: rows,
+      ..images
+    ),
+  ) #label
+  #let sub-figure-counter = columns - 1
+  #counter(image).update(n => n - sub-figure-counter)
+]
 
 // 表格
 #let tab_numbering(.., desc) = {
@@ -897,21 +920,39 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 #i1(new: true)[使用聊天栏输入命令]
 为了和普通的聊天文本区分开来，在聊天栏中输入命令时会在命令前加一个前缀`/`，此前缀必不可少。在不使用按键`T`召唤聊天栏时可以直接键入`/`输入命令，这是使玩家快速进入命令输入模式的一种办法。
 
-呼出聊天栏后，同样可以使用`↑`或`↓`键调用*命令历史（Command history）*#index(display: "命令历史（Command history）", "minglinglishi")，即先前键入的命令。如果之前输入的命令有语法错误的话，切换至该命令时依旧会有语法错误，不会自动更正，更不会因为含有语法错误就不显示该命令。这种快捷键在命令方块控制台中不适用。命令历史可以跨存档调用。
+呼出聊天栏后，可以使用`↑`或`↓`键调用*命令历史（Command history）*#index(display: "命令历史（Command history）", "minglinglishi")，即先前键入的命令。如果之前输入的命令有语法错误的话，切换至该命令时依旧会有语法错误，不会自动更正，更不会因为含有语法错误就不显示该命令。这种快捷键在命令方块控制台中不适用。命令历史可以跨存档调用。
 
 在聊天栏输入命令时，`Tab`键可用于补全命令。未输入任何命令字符的时候，使用`Tab`键可以看到聊天栏上出现的一个命令列表（如@fig:using_tab_when_typing_command），鼠标滚轮有助于翻找需要的命令。
 #figure(
   caption: [在聊天栏输入命令时使用`Tab`键],
   image("图片/在聊天栏输入命令时使用Tab键.png", width: 20%)
 ) <fig:using_tab_when_typing_command>
-读者可以直接在命令列表中点击需要的命令，或者如@fig:command_typing_a 所示，输入命令的前若干字符后使用`Tab`键补全。
-#subpar.grid(
-  figure(image("图片/命令输入过程a.png")
-  ), <fig:command_typing_a>,
-  figure(image("图片/命令输入过程b.png")),
-  columns: (1fr, 1fr),
+读者可以直接在命令列表中点击需要的命令，或者如@fig:command_typing (a) 所示，输入命令的前若干字符后使用`Tab`键补全。若这个命令后续还有其他参数，则也可以如@fig:command_typing (b) 所示用`Tab`键补全。
+#sub-figure(
   caption: [命令输入过程],
-  numbering: ""
+  label: <fig:command_typing>,
+  [#image("图片/命令输入过程a.png", height: 4em)\(a)],
+  [#image("图片/命令输入过程b.png", height: 4em)\(b)]
+)
+聊天栏的字符数量被限制在256以内，命令开头的`/`也会被计入字符数。因此，聊天栏不能用于执行太长的命令。
+#i1[在命令方块或命令方块矿车内输入命令]
+命令方块控制台可输入的字符最多为32500个，较聊天栏的限制有很大提升。文本框长度有限，每次只能显示命令的其中一段，需要`鼠标左键`或使用`←`、`→`键移动光标调整命令显示的位置，且每次打开命令方块GUI时光标总显示在命令的末尾。
+
+在命令方块或命令方块矿车内输入命令时，斜杠前缀`/`不是必须的。和在聊天栏中使用命令一样，当文本框中无任何内容时，下方会显示一个命令列表（如@fig:command_block_gui），通过调整鼠标滚轮能够调整命令列表显示的位置，按`Tab`键能够在输入命令时自动补全或选择命令的部分。
+#figure(
+  caption: [命令方块GUI],
+  image("图片/命令方块GUI.png")
+) <fig:command_block_gui>
+#i1[在数据包函数文件中输入命令]
+这种编写方式需要使用一定的编译软件，常用的编译软件有Windows自带的记事本、Visual Studio Code等。函数中的命令不能带有斜杠前缀。具体的内容可参阅《数据包》教程的描述。
+#i1[在服务器控制台中输入命令]
+#i1[在带有`run_command`动作的点击事件的文本组件或对话框按钮中输入命令]
+=== 权限等级与限制条件
+命令功能强大、种类繁多，如果在任意情况下都能够随意使用，则很有可能会破坏玩家的游戏体验。因此，命令系统有一套专门的机制用于控制游戏内可用命令的情形，即权限等级。*权限等级（Permission level）*#index(display: "权限等级（Permission level）", "quanxiandengji")用于决定命令执行者可以使用什么样的命令。所有命令都有一个所需的权限等级，如果命令执行者没有达到该有的权限等级，则无法执行该命令。例如：`/advancement`需要的权限等级为2，命令方块的权限等级也为2，因此命令方块可以执行该命令；而关闭命令的单人游戏玩家的权限为0，所以该玩家不能执行该命令。
+
+权限等级共分为0、1、2、3、4级，表罗列了Java版所有可用命令需要的权限等级与限制条件。除权限等级之外，一些命令还对当前的游戏世界有限制：一些命令只能在专用服务器（以下简称多人游戏）中使用，另有只能在非专用服务器（以下简称单人游戏，无论是否对局域网开放）中使用的命令，然而大部分命令都是无此限制条件的。
+#general-table(
+  caption: [Java版可用命令列表],
 )
 
 == 游戏机制
@@ -979,6 +1020,7 @@ Minecraft使用的空间直角坐标系是右手坐标系。在这种空间直�
 Minecraft规定：大部分方块的长、宽和高均为1米，体积为1立方米。用坐标系表示这些位置时，默认了方块的边长和坐标系的单位长度在数值上相等，这意味着坐标系的基本单位为米，或称为“格”。
 
 一个方块使用其*西北下角*的点作为它的*方块坐标（Block position）*#index(display:"方块坐标（Block position）","fangkuaizuobiao")。若一个方块的西北下角顶点坐标为$(x,y,z)$，则该方块的方块坐标记为$(x,y,z)$，而这个方块位于$(x,y,z)$和$(x+1,y+1,z+1)$这两个坐标围成的立体几何图形之间。
+#context counter(figure).display("1")
 #figure(
   caption: [用方块这个方向的顶点来表示方块坐标],
   image("图片/用方块这个方向的顶点来表示方块坐标.png", width: 35%)
