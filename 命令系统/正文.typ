@@ -91,8 +91,10 @@
     #if calc.rem(here().page(), 2) == 1 {
       [
         #set text(
-          font: "Source Han Serif",
-          weight: "bold"
+          font: (
+            "TeX Gyre Termes",
+            "FandolKai"
+          )
         )
         #hydra(skip-starting: false, 1)
         #h(1fr)
@@ -101,8 +103,10 @@
     } else {
       [
         #set text(
-          font: "Source Han Serif",
-          weight: "bold"
+          font: (
+            "TeX Gyre Termes",
+            "FandolKai"
+          )
         )
         徐木弦原版技术性开发系列教程
         #h(1fr)
@@ -161,6 +165,10 @@
   set par(first-line-indent: 0em)
   set text(
     font: (
+      (
+        name: "FZShuSong GB18030L2",
+        covers: regex("[·“”‘’…|/\[\]\{\}<>—]")
+      ),
       "TeX Gyre Termes",
       "FZShuSong GB18030L2"
     )
@@ -357,19 +365,6 @@
 #show figure.where(kind: table): set figure.caption(position: top, separator: "  ")
 #show figure.caption: set text(font: ("TeX Gyre Termes", "FZHeiTi GB18030L2",), size: 0.85em, weight: "bold")
 #show figure.caption: set block(sticky: true)
-#set table(
-  align: center + horizon,
-  fill: (x, y) => if y == 0 { rgb("#ffffff00") }
-  else if y == 1 { rgb("#ff6565") }
-  else if calc.rem(y, 2) == 1 {
-    rgb("#fde9e9")
-  }
-  else {
-    rgb("#fff8f8")
-  },
-  gutter: 0.2em,
-  stroke: none,
-)
 #show table.cell: it => {
   if it.y == 1 {
     set text(
@@ -394,18 +389,34 @@
   columns: auto,
   colspan: 1,
   header: (),
-  content: ()
+  seperator: (),
+  ..content,
 ) = figure(
   caption: caption,
   numbering: tab_numbering,
   table(
+    align: center + horizon,
     columns: columns,
+    fill: (x, y) => {
+      if x in seperator {red}
+      else if y == 0 { rgb("#ffffff00") }
+      else if y == 1 { rgb("#ff6565") }
+      else if calc.rem(y, 2) == 1 {rgb("#fde9e9")}
+      else {rgb("#fff8f8")}
+    },
+    gutter: 0.2em,
+    stroke: none,
     table.header(
       table.cell(
         colspan: colspan,
         {
           context if xubiao.get() {
-            align(right)[续表]
+            align(right)[
+              #set text(
+                font: "FandolKai"
+              )
+              （续表）
+            ]
           } else {
             v(-0.9em)
             xubiao.update(true)
@@ -570,7 +581,7 @@ Minecraft有许多不同的游戏资源，如草方块、石头、箭、铁锹�
   columns: (7fr, 4fr, 7fr, 2fr),
   colspan: 4,
   header:([注册表], [资源类型], [数据包路径], [默认值]),
-  content:([`ACTIVITY`], [生物AI], [`activity`], [],
+  [`ACTIVITY`], [生物AI], [`activity`], [],
     [`ATTRIBUTE`], [属性], [`atrribute`], [],
     [`ATTRIBUTE_TYPE`], [环境属性类型], [`attribute_type`], [],
     [`BIOME_SOURCE`], [生物群系源], [`worldgen/biome_source`], [],
@@ -666,7 +677,6 @@ Minecraft有许多不同的游戏资源，如草方块、石头、箭、铁锹�
     [`TRUNK_PLACER_TYPE`], [树干放置器类型], [`worldgen/trunk_placer_type`], [],
     [`VILLAGER_PROFESSION`], [村民职业], [`villager_profession`], [`none`],
     [`VILLAGER_TYPE`], [村民类型], [`villager_type`], [`plain`]
-  )
 )
 ==== 可写注册表
 可写注册表允许数据包通过数据反序列化器向其中添加自定义（或称数据驱动）的游戏内容。
@@ -675,7 +685,6 @@ Minecraft有许多不同的游戏资源，如草方块、石头、箭、铁锹�
   columns: (auto, auto, auto),
   colspan: 3,
   header:([注册表], [资源类型], [数据包路径]),
-  content: (
     [`ADVANCEMENT`], [进度], [`advancement`],
     [`BANNER_PATTERN`], [旗帜图案], [`banner_pattern`],
     [`BIOME`], [生物群系], [`worldgen/biome`],
@@ -719,7 +728,6 @@ Minecraft有许多不同的游戏资源，如草方块、石头、箭、铁锹�
     [`WOLF_VARIANT`], [狼的变种], [`wolf_variant`],
     [`WORLD_PRESET`], [世界预设], [`worldgen/world_preset`],
     [`ZOMBIE_NAUTILUS_VARIANT`], [僵尸鹦鹉螺变种], [`zombie_nautilus_variant`]
-  )
 )
 ==== 不属于任何注册表的游戏资源
 有一些游戏资源不属于任何注册表，这些资源包括数据包内的函数、结构模板以及资源包内的所有内容。这些资源类型中部分都与可写注册表的性质类似，即可以自定义写入资源；部分则不能增添新的资源，但可以修改已有资源的配置文件。
@@ -743,7 +751,7 @@ Minecraft有许多不同的游戏资源，如草方块、石头、箭、铁锹�
 #i1[命令存储：可写，存储于存档文件夹中的`data\command_storage_minecraft.dat`。]
 #i1[随机序列：可写，存储于存档文件夹中各自维度的`data\random_sequences.dat`文件内。]
 
-=== 扁平化\*
+=== 扁平化 \*
 Minecraft的历次版本更新都会对某一些特定的系统进行优化和更改，比如：战斗更新对PVP机制进行了颠覆性的更改，使得1.9之前和之后的PVP是两个完全不同的系统。命令系统也经历过类似的大幅度更改，这便是随着水域更新进行的*扁平化（The flattening）*#index(display:"扁平化（The flattening）","bianpinghua")。
 
 在Minecraft开发之初，由于游戏资源的数量有限，只需要使用1字节就可以设置所有游戏资源的ID。在历次版本更新中，Minecraft的方块、物品数量越来越多，特别是自缤纷更新以来，方块的数量呈爆炸式增长。在扁平化之前，为了应对这些不断增多的游戏资源，一种解决办法是将一大类全部收归到某一个特定的ID中，用这个ID来表示这一类方块，然后在后面附加一个Damage值来表示这一类方块中的某一种。比如花岗岩属于石头一类，石头的数字ID为1，而花岗岩的Damage值为1，所以在旧版本中给予玩家一块花岗岩的命令为：
@@ -835,7 +843,6 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
       columns: (auto, auto, auto ,auto),
       colspan: 4,
       header:([命名空间ID], [识别的命名空间], [识别的路径], [识别结果]),
-      content: (
         [@code:namespaced_id_example_1], [`minecraft`], [`something`], [`minecraft:something`],
         [@code:namespaced_id_example_2], [`minecraft`], [`something`], [`minecraft:something`],
         [@code:namespaced_id_example_3], [`custom`], [`something`], [`custom:something`],
@@ -843,7 +850,6 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
         [@code:namespaced_id_example_5], [`minecraft`], [`minecraft/something`], [`minecraft:minecraft/something`],
         [@code:namespaced_id_example_6], [`minecraft`], [-（含有非法字符`S`）], [识别失败],
         [@code:namespaced_id_example_7], [-（冒号数量大于1）], [-], [识别失败]
-      )
     )
   ]
 )
@@ -875,15 +881,13 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
   columns: (1fr, 3fr, 5fr),
   colspan: 3,
   header:([语法], [含义], [举例]),
-  content: (
-    [`字面量`], [按字面量原样输入], [命令`/locate biome`中第2个参数`biome`即为字面量，编写命令时不要更改这个参数的写法。],
-    [`<参数>`], [需要使用一合适的值来替换该参数], [命令`/say <message>`的第2个参数需要用自定的值，比如`/say Hello World!`。],
-    [`[<参数>]`], [该参数是可选的，如果使用该参数，则需要使用一合适的值替换之], [命令`/summon <entity> [<pos>] [<nbt>]`中第3、4个参数可选，填写这些参数时需要用自定的值。],
-    [`(参数|参数)`], [（必须的）在显示的值中选择一个填写。语法介绍中这些值由竖线分隔], [命令`/time query (daytime|gametime|day)`的第3个参数是必填的，从`daytime`、`gametime`和`day`中选择一个填写。],
-    [`[参数|参数]`], [（可选的）在显示的值中选择一个填写。语法介绍中这些值由竖线分隔], [命令`/experience add <targets> <amount> [levels|points]`的第5个参数虽然不是必写的，但仍可以从参数`points`和`levels`中选择一个填写。],
-    [`-> 子命令`], [必须接入一条子命令], [命令`/execute positioned <pos> -> execute`的第6个参数是必填的，内容为命令`/execute`的一个子命令。],
-    [`-> [子命令]`], [可以接入一条子命令], [命令`/execute (if|unless) block <pos> <block> -> [execute]`的第7个参数可以填写`/execute`的子命令，也可以不填写。]
-  )
+  [`字面量`], [按字面量原样输入], [命令`/locate biome`中第2个参数`biome`即为字面量，编写命令时不要更改这个参数的写法。],
+  [`<参数>`], [需要使用一合适的值来替换该参数], [命令`/say <message>`的第2个参数需要用自定的值，比如`/say Hello World!`。],
+  [`[<参数>]`], [该参数是可选的，如果使用该参数，则需要使用一合适的值替换之], [命令`/summon <entity> [<pos>] [<nbt>]`中第3、4个参数可选，填写这些参数时需要用自定的值。],
+  [`(参数|参数)`], [（必须的）在显示的值中选择一个填写。语法介绍中这些值由竖线分隔], [命令`/time query (daytime|gametime|day)`的第3个参数是必填的，从`daytime`、`gametime`和`day`中选择一个填写。],
+  [`[参数|参数]`], [（可选的）在显示的值中选择一个填写。语法介绍中这些值由竖线分隔], [命令`/experience add <targets> <amount> [levels|points]`的第5个参数虽然不是必写的，但仍可以从参数`points`和`levels`中选择一个填写。],
+  [`-> 子命令`], [必须接入一条子命令], [命令`/execute positioned <pos> -> execute`的第6个参数是必填的，内容为命令`/execute`的一个子命令。],
+  [`-> [子命令]`], [可以接入一条子命令], [命令`/execute (if|unless) block <pos> <block> -> [execute]`的第7个参数可以填写`/execute`的子命令，也可以不填写。]
 )
 下面举一实例以说明之：
 #example(
@@ -953,6 +957,116 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 权限等级共分为0、1、2、3、4级，表罗列了Java版所有可用命令需要的权限等级与限制条件。除权限等级之外，一些命令还对当前的游戏世界有限制：一些命令只能在专用服务器（以下简称多人游戏）中使用，另有只能在非专用服务器（以下简称单人游戏，无论是否对局域网开放）中使用的命令，然而大部分命令都是无此限制条件的。
 #general-table(
   caption: [Java版可用命令列表],
+  columns: (3fr, 3fr, 2fr, 3pt, 2fr, 2fr, 2fr),
+  colspan: 7,
+  header:([命令], [权限等级], [限制条件], [], [命令], [权限等级], [限制条件]),
+  seperator: (3,),
+  [`/advancement`], [2], [], [], [`/attribute`], [2], [],
+  [`/ban`], [3], [仅多人游戏], [], [`/ban-ip`], [3], [仅多人游戏],
+  [`/banlist`], [3], [仅多人游戏], [], [`/bossbar`], [2], [],
+  [`/chase`], [0], [仅调试工具], [], [`/clear`], [2], [], 
+  [`/clone`], [2], [], [], [`/damage`], [2], [],
+  [`/data`], [2], [], [], [`/datapack`], [2], [], 
+  [`/debug`], [3], [], [], [`/debugconfig`], [3], [仅调试工具],
+  [`/debugmobspawning`], [2], [仅调试工具], [], [`/debugpath`], [2], [仅调试工具],
+  [`/defaultgamemode`], [2], [], [], [`/deop`], [3], [仅多人游戏],
+  [`/dialog`], [2], [], [], [`/difficulty`], [2], [],
+  [`/effect`], [2], [], [], [`/enchant`], [2], [],
+  [`/execute`], [2], [], [], [`/experience`], [2], [],
+  [`/fill`], [2], [], [], [`/fillbiome`], [2], [],
+  [`/fetchprofile`], [2], [], [], [`/forceload`], [2], [],
+  [`/function`], [2], [], [], [`/gamemode`], [2], [],
+  [`/gamerule`], [2], [], [], [`/give`], [2], [],
+  [`/help`], [0], [], [], [`/item`], [2], [],
+  [`/jfr`], [4], [], [], [`/kick`], [3], [],
+  [`/kill`], [2], [], [], [`/list`], [0], [],
+  [`/locate`], [2], [], [], [`/loot`], [2], [],
+  [`/me`], [0], [], [], [`/msg`], [0], [],
+  [`/op`], [3], [仅多人游戏], [], [`/pardon`], [3], [仅多人游戏],
+  [`/pardon-ip`], [3], [仅多人游戏], [], [`/particle`], [2], [],
+  [`/perf`], [4], [], [], [`/place`], [2], [],
+  [`/playsound`], [2], [], [], [`/publish`], [4], [仅单人游戏],
+  [`/raid`], [3], [仅调试工具], [], [`/random`], [0（不使用`sequence`）或2（使用`sequence`）], [],
+  [`/recipe`], [2], [], [], [`/reload`], [2], [],
+  [`/return`], [2], [], [], [`/ride`], [2], [],
+  [`/rotate`], [2], [], [], [`/save-all`], [4], [仅多人游戏],
+  [`/save-off`], [4], [仅多人游戏], [], [`/save-on`], [4], [仅多人游戏],
+  [`/say`], [2], [], [], [`/serverpack`], [2], [仅调试工具],
+  [`/schedule`], [2], [], [], [`/scoreboard`], [2], [],
+  [`/seed`], [0（单人游戏）或2（多人游戏）], [], [], [`/setblock`], [2], [],
+  [`/setidletimeout`], [3], [仅多人游戏], [], [`/setworldspawn`], [2], [],
+  [`/spawn_armor_trims`], [2], [仅调试工具], [], [`/spawnpoint`], [2], [],
+  [`/spectate`], [2], [], [], [`/spreadplayers`], [2], [],
+  [`/stop`], [4], [仅多人游戏], [], [`/stopsound`], [2], [],
+  [`/stopwatch`], [2], [], [], [`/summon`], [2], [],
+  [`/swing`], [2], [], [], [`/tag`], [2], [],
+  [`/team`], [2], [], [], [`/teammsg`], [0], [],
+  [`/teleport`], [2], [], [], [`/tell`], [0], [],
+  [`/tellraw`], [2], [], [], [`/test`], [2], [],
+  [`/tick`], [3], [], [], [`/time`], [2], [],
+  [`/title`], [2], [], [], [`/tm`], [0], [],
+  [`/tp`], [2], [], [], [`/transfer`], [3], [仅多人游戏],
+  [`/version`], [0], [], [], [`/version`], [0（单人游戏）或2（多人游戏）], [],
+  [`/w`], [0], [], [], [`/waypoint`], [2], [],
+  [`/warden_spawn_tracker`], [2], [仅调试工具], [], [`/weather`], [2], [],
+  [`/whitelist`], [3], [仅多人游戏], [], [`/worldborder`], [2], [],
+  [`/xp`], [2], []
+)
+=== 命令的解析 \*
+游戏处理命令的过程可分为*解析*和*执行*两个阶段。Minecraft使用*Brigadier*作为命令的解析器、派发器。
+
+命令的实质是一个根命令节点的直接量分支，这就意味着所有的命令都是一个树状结构，命令中每一个参数都作为一个节点，而命令名作为根节点使用。显然，一个节点可能会有两种类型：字面量和变量，反映到命令文本语法中分别为字面量参数和需要自定义值的参数。
+
+游戏在读取命令后，会首先解析根节点是否是已注册的命令，其次解析下一个参数即子节点是否可用，然后依次解析余下的节点。Brigadier读取到某一个节点时，会枚举其子节点的所有可行节点，并在聊天栏或命令方块控制台内显示为可读性较强的可视化参数列表。
+#figure(
+  caption: [命令`tag`的所有结点和分支],
+  image("图片/命令tag的所有结点和分支.png", width: 40%)
+) <fig:branch_of_command_tag>
+以命令`/tag`为例，其命令树如@fig:branch_of_command_tag 所示。`tag`是根命令，其子节点`<target>`是一个需要特定参数类型（这里是`entity`）的节点，解析此节点的时候，会判断输入的参数是否为`entity`类型，若为否则解析异常，命令无法执行。2级子节点是已注册的字面量`add`、`remove`和`list`，解析该级节点的工作比较简单：只需读取该节点的文本是否与注册的字面量吻合。若2级子节点的参数指定为`add`、`remove`，则读取3级子节点`<name>`，这个节点又是一个需要自定义的量；若2级子节点的参数指定为`list`，则不能再添加后续参数。
+=== 命令上下文
+当一条命令被执行时，该命令一定有一个调用者以及调用环境，这一系列调用者及调用环境构成的集合被称为*命令上下文（Command context）*#index(display: "命令上下文（Command context）", "minglingshangxiawen")，或称*执行上下文（Execution context）*#index(display: "执行上下文（Execution context）", "zhixingshangxiawen")、*命令源（Command origin）*#index(display: "命令源（Command origin）", "minglingyuan")、*命令来源堆叠（Command source stack）*#index(display: "命令来源堆叠（Command source stack）", "minglinglaiyuanduidie")。
+
+命令上下文由以下参数构成：
+#i1(new: true)[执行权限等级]
+#i1[*执行者（Executor）*#index(display: "执行者（Executor）", "zhixingzhe")]
+由“执行者名称”和“执行者实体”两个参数构成，但执行者实体不一定存在，例如执行者为命令方块、命令方块矿车或服务端的时候。
+#i1[*执行位置（Execution position）*#index(display: "执行位置（Execution position）", "zhixingweizhi")]
+这个参数是命令执行时所在的坐标，包含$x$、$y$、$z$三个坐标参数。
+#i1[*执行朝向（Execution rotation）*#index(display: "执行朝向（Execution rotation）", "zhixingchaoxiang")]
+这个参数是命令执行时面向的方向，包含偏航角和俯仰角两个参数。
+#i1[*执行锚点（Execution anchor）*#index(display: "执行锚点（Execution anchor）", "zhixingmaodian")]
+这个参数是局部坐标的原点，当执行者为实体时，这个参数可以指定执行的锚点基于实体的脚部还是眼部，因此有脚部和眼部两个可用参数。其中脚部即为原本的执行位置，眼部为原本的执行位置在$y$轴方向加上实体眼睛的高度。
+#i1[*执行维度（Execution dimension）*#index(display: "执行维度（Execution dimension）", "zhixingweidu")]
+这个参数是命令执行所在的维度，执行位置位于这个维度内。
+#i1[执行输出反馈]
+尝试执行命令会产生一定的执行效果，并在执行失败或执行成功时返回*成功次数（Success）*#index(display: "成功次数（Success）", "chenggongcishu")和*结果（Result）*#index(display: "结果（Result）", "jieguo")两个返回值。其中成功次数总是为0或1，结果一定为整数，遇到小数时则向下取整。下面讨论所有种类的命令执行效果：
+#i2[*无法解析*]
+这种效果会在命令中存在无法解析的参数、输入的命令不完整或执行上下文不符合命令的限制条件，如执行者拥有的权限等级不够、超出游戏世界的限制时出现。此时命令没有返回值。在聊天栏或命令方块内输入的命令若无法解析，则会返回语法错误信息。在函数内的命令若无法解析，则该函数无法加载。
+#i2[*执行错误*]
+出现这种效果说明命令中存在严重的漏洞。此时命令没有返回值。
+#i2[*Void*]
+当且仅当执行命令`/function`时会出现这种效果，说明`/function`调用了一个void类型的函数，没有返回值。
+#i2[*执行中断*]
+当且仅当执行命令`/execute`时会出现这种效果，此时`/execute`的分支数量为0，在`run`子命令执行前执行就已经中止。此时命令没有返回值。
+#i2[*执行失败*和*执行成功*]
+当命令执行效果不是上述4种中任意一种时，才能出现执行失败或执行成功。且只有当执行效果为执行失败或执行成功时，才能返回成功次数和结果。执行失败并不意味着命令没有起作用，执行成功也不意味着命令会对游戏做出更改。
+
+不同情况下的命令上下文列举于下表：
+#general-table(
+  caption: [不同情况的命令上下文],
+  columns: (auto, auto, auto, auto, auto, auto, auto),
+  colspan: 7,
+  header:([情况], [执行权限等级], [执行者], [执行位置], [执行朝向], [执行锚点], [执行维度]),
+  [玩家], [视情况而定#footnote[玩家的权限等级与其游戏模式无关，需要分情况讨论：若该玩家是服务器管理员，则他的权限等级由`ops.json`中的值决定，默认为4级；若该玩家处于启用命令的单人世界中或为启用命令的局域网世界所有者，则他的权限等级为4级；若该玩家处于启用命令的局域网世界中，则他的权限等级为4级；非上述情况者权限等级一律为0级。]], [玩家], [玩家的位置], [玩家的朝向], [脚部], [玩家所在的维度],
+  [服务器控制台], [4], [Server], [世界出生点方块的西北下角顶点], [水平向南], [脚部], [主世界],
+  [服务端], [2], [Server], [世界出生点方块的西北下角顶点], [水平向南], [脚部], [主世界],
+  [命令方块], [2], [命令方块], [命令方块的正中心], [命令方块的朝向], [脚部], [命令方块所在维度],
+  [命令方块矿车], [2], [命令方块矿车], [命令方块矿车的位置], [命令方块矿车的朝向], [脚部], [命令方块矿车所在维度],
+  [函数], [可修改#footnote[函数的权限等级默认为2级，可在`server.properties`中修改。]], [该函数的调用者], [函数调用者的位置], [函数调用者的朝向], [函数调用者的锚点], [函数调用者所在维度],
+  [告示牌], [2], [点击告示牌的玩家], [告示牌所在方块正中心], [水平向南], [脚部], [告示牌所在维度],
+  [`/execute`], [-], [修饰后的执行者], [修饰后的执行位置], [修饰后的执行朝向], [修饰后的执行锚点], [修饰后的执行维度],
+  [自定义进度], [2], [获得进度的玩家], [玩家的位置], [玩家的朝向], [脚部], [玩家所在的维度],
+  [自定义魔咒], [2], [魔咒作用的实体], [魔咒作用的位置], [魔咒作用实体的朝向], [脚部], [魔咒作用的维度]
 )
 
 == 游戏机制
@@ -1011,7 +1125,7 @@ Minecraft使用的空间直角坐标系是右手坐标系。在这种空间直�
   columns: 3,
   colspan: 3,
   header: ([], [一般应用于方块], [一般应用于非方块的游戏内容]),
-  content: ([三维], [`minecraft:block_pos`], [`minecraft:vec3`],[二维], [`minecraft:column_pos`], [`minecraft:vec2`])
+  [三维], [`minecraft:block_pos`], [`minecraft:vec3`],[二维], [`minecraft:column_pos`], [`minecraft:vec2`]
 )
 
 ==== 方块坐标
