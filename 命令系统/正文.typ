@@ -1241,7 +1241,7 @@ JSON格式键值对的基本语法为：
 在一个`.json`文件中，须使用花括号`{}`将所有的键值对封装包裹在一起，如：
 #codebox("{\"<键>\":<值>,\"<键>\":<值>}")
 对于值而言，每一个不同的键都需的值的类型不尽相同，比如键 `color` 可能需要的是颜色值，`bold` 可能需要的是布尔值，`text` 可能需要的是字符串，等等。JSON一共使用六种不同的数据类型：
-#i1(new: true)[*字符串（String）*#index(display: "字符串（String）", "zifuchuan")]
+#i1(new: true)[#icon(name: "json-string") *字符串（String）*#index(display: "字符串（String）", "zifuchuan")]
 常见的数据类型，可以包含任意字符（如空格），字符串由一对*（英文）双引号*定义，*不接受单引号*，用法举例：
 #codebox("\"description\": \"The default data for Minecraft\"")
 也可以使用中文：
@@ -1249,24 +1249,22 @@ JSON格式键值对的基本语法为：
 JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都为一个十六进制数字。例如，符号★的Unicode为 `U2605`，则在字符串中输入★的方式可以为：
 #codebox("\"text\": \"\u2605\"")
 这样便可以在字符串中输入一些生僻字或是在键盘上无法直接打出来的字符。但是Minecraft的字库是有限的，并非所有的字符都可以在Minecraft中显示。
-
-此外，在一些JSON格式中字符串还支持换行符 `\n`。
-#i1[*布尔值（Boolean）*#index(display: "布尔值（Boolean）", "buerzhi")]
+#i1[#icon(name: "json-bool") *布尔值（Boolean）*#index(display: "布尔值（Boolean）", "buerzhi")]
 由 `true`（真）或 `false`（假）定义，这两者是JSON中的字面量符号，不需要使用双引号引起，举例：
 #codebox("\"bold\": true")
 #codebox("\"italic\": false")
-#i1[*数值（Number）*#index(display: "数值（Number）", "shuzhi")]
+#i1[#icon(name: "json-number") *数值（Number）*#index(display: "数值（Number）", "shuzhi")]
 由数字定义，允许使用整数、浮点数或是科学计数法表示的数，举例：
 #codebox("\"min\": 1.0")
 在JSON中使用的数值不需要注明它们的数据类型。
-#i1[*数组（Array，或称为列表）*#index(display: "数组（Array）", "shuzu")]
+#i1[#icon(name: "json-array") *数组（Array，或称为列表）*#index(display: "数组（Array）", "shuzu")]
 由一对方括号定义，数组中元素与元素之间使用逗号隔开，*最后一个元素后不能有逗号*。这些元素可以是其他的数据类型，如字符串、布尔值、数值和对象，数组中甚至能嵌套数组。在定义其他的数据类型时，需注意这些数据类型的定义方法。以下为包含了数值的数组：
 #codebox("\"frames\": [1, 2, 3, 4, 5]")
 下面为包含了字符串的数组，字符串均由一对双引号定义：
 #codebox("\"text\": [\"A\", \"B\", \"C\"]")
 对于数组内的元素，其数据类型不必完全一致，例如：
 #codebox("\"extra\": [1, {\"text\": \"2\"}, \"3\"]")
-#i1[*对象（Object）*#index(display: "对象（Object）", "duixiang")]
+#i1[#icon(name: "json-object") *对象（Object）*#index(display: "对象（Object）", "duixiang")]
 由一对花括号定义，对象内字段与字段之间使用逗号隔开，*最后一个字段后不能有逗号*。对象中可以包含其他数据类型，也可以在对象中嵌套对象。整个 `.json` 文件就可以看作是一个大的对象。在编写JSON的时候，通常需要用到对象嵌套对象，因此花括号一定要检查是否匹配。用法举例：
 #codebox("{
   \"rolls\": {
@@ -1282,15 +1280,15 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
 #dirtree(
   root: [#icon(name: "json-object")],
   [
-    - #icon(name: "json-string") *string*: 这是一个字符串
-    - #icon(name: "json-bool") *boolean*: true
-    - #icon(name: "json-number") *number*: 5
+    - #icon(name: "json-string") *string*: `这是一个字符串`
+    - #icon(name: "json-bool") *boolean*: `true`
+    - #icon(name: "json-number") *number*: `5`
     - #icon(name: "json-array") *array*
-      - #icon(name: "json-string") 这是数组的第一个元素，是一个字符串
+      - #icon(name: "json-string") `这是数组的第一个元素，是一个字符串`
       - #icon(name: "json-object") 
-        - #icon(name: "json-string") *string*: 这是对象内的一个字符串
+        - #icon(name: "json-string") *string*: `这是对象内的一个字符串`
     - #icon(name: "json-object") 
-      - #icon(name: "json-string") *string*: 这是对象内的一个字符串
+      - #icon(name: "json-string") *string*: `这是对象内的一个字符串`
   ]
 )
 
@@ -1309,12 +1307,31 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
     \"string\": \"这是对象内的一个字符串\"
   }
 }")
+#tips(
+  [
+    如何看懂树状图？
+    
+  ],
+  width: 41em
+)
 === JSON的转义序列
 使用JSON字符串时，如果字符串本身的内容中含有英文引号 `"`，如一个JSON字段 `text` 的值需要为 `"Hello World!"`，那该如何编写JSON呢？若使用如下的JSON：
 #codebox("\"text\":\"\"Hello World!\"\"") <code:json_escape_error>
-这样通常会产生报错，这是由于用于定义字符串的引号和值中的英文引号发生了配对从而导致了错误，因此需要使用*转义字符（Escape character）*#index(display: "转义字符（Escape character）", "zhuanyizifu")`\` 对文本引号进行转义。转义的作用为：将被转义的字符转换成字符，被转换的引号便不再与用于定义字符串的引号发生配对。除用于转义英文引号外，转义字符还可以用于转义反斜杠，这是因为有些反斜杠在JSON中会有其他的特殊用途。现规定转义字符的用法如下：
-+ 引号 `"` 的转义方式为 `\"`（中文引号不需要转义）；
-+ 反斜杠 `\` 的转义方式为 `\\`。
+这样通常会产生报错，这是由于用于定义字符串的引号和值中的英文引号发生了配对从而导致了错误，因此需要使用*转义字符（Escape character）*#index(display: "转义字符（Escape character）", "zhuanyizifu")`\` 对文本引号进行转义。转义的作用为：将被转义的字符转换成字符，被转换的引号便不再与用于定义字符串的引号发生配对。除用于转义英文引号外，反斜杠还可以用于转义反斜杠以及创造一些特定的转义序列。JSON中可用的转义序列如下：
+#wrap-content(
+  tips([`\b`、`\f`、`\n`、`\r`、`\t` 这些特殊的转义序列能在JSON中使用，但这不代表这些转义序列能在相应的游戏实例中真正起作用。例如，在物品修饰器中定义物品名称时，虽然JSON支持输入换行符 `\n`，但物品名称本身不支持换行。], width: 11em),
+  [
++ `\"`，是半角双引号（英文引号） `"` 的转义方式（中文引号不需要转义）；
++ `\\`，是反斜杠 `\` 的转义方式，已被转义的反斜杠被视为普通字符，不再具有转义作用；
++ `\b`，退格；
++ `\f`，换页；
++ `\n`，换行；
++ `\r`，回车；
++ `\t`，制表符；
++ `\u<unicode>`，用四位十六进制表示Unicode字符。
+  ],
+  align: right
+)
 由此可以得出字段@code:json_escape_error 的正确写法：
 #codebox("\"text\":\"\\\"Hello World!\\\"\"")
 同样地，如果值为 `\Hello World!\`，需要对反斜杠进行转义，正确的写法为：
@@ -1328,17 +1345,23 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
     #codebox("\"text\":\"\\\"Hello World!\\\\\"\"")<code:json_escape_example_4>
   ],
   [
-    注意，已被反斜杠转义的反斜杠被视为普通字符，不再具有转义作用。因此不难判断出：
+    字段@code:json_escape_example_1 的值出现了连续三个反斜杠 `\\\` 的情况，第一个反斜杠用于转义第二个反斜杠，而第二个反斜杠不再具有转义作用；而第三个反斜杠后面没有其他转义序列，故值无效。
 
-    字段@code:json_escape_example_1 的值出现了连续三个转义字符 `\\\` 的情况，第一个反斜杠用于转义第二个反斜杠，而第二个反斜杠不再具有转义作用；而字符 `H` 前的第三个转义字符后面没有其他反斜杠或引号，故值无效。
+    对于@code:json_escape_example_2，依次检验所有反斜杠：第一个反斜杠用于转义引号，第二个反斜杠用于转义第三个反斜杠，第四个反斜杠用于转义第五个反斜杠，第六个反斜杠用于转义引号。故值为`"\Hello World!\"`。
 
-    对于(\thechapter.\ref{code:json_escape_example_2})，依次检验所有转义字符：第一个转义字符用于转义引号，第二个转义字符用于转义第三个转义字符，第四个转义字符用于转义第五个转义字符，第六个转义字符用于转义引号。故值为\code{"\textbackslash{}Hello World!\textbackslash"}。\par
+    字符串两端的反斜杠数量不一定需要相等，因此字段@code:json_escape_example_3 是有效的，输出结果`"Hello World\"`。
 
-    非转义字符两端的转义字符数量不一定需要相等，因此(\thechapter.\ref{code:json_escape_example_3})是有效的，输出结果\code{"Hello World\textbackslash"}。\par
-
-    注意，(\thechapter.\ref{code:json_escape_example_4})的所有转义字符都有其转义对象，但是第三个转义字符后面存在一个引号，而第三个转义字符已被第二个转义字符转义而失去转义作用。因此用于定义字符串的引号配对混乱，该值无效。判断一个值是否有效，不仅要使有效的转义字符后面有能被转义的字符，还要注意字符串本身的双引号是否正确配对。
+    注意，@code:json_escape_example_4 的所有转义序列都书写正确，但第三个反斜杠后面存在一个引号，而第三个反斜杠已被第二个反斜杠转义而失去转义作用。因此用于定义字符串的引号配对混乱，该值无效。判断一个值是否有效，不仅需要有效的转义序列，还要注意字符串本身的双引号是否正确配对。
   ]
 )
+=== 多级转义 \*
+特殊情况下，JSON字段可能会以字符串类型包含另一个JSON数据而非直接嵌套为相应类型的值，例如：\
+#icon(name: "json-string") *content*: `{"text":"Hello World!"}`
+
+字段#icon(name: "json-string") `content` 的值类型为字符串，两端一定需要一对引号。为了防止决定字符串的引号与值中的引号发生匹配混乱，会将值中的引号进行转义：
+#codebox("\"content\": \"{\\\"text\\\":\\\"Hello World!\\\"}\"")
+如果#icon(name: "json-string") `text` 字段的值也带有引号，如 `"Hello World!"`，则需要相应地添加反斜杠：\
+#icon(name: "json-string") *content*: `{"text":"\"Hello World!\""}`
 == 文件结构
 == 数据包
 Minecraft的命令系统虽然完善，但其功能十分有限。例如，命令没有办法直接指导游戏世界的生成；直接用命令模拟一些游戏机制也不够灵活。数据包可以看作是命令系统功能的延伸：它不仅为命令提供了程序化执行的环境，更开放了部分API以允许数据驱动内容。
