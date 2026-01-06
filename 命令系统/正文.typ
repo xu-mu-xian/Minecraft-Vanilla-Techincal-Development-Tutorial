@@ -3,6 +3,10 @@
 #import "@preview/hydra:0.6.2": hydra
 #import "@preview/itemize:0.2.0" as el
 #import "@preview/wrap-it:0.1.1": wrap-content
+#import "@preview/codly:1.3.0": *
+#import "@preview/codly-languages:0.1.1": *
+#import "@preview/treet:1.0.0": *
+#show: codly-init.with()
 #import table: cell, header
 
 // 封面
@@ -179,14 +183,18 @@
 
 // 代码块
 #show raw: it => {
-  h(0.25em) + box(
-    baseline: -1pt,
-    outset: (x: 2pt, y: 3pt),
-    fill: rgb("#fef2f2"),
-    stroke: 0.5pt + red,
-    radius: 2pt,
-    text(font: ("Consolas","FZShuSong GB18030L2"), size: 0.9em, it)
-  ) + h(0.25em)
+  if it.block {
+    it
+  } else {
+    h(0.25em) + box(
+      baseline: -1pt,
+      outset: (x: 2pt, y: 3pt),
+      fill: rgb("#fef2f2"),
+      stroke: 0.5pt + red,
+      radius: 2pt,
+      text(font: ("Consolas","FZShuSong GB18030L2"), size: 0.9em, it)
+    ) + h(0.25em)
+  }
 }
 
 // 有编号代码行
@@ -523,7 +531,83 @@
     box(image("图标/data/NBT文件.png", height:1em), baseline: 1pt)
     counter(image).update(n => n - 1)
   }
+  if name == "json" {
+    box(image("图标/data/JSON文件.png", height:1em), baseline: 1pt)
+    counter(image).update(n => n - 1)
+  }
+  if name == "json-string" {
+    box(image("图标/data/JSON字符串.png", height:1em), baseline: 1pt)
+    counter(image).update(n => n - 1)
+  }
+  if name == "json-bool" {
+    box(image("图标/data/JSON布尔值.png", height:1em), baseline: 1pt)
+    counter(image).update(n => n - 1)
+  }
+  if name == "json-number" {
+    box(image("图标/data/JSON数值.png", height:1em), baseline: 1pt)
+    counter(image).update(n => n - 1)
+  }
+  if name == "json-array" {
+    box(image("图标/data/JSON数组.png", height:1em), baseline: 1pt)
+    counter(image).update(n => n - 1)
+  }
+  if name == "json-object" {
+    box(image("图标/data/JSON对象.png", height:1em), baseline: 1pt)
+    counter(image).update(n => n - 1)
+  }
 }
+
+// 文件
+#let codefile(title: "", body, lang: "mcfunction") = {
+  set text(size: 0.9em)
+  codly(
+    display-name: false,
+    fill: rgb("#fff8f8"),
+    header: [
+      #set text(
+        fill: white,
+        weight: "bold"
+      )
+      #h(0.5em)
+      #title
+    ],
+    header-cell-args: (
+      fill: rgb("#ff6565")
+    ),
+    languages: (
+      json: (
+        color: rgb("#00000000"),
+        icon: [
+          #set text(size: 1.2em)
+          #icon(name:"json")#h(0.5em)
+        ],
+        name: "json"
+      ),
+      mcfunction: (
+        icon: "A",
+        name: "mcfunction"
+      )
+    ),
+    number-format: n => text(fill: red, weight: "bold")[#h(0.5em)#n#h(0.5em)],
+    radius: 5pt,
+    stroke: 1pt + rgb("#d71d1d"),
+    zebra-fill: rgb("#fde9e9")
+  )
+  raw(body, block: true, lang: lang)
+}
+
+// 树状图
+#let dirtree(root: "", content) = [\
+  #root\
+  #text(
+    tree-list(
+      marker: text(red)[├─],
+      last-marker: text(red)[└─],
+      indent: text(red)[│#h(0.8em)],
+      empty-indent: h(1.4em),
+    )[#content]
+  )
+]
 
 #heading(level: 1, numbering: none, outlined: false, [第一版序言])
 Minecraft拥有多种多样的玩法，生存、PVP、PVE、模组、建筑、红石电路这些为众多玩家所熟知的玩法自成体系，玩家可以自由选择其中的某一方面深入研究。在这些玩法中，比较默默无闻的一种玩法可能便是广义上的命令，即包含了MC-CMD（命令）、资源包和数据包的系统。
@@ -1125,9 +1209,136 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
   width: 41em
 )
 == JSON格式
-在讲述数据包和资源包这两种开发实例之前，有必要先介绍Minecraft使用的用于数据交换的格式，即JSON格式。事实上，这种数据格式的应用极其广泛，是当今互联网最通用的数据交换格式之一。在Minecraft中，为方便网络传输核数据存储，一些游戏内程序会被*序列化*为JSON格式。而对于数据包、资源包内容中的JSON格式而言，游戏会尝试将这些JSON数据*反序列化*为游戏内相应的程序。
+在讲述数据包和资源包这两种开发实例之前，有必要先介绍Minecraft使用的用于数据交换的格式，即JSON格式。事实上，这种数据格式的应用极其广泛，是当今互联网最通用的数据交换格式之一。在Minecraft中，为方便网络传输和数据存储，一些游戏内程序会被*序列化*为JSON格式。而对于数据包、资源包内容中的JSON格式而言，游戏会尝试将这些JSON数据*反序列化*为游戏内相应的程序。
 
-游戏的一些数据以 `.json` 文件的格式存储在各文件夹中。这些文件有如：资源包的模型文件，数据包的进度、谓词文件，游戏版本信息文件，等等。JSON格式本身的一些优势让它成为了存储大量Minecraft游戏数据的首选格式，下面展示的是金合欢木按钮的模型文件：
+游戏的一些数据以 `.json` 文件的格式存储在各文件夹中。这些文件有如：资源包的模型文件，数据包的进度、谓词文件，游戏版本信息文件，等等。下面展示的是金合欢木按钮的模型文件：
+#codefile(
+  lang: "json",
+  title: "assets\minecraft\models\block\acacia_button.json",
+  "{
+  \"parent\": \"minecraft:block/button\",
+  \"textures\": {
+    \"texture\": \"minecraft:block/acacia_planks\"
+  }
+}")
+=== JSON数据类型
+*JSON（JavaScript Object Notation，JavaScript对象表示法）*#index("JSON（JavaScript Object Notation，JavaScript对象表示法)")是一种轻量级数据交换格式，独立于编程语言，是JavaScript的一个子集。其内容主要由键和值构成，即*键值对（Name-value pair）*#index(display: "键值对（Name-value pair）", "jianzhidui")，这些键值对可认为是一个个*字段（Field）*#index(display: "字段（Field）", "ziduan")。这种格式主要有两个优点：第一，便于编写者阅读和修改；第二，由于其轻量级的特点，其对环境的依赖程度较小，因此能用于存储大量不同种类的信息。Minecraft使用的JSON标准为ECMA-404。
+
+JSON格式键值对的基本语法为：
+#codebox("\"<键>\":<值>")
+#wrap-content(
+  tips(
+    [键名的两侧必须是*英文引号*，且不接受单引号！],
+    width: 10em
+  ),
+  [
+    
+    对于一个键，可以给其定义一个值。在书写时，JSON的所有键的键名必须用*双引号*引起。若有多个键值对，则需使用逗号将这些键值对分隔开来，最后一个键值对的后面不加逗号，如：
+  ],
+  align: right
+)
+#codebox("\"<键>\":<值>,\"<键>\":<值>")
+在一个`.json`文件中，须使用花括号`{}`将所有的键值对封装包裹在一起，如：
+#codebox("{\"<键>\":<值>,\"<键>\":<值>}")
+对于值而言，每一个不同的键都需的值的类型不尽相同，比如键 `color` 可能需要的是颜色值，`bold` 可能需要的是布尔值，`text` 可能需要的是字符串，等等。JSON一共使用六种不同的数据类型：
+#i1(new: true)[*字符串（String）*#index(display: "字符串（String）", "zifuchuan")]
+常见的数据类型，可以包含任意字符（如空格），字符串由一对*（英文）双引号*定义，*不接受单引号*，用法举例：
+#codebox("\"description\": \"The default data for Minecraft\"")
+也可以使用中文：
+#codebox("\"description\": \"我的世界默认数据包\"")
+JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都为一个十六进制数字。例如，符号★的Unicode为 `U2605`，则在字符串中输入★的方式可以为：
+#codebox("\"text\": \"\u2605\"")
+这样便可以在字符串中输入一些生僻字或是在键盘上无法直接打出来的字符。但是Minecraft的字库是有限的，并非所有的字符都可以在Minecraft中显示。
+
+此外，在一些JSON格式中字符串还支持换行符 `\n`。
+#i1[*布尔值（Boolean）*#index(display: "布尔值（Boolean）", "buerzhi")]
+由 `true`（真）或 `false`（假）定义，这两者是JSON中的字面量符号，不需要使用双引号引起，举例：
+#codebox("\"bold\": true")
+#codebox("\"italic\": false")
+#i1[*数值（Number）*#index(display: "数值（Number）", "shuzhi")]
+由数字定义，允许使用整数、浮点数或是科学计数法表示的数，举例：
+#codebox("\"min\": 1.0")
+在JSON中使用的数值不需要注明它们的数据类型。
+#i1[*数组（Array，或称为列表）*#index(display: "数组（Array）", "shuzu")]
+由一对方括号定义，数组中元素与元素之间使用逗号隔开，*最后一个元素后不能有逗号*。这些元素可以是其他的数据类型，如字符串、布尔值、数值和对象，数组中甚至能嵌套数组。在定义其他的数据类型时，需注意这些数据类型的定义方法。以下为包含了数值的数组：
+#codebox("\"frames\": [1, 2, 3, 4, 5]")
+下面为包含了字符串的数组，字符串均由一对双引号定义：
+#codebox("\"text\": [\"A\", \"B\", \"C\"]")
+对于数组内的元素，其数据类型不必完全一致，例如：
+#codebox("\"extra\": [1, {\"text\": \"2\"}, \"3\"]")
+#i1[*对象（Object）*#index(display: "对象（Object）", "duixiang")]
+由一对花括号定义，对象内字段与字段之间使用逗号隔开，*最后一个字段后不能有逗号*。对象中可以包含其他数据类型，也可以在对象中嵌套对象。整个 `.json` 文件就可以看作是一个大的对象。在编写JSON的时候，通常需要用到对象嵌套对象，因此花括号一定要检查是否匹配。用法举例：
+#codebox("{
+  \"rolls\": {
+    \"type\": \"minecraft:binomial\",
+    \"n\": 3,
+    \"p\": 0.2
+  }
+}")
+#i1[Null]
+空值，作为字面量符号使用。Minecraft基本不使用这种数据类型。
+
+由于JSON为多层级结构，为了方便说明，本系列教程会使用和Minecraft Wiki一样的树状图来表示。例如：
+#dirtree(
+  root: [#icon(name: "json-object")],
+  [
+    - #icon(name: "json-string") *string*: 这是一个字符串
+    - #icon(name: "json-bool") *boolean*: true
+    - #icon(name: "json-number") *number*: 5
+    - #icon(name: "json-array") *array*
+      - #icon(name: "json-string") 这是数组的第一个元素，是一个字符串
+      - #icon(name: "json-object") 
+        - #icon(name: "json-string") *string*: 这是对象内的一个字符串
+    - #icon(name: "json-object") 
+      - #icon(name: "json-string") *string*: 这是对象内的一个字符串
+  ]
+)
+
+对应的JSON为：
+#codebox("{
+  \"string\": \"这是一个字符串\",
+  \"boolean\": true,
+  \"number\": 5,
+  \"array\": [
+    \"这是数组的第一个元素，是一个字符串\",
+    {
+      \"string\": \"这是对象内的一个字符串\"
+    }
+  ],
+  {
+    \"string\": \"这是对象内的一个字符串\"
+  }
+}")
+=== JSON的转义序列
+使用JSON字符串时，如果字符串本身的内容中含有英文引号 `"`，如一个JSON字段 `text` 的值需要为 `"Hello World!"`，那该如何编写JSON呢？若使用如下的JSON：
+#codebox("\"text\":\"\"Hello World!\"\"") <code:json_escape_error>
+这样通常会产生报错，这是由于用于定义字符串的引号和值中的英文引号发生了配对从而导致了错误，因此需要使用*转义字符（Escape character）*#index(display: "转义字符（Escape character）", "zhuanyizifu")`\` 对文本引号进行转义。转义的作用为：将被转义的字符转换成字符，被转换的引号便不再与用于定义字符串的引号发生配对。除用于转义英文引号外，转义字符还可以用于转义反斜杠，这是因为有些反斜杠在JSON中会有其他的特殊用途。现规定转义字符的用法如下：
++ 引号 `"` 的转义方式为 `\"`（中文引号不需要转义）；
++ 反斜杠 `\` 的转义方式为 `\\`。
+由此可以得出字段@code:json_escape_error 的正确写法：
+#codebox("\"text\":\"\\\"Hello World!\\\"\"")
+同样地，如果值为 `\Hello World!\`，需要对反斜杠进行转义，正确的写法为：
+#codebox("\"text\":\"\\\\Hello World!\\\\\"")
+#example(
+  [
+    #h(-2em)判断下列JSON的转义是否有效，若有效，则写出其值。
+    #codebox("\"text\":\"\\\\\\Hello World\\\\\\\"")<code:json_escape_example_1>
+    #codebox("\"text\":\"\\\"\\\\Hello World!\\\\\\\"\"")<code:json_escape_example_2>
+    #codebox("\"text\":\"\\\"Hello World!\\\\\\\"\"")<code:json_escape_example_3>
+    #codebox("\"text\":\"\\\"Hello World!\\\\\"\"")<code:json_escape_example_4>
+  ],
+  [
+    注意，已被反斜杠转义的反斜杠被视为普通字符，不再具有转义作用。因此不难判断出：
+
+    字段@code:json_escape_example_1 的值出现了连续三个转义字符 `\\\` 的情况，第一个反斜杠用于转义第二个反斜杠，而第二个反斜杠不再具有转义作用；而字符 `H` 前的第三个转义字符后面没有其他反斜杠或引号，故值无效。
+
+    对于(\thechapter.\ref{code:json_escape_example_2})，依次检验所有转义字符：第一个转义字符用于转义引号，第二个转义字符用于转义第三个转义字符，第四个转义字符用于转义第五个转义字符，第六个转义字符用于转义引号。故值为\code{"\textbackslash{}Hello World!\textbackslash"}。\par
+
+    非转义字符两端的转义字符数量不一定需要相等，因此(\thechapter.\ref{code:json_escape_example_3})是有效的，输出结果\code{"Hello World\textbackslash"}。\par
+
+    注意，(\thechapter.\ref{code:json_escape_example_4})的所有转义字符都有其转义对象，但是第三个转义字符后面存在一个引号，而第三个转义字符已被第二个转义字符转义而失去转义作用。因此用于定义字符串的引号配对混乱，该值无效。判断一个值是否有效，不仅要使有效的转义字符后面有能被转义的字符，还要注意字符串本身的双引号是否正确配对。
+  ]
+)
 == 文件结构
 == 数据包
 Minecraft的命令系统虽然完善，但其功能十分有限。例如，命令没有办法直接指导游戏世界的生成；直接用命令模拟一些游戏机制也不够灵活。数据包可以看作是命令系统功能的延伸：它不仅为命令提供了程序化执行的环境，更开放了部分API以允许数据驱动内容。
