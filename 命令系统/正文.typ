@@ -97,7 +97,7 @@
         #set text(
           font: (
             "TeX Gyre Termes",
-            "FandolKai"
+            "FZKaiTi GB18030L2"
           )
         )
         #hydra(skip-starting: false, 1)
@@ -109,7 +109,7 @@
         #set text(
           font: (
             "TeX Gyre Termes",
-            "FandolKai"
+            "FZKaiTi GB18030L2"
           )
         )
         徐木弦原版技术性开发系列教程
@@ -413,7 +413,7 @@
           context if xubiao.get() {
             align(right)[
               #set text(
-                font: "FandolKai"
+                font: "FZKaiTi GB18030L2"
               )
               （续表）
             ]
@@ -497,6 +497,7 @@
 #let tips(width: none, content) = block(
   width: width,
   showybox(
+    breakable: true,
     frame: (
       body-color: rgb("#ffcece"),
       border-color: rgb("#d71d1d"),
@@ -527,12 +528,32 @@
     box(image("图标/data/文件夹.png", height:1em), baseline: 1pt)
     counter(image).update(n => n - 1)
   }
+  if name == "text" {
+    box(image("图标/data/文本文件.png", height:1em), baseline: 1pt)
+    counter(image).update(n => n - 1)
+  }
+  if name == "png" {
+    box(image("图标/data/图片文件.png", height:1em), baseline: 1pt)
+    counter(image).update(n => n - 1)
+  }
   if name == "nbt" {
     box(image("图标/data/NBT文件.png", height:1em), baseline: 1pt)
     counter(image).update(n => n - 1)
   }
   if name == "json" {
     box(image("图标/data/JSON文件.png", height:1em), baseline: 1pt)
+    counter(image).update(n => n - 1)
+  }
+  if name == "mcfunction" {
+    box(image("图标/data/函数文件.png", height:1em), baseline: 1pt)
+    counter(image).update(n => n - 1)
+  }
+  if name == "ogg" {
+    box(image("图标/data/声音文件.png", height:1em), baseline: 1pt)
+    counter(image).update(n => n - 1)
+  }
+  if name == "zip" {
+    box(image("图标/data/压缩文件.png", height:1em), baseline: 1pt)
     counter(image).update(n => n - 1)
   }
   if name == "json-string" {
@@ -553,6 +574,30 @@
   }
   if name == "json-object" {
     box(image("图标/data/JSON对象.png", height:1em), baseline: 1pt)
+    counter(image).update(n => n - 1)
+  }
+  if name == "vscode" {
+    box(image("图标/VSCode.png", height:1em), baseline: 1pt)
+    counter(image).update(n => n - 1)
+  }
+  if name == "dhp" {
+    box(image("图标/DHP.png", height:1em), baseline: 1pt)
+    counter(image).update(n => n - 1)
+  }
+  if name == "nbtstudio" {
+    box(image("图标/NBTStudio.png", height:1em), baseline: 1pt)
+    counter(image).update(n => n - 1)
+  }
+  if name == "paint" {
+    box(image("图标/画图.png", height:1em), baseline: 1pt)
+    counter(image).update(n => n - 1)
+  }
+  if name == "ps" {
+    box(image("图标/PS.png", height:1em), baseline: 1pt)
+    counter(image).update(n => n - 1)
+  }
+  if name == "gimp" {
+    box(image("图标/GIMP.png", height:1em), baseline: 1pt)
     counter(image).update(n => n - 1)
   }
 }
@@ -597,15 +642,21 @@
 }
 
 // 树状图
-#let dirtree(root: "", content) = [\
-  #root\
-  #text(
-    tree-list(
-      marker: text(red)[├─],
-      last-marker: text(red)[└─],
-      indent: text(red)[│#h(0.8em)],
-      empty-indent: h(1.4em),
-    )[#content]
+#let dirtree(root: "", content) = [
+  #grid(
+    columns: (2em, auto),
+    [],
+    [
+      #root\
+      #text(
+        tree-list(
+          marker: text(red)[├─],
+          last-marker: text(red)[└─],
+          indent: text(red)[│#h(0.8em)],
+          empty-indent: h(1.4em),
+        )[#content]
+      )
+    ]
   )
 ]
 
@@ -1033,10 +1084,10 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 为了使不同的命令具有不同的功能，它们使用的参数类型各不相同。有些命令作用的对象为实体，它们则会使用指定实体的参数，有些命令作用的对象为某一个坐标，则其使用坐标参数。游戏使用的命令参数有如布尔值、整型、函数、槽位值、坐标值、目标选择器、JSON、NBT等。一些复杂参数会在本教程后文呈现，下面列举的是基本参数，即在Brigadier中使用的六种基本数据类型：
 #i1(new: true)[*布尔值（Boolean）*#index(display: "布尔值（Boolean）", "buerzhi")]
 只有两种可用参数，为 `true` 和 `false`，分别代表“是”与“否”。
-#i1[*整型（Integer）*#index(display: "整型（Integer）", "zhengxing")]
-使用32位整型数值，即介于 `-2147483648` 和 `2147483647` 之间的整数值，如 `1`、`0`、`-1` 等。不同命令中使用整型的参数规定的最大可用值和最小可用值不一致。
-#i1[*长整型（Long）*#index(display: "长整型（Long）", "changzhengxing")]
-使用64位整型数值，即介于 `-9223372036854775808` 和 `9223372036854775807` 之间的整数值。
+#i1[*整数（Integer）*#index(display: "整数（Integer）", "zhengxing")]
+使用32位整型，即介于 `-2147483648` 和 `2147483647` 之间的整数值，如 `1`、`0`、`-1` 等。不同命令中使用整型的参数规定的最大可用值和最小可用值不一致。
+#i1[*长整数（Long）*#index(display: "长整数（Long）", "changzhengxing")]
+使用64位整型，即介于 `-9223372036854775808` 和 `9223372036854775807` 之间的整数值。
 #i1[*单精度浮点数（Float）*#index(display: "单精度浮点数（Float）", "danjingdufudianshu")]
 使用占据4字节的浮点数，范围大约介于$-3.4×10^38$和$3.4×10^38$之间，在不同命令中使用单精度浮点数的参数规定的最大可用值和最小可用值不一致。一些单精度浮点数的示例有：`0`、`1.1`、`-1`、`.5` 等，小数形式的整数部分可以省略。在命令参数中使用的浮点数暂时不支持科学计数法#footnote[参见#link("https://bugs.mojang.com/browse/MC/issues/MC-130925")[MC-130925]。]。
 #i1[*双精度浮点数（Double）*#index(display: "双精度浮点数（Double）", "shuangjingdufudianshu")]
@@ -1206,7 +1257,7 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
     + 非上述情况者权限等级一律为0级。
     函数的权限等级默认为2级，可在`server.properties`中修改。
   ],
-  width: 41em
+  width: 100%
 )
 == JSON格式
 在讲述数据包和资源包这两种开发实例之前，有必要先介绍Minecraft使用的用于数据交换的格式，即JSON格式。事实上，这种数据格式的应用极其广泛，是当今互联网最通用的数据交换格式之一。在Minecraft中，为方便网络传输和数据存储，一些游戏内程序会被*序列化*为JSON格式。而对于数据包、资源包内容中的JSON格式而言，游戏会尝试将这些JSON数据*反序列化*为游戏内相应的程序。
@@ -1310,9 +1361,22 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
 #tips(
   [
     如何看懂树状图？
-    
+    #i1(new: true)[父节点和子节点的关系会以这样的方式表示：]
+    #dirtree(
+      root: [这是父节点],
+      [
+        - 这是子节点
+      ]
+    )
+    相同层级的节点会表示为相同的缩进。
+    #i1[对于一个字段：]
+    #icon(name: "json-string") *field*: `这是一个字段`
+    #i2[字段开头的#icon(name: "json-string")#icon(name: "json-bool")#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object")表示这个字段使用的数据类型。]
+    #i2[加粗红色的字表示这个字段的键名。]
+    #i2[冒号后面如果只有`代码块`，表示此`代码块`是该字段使用的真实值。如果冒号后面是一段文字，则这是对于该字段的解释。如：]
+    #icon(name: "json-string") *field*: 这是对于这个字段的解释。
   ],
-  width: 41em
+  width: 100%
 )
 === JSON的转义序列
 使用JSON字符串时，如果字符串本身的内容中含有英文引号 `"`，如一个JSON字段 `text` 的值需要为 `"Hello World!"`，那该如何编写JSON呢？若使用如下的JSON：
@@ -1354,19 +1418,69 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
     注意，@code:json_escape_example_4 的所有转义序列都书写正确，但第三个反斜杠后面存在一个引号，而第三个反斜杠已被第二个反斜杠转义而失去转义作用。因此用于定义字符串的引号配对混乱，该值无效。判断一个值是否有效，不仅需要有效的转义序列，还要注意字符串本身的双引号是否正确配对。
   ]
 )
-=== 多级转义 \*
-特殊情况下，JSON字段可能会以字符串类型包含另一个JSON数据而非直接嵌套为相应类型的值，例如：\
+特殊情况下，JSON字段可能会以字符串类型包含另一个需要被解析的JSON数据而非直接嵌套为相应类型的值，例如：
+
 #icon(name: "json-string") *content*: `{"text":"Hello World!"}`
 
-字段#icon(name: "json-string") `content` 的值类型为字符串，两端一定需要一对引号。为了防止决定字符串的引号与值中的引号发生匹配混乱，会将值中的引号进行转义：
+字段 #icon(name: "json-string") `content` 的值类型为字符串，两端一定需要一对引号。为了防止决定字符串的引号与值中的引号发生匹配混乱，会将值中的引号进行转义：
 #codebox("\"content\": \"{\\\"text\\\":\\\"Hello World!\\\"}\"")
-如果#icon(name: "json-string") `text` 字段的值也带有引号，如 `"Hello World!"`，则需要相应地添加反斜杠：\
+如果 #icon(name: "json-string") `text` 字段的值也带有引号，如 `"Hello World!"`，则需要相应地添加反斜杠：
+
 #icon(name: "json-string") *content*: `{"text":"\"Hello World!\""}`
-== 文件结构
+
+这时如果把字段 #icon(name: "json-string") `content` 写成如下的形式：
+#codebox("\"content\": \"{\\\"text\\\":\\\"\\\"Hello World!\\\"\\\"}\"")
+现在来手动分析这个字段。把 #icon(name: "json-string") `content` 的值拆出来，对所有的转义序列都去掉反斜杠。首先，键 #icon(name: "json-string") `text` 两端的引号被转义，因此能够正常匹配。其次，冒号 `:` 之后、字符 `H` 之前有两个已被转义的引号；而字符感叹号 `!` 后又有两个已被转义的引号，一共有四个被转义的引号：
+#codebox("{\"text\":\"\"Hello World!\"\"}")
+所以不可避免地又发生了引号匹配混乱的情况。现在要解决的问题就是如何让这些引号不发生匹配混乱。最有效的写法就是*从里层向外层书写，每嵌套一层，就在上一层所有需要被转义的字符（如 `"` 和 `\`）前添加反斜杠*。因此，对于里层的 `{"text":"\"Hello World!\""}`，需要在所有的 `"` 和 `\` 之前都添加一个反斜杠：
+#codebox("\"content\": \"{\\\"text\\\":\\\"\\\\\\\"Hello World!\\\\\\\"\\\"}\"")<code:multilevel_escaping>
+@code:multilevel_escaping 才是正确的写法。如果更进一步，将@code:multilevel_escaping 封装在对象中，让它作为另一个 #icon(name: "json-string") `content` 的值，这样就又增加了一层嵌套，于是应在@code:multilevel_escaping 的每一个 `"` 和 `\` 之前都添加一个反斜杠：
+#codebox("\"content\": \"{\\\"content\\\": \\\"{\\\\\\\"text\\\\\\\":\\\\\\\"\\\\\\\\\\\\\\\"Hello World!\\\\\\\\\\\\\\\"\\\\\\\"}\\\"}\"")
+== 游戏文件
+游戏的各项数据被零零散散地存放在各个游戏文件里，部分数据对于做技术性开发而言非常重要，因此有必要适当掌握游戏文件的结构。
+=== 常用文件格式
+存储Minecraft数据的文件格式有很多种，下面介绍一些常见的文件格式。
+#i1(new: true)[#icon(name: "text") `.txt` 文件]
+`.txt` 文件是非常常见的文本文件，用Windows自带的记事本即可打开。这种文件通常被用于存储一些简易的文本，如游戏标题画面上的闪烁标语，有时也被用于存储游戏中的设置，在这些 `.txt` 文件中更改的内容会在游戏本体上有相应的改动。有时候 `.txt` 文件也可用于记录一些自定义的、不作为游戏数据的文本。有效的 `.txt` 文件必须为无BOM的UTF-8格式。
+#i1[#icon(name: "mcfunction") `.mcfunction` 文件]
+`.mcfunction` 文件，即函数文件，同样必须为无BOM的UTF-8格式。函数文件可以用Windows10自带的记事本打开并编辑，默认的Windows10记事本已经为无BOM的UTF-8格式，这点从记事本页面下方的状态栏就可以看到。记事本无法指出函数中的语法错误，必须得手动检查，笔者更推荐在编译软件中打开函数文件。本教程推荐的辅助工具是 #icon(name: "dhp") Data-pack Helper Plus（DHP），这是编译软件 #icon(name: "vscode") Visual Studio Code（VS Code）的一个扩展，可在 #icon(name: "vscode") VS Code的应用商店中找到。#icon(name: "dhp") DHP是专门用于制作Minecraft数据包或资源包部分文件的辅助工具，在编写数据包或资源包的过程中，#icon(name: "dhp") 提供了高亮显示，并为部分错误的语法提供解决方案。
+
+《数据包》教程提供了该文件格式的具体编写规范。
+#i1[#icon(name: "json") `.json` 和 `.mcmeta` 文件]
+`.json` 和 `.mcmeta` 文件都是使用JSON格式的文件。这些文件中的JSON格式是允许换行的，且为了美观、可读性，编写者在习惯上会在所有的 `.json` 和 `.mcmeta` 文件中使用换行，并使得同一层级的字段在行前缩进上保持一致。`.json` 和 `.mcmeta` 文件没有专门用于注释的语法，若需要注释，则使用游戏不需要、不会被游戏识别的键，如 `_comment1`、`_comment2`。
+#i1[#icon(name: "nbt") `.mca`、`.dat`、`.dat_old` 和 `.nbt` 文件]
+`.mca`、`.dat`、`.dat_old` 和 `.nbt` 文件均是使用NBT格式的文件，通常用于存储世界的全局信息和结构信息。同样地，这两类文件不能用 #icon(name: "dhp") DHP在编译软件内进行编辑，但可以在NBT编辑器内编辑，本教程推荐的编辑器为 #icon(name: "nbtstudio") NbtStudio。一些无法由命令进行编辑的信息可以通过 #icon(name: "nbtstudio") NbtStudio修改。
+#i1[#icon(name: "png") `.png` 文件]
+`.png` 文件是图片文件，被用于存储游戏中的绝大部分图像，包括但不限于图标、游戏截图、资源包纹理。可以使用Windows自带的 #icon(name: "paint") 画图、#icon(name: "ps") PS或 #icon(name: "gimp") GIMP处理，但需要注意 #icon(name: "paint") 画图不支持透明背景。
+#i1[#icon(name: "ogg") `.ogg` 文件]
+游戏中所有的声音文件都为 `.ogg` 格式，从外部导入声音时应注意格式转换。直接修改文件名后缀是无效的，可以使用
+#i1[#icon(name: "zip") `.zip` 文件]
+压缩文件，即 `.zip` 文件，也是常用的文件格式，通常被用于数据包和资源包的压缩。读者可自行选择合适的压缩软件对数据包或资源包进行压缩。
+#i1[其他的文件格式]
+Minecraft还使用其他一些文件格式，如 `.jfr` 文件、`.log` 文件等。具体见下文的说明。
+=== .minecraft文件夹 \*
+`.minecraft` 文件夹，macOS上为 #icon(name: "file") `minecraft`，是存储Java版所有游戏数据的文件夹。
+
+对于Windows系统，这个文件夹默认位于 #icon(name: "file") `C: Users\Admin\AppData\Roaming\.minecraft`，其中 #icon(name: "file") `AppData` 文件夹一般是隐藏的，可以在文件资源管理器 `查看` 工具栏，在 `显示/隐藏` 一项勾选 `隐藏的项目` 以显示这个文件夹。
+
+对于Mac系统，这个文件夹默认位于 #icon(name: "file") `home\用户名\Library\Application Support\minecraft`。对于Linux系统，这个文件夹默认位于 #icon(name: "file") `home\用户名\.minecraft`，其中以 `.` 开头的文件夹默认是隐藏的，需要使用 `Ctrl` + `H` 切换是否可见。
+
+第三方启动器会有其特殊的文件夹路径，具体见各启动器的设置。由官方启动器运行的游戏可以在启动器内手动修改存储路径，或者在默认存储路径处使用快捷方式重定向至自定义路径下。
+
+随着游戏内容的增多、各种其他资源（如光影、模组）不断被下载到游戏中， #icon(name: "file") `.minecraft`中的子文件（夹）可能会持续增多。鉴于无法讲到所有可能出现的文件（夹），本节仅列举原版游戏使用文件（夹）。文件结构如下所示：
+#dirtree(
+  root: [#icon(name: "file") *.minecraft*],
+  [
+    - #icon(name: "file") *assets*: 存放原版资源包部分游戏资源的文件夹，如简体中文的语言文件、声音 `.ogg` 文件等。
+      )
+    - #box[这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子]
+    - 下一项
+  ]
+)
 == 数据包
 Minecraft的命令系统虽然完善，但其功能十分有限。例如，命令没有办法直接指导游戏世界的生成；直接用命令模拟一些游戏机制也不够灵活。数据包可以看作是命令系统功能的延伸：它不仅为命令提供了程序化执行的环境，更开放了部分API以允许数据驱动内容。
 
-*数据包（Data pack）*#index(display: "数据包（Data pack）", "shujubao")允许玩家在不修改游戏代码的前提下覆盖既有的或添加自定义的游戏内容。数据包本质上是一个文件夹或压缩文件。一个数据包仅对特定的存档有效，它被储存在 `.minecraft\saves\<存档名称>\datapacks` 中。数据包可以是文件夹，也可以是`.zip`类型的压缩文件。同一个 #icon(name:"file") `datapacks` 文件夹内能存放多个数据包。
+*数据包（Data pack）*#index(display: "数据包（Data pack）", "shujubao")允许玩家在不修改游戏代码的前提下覆盖既有的或添加自定义的游戏内容。数据包本质上是一个文件夹或压缩文件。一个数据包仅对特定的存档有效，它被储存在 `.minecraft\saves\<存档名称>\datapacks` 中。数据包可以是文件夹，也可以是 `.zip` 类型的压缩文件。同一个 #icon(name:"file") `datapacks` 文件夹内能存放多个数据包。
 
 数据包有两种添加方式——
 + 手动添加：直接将数据包添加至 `.minecraft\saves\<存档名称>\datapacks`。
