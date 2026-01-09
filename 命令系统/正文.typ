@@ -5,7 +5,7 @@
 #import "@preview/wrap-it:0.1.1": wrap-content
 #import "@preview/codly:1.3.0": *
 #import "@preview/codly-languages:0.1.1": *
-#import "@preview/treet:1.0.0": *
+#import "自定义包/stringtree.typ": stringtree
 #show: codly-init.with()
 #import table: cell, header
 
@@ -642,23 +642,7 @@
 }
 
 // 树状图
-#let dirtree(root: "", content) = [
-  #grid(
-    columns: (2em, auto),
-    [],
-    [
-      #root\
-      #text(
-        tree-list(
-          marker: text(red)[├─],
-          last-marker: text(red)[└─],
-          indent: text(red)[│#h(0.8em)],
-          empty-indent: h(1.4em),
-        )[#content]
-      )
-    ]
-  )
-]
+#let tree = stringtree
 
 #heading(level: 1, numbering: none, outlined: false, [第一版序言])
 Minecraft拥有多种多样的玩法，生存、PVP、PVE、模组、建筑、红石电路这些为众多玩家所熟知的玩法自成体系，玩家可以自由选择其中的某一方面深入研究。在这些玩法中，比较默默无闻的一种玩法可能便是广义上的命令，即包含了MC-CMD（命令）、资源包和数据包的系统。
@@ -1289,7 +1273,7 @@ JSON格式键值对的基本语法为：
   align: right
 )
 #codebox("\"<键>\":<值>,\"<键>\":<值>")
-在一个`.json`文件中，须使用花括号`{}`将所有的键值对封装包裹在一起，如：
+在一个`.json`文件中，须使用花括号 `{}` 将所有的键值对封装包裹在一起，如：
 #codebox("{\"<键>\":<值>,\"<键>\":<值>}")
 对于值而言，每一个不同的键都需的值的类型不尽相同，比如键 `color` 可能需要的是颜色值，`bold` 可能需要的是布尔值，`text` 可能需要的是字符串，等等。JSON一共使用六种不同的数据类型：
 #i1(new: true)[#icon(name: "json-string") *字符串（String）*#index(display: "字符串（String）", "zifuchuan")]
@@ -1328,19 +1312,17 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
 空值，作为字面量符号使用。Minecraft基本不使用这种数据类型。
 
 由于JSON为多层级结构，为了方便说明，本系列教程会使用和Minecraft Wiki一样的树状图来表示。例如：
-#dirtree(
-  root: [#icon(name: "json-object")],
-  [
-    - #icon(name: "json-string") *string*: `这是一个字符串`
-    - #icon(name: "json-bool") *boolean*: `true`
-    - #icon(name: "json-number") *number*: `5`
-    - #icon(name: "json-array") *array*
-      - #icon(name: "json-string") `这是数组的第一个元素，是一个字符串`
-      - #icon(name: "json-object") 
-        - #icon(name: "json-string") *string*: `这是对象内的一个字符串`
-    - #icon(name: "json-object") 
-      - #icon(name: "json-string") *string*: `这是对象内的一个字符串`
-  ]
+#tree(
+  (0, [#icon(name: "json-object")]),
+  (1, [#icon(name: "json-string") *string*: `这是一个字符串`]),
+  (1, [#icon(name: "json-bool") *boolean*: `true`]),
+  (1, [#icon(name: "json-number") *number*: `5`]),
+  (1, [#icon(name: "json-array") *array*]),
+  (2, [#icon(name: "json-string") `这是数组的第一个元素，是一个字符串`]),
+  (2, [#icon(name: "json-object") ]),
+  (3, [#icon(name: "json-string") *string*: `这是对象内的一个字符串`]),
+  (1, [#icon(name: "json-object") ]),
+  (2, [#icon(name: "json-string") *string*: `这是对象内的一个字符串`])
 )
 
 对应的JSON为：
@@ -1362,11 +1344,9 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
   [
     如何看懂树状图？
     #i1(new: true)[父节点和子节点的关系会以这样的方式表示：]
-    #dirtree(
-      root: [这是父节点],
-      [
-        - 这是子节点
-      ]
+    #tree(
+      (0, [这是父节点]),
+      (1, [这是子节点])
     )
     相同层级的节点会表示为相同的缩进。
     #i1[对于一个字段：]
@@ -1468,14 +1448,10 @@ Minecraft还使用其他一些文件格式，如 `.jfr` 文件、`.log` 文件�
 第三方启动器会有其特殊的文件夹路径，具体见各启动器的设置。由官方启动器运行的游戏可以在启动器内手动修改存储路径，或者在默认存储路径处使用快捷方式重定向至自定义路径下。
 
 随着游戏内容的增多、各种其他资源（如光影、模组）不断被下载到游戏中， #icon(name: "file") `.minecraft`中的子文件（夹）可能会持续增多。鉴于无法讲到所有可能出现的文件（夹），本节仅列举原版游戏使用文件（夹）。文件结构如下所示：
-#dirtree(
-  root: [#icon(name: "file") *.minecraft*],
-  [
-    - #icon(name: "file") *assets*: 存放原版资源包部分游戏资源的文件夹，如简体中文的语言文件、声音 `.ogg` 文件等。
-      )
-    - #box[这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子这是一个盒子]
-    - 下一项
-  ]
+#tree(
+  (0, [#icon(name: "file") *.minecraft*]),
+  (1, [#icon(name: "file") *assets*: 存放原版资源包部分游戏资源的文件夹，如简体中文的语言文件、声音 `.ogg` 文件等。]),
+  (1, "这是一段文本")
 )
 == 数据包
 Minecraft的命令系统虽然完善，但其功能十分有限。例如，命令没有办法直接指导游戏世界的生成；直接用命令模拟一些游戏机制也不够灵活。数据包可以看作是命令系统功能的延伸：它不仅为命令提供了程序化执行的环境，更开放了部分API以允许数据驱动内容。
