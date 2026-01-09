@@ -494,7 +494,7 @@
 }
 
 // 提示
-#let tips(width: none, content) = block(
+#let tips(width: 100%, content) = block(
   width: width,
   showybox(
     breakable: true,
@@ -524,8 +524,12 @@
 
 // 图标
 #let icon(name: none) = {
-  if name == "file" {
+  if name == "folder" {
     box(image("图标/data/文件夹.png", height:1em), baseline: 1pt)
+    counter(image).update(n => n - 1)
+  }
+  if name == "file" {
+    box(image("图标/data/文件.png", height:1em), baseline: 1pt)
     counter(image).update(n => n - 1)
   }
   if name == "text" {
@@ -604,13 +608,16 @@
 
 // 文件
 #let codefile(title: "", body, lang: "mcfunction") = {
-  set text(size: 0.9em)
   codly(
     display-name: false,
     fill: rgb("#fff8f8"),
     header: [
       #set text(
         fill: white,
+        font: (
+          "Consolas",
+          "FZShuSong GB18030L2"
+        ),
         weight: "bold"
       )
       #h(0.5em)
@@ -638,6 +645,7 @@
     stroke: 1pt + rgb("#d71d1d"),
     zebra-fill: rgb("#fde9e9")
   )
+  show raw: set text(font: ("Consolas", "FZShuSong GB18030L2"))
   raw(body, block: true, lang: lang)
 }
 
@@ -1399,15 +1407,15 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
   ]
 )
 特殊情况下，JSON字段可能会以字符串类型包含另一个需要被解析的JSON数据而非直接嵌套为相应类型的值，例如：
-
-#icon(name: "json-string") *content*: `{"text":"Hello World!"}`
-
+#tree(
+  (0, [#icon(name: "json-string") *content*: `{"text":"Hello World!"}`])
+)
 字段 #icon(name: "json-string") `content` 的值类型为字符串，两端一定需要一对引号。为了防止决定字符串的引号与值中的引号发生匹配混乱，会将值中的引号进行转义：
 #codebox("\"content\": \"{\\\"text\\\":\\\"Hello World!\\\"}\"")
 如果 #icon(name: "json-string") `text` 字段的值也带有引号，如 `"Hello World!"`，则需要相应地添加反斜杠：
-
-#icon(name: "json-string") *content*: `{"text":"\"Hello World!\""}`
-
+#tree(
+  (0, [#icon(name: "json-string") *content*: `{"text":"\"Hello World!\""}`])
+)
 这时如果把字段 #icon(name: "json-string") `content` 写成如下的形式：
 #codebox("\"content\": \"{\\\"text\\\":\\\"\\\"Hello World!\\\"\\\"}\"")
 现在来手动分析这个字段。把 #icon(name: "json-string") `content` 的值拆出来，对所有的转义序列都去掉反斜杠。首先，键 #icon(name: "json-string") `text` 两端的引号被转义，因此能够正常匹配。其次，冒号 `:` 之后、字符 `H` 之前有两个已被转义的引号；而字符感叹号 `!` 后又有两个已被转义的引号，一共有四个被转义的引号：
@@ -1439,24 +1447,75 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
 #i1[其他的文件格式]
 Minecraft还使用其他一些文件格式，如 `.jfr` 文件、`.log` 文件等。具体见下文的说明。
 === .minecraft文件夹 \*
-`.minecraft` 文件夹，macOS上为 #icon(name: "file") `minecraft`，是存储Java版所有游戏数据的文件夹。
+`.minecraft` 文件夹，macOS上为 #icon(name: "folder") `minecraft`，是存储Java版所有游戏数据的文件夹。
 
-对于Windows系统，这个文件夹默认位于 #icon(name: "file") `C: Users\Admin\AppData\Roaming\.minecraft`，其中 #icon(name: "file") `AppData` 文件夹一般是隐藏的，可以在文件资源管理器 `查看` 工具栏，在 `显示/隐藏` 一项勾选 `隐藏的项目` 以显示这个文件夹。
+对于Windows系统，这个文件夹默认位于 #icon(name: "folder") `C: Users\Admin\AppData\Roaming\.minecraft`，其中 #icon(name: "folder") `AppData` 文件夹一般是隐藏的，可以在文件资源管理器 `查看` 工具栏，在 `显示/隐藏` 一项勾选 `隐藏的项目` 以显示这个文件夹。
 
-对于Mac系统，这个文件夹默认位于 #icon(name: "file") `home\用户名\Library\Application Support\minecraft`。对于Linux系统，这个文件夹默认位于 #icon(name: "file") `home\用户名\.minecraft`，其中以 `.` 开头的文件夹默认是隐藏的，需要使用 `Ctrl` + `H` 切换是否可见。
+对于Mac系统，这个文件夹默认位于 #icon(name: "folder") `home\用户名\Library\Application Support\minecraft`。对于Linux系统，这个文件夹默认位于 #icon(name: "folder") `home\用户名\.minecraft`，其中以 `.` 开头的文件夹默认是隐藏的，需要使用 `Ctrl` + `H` 切换是否可见。
 
 第三方启动器会有其特殊的文件夹路径，具体见各启动器的设置。由官方启动器运行的游戏可以在启动器内手动修改存储路径，或者在默认存储路径处使用快捷方式重定向至自定义路径下。
 
-随着游戏内容的增多、各种其他资源（如光影、模组）不断被下载到游戏中， #icon(name: "file") `.minecraft`中的子文件（夹）可能会持续增多。鉴于无法讲到所有可能出现的文件（夹），本节仅列举原版游戏使用文件（夹）。文件结构如下所示：
+随着游戏内容的增多、各种其他资源（如光影、模组）不断被下载到游戏中， #icon(name: "folder") `.minecraft`中的子文件（夹）可能会持续增多。鉴于无法讲到所有可能出现的文件（夹），本节仅列举原版游戏使用文件（夹）。文件结构如下所示：
 #tree(
-  (0, [#icon(name: "file") *.minecraft*]),
-  (1, [#icon(name: "file") *assets*: 存放原版资源包部分游戏资源的文件夹，如简体中文的语言文件、声音 `.ogg` 文件等。]),
-  (1, "这是一段文本")
+  (0, [#icon(name: "folder") *.minecraft*]),
+  (1, [#icon(name: "folder") *assets*: 存放原版资源包部分游戏资源的文件夹，如简体中文的语言文件、声音 `.ogg` 文件等，其中这些文件被称为*散列资源文件*。]),
+  (2, [#icon(name: "folder") *indexes*]),
+  (3, [#icon(name: "json") *\<版本号>.json*: 该版本号用于映射散列资源的哈希表。]),
+  (2, [#icon(name: "folder") *log_configs*]),
+  (3, [#icon(name: "file") *client-<版本号>.xml*]),
+  (2, [#icon(name: "folder") *objects*: 此文件夹专门用于存储声音、语言文件。]),
+  (3, [#icon(name: "folder") *\<哈希值前两位>*]),
+  (4, [#icon(name: "file") *\<哈希值>*: 散列资源文件。]),
+  (2, [#icon(name: "folder") *skins*]),
+  (3, [#icon(name: "folder") *\<哈希值前两位>*]),
+  (4, [#icon(name: "file") *\<哈希值>*: 散列资源文件。]),
+  (2, [#icon(name: "folder") *virtual*])
+)
+#tips(
+  [
+    #icon(name: "folder") `assets` 文件夹内的资源文件都是用*哈希值（Hash value，散列值）*#index(display: "哈希值（Hash value，散列值）", "haxizhi")加密的，以哈希表的方式映射资源位置。要查询 #icon(name: "folder") `assets` 内的任意一个资源文件，需按照以下步骤：
+    #i1(new: true)[打开 #icon(name: "folder") `indexes` 文件夹，找到需要提取资源的 #icon(name: "json") `<版本号>.json` 文件。其中的内容大致如下所示：
+    #codefile(
+      lang: "json",
+      title: ".minecraft\assets\indexes\<版本号>.json",
+  "{
+  \"objects\": {
+    \"icons/icon_128x128.png\": {
+      \"hash\": \"b62ca8ec10d07e6bf5ac8dae0c8c1d2e6a1e3356\", 
+      \"size\": 9101
+    }, 
+    \"icons/icon_16x16.png\": {
+      \"hash\": \"5ff04807c356f1beed0b86ccf659b44b9983e3fa\", 
+      \"size\": 781
+    }, 
+    \"icons/icon_256x256.png\": {
+      \"hash\": \"8030dd9dc315c0381d52c4782ea36c6baf6e8135\", 
+      \"size\": 19642
+    },
+    \"_comment\": \"后续还有很多其他资源\"
+  }
+}")]
+    #i1[用编译软件的查询功能在 #icon(name: "json") `<版本号>.json` 文件中查找所需资源，记录对应 #icon(name: "json-string") `hash` 字段的值，此即为映射该资源的哈希值。]
+    #i1[打开 #icon(name: "folder") `objects` 文件夹，找到匹配的 #icon(name: "folder") `<哈希值前两位>` 文件夹，在此文件夹内找寻对应哈希值命名的文件，此即为需要找寻的资源。]
+  ]
+)
+#example(
+  [
+    在 #icon(name: "folder") `assets` 文件夹内找到1.21.4版本（哈希表版本号显示为 `19`）简体中文语言的资源文件。
+  ],
+  [
+    在 #icon(name: "json") `<19>.json` 文件中查询 `zh\_cn` 字样，可以找到一个键名为 `minecraft/lang/zh_cn.json` 的键值对：
+    #codebox("\"minecraft/lang/zh_cn.json\": {
+  \"hash\": \"4674523c91196e0898c24a06531f94154111f2a3\",
+  \"size\": 459788
+}")
+    这时获取到哈希值 `4674523c91196e0898c24a06531f94154111f2a3`，其前两位是 `46`。然后打开文件夹 #icon(name: "folder") `objects\46`，在其中找到名为 #icon(name: "file") `4674523c91196e0898c24a06531f94154111f2a3` 的文件，此即为简体中文的语言文件。打开后会发现文件中的汉字均是用Unicode码表示的。
+  ]
 )
 == 数据包
 Minecraft的命令系统虽然完善，但其功能十分有限。例如，命令没有办法直接指导游戏世界的生成；直接用命令模拟一些游戏机制也不够灵活。数据包可以看作是命令系统功能的延伸：它不仅为命令提供了程序化执行的环境，更开放了部分API以允许数据驱动内容。
 
-*数据包（Data pack）*#index(display: "数据包（Data pack）", "shujubao")允许玩家在不修改游戏代码的前提下覆盖既有的或添加自定义的游戏内容。数据包本质上是一个文件夹或压缩文件。一个数据包仅对特定的存档有效，它被储存在 `.minecraft\saves\<存档名称>\datapacks` 中。数据包可以是文件夹，也可以是 `.zip` 类型的压缩文件。同一个 #icon(name:"file") `datapacks` 文件夹内能存放多个数据包。
+*数据包（Data pack）*#index(display: "数据包（Data pack）", "shujubao")允许玩家在不修改游戏代码的前提下覆盖既有的或添加自定义的游戏内容。数据包本质上是一个文件夹或压缩文件。一个数据包仅对特定的存档有效，它被储存在 `.minecraft\saves\<存档名称>\datapacks` 中。数据包可以是文件夹，也可以是 `.zip` 类型的压缩文件。同一个 #icon(name:"folder") `datapacks` 文件夹内能存放多个数据包。
 
 数据包有两种添加方式——
 + 手动添加：直接将数据包添加至 `.minecraft\saves\<存档名称>\datapacks`。
