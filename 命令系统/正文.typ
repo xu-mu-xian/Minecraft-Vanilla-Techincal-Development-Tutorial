@@ -2,9 +2,9 @@
 #import "@preview/showybox:2.0.4": showybox
 #import "@preview/hydra:0.6.2": hydra
 #import "@preview/itemize:0.2.0" as el
-#import "@preview/wrap-it:0.1.1": wrap-content
 #import "@preview/codly:1.3.0": *
 #import "@preview/codly-languages:0.1.1": *
+#import "@preview/wrap-it:0.1.1": wrap-content
 #import "自定义包/stringtree.typ": stringtree
 #show: codly-init.with()
 #import table: cell, header
@@ -261,6 +261,25 @@
     font: "TeX Gyre Termes Math"
   )
   h(2pt) + it + h(2pt)
+}
+
+// 参数解释
+#let param-desc(prefix: "其中的参数：", ..args) = {
+  let pos-args = args.pos()
+  grid(
+    columns: (auto, 1fr),
+    column-gutter: 0.2em,
+    row-gutter: 0.65em,
+    ..pos-args.chunks(2).enumerate().map(((i, pair)) => {
+      let (info, desc) = pair
+      (
+        grid.cell(align: right)[
+          #if i == 0 [#prefix]
+          #info——],
+        desc
+      )
+    }).flatten()
+  )
 }
 
 // 例题
@@ -534,6 +553,7 @@
       ),
       color: white
     ),
+    width: width,
     [
       #set text(size: 0.9em)
       #content
@@ -984,12 +1004,9 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 
 命名空间ID，又称*（赋）命名空间标识符*、*资源路径（Resource location）*#index(display: "资源路径（Resource location）", "ziyuanlujing")、*资源标识符（Resource identifier）*#index(display: "资源标识符（Resource identifier）", "ziyuanbiaoshifu")或*命名空间字符串（Namespaced string）*#index(display: "命名空间字符串（Namespaced string）", "mingmingkongjianzifuchuan")，是字符串化的映射方式。无论命名空间ID用于映射何种对象，它们都具有同一的表达方式：
 #codebox("<namespace>:<path>")
-其中的参数：
-
-`<namespace>` ——命名空间。
-
-`<path>` ——路径。
-
+#param-desc(
+  [`<namespace>`], [命名空间。], [`<path>`], [路径。]
+)
 在写法上，除用于分割命名空间和路径的冒号 `:` 外，其中所有的字符都只能为合法字符。合法字符包含以下几类：
 #wrap-content(
   tips(
@@ -1706,19 +1723,89 @@ entityShadows:true")]),
 == 数据包
 Minecraft的命令系统虽然完善，但其功能十分有限。例如，命令没有办法直接指导游戏世界的生成；直接用命令模拟一些游戏机制也不够灵活。数据包可以看作是命令系统功能的延伸：它不仅为命令提供了程序化执行的环境，更开放了部分API以允许数据驱动内容。
 
-*数据包（Data pack）*#index(display: "数据包（Data pack）", "shujubao")允许玩家在不修改游戏代码的前提下覆盖既有的或添加自定义的游戏内容。数据包本质上是一个文件夹或压缩文件。一个数据包仅对特定的存档有效，它被储存在 `.minecraft\saves\<存档名称>\datapacks` 中。数据包可以是文件夹，也可以是 `.zip` 类型的压缩文件。同一个 #icon(name:"folder") `datapacks` 文件夹内能存放多个数据包。
+*数据包（Data pack）*#index(display: "数据包（Data pack）", "shujubao")*允许玩家在不修改游戏代码的前提下覆盖既有的或添加自定义的游戏内容。*因此，*原版技术性开发从不添加任何不在可写注册表内的游戏内容，只会用各种手段模拟这些游戏内容*。数据包本质上是一个文件夹或压缩文件。一个数据包仅对特定的游戏世界有效，它被储存在 `.minecraft\saves\<存档名称>\datapacks` 中。数据包可以是文件夹，也可以是 `.zip` 类型的压缩文件。同一个 #icon(name:"folder") `datapacks` 文件夹内能存放多个数据包。
 
 数据包有两种添加方式——
 + 手动添加：直接将数据包添加至 `.minecraft\saves\<存档名称>\datapacks`。
 + 创建世界时添加数据包：在创建新的世界界面，选择 `更多`，点击 `数据包` 选项，此时会进入选择数据包窗口，类似于资源包选项的窗口，可在“可用”一栏内选用数据包，只有“已选”一栏的数据包有效，且数据包的加载顺序可以在该栏中调换。点击 `打开包文件夹` 选项后游戏会弹出一个临时的文件夹，此时可以将数据包拖入其中。
 #figure(
   caption: [选择数据包窗口],
-  image("图片/选择数据包窗口.png", width: 80%)
+  image("图片/选择数据包窗口.png", width: 70%)
 )
 当一个存档中存在多个有效的已启用数据包时，游戏会根据数据包的顺序加载其内容，这里的“有效”是指数据包有合法的元数据且数据包内无任何语法错误。已启用数据包的加载顺序存储于 #icon(name:"nbt") `level.dat` 中。在选择数据包窗口“已选”一栏的加载顺序表现为从下到上。
 
 若这些数据包对同种资源进行定义，则*后加载的数据包会对先加载的数据包进行覆盖*，表明越靠后加载的数据包其优先级越高。可使用命令  `/datapack` 查询、修改、控制这些数据包的启用或禁用，`/datapack` 所需的权限等级为2，以下是所有用法：
+#i1(new: true)[启用指定数据包]
+#codebox("datapack enable <name>")
+#param-desc(
+  [`<name>`（字符串 `brigadier:string`）#footnote[括号中内容为该参数的类型及该参数类型在注册表内的命名空间ID，后续教程均如此。]], [指定数据包的名称。必须使用单个词，可用引号括起整个字符串。可用字符有：\
+  数字 `0123456789`；\
+  大写字母 `ABCDEFGHIJKLMNOPQRSTUVWXYZ`；\
+  小写字母 `abcdefghijklmnopqrstuvwxyz`；\
+  下划线 `_`；\
+  加号 `+`、减号 `-`；\
+  点 `.`；\
+  引号 `'`、`"`；\
+  反斜杠 `\`。\
+  如果用引号括起整个字符串，字符串内的同种引号与反斜杠前需要加上反斜杠 `\` 转义。]
+)
+#i1[禁用指定数据包]
+#codebox("datapack disable <name>")
+#i1[列举所有数据包]
+#codebox("datapack list [available|enabled]")
+#param-desc(
+  [`[available|enabled]`], [可选，若设为 `available` 则列举所有可用数据包，无论是否启用；若设为 `enabled`，则仅列举已启用数据包。默认为 `available`。]
+)
+#i1[启用指定的数据包，并设置其优先级为最低或最高]
+#codebox("datapack enable <name> (first|last)")
+#param-desc(
+  [`(first|last)`], [设置 `first` 以将该数据包的加载位次设为*首位*，因此优先级设为*最低*；设置 `last` 以将该数据包的加载位次设为*末位*，因此优先级设为*最高*。]
+)
+#i1[启用指定的数据包，并调整其加载优先级居于另一个数据包]
+#codebox("datapack enable <name> (before|after) <existing>")
+#param-desc(
+  [`(before|after)`], [设置 `before` 以将该数据包的加载放于数据包 `<existing>` *之前1位*，因此优先级比数据包 `<existing>` *低1级*；设置 `before` 以将该数据包的加载放于数据包 `<existing>` *之后1位*，因此优先级比数据包 `<existing>` *高1级*。],
+  [`<existing>`（字符串 `brigadier:string`）], [必须为一个存在并已启用的数据包的名称。可用字符与<name>一致。]
+)
+#i1[新建一个空数据包，并设置此数据包的描述，注意，被创建的数据包默认为禁用状态]
+#codebox("datapack create <id> <description>")
+#param-desc(
+  [`<id>`（字符串 `brigadier:string`）], [新建数据包的名称，可用字符与上述 `<name>` 参数一致。],
+  [`<description>`（文本组件 `minecraft:component`）], [该数据包的描述，是为元数据 `pack.mcmeta` 内 #icon(name: "json-string")#icon(name: "json-object")#icon(name: "json-array") `description` 的值。需要是文本组件，具体写法可参照@chap:text_component。]
+)
+编写数据包是一个“修改——调试——再修改——再调试”的重复过程，在既有内容的基础上对数据包做出修改并保存后，游戏不会立即识别这些修改的内容，而是依旧在修改前数据包的基础上运行原先的内容。此时需要重新加载数据包。
 
+每次玩家进入存档（或称之为启动服务端）后，游戏都会按照加载顺序加载数据包，无论是否为首次进入存档。如果新加载的数据包内含有无效数据，则使用先前版本的数据包。在游戏过程中可以用命令 `/reload` 重新加载数据包而不必退出游戏并重新进入存档，这种方式被称为*热重载*。`/reload` 需要的权限等级为2，其语法中不需附带任何参数：
+#codebox("reload")
+但是，使用 `/reload` 和重启服务端加载数据包的加载行为不同。`/reload` 只能用于重新加载数据包标签、函数、进度、战利品表、物品修饰器、战利品表谓词和配方这些注册项，剩余的注册项无法使用 `/reload` 加载，必须通过重启服务端加载。
+#wrap-content(
+  box(
+    width: 12em,tips(
+    [删除Anvil文件或自定义维度文件夹是比较危险的行为，可能会删掉存档中一些重要数据，删除之前需慎重考虑！]
+  )),
+  [
+
+    其中维度、世界生成这些控制世界生成方式的注册项，对于已经生成的区块或维度，也无法通过世界加载重新生成这些区块或维度。因此自定义世界生成模块需要在世界首次加载时就被应用，即需要在创建世界时添加数据包而非在世界运行过程中手动添加数据包。如果确需在在世界运行过程中修改世界生成，可在确保世界仅作调试使用的前提下删除存档中需要重新生成区块的Anvil文件或自定义维度文件夹使其重新加载。
+  ],
+  align: right,
+  column-gutter: 2em
+)
+对于非数据包标签、函数、进度、战利品表、物品修饰器、战利品表谓词或配方的注册项，进入存档会出现*实验性设置（Experimental settings）*#index(display: "实验性设置（Experimental settings）", "shiyanxingshezhi")的警告，此时可点击创建备份并加载或我知道我在做什么！。但若这些注册项出现各种各样的错误（不一定是语法错误），则进入存档会出现*安全模式（Safe mode）*#index(display: "安全模式（Safe mode）", "anquanmoshi")错误，可在官方启动器设置中打开“当《Minecraft：Java版》启动时输出日志”一项以随时获得错误日志，或在 `.minecraft\debug` 文件夹中获取 `.txt` 输出日志以检查存在的错误。
+
+数据包的编写是一个极为繁琐的过程，需要不断地调试、纠错，有时甚至要对其底层逻辑进行重构。在编写数据包之前，读者应提前做好规划，对其可行性进行初步的研究，还要考虑数据包运行过程中的流畅性、玩家游玩过程中的平衡性。编写过程合理使用文件层级，对文件适当分类，以免内容混乱，降低文件可读性。
+
+原版数据包位于 #icon(name: "folder") `.minecraft\versions\<版本号>\<版本号>.jar\data`，是编写自定义数据包的重要依据，读者可参考之。
+=== 数据包的元数据与基本结构
+一个数据包拥有以下的基本结构：
+#tree(
+  (0, [#icon(name: "folder") *\<数据包名称>*或 #icon(name: "zip") *\<数据包名称>.zip*]),
+  (1, [#icon(name: "folder") *\<子数据包>*]),
+  (2, [递归此文件夹结构]),
+  (1, [#icon(name: "folder") *data*]),
+  (1, [#icon(name: "json") *pack.mcmeta*]),
+  (1, [#icon(name: "png") *pack.png*])
+)
+其中，#icon(name: "json") `pack.mcmeta` 是数据包的*元数据（Metadata）*#index(display: "元数据（Metadata）", "yuanshuju")。只有当元数据存在时，游戏才能识别数据包。#icon(name: "json") `pack.mcmeta` 使用JSON格式，其包含的内容如下所示：
 == 资源包<sec:resourcepack>
 == 游戏机制
 游戏为命令提供了一个运行环境，为此命令系统不免受到游戏机制的制约。在时间上，命令受到游戏循环驱动的影响，以游戏刻为单位执行；在空间上，命令受到区块加载的影响，只能在允许运算的区块中执行。本节旨在介绍游戏加载、运行、更新的一些基本游戏机制。
@@ -1738,7 +1825,6 @@ Minecraft的架构是*客户端-服务端模型*，顾名思义，Minecraft使�
 #codebox("<IPv4地址>:<端口>")
 局域网联机的IPv4地址可由CMD的`ipconfig`命令查询。端口是一个数值，可以自由指定，范围为`0`至`65535`（含两端）。除了通过暂停游戏的对局域网开放选项外，玩家还可以通过命令`/publish`开放内置服务器，该命令所需权限等级为4，且仅能在单人游戏中使用，其语法为：
 #codebox("publish [<allowCommands>] [<gamemode>] [<port>]")
-其中的参数#footnote("括号中内容为该参数的类型及该参数类型在注册表内的命名空间ID，后续教程均如此。")：
 
 == 服务器
 
@@ -1821,7 +1907,7 @@ Minecraft规定：大部分方块的长、宽和高均为1米，体积为1立方
 
 ==== 二维坐标
 即只由$x$坐标和$z$坐标构成的*二维坐标（Two-dimensional coordinates）*#index(display:"二维坐标（Three-dimensional coordinates）","erweizuobiao")。二维坐标的命令参数类型为`minecraft:vec2`，两个元素均为双精度浮点数。二维坐标若为整数，则也使用中心校准。
-
+= 文本组件<chap:text_component>
 = 存档格式
 == 存档文件夹的结构<sec:saves>
 == 技术性实体<sec:technical_entity>
