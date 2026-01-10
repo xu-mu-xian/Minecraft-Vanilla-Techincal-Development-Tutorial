@@ -480,6 +480,25 @@
   numbering: book-heading
 )
 
+// 引用
+#show ref: it => {
+  if it.element != none and it.element.func() == heading {
+    let el = it.element
+    let nums = counter(heading).at(el.location())
+    if el.level == 1 {
+      [第#numbering("一", nums.at(0))章]
+    } else if el.level == 2 {
+      numbering("1.1", ..nums)
+    } else if el.level == 3 {
+      numbering("1.1.1", ..nums)
+    } else if el.level == 4 {
+      numbering("一、", nums.at(3))
+    }
+  } else {
+    it
+  }
+}
+
 // 脚注
 #set footnote(
   numbering: " ①"
@@ -560,6 +579,10 @@
     box(image("图标/data/压缩文件.png", height:1em), baseline: 1pt)
     counter(image).update(n => n - 1)
   }
+  if name == "jar" {
+    box(image("图标/data/JAR文件.png", height:1em), baseline: 1pt)
+    counter(image).update(n => n - 1)
+  }
   if name == "json-string" {
     box(image("图标/data/JSON字符串.png", height:1em), baseline: 1pt)
     counter(image).update(n => n - 1)
@@ -607,7 +630,7 @@
 }
 
 // 文件
-#let codefile(title: "", body, lang: "mcfunction") = {
+#let codefile(title: "", body, lang: "file") = {
   codly(
     display-name: false,
     fill: rgb("#fff8f8"),
@@ -636,8 +659,28 @@
         name: "json"
       ),
       mcfunction: (
-        icon: "A",
+        color: rgb("#00000000"),
+        icon: [
+          #set text(size: 1.2em)
+          #icon(name:"mcfunction")#h(0.5em)
+        ],
         name: "mcfunction"
+      ),
+      txt: (
+        color: rgb("#00000000"),
+        icon: [
+          #set text(size: 1.2em)
+          #icon(name:"text")#h(0.5em)
+        ],
+        name: "txt"
+      ),
+      file: (
+        color: rgb("#00000000"),
+        icon: [
+          #set text(size: 1.2em)
+          #icon(name:"file")#h(0.5em)
+        ],
+        name: "file"
       )
     ),
     number-format: n => text(fill: red, weight: "bold")[#h(0.5em)#n#h(0.5em)],
@@ -650,7 +693,7 @@
 }
 
 // 树状图
-#let tree = stringtree
+#let tree(..items) = stringtree(line_color: red, ..items)
 
 #heading(level: 1, numbering: none, outlined: false, [第一版序言])
 Minecraft拥有多种多样的玩法，生存、PVP、PVE、模组、建筑、红石电路这些为众多玩家所熟知的玩法自成体系，玩家可以自由选择其中的某一方面深入研究。在这些玩法中，比较默默无闻的一种玩法可能便是广义上的命令，即包含了MC-CMD（命令）、资源包和数据包的系统。
@@ -1257,7 +1300,7 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 游戏的一些数据以 `.json` 文件的格式存储在各文件夹中。这些文件有如：资源包的模型文件，数据包的进度、谓词文件，游戏版本信息文件，等等。下面展示的是金合欢木按钮的模型文件：
 #codefile(
   lang: "json",
-  title: "assets\minecraft\models\block\acacia_button.json",
+  title: "assets > minecraft > models > block > acacia_button.json",
   "{
   \"parent\": \"minecraft:block/button\",
   \"textures\": {
@@ -1477,7 +1520,7 @@ Minecraft还使用其他一些文件格式，如 `.jfr` 文件、`.log` 文件�
     #i1(new: true)[打开 #icon(name: "folder") `indexes` 文件夹，找到需要提取资源的 #icon(name: "json") `<版本号>.json` 文件。其中的内容大致如下所示：
     #codefile(
       lang: "json",
-      title: ".minecraft\assets\indexes\<版本号>.json",
+      title: ".minecraft > assets > indexes > <版本号>.json",
   "{
   \"objects\": {
     \"icons/icon_128x128.png\": {
@@ -1512,6 +1555,154 @@ Minecraft还使用其他一些文件格式，如 `.jfr` 文件、`.log` 文件�
     这时获取到哈希值 `4674523c91196e0898c24a06531f94154111f2a3`，其前两位是 `46`。然后打开文件夹 #icon(name: "folder") `objects\46`，在其中找到名为 #icon(name: "file") `4674523c91196e0898c24a06531f94154111f2a3` 的文件，此即为简体中文的语言文件。打开后会发现文件中的汉字均是用Unicode码表示的。
   ]
 )
+#tree(
+  (0, [#icon(name: "folder") *.minecraft*]),
+  (1, [#icon(name: "folder") *backups*: 存放备份存档的文件夹。]),
+  (2, [#icon(name: "zip") *\<日期>\_\<时间>\_\<存档名称>.zip*: 一个备份存档。]),
+  (1, [#icon(name: "folder") *bin*]),
+  (2, [#icon(name: "folder") *\<随机ID>*]),
+  (3, [#icon(name: "file") `.dll` 或 `.so` 文件]),
+  (1, [#icon(name: "folder") *crash-reports*: 存储游戏崩溃报告的文件夹。]),
+  (2, [#icon(name: "text") *crash-\<日期>\_\<时间>-\<逻辑端类型>.txt*: 一份*崩溃报告（Crash Report）*#index(display: "崩溃报告（Crash Report）", "bengkuibaogao")文件。])
+)
+#tips(
+  [游戏可能会以各种原因而发生*崩溃（Crash）*#index(display: "崩溃（Crash）", "bengkui")，读者可以从崩溃报告中查询崩溃原因。例如，以下是一份崩溃报告的开头部分内容：
+  #codefile(
+    lang: "txt",
+    title: ".minecraft > crash-reports > crash-2024-02-08_21.25.56-server.txt",
+    "---- Minecraft Crash Report ----
+// I bet Cylons wouldn't have this problem.
+
+Time: 2024-02-08 21:25:56
+Description: Ticking entity"
+  )
+  其中第二行是“诙谐的评论”，对崩溃报告的分析没有作用。`Description` 行是崩溃原因，此处的崩溃原因是 `Ticking entity`，这种崩溃通常意味着有实体发生了错误。后文通常是崩溃的具体原因。
+  
+  鉴于崩溃原因多种多样，本教程无法介绍每一种崩溃原因及其解决办法，读者可以从社区获取各种崩溃原因的解决办法或者使用AI分析。]
+)
+#tree(
+  (0, [#icon(name: "folder") *.minecraft*]),
+  (1, [#icon(name: "folder") *debug*: 存储函数调试结果的文件夹。]),
+  (2, [#icon(name: "text") *debug-trace-\<日期>\_\<时间>.txt*: 一份调试结果。])
+)
+#tips(
+  [
+    命令 `/debug` 可用于函数的调试，并将调试的结果以 `.txt` 的文件格式存入 #icon(name: "folder") debug 中。文件中的内容极为详细，可以以此观察函数的整个运行过程，并从中找到错误的地方。调试结果的具体内容如：
+    #codefile(
+      lang: "txt",
+      title: ".minecraft > debug > debug-trace-2022-10-10_19.16.40.txt",
+      "[C] scoreboard players reset @s heart_of_life
+    [E] 未知的记分项'heart_of_life'    [C] advancement revoke @s only plus:items/heart_of_life
+    [E] 无法撤销Mu_xian的进度plus:items/heart_of_life，因为该玩家并未达成此进度    [C] effect clear @s absorption
+    [M] 已移除Mu_xian的伤害吸收效果
+  [R = 1] effect clear @s absorption
+  [C] scoreboard players add @s max_health 2
+    [M] 将Mu_xian的[max_health]增加了2（现在是44）
+  [R = 44] scoreboard players add @s max_health 2
+  [C] function plus:game/attributes/max_health
+    [M] 已执行函数plus:game/attributes/max_health中的0条命令
+  [R = 0] function plus:game/attributes/max_health
+  [F] plus:game/attributes/max_health size=60
+    [C] execute as @a if score @s max_health matches 1 run attribute @s max_health base set 1 -> 0
+    [C] execute as @a if score @s max_health matches 2 run attribute @s max_health base set 2 -> 0"
+    )
+    其中首行是函数的命名空间ID。以 `[C]` 开头的内容为函数中的命令行；以 `[E]` 开头的内容指明了上一条命令行出现错误的地方；以 `[M]` 开头的内容说明上一条命令执行成功，并有 `[R=<值>]` 输出执行的结果。`[F]` 说明上一条命令引用了其他函数，并指出被引用的函数的大小。
+  ]
+)
+#tree(
+  (0, [#icon(name: "folder") *.minecraft*]),
+  (1, [#icon(name: "folder") *libraries*: 按Maven仓库的标准目录结构组织和存储的第三方库。]),
+  (2, [#icon(name: "folder") 一个第三方库。]),
+  (1, [#icon(name: "folder") *logs*: 存储日志文件的文件夹。]),
+  (2, [#icon(name: "zip") *\<日期>-\<日志编号>.log.gz*: 压缩文件，可使用解压软件打开。]),
+  (3, [#icon(name: "file") *\<日期>-\<日志编号>.log*: 日志文件。]),
+  (2, [#icon(name: "file") *latest.log*: 最新一次游戏或当前正在进行的游戏所生成的日志文件。])
+)
+#tips(
+  [日志文件会存储游戏运行全过程的各种反馈，包括加载错误时的反馈，这些文件对游戏调试很重要。文件内容大致如下所示：
+  #codefile(
+    title: ".minecraft > log > 2025-03-07-1.log.gz > 2025-03-07-1.log",
+    "[19:06:06] [Render thread/INFO]: Using default channel type
+[19:06:06] [Render thread/INFO]: Started serving on 10000
+[19:06:06] [Render thread/INFO]: [System] [CHAT] 本地游戏已在端口[10000]上开启
+[19:06:41] [User Authenticator #1/INFO]: UUID of player XVExodus is 0caaf85c-27b0-4cf6-8f63-7278c55aa0e1
+[19:06:42] [Server thread/INFO]: XVExodus[/172.20.10.5:53055] logged in with entity id 252 at (-8.221424908762929, 0.0, 8.503485026934579)
+[19:06:42] [Server thread/INFO]: XVExodus加入了游戏
+[19:06:42] [Render thread/INFO]: [System] [CHAT] XVExodus加入了游戏
+[19:09:58] [Server thread/WARN]: XVExodus moved too quickly! -7.169010753171733,-1.6414613841373864,7.738717431310306
+[19:12:34] [Server thread/INFO]: [Mu_xian: 已将Mu_xian传送至XVExodus]
+[19:13:54] [Server thread/INFO]: [Mu_xian: 已将Mu_xian传送至XVExodus]
+[19:14:43] [Server thread/INFO]: [Mu_xian: 已将Mu_xian传送至XVExodus]
+[19:16:11] [Server thread/INFO]: [XVExodus: 已将XVExodus传送至Mu_xian]
+[19:16:37] [Render thread/INFO]: Loaded 610 advancements
+[19:18:25] [Render thread/WARN]: Unable to play empty soundEvent: minecraft:entity.salmon.ambient
+[19:18:32] [Render thread/INFO]: [System] [CHAT] 已设置重生点
+[19:20:23] [Render thread/INFO]: Loaded 612 advancements
+[19:22:03] [Server thread/WARN]: XVExodus moved too quickly! -4.311401208300595,-1.8757037979856364,17.86772802981045
+[19:23:27] [Server thread/INFO]: [Mu_xian: 已将Mu_xian传送至XVExodus]
+[19:23:27] [Render thread/INFO]: Loaded 612 advancements
+[19:24:38] [Server thread/INFO]: [XVExodus: 已将XVExodus传送至Mu_xian]
+[19:25:06] [Server thread/INFO]: [XVExodus: 已将XVExodus传送至Mu_xian]"
+  )
+  ]
+)
+#tree(
+  (0, [#icon(name: "folder") *.minecraft*]),
+  (1, [#icon(name: "folder") *resourcepacks*: 存储所有资源包的文件夹，其基本结构见@sec:resourcepack，具体的制作方式将在《资源包》教程中给出。]),
+  (1, [#icon(name: "folder") *saves*: 存储游戏中所有存档的文件夹，具体结构见@sec:saves 。]),
+  (2, [#icon(name: "folder") *\<存档名称>*: 一个存档。]),
+  (1, [#icon(name: "folder") *screenshots*: 存储 `F2` 截屏图片的文件夹。]),
+  (2, [#icon(name: "png") *\<日期>\_\<时间>.png*: 一张截屏，名称可手动修改。]),
+  (1, [#icon(name: "folder") *versions*: 存储游戏不同版本游戏资源的文件夹。]),
+  (2, [#icon(name: "folder") *\<版本号>*: 一个游戏版本，可以是正式版，也可以是快照。]),
+  (3, [#icon(name: "jar") *\<版本号>.jar*: 物理客户端文件，是存放该版本号游戏源代码的地方。可以用压缩软件打开这个文件。]),
+  (4, [#icon(name: "folder") *assets*: 存放该版本号原版资源包内容的文件夹，它决定了客户端游戏内容的外观。在制作资源包时可以参考这个文件夹的结构。不含在 #icon(name: "folder") `.minecraft\assets` 中存放的语言和声音文件。]),
+  (4, [#icon(name: "folder") *com*]),
+  (4, [#icon(name: "folder") *data*: 存放该版本号原版数据包内容的文件夹，它决定了可写注册表的内容，如进度、战利品表、配方、结构等。在制作数据包时可以参考这个文件夹的结构。]),
+  (4, [#icon(name: "file") *flightrecorder-config.jfc*: Java Flight Recorder配置文件，可用于JFR分析。]),
+  (4, [#icon(name: "folder") *META-INF*: `.jar` 文件的元数据。]),
+  (5, [#icon(name: "file") *LICENSE*: 游戏许可协议。]),
+  (5, [#icon(name: "file") *MANIFEST.MF*: 清单文件。]),
+  (5, [#icon(name: "file") *MOJANGCS.RSA*: 用于验证JAR的文件。]),
+  (5, [#icon(name: "file") *MOJANGCS.SF*: JAR签名。]),
+  (4, [#icon(name: "folder") *net*: 自25w45a起，Mojang发布的未经混淆的客户端其源代码均存储于该文件夹内。其中的类文件均未被混淆，可查看，是制作Mods的重要依据。]),
+  (5, [#icon(name: "folder") *minecraft*]),
+  (6, [#icon(name: "file") *\<名称>.class*: 一个未混淆的Java类文件。]),
+  (4, [#h(-2em)#icon(name: "png") *pack.png*: 原版资源包的图标。#figure(caption: [原版资源包的图标（pack.png）],image("图片/原版资源包的图标（pack.png）.png", width: 10%))]),
+  (4, [#icon(name: "json") *versions.json*: 版本信息文件，存储该版本的信息。]),
+  (3, [#icon(name: "json") *\<版本号>.json*: 客户端清单文件。]),
+  (1, [#icon(name: "folder") *webcache2*]),
+  (1, [#icon(name: "text") *allowed_symlinks.txt*: 信任符号链接列表文件。]),
+  (1, [#icon(name: "text") *command\_history.txt*: 命令历史文件，最多只能保留50条记录。]),
+  (1, [#icon(name: "png") *debug.stitched\_items.png*]),
+  (1, [#icon(name: "png") *debug.stitched\_terrain.png*]),
+  (1, [#icon(name: "nbt") *hotbar.nbt*: 存储在创造模式中保存的快捷栏信息的文件，在创造模式中的快捷栏以 `C` + `<数字>` 存储，然后以 `X` + `<数字>` 调用。可以用NBT编辑器打开这个文件。]),
+  (1, [#icon(name: "text") *launcher\_cef\_log.txt*]),
+  (1, [#icon(name: "json") *launcher\_entitlements.json*]),
+  (1, [#icon(name: "json") *launcher\_gamer\_pics.json*]),
+  (1, [#icon(name: "json") *launcher\_msa\_credentials.json*]),
+  (1, [#icon(name: "json") *launcher\_profiles.json*: 启动器档案文件。]),
+  (1, [#icon(name: "json") *launcher\_quick\_play.json*: 启动器快速进入游戏存档信息文件。]),
+  (1, [#icon(name: "json") *launcher\_settings.json*: 启动器配置文件。]),
+  (1, [#icon(name: "json") *launcher\_skins.json*]),
+  (1, [#icon(name: "json") *launcher\_ui\_state.json*]),
+  (1, [#h(-2em)#icon(name: "text") *options.txt*: 该文件存储了游戏中设定的选项，可以通过更改该文件中的内容以更改在游戏中的设置。此外一些在选项界面中不存在的设置也可以通过该文件更改。文件中内容如下所示：#codefile(lang:"txt",title:".minecraft\options.txt","version:4189
+ao:true
+biomeBlendRadius:2
+enableVsync:false
+entityDistanceScaling:1.0
+entityShadows:true")]),
+  (1, [#icon(name: "file") *output-client.log*]),
+  (1, [#icon(name: "file") *output-server.log*]),
+  (1, [#icon(name: "json") *realms\_persistence.json*: 存储Realms数据的文件。]),
+  (1, [#icon(name: "nbt") *servers.dat*: 存储玩家添加到服务器列表的多人游戏服务器的数据。]),
+  (1, [#icon(name: "png") *textures\_0.png*]),
+  (1, [#icon(name: "png") *textures\_1.png*]),
+  (1, [#icon(name: "png") *textures\_2.png*]),
+  (1, [#icon(name: "png") *textures\_3.png*]),
+  (1, [#icon(name: "png") *textures\_4.png*]),
+  (1, [#icon(name: "json") *usercache.json*: 游戏为减少重复获取玩家档案信息所使用的缓存文件。])
+)
 == 数据包
 Minecraft的命令系统虽然完善，但其功能十分有限。例如，命令没有办法直接指导游戏世界的生成；直接用命令模拟一些游戏机制也不够灵活。数据包可以看作是命令系统功能的延伸：它不仅为命令提供了程序化执行的环境，更开放了部分API以允许数据驱动内容。
 
@@ -1528,7 +1719,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 
 若这些数据包对同种资源进行定义，则*后加载的数据包会对先加载的数据包进行覆盖*，表明越靠后加载的数据包其优先级越高。可使用命令  `/datapack` 查询、修改、控制这些数据包的启用或禁用，`/datapack` 所需的权限等级为2，以下是所有用法：
 
-== 资源包
+== 资源包<sec:resourcepack>
 == 游戏机制
 游戏为命令提供了一个运行环境，为此命令系统不免受到游戏机制的制约。在时间上，命令受到游戏循环驱动的影响，以游戏刻为单位执行；在空间上，命令受到区块加载的影响，只能在允许运算的区块中执行。本节旨在介绍游戏加载、运行、更新的一些基本游戏机制。
 === 端
@@ -1538,7 +1729,7 @@ Minecraft的架构是*客户端-服务端模型*，顾名思义，Minecraft使�
 ==== 物理客户端
 *物理客户端（Physical client）*#index(display:"物理客户端（Physical client）","wulikehuduan")是指下载游戏版本得到的`<version>.jar`文件，它的默认文件路径为`.minecraft\<版本号>\<version>.jar`。物理客户端包含了游戏的全部内容，也包含了内置的客户端和服务端，即*逻辑客户端（Logical client）*#index(display:"逻辑客户端（Logical client）","luojikehuduan")和*逻辑服务端（Logical server）*#index(display:"逻辑服务端（Logical server）","luojifuwuduan")，其中逻辑服务端又称*内置服务器（Integrated server，或译为集成服务端）*#index(display:"内置服务器（Integrated server）","neizhifuwuqi")。内置服务器会受到客户端的影响。
 
-逻辑客户端负责接收来自玩家的输入、处理资源包、渲染游戏画面，并将数据输送给逻辑服务端处理；逻辑服务端负责处理由客户端发送的数据，运行游戏逻辑。例如，当玩家在游戏中移动时，客户端会根据玩家输入的移动方向渲染玩家此时的游戏画面，同时又将玩家移动的信息通过封包发送给逻辑服务端，逻辑服务端计算玩家的坐标、玩家周围是否存在任何的碰撞箱阻止玩家移动，将计算结果通过封包返还给逻辑客户端，渲染玩家移动的游戏画面。客户端的渲染会与服务端产生不一致的情况，例如标记是一种仅存在于服务端的实体，在客户端上并不会渲染标记，参见@technical_entity。
+逻辑客户端负责接收来自玩家的输入、处理资源包、渲染游戏画面，并将数据输送给逻辑服务端处理；逻辑服务端负责处理由客户端发送的数据，运行游戏逻辑。例如，当玩家在游戏中移动时，客户端会根据玩家输入的移动方向渲染玩家此时的游戏画面，同时又将玩家移动的信息通过封包发送给逻辑服务端，逻辑服务端计算玩家的坐标、玩家周围是否存在任何的碰撞箱阻止玩家移动，将计算结果通过封包返还给逻辑客户端，渲染玩家移动的游戏画面。客户端的渲染会与服务端产生不一致的情况，例如标记是一种仅存在于服务端的实体，在客户端上并不会渲染标记，参见@sec:technical_entity。
 #figure(
   caption: [逻辑客户端和逻辑服务端的运行流程],
   image("图片/逻辑客户端和逻辑服务端的运行流程.png", width: 60%)
@@ -1631,8 +1822,9 @@ Minecraft规定：大部分方块的长、宽和高均为1米，体积为1立方
 ==== 二维坐标
 即只由$x$坐标和$z$坐标构成的*二维坐标（Two-dimensional coordinates）*#index(display:"二维坐标（Three-dimensional coordinates）","erweizuobiao")。二维坐标的命令参数类型为`minecraft:vec2`，两个元素均为双精度浮点数。二维坐标若为整数，则也使用中心校准。
 
-= 区块格式
-== 技术性实体 <technical_entity>
+= 存档格式
+== 存档文件夹的结构<sec:saves>
+== 技术性实体<sec:technical_entity>
 
 #heading(level: 1, numbering: none, outlined: false, [索引])
 #columns(2)[
