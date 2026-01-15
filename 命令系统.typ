@@ -1,13 +1,5 @@
-#import "@preview/in-dexter:0.7.2": *
-#import "@preview/showybox:2.0.4": showybox
-#import "@preview/hydra:0.6.2": hydra
-#import "@preview/itemize:0.2.0" as el
-#import "@preview/codly:1.3.0": *
-#import "@preview/codly-languages:0.1.1": *
-#import "@preview/wrap-it:0.1.1": wrap-content
-#import "自定义包/stringtree.typ": stringtree
-#show: codly-init.with()
-#import table: cell, header
+#import "模板.typ": *
+#show: template-style
 
 // 封面
 #[
@@ -54,667 +46,7 @@
   ]
 ]
 
-// 字体
-#set text(
-  font: (
-    (
-      name: "FZShuSong GB18030L2",
-      covers: regex("[·“”‘’…|/\[\]\{\}<>—]")
-    ),
-    "TeX Gyre Termes",
-    "FZShuSong GB18030L2"
-  ),
-  lang: "zh"
-)
-#show strong: it => {
-  set text(
-    font: ("TeX Gyre Termes", "FZHeiTi GB18030L2"),
-    weight: "bold", 
-    fill: red,
-  )
-  it 
-}
-
-// 段落
-#set par(
-  first-line-indent: (
-    all: true,
-    amount: 2em
-  ),
-  justify: true,
-  spacing: 0.65em
-)
-
-// 页面
-#set page(
-  header: context [
-    #counter(footnote).update(0)
-    #set text(
-      size: 0.8em
-    )
-    #if calc.rem(here().page(), 2) == 1 {
-      [
-        #set text(
-          font: (
-            "TeX Gyre Termes",
-            "FZKaiTi GB18030L2"
-          )
-        )
-        #hydra(skip-starting: false, 1)
-        #h(1fr)
-        徐木弦原版技术性开发系列教程
-      ]
-    } else {
-      [
-        #set text(
-          font: (
-            "TeX Gyre Termes",
-            "FZKaiTi GB18030L2"
-          )
-        )
-        徐木弦原版技术性开发系列教程
-        #h(1fr)
-        #hydra(2, skip-starting: false)
-      ]
-    }
-  ],
-  numbering: "1",
-  number-align: center,
-)
-
-// 有序列表
-#show: el.default-enum-list.with(
-  body-indent: 0em,
-  indent: 0.5em,
-  label-align: left,
-  label-width: 1.5em
-)
-#let c1 = counter("L1")
-#let c2 = counter("L2")
-#let c3 = counter("L3")
-#let item(level, body, new: false) = {
-  if new {
-    c1.update(0)
-    c2.update(0)
-    c3.update(0)
-  }
-  if level == 1 { c2.update(0); c3.update(0) }
-  else if level == 2 { c3.update(0) }
-  if level == 1 { c1.step() }
-  else if level == 2 { c2.step() }
-  else if level == 3 { c3.step() }
-  context {
-    let label-text = if level == 1 { c1.display("1.") }
-    else if level == 2 { c2.display("(1)") }
-    else if level == 3 { c3.display("①") }
-    else { c1.display("a.") }
-    let label-width = 1.5em
-    let gap = if level == 2 { 0.5em } else { 0em }
-    let left-indent = (level - 1) * 1.5em + 0.5em
-    set par(
-      first-line-indent: 0em, 
-      hanging-indent: label-width + gap,
-    )
-    
-    pad(left: left-indent)[
-      #box(width: label-width)[#label-text]#h(gap)#body
-    ]
-  }
-}
-#let i1 = item.with(1)
-#let i2 = item.with(2)
-#let i3 = item.with(3)
-#let i4 = item.with(4)
-#show enum: it => {
-  set par(first-line-indent: 0em)
-  set text(
-    font: (
-      (
-        name: "FZShuSong GB18030L2",
-        covers: regex("[·“”‘’…|/\[\]\{\}<>—]")
-      ),
-      "TeX Gyre Termes",
-      "FZShuSong GB18030L2"
-    )
-  )
-  it
-}
-#set enum(numbering: n => text(font:"TeX Gyre Termes", [#n.]))
-
-// 代码块
-#show raw: it => {
-  if it.block {
-    it
-  } else {
-    h(0.25em) + box(
-      baseline: -1pt,
-      outset: (x: 2pt, y: 3pt),
-      fill: rgb("#fef2f2"),
-      stroke: 0.5pt + red,
-      radius: 2pt,
-      text(font: ("Consolas","FZShuSong GB18030L2"), size: 0.9em, it)
-    ) + h(0.25em)
-  }
-}
-
-// 有编号代码行
-#let codeline = counter("codeline")
-#show figure.where(kind: "codebox"): it => {
-  set block(above: 1em, below: 1em)
-  it
-}
-#let codebox(body, label: none, supplement: none) = figure(
-  supplement: supplement,
-  kind: "codebox",
-  {
-    set align(left)
-    block(
-      clip: true,
-      fill: white,
-      height: auto,
-      stroke: 1pt + red,
-      radius: 6pt,
-      width: 100%,
-      grid(
-        columns: (1fr, auto),
-        column-gutter: 16pt,
-        block(
-          inset: 8pt,
-          width: 100%,
-          {
-            set text(
-              font: (
-                "Consolas",
-                "FZShuSong GB18030L2"
-              ),
-              size: 0.85em
-            )
-            body
-          }
-        ),
-        grid.cell(
-          align: horizon,
-          fill: rgb("#ff6565"),
-          inset: 8pt,
-          {
-            set text(
-              fill: white,
-              font: "Consolas",
-              size: 0.85em,
-              weight: "bold"
-            )
-            context[#counter(heading).get().at(0)] + "." + h(-0.5em) + [
-              #codeline.step()
-              #context codeline.display()
-            ]
-          }
-        )
-      )
-    ) + label
-  },
-  numbering: it => [#counter(heading).get().at(0).#(counter("codeline").get().at(0)+1)]
-)
-
-// 公式
-#show math.equation: it => {
-  set text(
-    font: "TeX Gyre Termes Math"
-  )
-  h(2pt) + it + h(2pt)
-}
-
-// 参数解释
-#let param-desc(prefix: "其中的参数：", ..args) = {
-  let pos-args = args.pos()
-  grid(
-    columns: (auto, 1fr),
-    column-gutter: 0.2em,
-    row-gutter: 0.65em,
-    ..pos-args.chunks(2).enumerate().map(((i, pair)) => {
-      let (info, desc) = pair
-      (
-        grid.cell(align: right)[
-          #if i == 0 [#prefix]
-          #info——],
-        desc
-      )
-    }).flatten()
-  )
-}
-
-// 例题
-#let exa = counter("exa")
-#let example(question, solution) = {
-  exa.step()
-  block(height: 0pt, width: 0pt, sticky: true)
-  showybox(
-    breakable: true,
-    footer: [
-      #h(-1em)
-      #box[
-        #box(
-          fill: rgb("#ffcece"),
-          inset: (
-            x: 0.5em,
-            y: 0.5em
-          ),
-          radius: 1em,
-          [解]
-        )
-        #h(-2.4em)
-        #box(
-          baseline: -2pt,
-          fill: rgb("#d71d1d"),
-          inset: (
-            x: 0.5em,
-            y: 0.5em
-          ),
-          radius: 1em,
-          [
-            #set text(
-              fill: white,
-              font: "Minecraft"
-            )
-            解
-          ]
-        )
-      ]
-      #h(1em)
-      #solution
-    ],
-    footer-style: (
-      color: black,
-      sep-thickness: 0pt
-    ),
-    frame: (
-      body-color: rgb("#ffcece"),
-      border-color: rgb("#d71d1d"),
-      footer-color: white,
-      title-color: rgb("#d71d1d"),
-      title-inset: (x: 0.6em, y: 0.5em)
-    ),
-    shadow: (
-      color: rgb("#ff6565"),
-      offset: 3pt
-    ),
-    title: {
-      set text(
-        font: "Minecraft"
-      )
-      [例] + context str(counter(heading).get().at(0)) + "." + context exa.display()
-    },
-    title-style: (
-      boxed-style: (
-        anchor: (
-          x: left,
-          y: horizon
-        ),
-        radius: 5pt
-      ),
-      color: white
-    )
-  )[
-    #show: block.with(breakable: true)
-    #question]
-}
-
-// 图片
-#show figure: set block(above: 1.5em, breakable: true)
-#set figure(numbering: it => str(counter(heading).get().at(0)) + "." + counter(image).display("1"))
-#let sub-figure(align: center, caption: [子图片], columns: 2, gutter: 2em, label: none, rows: auto, ..images) = [
-  #figure(
-    caption: caption,
-    grid(
-      align: align,
-      columns: columns,
-      gutter: gutter,
-      rows: rows,
-      ..images
-    ),
-  ) #label
-  #let sub-figure-counter = columns - 1
-  #counter(image).update(n => n - sub-figure-counter)
-]
-
-// 表格
-#let tab_numbering(.., desc) = {
-  context str(counter(heading).get().at(0)) + "." + counter(table).display("1")
-}
-#show figure.where(kind: table): set figure(gap: 0.3em)
-#show figure.where(kind: table): set figure.caption(position: top, separator: "  ")
-#show figure.caption: set text(font: ("TeX Gyre Termes", "FZHeiTi GB18030L2",), size: 0.85em, weight: "bold")
-#show figure.caption: set block(sticky: true)
-#show table.cell: it => {
-  if it.y == 1 {
-    set text(
-      fill: white,
-      font: ("TeX Gyre Termes", "FZHeiTi GB18030L2"),
-      size: 0.85em,
-      weight: "bold"
-    )
-    it
-  }
-  else {
-    set text(
-      size: 0.85em
-    )
-    it
-  }
-}
-#let xubiao = state("xubiao")
-#show table: it => xubiao.update(false) + it
-#let general-table(
-  caption: [表格标题],
-  columns: auto,
-  colspan: 1,
-  header: (),
-  seperator: (),
-  ..content,
-) = figure(
-  caption: caption,
-  numbering: tab_numbering,
-  table(
-    align: center + horizon,
-    columns: columns,
-    fill: (x, y) => {
-      if x in seperator {red}
-      else if y == 0 { rgb("#ffffff00") }
-      else if y == 1 { rgb("#ff6565") }
-      else if calc.rem(y, 2) == 1 {rgb("#fde9e9")}
-      else {rgb("#fff8f8")}
-    },
-    gutter: 0.2em,
-    stroke: none,
-    table.header(
-      table.cell(
-        colspan: colspan,
-        {
-          context if xubiao.get() {
-            align(right)[
-              #set text(
-                font: "FZKaiTi GB18030L2"
-              )
-              （续表）
-            ]
-          } else {
-            v(-0.9em)
-            xubiao.update(true)
-          }
-        }
-      ),
-      ..header
-    ),
-    ..content
-  )
-)
-
-// 标题
-#show heading: set align(center)
-#show heading: set text(
-  font: (
-    "TeX Gyre Termes",
-    "Source Han Serif"
-  )
-)
-#show heading.where(level: 1): it => {
-  set text(size: 2em)
-  counter(image).update(1)
-  counter(table).update(1)
-  context codeline.update(0)
-  context exa.update(0)
-  pagebreak(weak: true)
-  block(v(5em) + it + v(2em))
-}
-#show heading.where(level: 2): it => {
-  set text(fill: rgb("#d71d1d"), size: 1.8em)
-  block(v(1em) + it + v(1em))
-}
-#show heading.where(level: 3): it => {
-  set align(left)
-  set text(fill: rgb("#d71d1d"), size: 1.4em)
-  block(v(0.2em) + it + v(0.6em))
-}
-#show heading.where(level: 4): it => {
-  set align(left)
-  set text(fill: rgb("#d71d1d"), font: "FZHeiTi GB18030L2", size: 1em)
-  block(v(0.2em) + it + v(0.6em))
-}
-#let book-heading(..nums) = {
-  let level = nums.pos().len()
-  let space = h(0.8em)
-  if level == 1 {
-    let chapter-num = numbering("一", nums.at(0))
-    return "第" + chapter-num + "章" + space
-  } else if level == 2 {
-    return numbering("1.1", ..nums) + space
-  } else if level == 3 {
-    return numbering("1.1.1", ..nums) + space
-  } else if level == 4 {
-    return numbering("一、", nums.at(3))
-  } else {
-    return none
-  }
-}
-#set heading(
-  numbering: book-heading
-)
-
-// 引用
-#show ref: it => {
-  if it.element != none and it.element.func() == heading {
-    let el = it.element
-    let nums = counter(heading).at(el.location())
-    if el.level == 1 {
-      [第#numbering("一", nums.at(0))章]
-    } else if el.level == 2 {
-      numbering("1.1", ..nums)
-    } else if el.level == 3 {
-      numbering("1.1.1", ..nums)
-    } else if el.level == 4 {
-      numbering("一、", nums.at(3))
-    }
-  } else {
-    it
-  }
-}
-
-// 脚注
-#set footnote(
-  numbering: " ①"
-)
-#show footnote.entry: it => {
-  let loc = it.note.location()
-  numbering(
-    "①  ",
-    ..counter(footnote).at(loc),
-  )
-  it.note.body
-}
-
-// 提示
-#let tips(width: 100%, content) = block(
-  width: width,
-  showybox(
-    breakable: true,
-    frame: (
-      body-color: rgb("#ffcece"),
-      border-color: rgb("#d71d1d"),
-      title-color: rgb("#d71d1d"),
-      title-inset: (x: 0.6em, y: 0.5em)
-    ),
-    title: (text(font: "Minecraft", size: 0.9em, "小提示")),
-    title-style: (
-      boxed-style: (
-        anchor: (
-          x: left,
-          y: horizon
-        ),
-        radius: 5pt
-      ),
-      color: white
-    ),
-    width: width,
-    [
-      #set text(size: 0.9em)
-      #content
-    ]
-  )
-)
-
-// 图标
-#let icon(name: none) = {
-  if name == "folder" {
-    box(image("图标/data/文件夹.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
-  }
-  if name == "file" {
-    box(image("图标/data/文件.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
-  }
-  if name == "text" {
-    box(image("图标/data/文本文件.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
-  }
-  if name == "png" {
-    box(image("图标/data/图片文件.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
-  }
-  if name == "nbt" {
-    box(image("图标/data/NBT文件.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
-  }
-  if name == "json" {
-    box(image("图标/data/JSON文件.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
-  }
-  if name == "mcfunction" {
-    box(image("图标/data/函数文件.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
-  }
-  if name == "ogg" {
-    box(image("图标/data/声音文件.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
-  }
-  if name == "zip" {
-    box(image("图标/data/压缩文件.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
-  }
-  if name == "jar" {
-    box(image("图标/data/JAR文件.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
-  }
-  if name == "json-string" {
-    box(image("图标/data/JSON字符串.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
-  }
-  if name == "json-bool" {
-    box(image("图标/data/JSON布尔值.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
-  }
-  if name == "json-number" {
-    box(image("图标/data/JSON数值.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
-  }
-  if name == "json-array" {
-    box(image("图标/data/JSON数组.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
-  }
-  if name == "json-object" {
-    box(image("图标/data/JSON对象.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
-  }
-  if name == "vscode" {
-    box(image("图标/VSCode.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
-  }
-  if name == "dhp" {
-    box(image("图标/DHP.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
-  }
-  if name == "nbtstudio" {
-    box(image("图标/NBTStudio.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
-  }
-  if name == "paint" {
-    box(image("图标/画图.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
-  }
-  if name == "ps" {
-    box(image("图标/PS.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
-  }
-  if name == "gimp" {
-    box(image("图标/GIMP.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
-  }
-}
-
-// 文件
-#let codefile(title: "", body, lang: "file") = {
-  codly(
-    display-name: false,
-    fill: rgb("#fff8f8"),
-    header: [
-      #set text(
-        fill: white,
-        font: (
-          "Consolas",
-          "FZShuSong GB18030L2"
-        ),
-        weight: "bold"
-      )
-      #h(0.5em)
-      #title
-    ],
-    header-cell-args: (
-      fill: rgb("#ff6565")
-    ),
-    languages: (
-      json: (
-        color: rgb("#00000000"),
-        icon: [
-          #set text(size: 1.2em)
-          #icon(name:"json")#h(0.5em)
-        ],
-        name: "json"
-      ),
-      mcfunction: (
-        color: rgb("#00000000"),
-        icon: [
-          #set text(size: 1.2em)
-          #icon(name:"mcfunction")#h(0.5em)
-        ],
-        name: "mcfunction"
-      ),
-      txt: (
-        color: rgb("#00000000"),
-        icon: [
-          #set text(size: 1.2em)
-          #icon(name:"text")#h(0.5em)
-        ],
-        name: "txt"
-      ),
-      file: (
-        color: rgb("#00000000"),
-        icon: [
-          #set text(size: 1.2em)
-          #icon(name:"file")#h(0.5em)
-        ],
-        name: "file"
-      )
-    ),
-    number-format: n => text(fill: red, weight: "bold")[#h(0.5em)#n#h(0.5em)],
-    radius: 5pt,
-    stroke: 1pt + rgb("#d71d1d"),
-    zebra-fill: rgb("#fde9e9")
-  )
-  show raw: set text(font: ("Consolas", "FZShuSong GB18030L2"))
-  raw(body, block: true, lang: lang)
-}
-
-// 树状图
-#let tree(..items) = stringtree(line_color: red, ..items)
-
+#set heading(numbering: book-heading)
 #heading(level: 1, numbering: none, outlined: false, [第一版序言])
 Minecraft拥有多种多样的玩法，生存、PVP、PVE、模组、建筑、红石电路这些为众多玩家所熟知的玩法自成体系，玩家可以自由选择其中的某一方面深入研究。在这些玩法中，比较默默无闻的一种玩法可能便是广义上的命令，即包含了MC-CMD（命令）、资源包和数据包的系统。
 
@@ -784,7 +116,7 @@ Minecraft拥有多种多样的玩法，生存、PVP、PVE、模组、建筑、�
 #pagebreak()
 #counter(page).update(1)
 = 绪论
-原版技术性开发，Minecraft Wiki称为“Java版可自定义内容”，是由命令、资源包、数据包及相关的组件附件组合成的一个板块。技术性开发成果丰富，这些成果即是社区玩家常用的Mods、冒险地图、数据包、资源包、服务器等。Minecraft的技术性开发大致分为Mods开发和原版开发，其区别在于是否对游戏的源代码进行了修改。
+原版技术性开发，Minecraft Wiki称为“Java版可自定义内容”#cite(<minecraft_wiki>, form: none)，是由命令、资源包、数据包及相关的组件附件组合成的一个板块。技术性开发成果丰富，这些成果即是社区玩家常用的Mods、冒险地图、数据包、资源包、服务器等。Minecraft的技术性开发大致分为Mods开发和原版开发，其区别在于是否对游戏的源代码进行了修改。
 
 本系列教程针对的是原版技术性开发，这一部分玩家的工作方向通常为制作冒险地图、开发原版模组、制作资源包或者管理服务器。
 
@@ -1044,7 +376,7 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 下面举两个例子以说明之：
 #example(
   [
-    有数据包函数文件路径为 `minecraft\function\load.mcfunction`，试用命名空间ID指定之。
+    #h(-2em)有数据包函数文件路径为 `minecraft\function\load.mcfunction`，试用命名空间ID指定之。
   ],
   [
     这里 `function` 为资源类型，`.mcfunction` 为文件的后缀。故命名空间ID为
@@ -1053,7 +385,7 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 )
 #example(
   [
-    有资源包纹理文件路径为 `minecraft\textures\block\command_block_front.png`，试用命名空间ID指定之。
+    #h(-2em)有资源包纹理文件路径为 `minecraft\textures\block\command_block_front.png`，试用命名空间ID指定之。
   ],
   [
     这里 `textures` 为资源类型，`.png` 是文件后缀，依照其路径将命名空间ID写为
@@ -1332,7 +664,7 @@ JSON格式键值对的基本语法为：
 #wrap-content(
   tips(
     [键名的两侧必须是*英文引号*，且不接受单引号！],
-    width: 10em
+    width: 15em
   ),
   [
     
@@ -1419,10 +751,12 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
     相同层级的节点会表示为相同的缩进。
     #i1[对于一个字段：]
     #icon(name: "json-string") *field*: `这是一个字段`
-    #i2[字段开头的#icon(name: "json-string")#icon(name: "json-bool")#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object")表示这个字段使用的数据类型。]
+    #i2[字段开头的#icon(name: "json-string")#icon(name: "json-bool")#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object")表示这个字段使用的数据类型。如果出现了多种数据类型，则表示这些数据类型均可使用。]
     #i2[加粗红色的字表示这个字段的键名。]
-    #i2[冒号后面如果只有`代码块`，表示此`代码块`是该字段使用的真实值。如果冒号后面是一段文字，则这是对于该字段的解释。如：]
+    #i2[冒号后面如果只有 `代码块`，表示此 `代码块` 是该字段使用的真实值。如果冒号后面是一段文字，则这是对于该字段的解释。如：]
     #icon(name: "json-string") *field*: 这是对于这个字段的解释。
+    #i2[如果键名有下划线，则表示这个字段是必填项：]
+    #icon(name: "json-string") *#underline[string]*: 此项为必选项。
   ],
   width: 100%
 )
@@ -1459,9 +793,9 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
   [
     字段@code:json_escape_example_1 的值出现了连续三个反斜杠 `\\\` 的情况，第一个反斜杠用于转义第二个反斜杠，而第二个反斜杠不再具有转义作用；而第三个反斜杠后面没有其他转义序列，故值无效。
 
-    对于@code:json_escape_example_2，依次检验所有反斜杠：第一个反斜杠用于转义引号，第二个反斜杠用于转义第三个反斜杠，第四个反斜杠用于转义第五个反斜杠，第六个反斜杠用于转义引号。故值为`"\Hello World!\"`。
+    对于@code:json_escape_example_2，依次检验所有反斜杠：第一个反斜杠用于转义引号，第二个反斜杠用于转义第三个反斜杠，第四个反斜杠用于转义第五个反斜杠，第六个反斜杠用于转义引号。故值为 `"\Hello World!\"`。
 
-    字符串两端的反斜杠数量不一定需要相等，因此字段@code:json_escape_example_3 是有效的，输出结果`"Hello World\"`。
+    字符串两端的反斜杠数量不一定需要相等，因此字段@code:json_escape_example_3 是有效的，输出结果 `"Hello World\"`。
 
     注意，@code:json_escape_example_4 的所有转义序列都书写正确，但第三个反斜杠后面存在一个引号，而第三个反斜杠已被第二个反斜杠转义而失去转义作用。因此用于定义字符串的引号配对混乱，该值无效。判断一个值是否有效，不仅需要有效的转义序列，还要注意字符串本身的双引号是否正确配对。
   ]
@@ -1560,11 +894,9 @@ Minecraft还使用其他一些文件格式，如 `.jfr` 文件、`.log` 文件�
   ]
 )
 #example(
+  [#h(-2em)在 #icon(name: "folder") `assets` 文件夹内找到1.21.4版本（哈希表版本号显示为 `19`）简体中文语言的资源文件。],
   [
-    在 #icon(name: "folder") `assets` 文件夹内找到1.21.4版本（哈希表版本号显示为 `19`）简体中文语言的资源文件。
-  ],
-  [
-    在 #icon(name: "json") `<19>.json` 文件中查询 `zh\_cn` 字样，可以找到一个键名为 `minecraft/lang/zh_cn.json` 的键值对：
+    在 #icon(name: "json") `<19>.json` 文件中查询 `zh_cn`，可以找到一个键名为 `minecraft/lang/zh_cn.json` 的键值对：
     #codebox("\"minecraft/lang/zh_cn.json\": {
   \"hash\": \"4674523c91196e0898c24a06531f94154111f2a3\",
   \"size\": 459788
@@ -1703,7 +1035,7 @@ Description: Ticking entity"
   (1, [#icon(name: "json") *launcher\_settings.json*: 启动器配置文件。]),
   (1, [#icon(name: "json") *launcher\_skins.json*]),
   (1, [#icon(name: "json") *launcher\_ui\_state.json*]),
-  (1, [#h(-2em)#icon(name: "text") *options.txt*: 该文件存储了游戏中设定的选项，可以通过更改该文件中的内容以更改在游戏中的设置。此外一些在选项界面中不存在的设置也可以通过该文件更改。文件中内容如下所示：#codefile(lang:"txt",title:".minecraft\options.txt","version:4189
+  (1, [#h(-2em)#icon(name: "text") *options.txt*: 该文件存储了游戏中设定的选项，可以通过更改该文件中的内容以更改在游戏中的设置。此外一些在选项界面中不存在的设置也可以通过该文件更改。文件中内容如下所示：#codefile(lang:"txt",title:".minecraft > options.txt","version:4189
 ao:true
 biomeBlendRadius:2
 enableVsync:false
@@ -1723,7 +1055,7 @@ entityShadows:true")]),
 == 数据包
 Minecraft的命令系统虽然完善，但其功能十分有限。例如，命令没有办法直接指导游戏世界的生成；直接用命令模拟一些游戏机制也不够灵活。数据包可以看作是命令系统功能的延伸：它不仅为命令提供了程序化执行的环境，更开放了部分API以允许数据驱动内容。
 
-*数据包（Data pack）*#index(display: "数据包（Data pack）", "shujubao")*允许玩家在不修改游戏代码的前提下覆盖既有的或添加自定义的游戏内容。*因此，*原版技术性开发从不添加任何不在可写注册表内的游戏内容，只会用各种手段模拟这些游戏内容*。数据包本质上是一个文件夹或压缩文件。一个数据包仅对特定的游戏世界有效，它被储存在 `.minecraft\saves\<存档名称>\datapacks` 中。数据包可以是文件夹，也可以是 `.zip` 类型的压缩文件。同一个 #icon(name:"folder") `datapacks` 文件夹内能存放多个数据包。
+#proper-noun(display: "数据包（Data pack）", "shujubao")*允许玩家在不修改游戏代码的前提下覆盖既有的或添加自定义的游戏内容。*因此，*原版技术性开发从不添加任何不在可写注册表内的游戏内容，只会用各种手段模拟这些游戏内容*。数据包本质上是一个文件夹或压缩文件。一个数据包仅对特定的游戏世界有效，它被储存在 `.minecraft\saves\<存档名称>\datapacks` 中。数据包可以是文件夹，也可以是 `.zip` 类型的压缩文件。同一个 #icon(name:"folder") `datapacks` 文件夹内能存放多个数据包。
 
 数据包有两种添加方式——
 + 手动添加：直接将数据包添加至 `.minecraft\saves\<存档名称>\datapacks`。
@@ -1764,14 +1096,14 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 #i1[启用指定的数据包，并调整其加载优先级居于另一个数据包]
 #codebox("datapack enable <name> (before|after) <existing>")
 #param-desc(
-  [`(before|after)`], [设置 `before` 以将该数据包的加载放于数据包 `<existing>` *之前1位*，因此优先级比数据包 `<existing>` *低1级*；设置 `before` 以将该数据包的加载放于数据包 `<existing>` *之后1位*，因此优先级比数据包 `<existing>` *高1级*。],
-  [`<existing>`（字符串 `brigadier:string`）], [必须为一个存在并已启用的数据包的名称。可用字符与<name>一致。]
+  [`(before|after)`], [设置 `before` 以将该数据包的加载放于数据包 `<existing>` *之前1位*，因此优先级比数据包 `<existing>` *低1级*；设置 `after` 以将该数据包的加载放于数据包 `<existing>` *之后1位*，因此优先级比数据包 `<existing>` *高1级*。],
+  [`<existing>`（字符串 `brigadier:string`）], [必须为一个存在并已启用的数据包的名称。可用字符与 `<name>` 一致。]
 )
 #i1[新建一个空数据包，并设置此数据包的描述，注意，被创建的数据包默认为禁用状态]
 #codebox("datapack create <id> <description>")
 #param-desc(
   [`<id>`（字符串 `brigadier:string`）], [新建数据包的名称，可用字符与上述 `<name>` 参数一致。],
-  [`<description>`（文本组件 `minecraft:component`）], [该数据包的描述，是为元数据 `pack.mcmeta` 内 #icon(name: "json-string")#icon(name: "json-object")#icon(name: "json-array") `description` 的值。需要是文本组件，具体写法可参照@chap:text_component。]
+  [`<description>`（文本组件 `minecraft:component`）], [该数据包的描述，是为元数据 `pack.mcmeta` 内 #icon(name: "json-string")#icon(name: "json-array")#icon(name: "json-object") `description` 的值。需要是文本组件，具体写法可参照@chap:text_component。]
 )
 编写数据包是一个“修改——调试——再修改——再调试”的重复过程，在既有内容的基础上对数据包做出修改并保存后，游戏不会立即识别这些修改的内容，而是依旧在修改前数据包的基础上运行原先的内容。此时需要重新加载数据包。
 
@@ -1787,15 +1119,14 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 
     其中维度、世界生成这些控制世界生成方式的注册项，对于已经生成的区块或维度，也无法通过世界加载重新生成这些区块或维度。因此自定义世界生成模块需要在世界首次加载时就被应用，即需要在创建世界时添加数据包而非在世界运行过程中手动添加数据包。如果确需在在世界运行过程中修改世界生成，可在确保世界仅作调试使用的前提下删除存档中需要重新生成区块的Anvil文件或自定义维度文件夹使其重新加载。
   ],
-  align: right,
-  column-gutter: 2em
+  align: right
 )
-对于非数据包标签、函数、进度、战利品表、物品修饰器、战利品表谓词或配方的注册项，进入存档会出现*实验性设置（Experimental settings）*#index(display: "实验性设置（Experimental settings）", "shiyanxingshezhi")的警告，此时可点击创建备份并加载或我知道我在做什么！。但若这些注册项出现各种各样的错误（不一定是语法错误），则进入存档会出现*安全模式（Safe mode）*#index(display: "安全模式（Safe mode）", "anquanmoshi")错误，可在官方启动器设置中打开“当《Minecraft：Java版》启动时输出日志”一项以随时获得错误日志，或在 `.minecraft\debug` 文件夹中获取 `.txt` 输出日志以检查存在的错误。
+对于非数据包标签、函数、进度、战利品表、物品修饰器、战利品表谓词或配方的注册项，进入存档会出现#proper-noun(display: "实验性设置（Experimental settings）", "shiyanxingshezhi")的警告，此时可点击创建备份并加载或我知道我在做什么！。但若这些注册项出现各种各样的错误（不一定是语法错误），则进入存档会出现#proper-noun(display: "安全模式（Safe mode）", "anquanmoshi")错误，可在官方启动器设置中打开“当《Minecraft：Java版》启动时输出日志”一项以随时获得错误日志，或在 `.minecraft\debug` 文件夹中获取 `.txt` 输出日志以检查存在的错误。
 
 数据包的编写是一个极为繁琐的过程，需要不断地调试、纠错，有时甚至要对其底层逻辑进行重构。在编写数据包之前，读者应提前做好规划，对其可行性进行初步的研究，还要考虑数据包运行过程中的流畅性、玩家游玩过程中的平衡性。编写过程合理使用文件层级，对文件适当分类，以免内容混乱，降低文件可读性。
 
 原版数据包位于 #icon(name: "folder") `.minecraft\versions\<版本号>\<版本号>.jar\data`，是编写自定义数据包的重要依据，读者可参考之。
-=== 数据包的元数据与基本结构
+=== 数据包的基本结构
 一个数据包拥有以下的基本结构：
 #tree(
   (0, [#icon(name: "folder") *\<数据包名称>*或 #icon(name: "zip") *\<数据包名称>.zip*]),
@@ -1805,7 +1136,79 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   (1, [#icon(name: "json") *pack.mcmeta*]),
   (1, [#icon(name: "png") *pack.png*])
 )
-其中，#icon(name: "json") `pack.mcmeta` 是数据包的*元数据（Metadata）*#index(display: "元数据（Metadata）", "yuanshuju")。只有当元数据存在时，游戏才能识别数据包。#icon(name: "json") `pack.mcmeta` 使用JSON格式，其包含的内容如下所示：
+==== 元数据
+其中，#icon(name: "json") `pack.mcmeta` 是数据包的#proper-noun(display: "元数据（Metadata）", "yuanshuju")。所谓元数据，就是用于决定 #icon(name: "folder") `<数据包名称>` 或 #icon(name: "zip") `<数据包名称>.zip` 这个文件（夹）是否为一个数据包的基本数据。只有当元数据存在时，游戏才能识别数据包。
+
+#icon(name: "json") `pack.mcmeta` 使用JSON格式，其包含的内容如下所示：
+#tree(
+  (0, [#icon(name: "json-object") 文件封装]),
+  (1, [#icon(name: "json-object") *#underline[pack]*: 此数据包的基本信息。]),
+  (2, [#icon(name: "json-string")#icon(name: "json-array")#icon(name: "json-object") *#underline[description]*: 任意文本，使用文本组件格式，可用于对数据包的简单介绍。此段文本会出现在选项数据包中。使用 `/datapack list` 列举数据包时，将鼠标悬停于数据包名称上也会显示此文本。]),
+  (2, [#icon(name: "json-number")#icon(name: "json-array") *#underline[max_format]*: 数据包最高兼容的版本号。若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon(name: "json-number") 形式或在 #icon(name: "json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0x7fffffff`。]),
+  (2, [#icon(name: "json-number")#icon(name: "json-array") *#underline[min_format]*: 数据包最低兼容的版本号。若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon(name: "json-number") 形式或在 #icon(name: "json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0`。]),
+  (2, [#icon(name: "json-number") *pack_format*: 25w31a以前用于指定数据包版本号的字段，现已弃用，可用于兼容旧版数据包。]),
+  (2, [#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") *supported_formats*: 25w31a以前用于指定数据包版本号兼容范围的字段，现已弃用，可用于兼容旧版数据包。]),
+  (3, [*若使用 #icon(name: "json-number") 形式，则精确匹配，效果与#icon(name: "json-number") pack_format一致*], false),
+  (3, [*若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为最低兼容的版本号，第二个为最高兼容的版本号*], false),
+  (3, [*若使用 #icon(name: "json-object") 形式，则有以下字段：*], false),
+  (3, [#icon(name: "json-number") *max_inclusive*: 最高兼容的版本号。]),
+  (3, [#icon(name: "json-number") *min_inclusive*: 最低兼容的版本号。]),
+  (1, [#icon(name: "json-object") *features*: 可选，用于启用实验性内容，若指定该键，则数据包必须在创建世界时添加。]),
+  (2, [#icon(name: "json-array") *#underline[enabled]*: 启用实验性内容数据包的列表。]),
+  (3, [#icon(name: "json-string") 一个实验性内容数据包的命名空间ID，当前版本可用值有 `minecraft:trade_rebalance`（村民交易平衡性调整）、`minecraft:redstone_experiments`（红石实验性内容）和 `minecraft:minecart_improvements`（矿车改进）。]),
+  (1, [#icon(name: "json-object") *filter*: 可选，用于指定在数据包加载列表中优先级低于该数据包的数据包内要禁用的内容。]),
+  (2, [#icon(name: "json-array") *block*: 禁用内容列表。]),
+  (3, [#icon(name: "json-object") 一项被禁用的内容。]),
+  (4, [#icon(name: "json-string") *namespace*: 要禁用的命名空间，若省略则禁用所有命名空间，可使用正则表达式。]),
+  (4, [#icon(name: "json-string") *path*: 要禁用的资源路径，若省略则禁用所有路径，可使用正则表达式。]),
+  (1, [#icon(name: "json-object") *overlays*: 可选，用于子数据包的识别。]),
+  (2, [#icon(name: "json-array") *#underline[entries]*: 可用子数据包的列表。]),
+  (3, [#icon(name: "json-object") 一个子数据包。]),
+  (4, [#icon(name: "json-string") *#underline[directory]*: 该子数据包相对于主数据包根目录的路径。]),
+  (4, [#icon(name: "json-number")#icon(name: "json-array") *max_format*: 该子数据包最高兼容的版本号。若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon(name: "json-number") 形式或在 #icon(name: "json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0x7fffffff`。]),
+  (4, [#icon(name: "json-number")#icon(name: "json-array") *min_format*: 该子数据包最低兼容的版本号。若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon(name: "json-number") 形式或在 #icon(name: "json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0`。]),
+  (4, [#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") *formats*: 25w31a以前用于指定子数据包版本号兼容范围的字段，现已弃用，可用于兼容旧版数据包。]),
+  (5, [*若使用 #icon(name: "json-number") 形式，则精确匹配*], false),
+  (5, [*若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为最低兼容的版本号，第二个为最高兼容的版本号*], false),
+  (5, [*若使用 #icon(name: "json-object") 形式，则有以下字段：*], false),
+  (5, [#icon(name: "json-number") *max_inclusive*: 最高兼容的版本号。]),
+  (5, [#icon(name: "json-number") *min_inclusive*: 最低兼容的版本号。])
+)#cite(<datapack_merge>, form: none)
+例如，下面是1.21.11版本的一个标准 #icon(name: "json") `pack.mcmeta` 文件：
+#codefile(
+  lang: "json",
+  title: "pack.mcmeta",
+  "{
+  \"pack\": {
+    \"description\": \"The default data for Minecraft\",
+    \"max_format\": 94.1,
+    \"min_format\": 94.1,
+  }
+}"
+)
+==== 数据包版本号
+元数据中有一个很重要的参数：#proper-noun(display: "数据包版本号（Data pack format）", "shujubaobanbenhao")，这是一个用于区分不同版本数据包的参数。每当Mojang对数据包做出修改时，版本号都会发生变动。在1.19.4以前，数据包版本号一般一个大版本变更一次；自1.19.4起，由于Mojang对技术性开发的更新变得频繁，版本号一般每个快照变更一次。数据包应当使用其所在游戏版本的版本号，由于Mojang对数据包的改动可能是颠覆性的，版本号不对应可能会出现错误。
+
+1.21.8以前的版本号均为整数，例如，1.21.8的数据包版本号为81，25w31a引入了#proper-noun(display: "次要版本号（Minor versions）", "ciyaobanbenhao")的概念，原先的整数形式的版本号为#proper-noun(display: "主要版本号（Major versions）", "zhuyaobanbenhao")，25w31a是第一个使用此版本号格式的版本，是为82.0。同一个主版本号内的数据包可以向下兼容，例如83.1的数据包可以兼容83.0的数据包。
+
+下表罗列了所有主版本使用的数据包版本号，不包括快照版本：
+#general-table(
+  caption: [数据包版本号],
+  columns: (auto, auto, 3pt, auto, auto, 3pt, auto, auto),
+  colspan: 8,
+  seperator: (2, 5,),
+  header: ([游戏版本], [数据包版本号], [], [游戏版本], [数据包版本号], [], [游戏版本], [数据包版本号]),
+  [1.13 \~ 1.14.4], [4], [], [1.15 \~ 1.16.1], [5], [], [1.16.2 \~ 1.16.5], [6],
+  [1.17 \~ 1.17.1], [7], [], [1.18 \~ 1.18.1], [8], [], [1.18.2], [9],
+  [1.19 \~ 1.19.3], [10], [], [1.19.4], [12], [], [1.20 \~ 1.20.1], [15],
+  [1.20.2], [18], [], [1.20.3 \~ 1.20.4], [26], [], [1.20.5 \~ 1.20.6], [41],
+  [1.21 \~ 1.21.1], [48], [], [1.21.2 \~ 1.21.3], [57], [], [1.21.4], [61],
+  [1.21.5], [71], [], [1.21.6], [80], [], [1.21.7 \~ 1.21.8], [81],
+  [1.21.9 \~ 1.21.10], [88.0], [], [1.21.11], [94.1]
+)
+*若最低版本号大于81，则必须使用 #icon(name: "json-number") max_inclusive和 #icon(name: "json-number") min_inclusive指定兼容区间。*
+==== 子数据包
+子数据包会在当前主数据包的基础上添加内容，同时也会覆盖主数据包相同路径的文件
 == 资源包<sec:resourcepack>
 == 游戏机制
 游戏为命令提供了一个运行环境，为此命令系统不免受到游戏机制的制约。在时间上，命令受到游戏循环驱动的影响，以游戏刻为单位执行；在空间上，命令受到区块加载的影响，只能在允许运算的区块中执行。本节旨在介绍游戏加载、运行、更新的一些基本游戏机制。
@@ -1911,8 +1314,19 @@ Minecraft规定：大部分方块的长、宽和高均为1米，体积为1立方
 = 存档格式
 == 存档文件夹的结构<sec:saves>
 == 技术性实体<sec:technical_entity>
-
-#heading(level: 1, numbering: none, outlined: false, [索引])
+#set heading(numbering: appendix)
+#counter(heading).update(0)
+= 数据库
+== 数据包和资源包版本号
+#general-table(
+  caption: "数据包和资源包版本号总表"
+)
+#heading(level: 1, numbering: none, [索引])
 #columns(2)[
   #make-index(use-page-counter: true)
 ]
+#bibliography(
+  "参考文献.bib",
+  title: "参考文献",
+  style: "gb-7714-2015-numeric"
+)

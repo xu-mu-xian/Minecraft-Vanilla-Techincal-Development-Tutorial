@@ -15,34 +15,30 @@
   let total_columns = 2 * max_level + 1
   grid(
     columns: (..range(max_level).map(_ => (indent_half, indent_half)).flatten(), 1fr),
-    rows: (line_y_offset, auto),
     ..items.enumerate().map(((i, item)) => {
-      let (level, body) = item
-      let row1 = range(level).map(l => {
+      let level = item.at(0)
+      let body = item.at(1)
+      let show_line = item.at(2, default: true)
+      let row1_lines = range(level).map(l => {
         let is_current_level = (l == level - 1)
         let has_v_line = if is_current_level { true } else { needs_vertical_line(i, l + 1) }
         (
           grid.cell(
-            stroke: (right: if not is_current_level and has_v_line { line_thickness + line_color } else { none }),
+            stroke: (
+              right: if not is_current_level and has_v_line { line_thickness + line_color } else { none }
+              ),
             v(line_y_offset)
           ),
           grid.cell(
             stroke: (
               left: if is_current_level { line_thickness + line_color } else { none },
-              bottom: if is_current_level { line_thickness + line_color } else { none }
+              bottom: if is_current_level and show_line { line_thickness + line_color } else { none }
             ),
             v(line_y_offset)
           )
         )
-      }).flatten()    
-      let current_span = total_columns - (2 * level)
-      row1.push(grid.cell(
-        colspan: current_span,
-        rowspan: 2, 
-        inset: (left: 0.1em, y: 0.3em), 
-        align(horizon, body)
-      ))
-      let row2 = range(level).map(l => {
+      }).flatten()
+      let row2_lines = range(level).map(l => {
         let is_current_level = (l == level - 1)
         let has_v_line_path = if l < level - 1 { needs_vertical_line(i, l + 1) } else { false }
         let has_v_line_current = if is_current_level { needs_vertical_line(i, l + 1) } else { false }
@@ -53,13 +49,19 @@
       }).flatten()
       grid.cell(
         colspan: total_columns,
-        stroke: red,
-        block(breakable: false)[
+        block(breakable: false, width: 100%)[
           #grid(
             columns: (..range(max_level).map(_ => (indent_half, indent_half)).flatten(), 1fr),
-            rows: (line_y_offset, auto),
-            ..row1, 
-            ..row2
+            stroke: none,
+            row-gutter: 0pt, 
+            ..row1_lines,
+            grid.cell(
+              colspan: total_columns - (2 * level),
+              rowspan: 2,
+              inset: (left: 0.1em, y: 0.35em), 
+              align(horizon, body)
+            ),
+            ..row2_lines
           )
         ]
       )
