@@ -8,6 +8,13 @@
 #import "自定义包/stringtree.typ": stringtree
 #import table: cell, header
 
+// 附录
+#let appendix-part = state("appendix-part", false)
+#let appendix = {
+  counter(heading).update(0)
+  appendix-part.update(true)
+}
+
 // 有序列表
 #let c1 = counter("L1")
 #let c2 = counter("L2")
@@ -35,7 +42,6 @@
       first-line-indent: 0em, 
       hanging-indent: label-width + gap,
     )
-    
     pad(left: left-indent)[
       #box(width: label-width)[#label-text]#h(gap)#body
     ]
@@ -121,7 +127,11 @@
 
 // 表格
 #let tab_numbering(.., desc) = {
-  context str(counter(heading).get().at(0)) + "." + counter(table).display("1")
+  context if appendix-part.get() {
+    numbering("I", counter(heading).get().at(0)) + "." + counter(table).display("1")
+  } else {
+    str(counter(heading).get().at(0)) + "." + counter(table).display("1")
+  }
 }
 #let xubiao = state("xubiao", false)
 #let general-table(
@@ -168,7 +178,55 @@
     ..content
   )
 )
-
+#let split-table(
+  caption: [分栏表格标题],
+  original-cols: 3,
+  gutter-width: 3pt,
+  header: (),
+  seperator: (),
+  data: (),
+) = {
+  let col-widths = if type(original-cols) == array {
+    original-cols
+  } else {
+    (1fr,) * original-cols
+  }
+  let col-count = col-widths.len()
+  let missing = calc.rem(data.len(), col-count)
+  let padded-data = data
+  if missing > 0 {
+    padded-data += ([],) * (col-count - missing)
+  }
+  let rows = padded-data.chunks(col-count)
+  let half-idx = calc.ceil(rows.len() / 2)
+  let left-part = rows.slice(0, half-idx)
+  let right-part = rows.slice(half-idx)
+  let combined-content = ()
+  for i in range(half-idx) {
+    combined-content += left-part.at(i)
+    combined-content += ([],)
+    if i < right-part.len() {
+      combined-content += right-part.at(i)
+    } else {
+      combined-content += ([],) * col-count
+    }
+  }
+  let auto-columns = col-widths + (gutter-width,) + col-widths
+  let total-cols-count = col-count * 2 + 1
+  let dual-header = header + ([],) + header
+  let new-seperator = seperator
+  for s in seperator {
+    new-seperator.push(s + col-count + 1)
+  }
+  general-table(
+    caption: caption,
+    columns: auto-columns,
+    colspan: total-cols-count,
+    header: dual-header,
+    seperator: new-seperator,
+    ..combined-content
+  )
+}
 
 // 例题
 #let exa = counter("exa")
@@ -292,33 +350,32 @@
 #let book-heading(..nums) = {
   let level = nums.pos().len()
   let space = h(0.8em)
-  if level == 1 {
-    let chapter-num = numbering("一", nums.at(0))
-    return "第" + chapter-num + "章" + space
-  } else if level == 2 {
-    return numbering("1.1", ..nums) + space
-  } else if level == 3 {
-    return numbering("1.1.1", ..nums) + space
-  } else if level == 4 {
-    return numbering("一、", nums.at(3))
-  } else {
-    return none
-  }
-}
-#let appendix(..nums) = {
-  let level = nums.pos().len()
-  let space = h(0.8em)
-  if level == 1 {
-    let chapter-num = numbering("I", nums.at(0))
-    return "附录" + chapter-num + space
-  } else if level == 2 {
-    return numbering("I.1", ..nums) + space
-  } else if level == 3 {
-    return numbering("I.1.1", ..nums) + space
-  } else if level == 4 {
-    return numbering("一、", nums.at(3))
-  } else {
-    return none
+  context {
+    if appendix-part.get() {
+      if level == 1 { 
+        return "附录" + numbering("I", nums.at(0)) + space
+      } else if level == 2 {
+        return numbering("I.1", ..nums) + space
+      } else if level == 3 {
+        return numbering("I.1.1", ..nums) + space
+      } else if level == 4 {
+        return numbering("一、", nums.at(3))
+      } else {
+        return none
+      }
+    } else {
+      if level == 1 {
+        return "第" + numbering("一", nums.at(0)) + "章" + space
+      } else if level == 2 {
+        return numbering("1.1", ..nums) + space
+      } else if level == 3 {
+        return numbering("1.1.1", ..nums) + space
+      } else if level == 4 {
+        return numbering("一、", nums.at(3))
+      } else {
+        return none
+      }
+    }
   }
 }
 
@@ -511,87 +568,9 @@
 
 // 样式
 #let template-style(main-body) = {
-
-// 代码块
-show: codly-init.with()
-  
-// 字体
-set text(
-  font: (
-    (
-      name: "FZShuSong GB18030L2",
-      covers: regex("[·“”‘’…|/\[\]\{\}<>—]")
-    ),
-    "TeX Gyre Termes",
-    "FZShuSong GB18030L2"
-  ),
-  lang: "zh"
-)
-show strong: it => {
-  set text(
-    font: ("TeX Gyre Termes", "FZHeiTi GB18030L2"),
-    weight: "bold", 
-    fill: red,
-  )
-  it 
-}
-
-// 段落
-set par(
-  first-line-indent: (
-    all: true,
-    amount: 2em
-  ),
-  justify: true,
-  spacing: 0.65em
-)
-
-// 页面
-set page(
-  header: context [
-    #counter(footnote).update(0)
-    #set text(
-      size: 0.8em
-    )
-    #if calc.rem(here().page(), 2) == 1 {
-      [
-        #set text(
-          font: (
-            "TeX Gyre Termes",
-            "FZKaiTi GB18030L2"
-          )
-        )
-        #hydra(skip-starting: false, 1)
-        #h(1fr)
-        徐木弦原版技术性开发系列教程
-      ]
-    } else {
-      [
-        #set text(
-          font: (
-            "TeX Gyre Termes",
-            "FZKaiTi GB18030L2"
-          )
-        )
-        徐木弦原版技术性开发系列教程
-        #h(1fr)
-        #hydra(2, skip-starting: false)
-      ]
-    }
-  ],
-  numbering: "1",
-  number-align: center,
-)
-
-// 有序列表
-show: el.default-enum-list.with(
-  body-indent: 0em,
-  indent: 0.5em,
-  label-align: left,
-  label-width: 1.5em
-)
-show enum: it => {
-  set par(first-line-indent: 0em)
+  // 代码块
+  show: codly-init.with()
+  // 字体
   set text(
     font: (
       (
@@ -600,133 +579,274 @@ show enum: it => {
       ),
       "TeX Gyre Termes",
       "FZShuSong GB18030L2"
-    )
+    ),
+    lang: "zh"
   )
-  it
-}
-set enum(numbering: n => text(font:"TeX Gyre Termes", [#n.]))
-
-// 代码块
-show raw: it => {
-  if it.block {
-    it
-  } else {
-    h(0.25em) + box(
-      baseline: -1pt,
-      outset: (x: 2pt, y: 3pt),
-      fill: rgb("#fef2f2"),
-      stroke: 0.5pt + red,
-      radius: 2pt,
-      text(font: ("Consolas","FZShuSong GB18030L2"), size: 0.9em, it)
-    ) + h(0.25em)
-  }
-}
-
-// 有编号代码块
-show figure.where(kind: "codebox"): it => {
-  set block(above: 1em, below: 1em)
-  it
-}
-
-// 公式
-show math.equation: it => {
-  set text(
-    font: "TeX Gyre Termes Math"
-  )
-  h(2pt) + it + h(2pt)
-}
-
-// 图片
-show figure: set block(above: 1.5em, breakable: true)
-set figure(numbering: it => str(counter(heading).get().at(0)) + "." + counter(image).display("1"))
-
-// 表格
-show table: it => xubiao.update(false) + it
-show figure.where(kind: table): set figure(gap: 0.3em)
-show figure.where(kind: table): set figure.caption(position: top, separator: "  ")
-show figure.caption: set text(font: ("TeX Gyre Termes", "FZHeiTi GB18030L2",), size: 0.85em, weight: "bold")
-show figure.caption: set block(sticky: true)
-show table.cell: it => {
-  if it.y == 1 {
+  show strong: it => {
     set text(
-      fill: white,
       font: ("TeX Gyre Termes", "FZHeiTi GB18030L2"),
-      size: 0.85em,
-      weight: "bold"
+      weight: "bold", 
+      fill: red,
     )
-    it
+    it 
   }
-  else {
+  // 段落
+  set par(
+    first-line-indent: (
+      all: true,
+      amount: 2em
+    ),
+    justify: true,
+    spacing: 0.65em
+  )
+  // 页面
+  set page(
+    header: context [
+      #counter(footnote).update(0)
+      #set text(
+        size: 0.8em
+      )
+      #if calc.rem(here().page(), 2) == 1 {
+        [
+          #set text(
+            font: (
+              "TeX Gyre Termes",
+              "FZKaiTi GB18030L2"
+            )
+          )
+          #hydra(skip-starting: false, 1)
+          #h(1fr)
+          徐木弦原版技术性开发系列教程
+        ]
+      } else {
+        [
+          #set text(
+            font: (
+              "TeX Gyre Termes",
+              "FZKaiTi GB18030L2"
+            )
+          )
+          徐木弦原版技术性开发系列教程
+          #h(1fr)
+          #hydra(2, skip-starting: false)
+        ]
+      }
+    ],
+    numbering: "1",
+    number-align: center,
+  )
+  // 有序列表
+  show: el.default-enum-list.with(
+    body-indent: 0em,
+    indent: 0.5em,
+    label-align: left,
+    label-width: 1.5em
+  )
+  show enum: it => {
+    set par(first-line-indent: 0em)
     set text(
-      size: 0.85em
+      font: (
+        (
+          name: "FZShuSong GB18030L2",
+          covers: regex("[·“”‘’…|/\[\]\{\}<>—]")
+        ),
+        "TeX Gyre Termes",
+        "FZShuSong GB18030L2"
+      )
     )
     it
   }
-}
-
-// 标题
-show heading: set align(center)
-show heading: set text(
-  font: (
-    "TeX Gyre Termes",
-    "Source Han Serif"
-  )
-)
-show heading.where(level: 1): it => {
-  set text(size: 2em)
-  counter(image).update(1)
-  counter(table).update(1)
-  context codeline.update(0)
-  context exa.update(0)
-  pagebreak(weak: true)
-  block(v(5em) + it + v(2em))
-}
-show heading.where(level: 2): it => {
-  set text(fill: rgb("#d71d1d"), size: 1.8em)
-  block(v(1em) + it + v(1em))
-}
-show heading.where(level: 3): it => {
-  set align(left)
-  set text(fill: rgb("#d71d1d"), size: 1.4em)
-  block(v(0.2em) + it + v(0.6em))
-}
-show heading.where(level: 4): it => {
-  set align(left)
-  set text(fill: rgb("#d71d1d"), font: "FZHeiTi GB18030L2", size: 1.1em)
-  block(v(0.2em) + it + v(0.6em))
-}
-
-// 引用
-show ref: it => {
-  if it.element != none and it.element.func() == heading {
-    let el = it.element
-    let nums = counter(heading).at(el.location())
-    if el.level == 1 {
-      [第#numbering("一", nums.at(0))章]
-    } else if el.level == 2 {
-      numbering("1.1", ..nums)
-    } else if el.level == 3 {
-      numbering("1.1.1", ..nums)
-    } else if el.level == 4 {
-      numbering("一、", nums.at(3))
+  set enum(numbering: n => text(font:"TeX Gyre Termes", [#n.]))
+  // 代码块
+  show raw: it => {
+    if it.block {
+      it
+    } else {
+      h(0.25em) + box(
+        baseline: -1pt,
+        outset: (x: 2pt, y: 3pt),
+        fill: rgb("#fef2f2"),
+        stroke: 0.5pt + red,
+        radius: 2pt,
+        text(font: ("Consolas","FZShuSong GB18030L2"), size: 0.9em, it)
+      ) + h(0.25em)
     }
-  } else {
+  }
+  // 有编号代码块
+  show figure.where(kind: "codebox"): it => {
+    set block(above: 1em, below: 1em)
     it
   }
-}
-
-// 脚注
-set footnote(
-  numbering: " ①"
-)
-show footnote.entry: it => {
-  let loc = it.note.location()
-  numbering(
-    "①  ",
-    ..counter(footnote).at(loc),
+  // 公式
+  show math.equation: it => {
+    set text(
+      font: "TeX Gyre Termes Math"
+    )
+    h(2pt) + it + h(2pt)
+  }
+  // 图片
+  show figure: set block(above: 1.5em, breakable: true)
+  set figure(numbering: it => str(counter(heading).get().at(0)) + "." + counter(image).display("1"))
+  // 表格
+  show table: it => xubiao.update(false) + it
+  show figure.where(kind: table): set figure(gap: 0.3em)
+  show figure.where(kind: table): set figure.caption(position: top, separator: "  ")
+  show figure.caption: set text(font: ("TeX Gyre Termes", "FZHeiTi GB18030L2",), size: 0.85em, weight: "bold")
+  show figure.caption: set block(sticky: true)
+  show table.cell: it => {
+    if it.y == 1 {
+      set text(
+        fill: white,
+        font: ("TeX Gyre Termes", "FZHeiTi GB18030L2"),
+        size: 0.85em,
+        weight: "bold"
+      )
+      it
+    }
+    else {
+      set text(
+        size: 0.85em
+      )
+      it
+    }
+  }
+  // 标题
+  show heading: set align(center)
+  show heading: set text(
+    font: (
+      "TeX Gyre Termes",
+      "Source Han Serif"
+    )
   )
-  it.note.body
-}
-
+  show heading.where(level: 1): it => {
+    set text(size: 2em)
+    counter(image).update(1)
+    counter(table).update(1)
+    context codeline.update(0)
+    context exa.update(0)
+    pagebreak(weak: true)
+    block(v(5em) + it + v(2em))
+  }
+  show heading.where(level: 2): it => {
+    set text(fill: rgb("#d71d1d"), size: 1.8em)
+    block(v(1em) + it + v(1em))
+  }
+  show heading.where(level: 3): it => {
+    set align(left)
+    set text(fill: rgb("#d71d1d"), size: 1.4em)
+    block(v(0.2em) + it + v(0.6em))
+  }
+  show heading.where(level: 4): it => {
+    set align(left)
+    set text(fill: rgb("#d71d1d"), font: "FZHeiTi GB18030L2", size: 1.1em)
+    block(v(0.2em) + it + v(0.6em))
+  }
+  // 引用
+  show ref: it => {
+    if it.element != none and it.element.func() == heading {
+      let el = it.element
+      let nums = counter(heading).at(el.location())
+      if el.level == 1 {
+        [第#numbering("一", nums.at(0))章]
+      } else if el.level == 2 {
+        numbering("1.1", ..nums)
+      } else if el.level == 3 {
+        numbering("1.1.1", ..nums)
+      } else if el.level == 4 {
+        numbering("一、", nums.at(3))
+      }
+    } else {
+      it
+    }
+  }
+  // 脚注
+  set footnote(
+    numbering: " ①"
+  )
+  show footnote.entry: it => {
+    let loc = it.note.location()
+    numbering(
+      "①  ",
+      ..counter(footnote).at(loc),
+    )
+    it.note.body
+  }
+  // 目录
+  show outline.entry.where(level: 1): it => {
+    set text(
+      font: (
+        "TeX Gyre Termes",
+        "Source Han Serif"
+      ),
+      weight:"bold"
+    )
+    let loc = it.element.location()
+    context {
+      let is-app = appendix-part.at(loc)
+      if is-app and it.element.numbering != none {
+        let nums = counter(heading).at(loc)
+        let prefix = [附录#numbering("I", nums.at(0)) #h(1em)]
+        block(
+          width: 100%,
+          link(loc)[
+            #prefix #it.element.body
+            #box(width: 1fr, it.fill)
+            #it.page()
+          ]
+        )
+      } else {
+        it
+      }
+    }
+  }
+  show outline.entry.where(level: 2): it => {
+    let loc = it.element.location()
+    context {
+      let is-app = appendix-part.at(loc)
+      if is-app and it.element.numbering != none {
+        let nums = counter(heading).at(loc)
+        let prefix = [#numbering("I.1", ..nums) #h(1em)]
+        block(
+          width: 100%,
+          link(loc)[
+            #h(2em)
+            #prefix #it.element.body
+            #box(width: 1fr, it.fill)
+            #it.page() 
+          ]
+        )
+      } else {
+        it
+      }
+    }
+  }
+  show outline.entry.where(level: 3): it => {
+    set text(
+      font: (
+        "TeX Gyre Termes",
+        "FandolFang R"
+      )
+    )
+    let loc = it.element.location()
+    context {
+      let is-app = appendix-part.at(loc)
+      if is-app and it.element.numbering != none {
+        let nums = counter(heading).at(loc)
+        let prefix = [#numbering("I.1", ..nums) #h(1em)]
+        block(
+          width: 100%,
+          link(loc)[
+            #h(4em)
+            #prefix #it.element.body
+            #box(width: 1fr, it.fill)
+            #it.page() 
+          ]
+        )
+      } else {
+        it
+      }
+    }
+  }
+  show outline.entry.where(level: 4): it => {}
   main-body
 }
