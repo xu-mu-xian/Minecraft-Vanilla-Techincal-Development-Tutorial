@@ -347,7 +347,7 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 ==== 命名空间ID的实际意义
 #wrap-content(
   tips(
-    [原版游戏中大部分对象都使用命名空间 `minecraft`，但是六种基本命令参数类型（@subsec:command_argument#h(-0.7em)）却使用命名空间 `brigadier`。],
+    [原版游戏中大部分对象都使用命名空间 `minecraft`，但是六种基本命令参数类型（见小节@subsec:command_argument）却使用命名空间 `brigadier`。],
     width: 13em
   ),
   [
@@ -790,7 +790,7 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
     相同层级的节点会表示为相同的缩进。
     #i1[对于一个字段：]
     #icon(name: "json-string") *field*: `这是一个字段`
-    #i2[字段开头的#icon(name: "json-string")#icon(name: "json-bool")#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object")表示这个字段使用的数据类型。如果出现了多种数据类型，则表示这些数据类型均可使用。]
+    #i2[字段开头的 #icon(name: "json-string")#icon(name: "json-bool")#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") 表示这个字段使用的数据类型。如果出现了多种数据类型，则表示这些数据类型均可使用。]
     #i2[加粗红色的字表示这个字段的键名。]
     #i2[冒号后面如果只有 `代码块`，表示此 `代码块` 是该字段使用的真实值。如果冒号后面是一段文字，则这是对于该字段的解释。如：]
     #icon(name: "json-string") *field*: 这是对于这个字段的解释。
@@ -1230,12 +1230,12 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 
 1.21.8以前的版本号均为整数，例如，1.21.8的数据包版本号为81，25w31a引入了#proper-noun(display: "次要版本号（Minor versions）", "ciyaobanbenhao")的概念，原先的整数形式的版本号为#proper-noun(display: "主要版本号（Major versions）", "zhuyaobanbenhao")，25w31a是第一个使用此版本号格式的版本，是为82.0。同一个主版本号内的数据包可以向下兼容，例如83.1的数据包可以兼容83.0的数据包。
 
-下表罗列了所有主版本使用的数据包版本号，不包括快照版本。
+下表罗列了所有主版本使用的数据包版本号，不包括快照版本。包含快照版本的数据包版本号参考附录@sec:pack_format\中的@tab:pack_format。
 #split-table(
   caption: "数据包版本号",
   original-cols: 2,
   seperator: (2,),
-  header: ([游戏版本号], [数据包版本号]),
+  header: ([游戏版本], [数据包版本号]),
   data: (
     [1.13 \~ 1.14.4], [4],
     [1.15 \~ 1.16.1], [5],
@@ -1259,7 +1259,8 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
     [1.21.11], [94.1]
   )
 )
-*若最低版本号大于81，则必须使用 #icon(name: "json-number") max_inclusive和 #icon(name: "json-number") min_inclusive指定兼容区间。*
+25w31a显然是对元数据进行颠覆性修改的版本，它不仅改动了版本号的形式和定义版本号的字段，还添加了版本号的识别规则。
+// *若最低版本号大于81，则必须使用 #icon(name: "json-number") max_inclusive和 #icon(name: "json-number") min_inclusive指定兼容区间。*
 ==== 子数据包
 子数据包会在当前主数据包的基础上添加内容，同时也会覆盖主数据包相同路径的文件
 == 资源包<sec:resourcepack>
@@ -1327,7 +1328,6 @@ Minecraft使用的空间直角坐标系是右手坐标系。在这种空间直�
 Minecraft规定：大部分方块的长、宽和高均为1米，体积为1立方米。用坐标系表示这些位置时，默认了方块的边长和坐标系的单位长度在数值上相等，这意味着坐标系的基本单位为米，或称为“格”。
 
 一个方块使用其*西北下角*的点作为它的*方块坐标（Block position）*#index(display:"方块坐标（Block position）","fangkuaizuobiao")。若一个方块的西北下角顶点坐标为$(x,y,z)$，则该方块的方块坐标记为$(x,y,z)$，而这个方块位于$(x,y,z)$和$(x+1,y+1,z+1)$这两个坐标围成的立体几何图形之间。
-#context counter(figure).display("1")
 #figure(
   caption: [用方块这个方向的顶点来表示方块坐标],
   image("图片/用方块这个方向的顶点来表示方块坐标.png", width: 35%)
@@ -1367,16 +1367,14 @@ Minecraft规定：大部分方块的长、宽和高均为1米，体积为1立方
 = 存档格式
 == 存档文件夹的结构<sec:saves>
 == 技术性实体<sec:technical_entity>
-#pagebreak()
-#pagebreak()
 #appendix
 = 数据库
-== 数据包和资源包版本号
+== 数据包和资源包版本号<sec:pack_format>
 #split-table(
   caption: "数据包和资源包版本号总表",
   original-cols: (6fr, 2fr, 2fr),
   seperator: (3,),
-  header: ([游戏版本号], [数据包版本号], [资源包版本号]),
+  header: ([游戏版本名称], [数据包版本号], [资源包版本号]),
   data: (
     [13w41a], [-], [1],
     [13w41b], [-], [1],

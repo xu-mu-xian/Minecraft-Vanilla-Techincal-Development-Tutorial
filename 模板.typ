@@ -35,9 +35,9 @@
     else if level == 2 { c2.display("(1)") }
     else if level == 3 { c3.display("①") }
     else { c1.display("a.") }
-    let label-width = 1.5em
-    let gap = if level == 2 { 0.5em } else { 0em }
-    let left-indent = (level - 1) * 1.5em + 0.5em
+    let label-width = 2em
+    let gap = 0em
+    let left-indent = (level - 1) * 2em
     set par(
       first-line-indent: 0em, 
       hanging-indent: label-width + gap,
@@ -126,11 +126,11 @@
 }
 
 // 表格
-#let tab_numbering(.., desc) = {
+#let tab_numbering(n, ..desc) = {
   context if appendix-part.get() {
-    numbering("I", counter(heading).get().at(0)) + "." + counter(table).display("1")
+    numbering("I", counter(heading).get().at(0)) + "." + str(n)
   } else {
-    str(counter(heading).get().at(0)) + "." + counter(table).display("1")
+    str(counter(heading).get().at(0)) + "." + str(n)
   }
 }
 #let xubiao = state("xubiao", false)
@@ -141,45 +141,48 @@
   header: (),
   seperator: (),
   ..content,
-) = figure(
-  caption: caption,
-  numbering: tab_numbering,
-  table(
-    align: center + horizon,
-    columns: columns,
-    fill: (x, y) => {
-      if x in seperator {red}
-      else if y == 0 { rgb("#ffffff00") }
-      else if y == 1 { rgb("#ff6565") }
-      else if calc.rem(y, 2) == 1 {rgb("#fde9e9")}
-      else {rgb("#fff8f8")}
-    },
-    gutter: 0.2em,
-    stroke: none,
-    table.header(
-      table.cell(
-        colspan: colspan,
-        {
-          context if xubiao.get() {
-            align(right)[
-              #set text(
-                font: "FZKaiTi GB18030L2"
-              )
-              （续表）
-            ]
-          } else {
-            v(-0.9em)
-            xubiao.update(true)
+) = {
+  figure(
+    caption: caption,
+    numbering: tab_numbering,
+    table(
+      align: center + horizon,
+      columns: columns,
+      fill: (x, y) => {
+        if x in seperator {red}
+        else if y == 0 { rgb("#ffffff00") }
+        else if y == 1 { rgb("#ff6565") }
+        else if calc.rem(y, 2) == 1 {rgb("#fde9e9")}
+        else {rgb("#fff8f8")}
+      },
+      gutter: 0.2em,
+      stroke: none,
+      table.header(
+        table.cell(
+          colspan: colspan,
+          {
+            context if xubiao.get() {
+              align(right)[
+                #set text(
+                  font: "FZKaiTi GB18030L2"
+                )
+                （续表）
+              ]
+            } else {
+              v(-0.9em)
+              xubiao.update(true)
+            }
           }
-        }
+        ),
+        ..header
       ),
-      ..header
-    ),
-    ..content
+      ..content
+    )
   )
-)
+}
 #let split-table(
   caption: [分栏表格标题],
+  label: none,
   original-cols: 3,
   gutter-width: 3pt,
   header: (),
@@ -342,8 +345,6 @@
       ..images
     ),
   ) #label
-  #let sub-figure-counter = columns - 1
-  #counter(image).update(n => n - sub-figure-counter)
 ]
 
 // 标题格式
@@ -413,87 +414,66 @@
 #let icon(name: none) = {
   if name == "folder" {
     box(image("图标/data/文件夹.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
   }
   if name == "file" {
     box(image("图标/data/文件.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
   }
   if name == "text" {
     box(image("图标/data/文本文件.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
   }
   if name == "png" {
     box(image("图标/data/图片文件.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
   }
   if name == "nbt" {
     box(image("图标/data/NBT文件.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
   }
   if name == "json" {
     box(image("图标/data/JSON文件.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
   }
   if name == "mcfunction" {
     box(image("图标/data/函数文件.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
   }
   if name == "ogg" {
     box(image("图标/data/声音文件.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
   }
   if name == "zip" {
     box(image("图标/data/压缩文件.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
   }
   if name == "jar" {
     box(image("图标/data/JAR文件.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
   }
   if name == "json-string" {
     box(image("图标/data/JSON字符串.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
   }
   if name == "json-bool" {
     box(image("图标/data/JSON布尔值.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
   }
   if name == "json-number" {
     box(image("图标/data/JSON数值.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
   }
   if name == "json-array" {
     box(image("图标/data/JSON数组.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
   }
   if name == "json-object" {
     box(image("图标/data/JSON对象.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
   }
   if name == "vscode" {
     box(image("图标/VSCode.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
   }
   if name == "dhp" {
     box(image("图标/DHP.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
   }
   if name == "nbtstudio" {
     box(image("图标/NBTStudio.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
   }
   if name == "paint" {
     box(image("图标/画图.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
   }
   if name == "ps" {
     box(image("图标/PS.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
   }
   if name == "gimp" {
     box(image("图标/GIMP.png", height:1em), baseline: 1pt)
-    counter(image).update(n => n - 1)
   }
 }
 
@@ -638,9 +618,8 @@
   // 有序列表
   show: el.default-enum-list.with(
     body-indent: 0em,
-    indent: 0.5em,
     label-align: left,
-    label-width: 1.5em
+    label-width: 2em
   )
   show enum: it => {
     set par(first-line-indent: 0em)
@@ -686,7 +665,13 @@
   }
   // 图片
   show figure: set block(above: 1.5em, breakable: true)
-  set figure(numbering: it => str(counter(heading).get().at(0)) + "." + counter(image).display("1"))
+  set figure(numbering: n => {
+    context if appendix-part.get() {
+      numbering("I", counter(heading).get().at(0)) + "." + str(n)
+    } else {
+      str(counter(heading).get().at(0)) + "." + str(n)
+    }
+  })
   // 表格
   show table: it => xubiao.update(false) + it
   show figure.where(kind: table): set figure(gap: 0.3em)
@@ -720,8 +705,8 @@
   )
   show heading.where(level: 1): it => {
     set text(size: 2em)
-    counter(image).update(1)
-    counter(table).update(1)
+    counter(figure.where(kind: image)).update(0)
+    counter(figure.where(kind: table)).update(0)
     context codeline.update(0)
     context exa.update(0)
     pagebreak(weak: true)
@@ -743,17 +728,34 @@
   }
   // 引用
   show ref: it => {
-    if it.element != none and it.element.func() == heading {
-      let el = it.element
-      let nums = counter(heading).at(el.location())
-      if el.level == 1 {
-        [第#numbering("一", nums.at(0))章]
-      } else if el.level == 2 {
-        numbering("1.1", ..nums)
-      } else if el.level == 3 {
-        numbering("1.1.1", ..nums)
-      } else if el.level == 4 {
-        numbering("一、", nums.at(3))
+    if it.element.func() == heading {
+      let nums = counter(heading).at(it.element.location())
+      context {
+        link(it.element.location())[#if appendix-part.at(it.element.location()) {
+          if it.element.level == 1 {
+            [附录#numbering("I", counter(heading).at(it.element.location()).at(0))]
+          } else if it.element.level == 2 {
+            numbering("I.1", ..counter(heading).at(it.element.location()))
+          } else if it.element.level == 3 {
+            numbering("I.1.1", ..counter(heading).at(it.element.location()))
+          } else if it.element.level == 4 {
+            numbering("一、", counter(heading).at(it.element.location()).at(3))
+          }
+        } else {
+          if it.element.level == 1 {
+            [第#numbering("一", counter(heading).at(it.element.location()).at(0))章]
+          } else if it.element.level == 2 {
+            numbering("1.1", ..counter(heading).at(it.element.location()))
+          } else if it.element.level == 3 {
+            numbering("1.1.1", ..counter(heading).at(it.element.location()))
+          } else if it.element.level == 4 {
+            numbering("一、", counter(heading).at(it.element.location()).at(3))
+          }
+        }]
+      }
+    } else if it.element.func() == figure {
+      context {
+        link(it.element.location())[#if appendix-part.at(it.element.location()) {[#it.element.supplement #numbering("I", counter(heading).at(it.element.location()).at(0)).#counter(figure.where(kind: it.element.kind)).at(it.element.location()).at(0)]} else {[#it.element.supplement#str(counter(heading).at(it.element.location()).at(0)).#counter(figure.where(kind: it.element.kind)).at(it.element.location()).at(0)]}]
       }
     } else {
       it
