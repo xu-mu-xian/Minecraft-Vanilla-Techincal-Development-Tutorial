@@ -242,7 +242,7 @@ Minecraft有许多不同的游戏资源，如草方块、石头、箭、铁锹�
     [`DIALOG`], [对话框], [`dialog`],
     [`DIMENSION`], [维度], [`dimension`],
     [`DIMENSION_TYPE`], [维度类型], [`dimension_type`],
-    [`ENCHANTMENT`], [魔咒数据格式], [`enchantment`],
+    [`ENCHANTMENT`], [魔咒], [`enchantment`],
     [`ENCHANTMENT_PROVIDER`], [魔咒提供器], [`enchantment_provider`], [`FLAT_LEVEL_GENERATOR_PRESET`], [超平坦世界生成预设], [`worldgen/flat_level_generator_preset`],
     [`FROG_VARIANT`], [青蛙的变种], [`frog_variant`],
     [`INSTRUMENT`], [山羊角乐器], [`instrument`],
@@ -271,7 +271,7 @@ Minecraft有许多不同的游戏资源，如草方块、石头、箭、铁锹�
     [`WOLF_VARIANT`], [狼的变种], [`wolf_variant`],
     [`WORLD_PRESET`], [世界预设], [`worldgen/world_preset`],
     [`ZOMBIE_NAUTILUS_VARIANT`], [僵尸鹦鹉螺变种], [`zombie_nautilus_variant`]
-)
+) <tab:writable_registry>
 ==== 不属于任何注册表的游戏资源
 有一些游戏资源不属于任何注册表，这些资源包括数据包内的函数、结构模板以及资源包内的所有内容。这些资源类型中部分都与可写注册表的性质类似，即可以自定义写入资源；部分则不能增添新的资源，但可以修改已有资源的配置文件。
 #i1[数据包内容]
@@ -371,7 +371,7 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
     这里 `function` 为资源类型，`.mcfunction` 为文件的后缀。故命名空间ID为
     #codebox("minecraft:load")
   ]
-)
+) <exa:namespaced_id_in_datapack>
 #example(
   [
     #h(-2em)有资源包纹理文件路径为 `minecraft\textures\block\command_block_front.png`，试用命名空间ID指定之。
@@ -1171,12 +1171,12 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   (0, [#icon(name: "folder") *\<数据包名称>*或 #icon(name: "zip") *\<数据包名称>.zip*]),
   (1, [#icon(name: "folder") *\<子数据包>*]),
   (2, [递归此文件夹结构]),
-  (1, [#icon(name: "folder") *data*]),
-  (1, [#icon(name: "json") *pack.mcmeta*]),
-  (1, [#icon(name: "png") *pack.png*])
+  (1, [#icon(name: "folder") *data*: 数据包的主体内容。]),
+  (1, [#icon(name: "json") *#underline[pack.mcmeta]*: 数据包的元数据。]),
+  (1, [#icon(name: "png") *pack.png*: 可选，作为数据包的图标使用。])
 )
 ==== 元数据
-其中，#icon(name: "json") `pack.mcmeta` 是数据包的#proper-noun(display: "元数据（Metadata）", "yuanshuju")。所谓元数据，就是用于决定 #icon(name: "folder") `<数据包名称>` 或 #icon(name: "zip") `<数据包名称>.zip` 这个文件（夹）是否为一个数据包的基本数据。只有当元数据存在时，游戏才能识别数据包。
+#icon(name: "json") `pack.mcmeta` 是数据包的#proper-noun(display: "元数据（Metadata）", "yuanshuju")。所谓元数据，就是用于决定 #icon(name: "folder") `<数据包名称>` 或 #icon(name: "zip") `<数据包名称>.zip` 这个文件（夹）是否为一个数据包的基本数据。只有当元数据存在时，游戏才能识别数据包。
 
 #icon(name: "json") `pack.mcmeta` 使用JSON格式，其包含的内容如下所示：
 #tree(
@@ -1195,7 +1195,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   (1, [#icon(name: "json-object") *features*: 可选，用于启用实验性内容，若指定该键，则数据包必须在创建世界时添加。]),
   (2, [#icon(name: "json-array") *#underline[enabled]*: 启用实验性内容数据包的列表。]),
   (3, [#icon(name: "json-string") 一个实验性内容数据包的命名空间ID，当前版本可用值有 `minecraft:trade_rebalance`（村民交易平衡性调整）、`minecraft:redstone_experiments`（红石实验性内容）和 `minecraft:minecart_improvements`（矿车改进）。]),
-  (1, [#icon(name: "json-object") *filter*: 可选，用于指定在数据包加载列表中优先级低于该数据包的数据包内要禁用的内容。]),
+  (1, [#icon(name: "json-object") *filter*: 可选，用于指定在数据包加载列表中优先级低于该包的数据包内要禁用的内容。]),
   (2, [#icon(name: "json-array") *block*: 禁用内容列表。]),
   (3, [#icon(name: "json-object") 一项被禁用的内容。]),
   (4, [#icon(name: "json-string") *namespace*: 要禁用的命名空间，若省略则禁用所有命名空间，可使用正则表达式。]),
@@ -1228,7 +1228,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 ==== 数据包版本号
 元数据中有一个很重要的参数：#proper-noun(display: "数据包版本号（Data pack format）", "shujubaobanbenhao")，这是一个用于区分不同版本数据包的参数。每当Mojang对数据包做出修改时，版本号都会发生变动。在1.19.4以前，数据包版本号一般一个大版本变更一次；自1.19.4起，由于Mojang对技术性开发的更新变得频繁，版本号一般每个快照变更一次。数据包应当使用其所在游戏版本的版本号，由于Mojang对数据包的改动可能是颠覆性的，版本号不对应可能会出现错误。
 
-1.21.8以前的版本号均为整数，例如，1.21.8的数据包版本号为81，25w31a引入了#proper-noun(display: "次要版本号（Minor versions）", "ciyaobanbenhao")的概念，原先的整数形式的版本号为#proper-noun(display: "主要版本号（Major versions）", "zhuyaobanbenhao")，25w31a是第一个使用此版本号格式的版本，是为82.0。同一个主版本号内的数据包可以向下兼容，例如83.1的数据包可以兼容83.0的数据包。
+1.21.8以前的版本号均为整数，例如，1.21.8的数据包版本号为81，25w31a是1.21.9的快照，其引入了#proper-noun(display: "次要版本号（Minor versions）", "ciyaobanbenhao")的概念，原先的整数形式的版本号为#proper-noun(display: "主要版本号（Major versions）", "zhuyaobanbenhao")，25w31a是第一个使用此版本号格式的版本，是为82.0。同一个主版本号内的数据包可以向下兼容，例如83.1的数据包可以兼容83.0的数据包。
 
 下表罗列了所有主版本使用的数据包版本号，不包括快照版本。包含快照版本的数据包版本号参考附录@sec:pack_format\中的@tab:pack_format。
 #split-table(
@@ -1258,12 +1258,95 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
     [1.21.9 \~ 1.21.10], [88.0],
     [1.21.11], [94.1]
   )
+) <tab:datapack_format>
+游戏允许编写者在元数据内指定数据包版本号的区间以使数据包兼容多个版本。但由于在不同版本中 #icon(name: "json") `pack.mcmeta` 本身的格式也会发生变化，数据包版本号需要进行校验。不过，这个校验仅仅作为“门槛”，数据包能否运行取决于其实际内容，而非元数据声明。在26.1以前，校验失败会现实“已损坏或不兼容”；而在26.1以后，校验失败会直接认为元数据无效，从而不识别此数据包。
+
+校验规则以25w31a（1.21.9）为分水岭实行“新旧双轨制”，如下表所示：
+#general-table(
+  caption: "数据包版本号校验规则",
+  colspan: 4,
+  columns: (2fr, 5fr, 4fr, 4fr),
+  header: ([配置要求], [元数据中必须使用的字段], [元数据中可以使用的字段], [元数据中不能使用的字段]),
+  [仅适用于25w31a之前], [#icon(name: "json-number") `pack_format`], [#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats`\ 若使用，则此区间必须包含 #icon(name: "json-number") `pack_format` 的值，且最大值不能低于16，因为此字段是在23w31a引入的], [#icon(name: "json-number") `max_format` 和\ #icon(name: "json-number") `min_format`],
+  [仅适用于25w31a及之后], [#icon(name: "json-number") `max_format` 和\ #icon(name: "json-number") `min_format`], [无], [#icon(name: "json-number") `pack_format` 和\ #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats`],
+  [同时适用于25w31a之前及之后], [#set align(left)
+  #h(-2em)同时指定 #icon(name: "json-number") `pack_format`、#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats`、#icon(name: "json-number") `max_format` 和 #icon(name: "json-number") `min_format`，且必须满足以下要求：\ *区间验证：\ *#icon(name: "json-number") `pack_format` 必须落在兼容区间内。\ *对最低版本号的验证：*\ #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的下限必须与 #icon(name: "json-number") `min_format` 相等。\ *对最高版本号的验证，以下两种方案二选一：*\ 
+  + #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的上限与 #icon(name: "json-number") `max_format` 相等。
+  + #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的上限固定为81，此时最高版本号由#icon(name: "json-number") `max_format` 决定。], [无], [无]
+) <tab:datapack_format_verify>
+#example(
+  [#h(-2em)现需要编写一个适用于1.20.5至1.21.11的数据包，尝试编写其元数据。],
+  [
+    查@tab:datapack_format，1.20.5的版本号为41，1.21.11的版本号为94.1。因为此数据包同时适用于25w31a之前及之后的版本，根据@tab:datapack_format_verify，需要同时指定 #icon(name: "json-number") `pack_format`、#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats`、#icon(name: "json-number") `max_format` 和 #icon(name: "json-number") `min_format`。
+
+    首先，#icon(name: "json-number") `pack_format` 的值需要在41和94.1之间，此处直接写41。其次，可将 #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的下限调整为与 #icon(name: "json-number") `min_format` 一致，上限设为81，#icon(name: "json-number") `max_format` 设为94.1。故元数据可写为：
+    #codefile(
+      lang: "json",
+      title: "pack.mcmeta",
+      "{
+  \"pack\": {
+    \"description\": \"元数据\"
+    \"max_format\": [ 94, 1 ],
+    \"min_format\": [ 41, 0 ],
+    \"pack_format\": 41,
+    \"supported_formats\": [ 41, 81 ]
+  }
+}"
+    )
+  ]
 )
-25w31a显然是对元数据进行颠覆性修改的版本，它不仅改动了版本号的形式和定义版本号的字段，还添加了版本号的识别规则。
-// *若最低版本号大于81，则必须使用 #icon(name: "json-number") max_inclusive和 #icon(name: "json-number") min_inclusive指定兼容区间。*
 ==== 子数据包
-子数据包会在当前主数据包的基础上添加内容，同时也会覆盖主数据包相同路径的文件
+子数据包会在当前主数据包的基础上添加内容，同时也会覆盖主数据包相同路径的文件。
+==== data文件夹
+#icon(name: "folder") `data` 文件夹是存储数据包主要内容的文件夹，下面展示了#icon(name: "folder") `data` 文件夹的基本结构，这些文件（夹）就是@tab:writable_registry 所展示的可写注册表以及其他一些配置项的路径，它们不一定必须全部存在，游戏会根据指定的资源路径读取可写注册表中的内容，若相应的可写注册表需要存在，则必须有正确的资源路径和文件（夹）名称。
+
+一个 #icon(name: "folder") `data` 文件夹中可以存在多个不同的命名空间，而命名空间 `minecraft` 下的内容会覆盖原版游戏内容。
+
+在命名空间下的这些文件夹中， #icon(name: "folder") `function` 内的文件使用 `.mcfunction` 格式，#icon(name: "folder") `structure` 内的文件使用 `.nbt` 格式，除 #icon(name: "folder") `datapacks` 外其余文件夹内的文件一律使用 `.json` 格式，编写时务必使用正确的编译软件打开它们。此外，除了 #icon(name: "folder") `datapacks` 的文件夹内部都是可以自由指定资源路径的，那么在各注册项的命名空间ID中就可以使用这些资源路径。
+#tree(
+  (0, [#icon(name: "folder") *data*]),
+  (1, [#icon(name: "folder") *\<命名空间>*]),
+  (2, [#icon(name: "folder") *advancement*: 进度注册表]),
+  (2, [#icon(name: "folder") *banner_pattern*: 旗帜图案注册表]),
+  (2, [#icon(name: "folder") *cat_variant*: 猫的变种注册表]),
+  (2, [#icon(name: "folder") *chat_type*: 聊天类型注册表]),
+  (2, [#icon(name: "folder") *chicken_variant*: 鸡的变种注册表]),
+  (2, [#icon(name: "folder") *cow_variant*: 牛的变种注册表]),
+  (2, [#icon(name: "folder") *damage_type*: 伤害类型注册表]),
+  (2, [#icon(name: "folder") *dialog*: 对话框注册表]),
+  (2, [#icon(name: "folder") *dimension*: 维度注册表]),
+  (2, [#icon(name: "folder") *dimension_type*: 维度类型注册表]),
+  (2, [#icon(name: "folder") *enchantment*: 魔咒注册表]),
+  (2, [#icon(name: "folder") *enchantment_provider*: 魔咒提供器注册表])
+)
 == 资源包<sec:resourcepack>
+#example(
+  [
+    #h(-2em)判断以下的资源包元数据是否符合版本号的校验要求。
+    #codefile(
+      lang: "json",
+      title: "pack.mcmeta",
+      "{
+  \"pack\": {
+    \"pack_format\": 55,
+    \"supported_formats\": {
+      \"min_inclusive\": 55,
+      \"max_inclusive\": 64
+    },
+    \"description\": {
+      \"translate\": \"森罗物语：装饰\"
+    },
+    \"min_format\": [ 55, 0 ],
+    \"max_format\": [ 1000, 0 ]
+  }
+}"
+    )
+  ],
+  [
+
+
+  ]
+)
 == 游戏机制
 游戏为命令提供了一个运行环境，为此命令系统不免受到游戏机制的制约。在时间上，命令受到游戏循环驱动的影响，以游戏刻为单位执行；在空间上，命令受到区块加载的影响，只能在允许运算的区块中执行。本节旨在介绍游戏加载、运行、更新的一些基本游戏机制。
 === 端
