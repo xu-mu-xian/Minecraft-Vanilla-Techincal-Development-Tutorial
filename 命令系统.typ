@@ -265,10 +265,13 @@ Minecraft有许多不同的游戏资源，如草方块、石头、箭、铁锹�
     [`TEST_ENVIRONMENT`], [测试环境], [`test_environment`],
     [`TEST_INSTANCE`], [测试实例], [`test_instance`],
     [`TIMELINE`], [时间线], [`timeline`],
+    [`TRADE_SET`], [交易集], [`trade_set`],
     [`TRIAL_SPAWNER_CONFIG`], [试炼刷怪笼配置], [`trial_spawner`],
     [`TRIM_MATERIAL`], [盔甲纹饰材料], [`trim_material`],
     [`TRIM_PATTERN`], [盔甲纹饰图案], [`trim_pattern`],
+    [`VILLAGER_TRADE`], [村民交易], [`villager_trade`],
     [`WOLF_VARIANT`], [狼的变种], [`wolf_variant`],
+    [`WORLD_CLOCK`], [世界时钟], [`world_clock`],
     [`WORLD_PRESET`], [世界预设], [`worldgen/world_preset`],
     [`ZOMBIE_NAUTILUS_VARIANT`], [僵尸鹦鹉螺变种], [`zombie_nautilus_variant`]
 ) <tab:writable_registry>
@@ -1203,7 +1206,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   (1, [#icon(name: "json-object") *overlays*: 可选，用于子数据包的识别。]),
   (2, [#icon(name: "json-array") *#underline[entries]*: 可用子数据包的列表。]),
   (3, [#icon(name: "json-object") 一个子数据包。]),
-  (4, [#icon(name: "json-string") *#underline[directory]*: 该子数据包相对于主数据包根目录的路径。]),
+  (4, [#icon(name: "json-string") *#underline[directory]*: 该子数据包相对于主数据包根目录的路径。允许使用的字符有：小写字母、`0123456789`、`_` 和 `-`。]),
   (4, [#icon(name: "json-number")#icon(name: "json-array") *max_format*: 该子数据包最高兼容的版本号。若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon(name: "json-number") 形式或在 #icon(name: "json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0x7fffffff`。]),
   (4, [#icon(name: "json-number")#icon(name: "json-array") *min_format*: 该子数据包最低兼容的版本号。若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon(name: "json-number") 形式或在 #icon(name: "json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0`。]),
   (4, [#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") *formats*: 25w31a以前用于指定子数据包版本号兼容范围的字段，现已弃用，可用于兼容旧版数据包。]),
@@ -1268,11 +1271,11 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   columns: (2fr, 5fr, 4fr, 4fr),
   header: ([配置要求], [元数据中必须使用的字段], [元数据中可以使用的字段], [元数据中不能使用的字段]),
   [仅适用于25w31a之前], [#icon(name: "json-number") `pack_format`], [#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats`\ 若使用，则此区间必须包含 #icon(name: "json-number") `pack_format` 的值，且最大值不能低于16，因为此字段是在23w31a引入的], [#icon(name: "json-number") `max_format` 和\ #icon(name: "json-number") `min_format`],
-  [仅适用于25w31a及之后], [#icon(name: "json-number") `max_format` 和\ #icon(name: "json-number") `min_format`], [无], [#icon(name: "json-number") `pack_format` 和\ #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats`],
+  [仅适用于25w31a及之后], [#icon(name: "json-number") `max_format` 和\ #icon(name: "json-number") `min_format`], [-], [#icon(name: "json-number") `pack_format` 和\ #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats`],
   [同时适用于25w31a之前及之后], [#set align(left)
   #h(-2em)同时指定 #icon(name: "json-number") `pack_format`、#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats`、#icon(name: "json-number") `max_format` 和 #icon(name: "json-number") `min_format`，且必须满足以下要求：\ *区间验证：\ *#icon(name: "json-number") `pack_format` 必须落在兼容区间内。\ *对最低版本号的验证：*\ #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的下限必须与 #icon(name: "json-number") `min_format` 相等。\ *对最高版本号的验证，以下两种方案二选一：*\ 
   + #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的上限与 #icon(name: "json-number") `max_format` 相等。
-  + #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的上限固定为81，此时最高版本号由#icon(name: "json-number") `max_format` 决定。], [无], [无]
+  + #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的上限固定为81，此时最高版本号由#icon(name: "json-number") `max_format` 决定。], [-], [-]
 ) <tab:datapack_format_verify>
 #example(
   [#h(-2em)现需要编写一个适用于1.20.5至1.21.11的数据包，尝试编写其元数据。],
@@ -1296,13 +1299,58 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   ]
 )
 ==== 子数据包
-子数据包会在当前主数据包的基础上添加内容，同时也会覆盖主数据包相同路径的文件。
+子数据包会在当前主数据包的基础上添加内容，同时也会覆盖主数据包相同路径的文件。不过，仅在主数据包文件夹的子层级添加一个数据包并不会让主数据包识别到这个子数据包，应当在元数据的 #icon(name: "json-object") `overlays` 中配置。配置方式见上文的数据格式。注意，由于 #icon(name: "json-string") `directory` 字段允许包含的字符仅有小写字母、`0123456789`、`_` 和 `-`，那么子数据包的名称及相对路径也只能包含这些字符。
+#example(
+  [#h(-2em)一个版本号为88.0的数据包需要使用 #icon(name: "folder") `jigsaw_marker_v1.0` 这个数据包作为其子包，尝试配置子数据包。],
+  [
+    首先，将数据包 #icon(name: "folder") `jigsaw_marker_v1.0` 移入主数据包，文件夹结构如下：
+    #tree(
+      (0, [#icon(name: "folder") *主数据包*]),
+      (1, [#icon(name: "folder") *jigsaw_marker_v1.0*]),
+      (1, [#icon(name: "folder") *data*]),
+      (1, [#icon(name: "json") *pack.mcmeta*])
+    )
+    其次，在 #icon(name: "json") `pack.mcmeta` 中做如下配置：
+    #codefile(
+      lang: "json",
+      title: "pack.mcmeta",
+      "{
+  \"overlays\": {
+    \"entries\": [
+      {
+        \"directory\": \"jigsaw_marker_v1.0\",
+        \"max_format\": [ 88, 0 ],
+        \"min_format\": [ 88, 0 ]
+      }
+    ]
+  },
+  \"pack\": {
+    \"description\": \"数据包\",
+    \"max_format\": [ 88, 0 ],
+    \"min_format\": [ 88, 0 ]
+  }
+}")
+  ]
+) <exa:datapack_overlays>
+子数据包的版本号也需要进行校验，校验规则与主数据包的校验规则类似，如下表所示：
+#general-table(
+  caption: "子数据包版本号校验规则",
+  colspan: 3,
+  columns: (auto, auto, auto),
+  header: ([子数据包的配置要求], [#icon(name: "json-object") overlays 必须使用的字段], [#icon(name: "json-object") overlays 不能使用的字段]),
+  [仅适用于25w31a之前], [#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats`], [#icon(name: "json-number") `max_format` 和\ #icon(name: "json-number") `min_format`],
+  [仅适用于25w31a及之后], [#icon(name: "json-number") `max_format` 和\ #icon(name: "json-number") `min_format`\ *注意：如果主数据包适用于25w31a之前，则必须保留 #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats`*], [-],
+  [同时适用于25w31a之前及之后], [#set align(left)
+  #h(-2em)同时指定 #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats`、#icon(name: "json-number") `max_format` 和 #icon(name: "json-number") `min_format`，且必须满足以下要求：\ *对最低版本号的验证：*\ #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats` 的下限必须与 #icon(name: "json-number") `min_format` 相等。\ *对最高版本号的验证，以下两种方案二选一：*\ 
+  + #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats` 的上限与 #icon(name: "json-number") `max_format` 相等。
+  + #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats` 的上限固定为81，此时最高版本号由#icon(name: "json-number") `max_format` 决定。], [-]
+)
 ==== data文件夹
 #icon(name: "folder") `data` 文件夹是存储数据包主要内容的文件夹，下面展示了#icon(name: "folder") `data` 文件夹的基本结构，这些文件（夹）就是@tab:writable_registry 所展示的可写注册表以及其他一些配置项的路径，它们不一定必须全部存在，游戏会根据指定的资源路径读取可写注册表中的内容，若相应的可写注册表需要存在，则必须有正确的资源路径和文件（夹）名称。
 
 一个 #icon(name: "folder") `data` 文件夹中可以存在多个不同的命名空间，而命名空间 `minecraft` 下的内容会覆盖原版游戏内容。
 
-在命名空间下的这些文件夹中， #icon(name: "folder") `function` 内的文件使用 `.mcfunction` 格式，#icon(name: "folder") `structure` 内的文件使用 `.nbt` 格式，除 #icon(name: "folder") `datapacks` 外其余文件夹内的文件一律使用 `.json` 格式，编写时务必使用正确的编译软件打开它们。此外，除了 #icon(name: "folder") `datapacks` 的文件夹内部都是可以自由指定资源路径的，那么在各注册项的命名空间ID中就可以使用这些资源路径。
+在命名空间下的这些文件夹中， #icon(name: "folder") `function` 内的文件使用 `.mcfunction` 格式，#icon(name: "folder") `structure` 内的文件使用 `.nbt` 格式，除 #icon(name: "folder") `datapacks` 外其余文件夹内的文件一律使用 `.json` 格式，编写时务必使用正确的编译软件打开它们。此外，除了 #icon(name: "folder") `datapacks` 的文件夹内部都是可以自由指定资源路径的，那么在各注册项的命名空间ID中就可以使用这些资源路径。可参考@exa:namespaced_id_in_datapack。
 #tree(
   (0, [#icon(name: "folder") *data*]),
   (1, [#icon(name: "folder") *\<命名空间>*]),
@@ -1313,11 +1361,36 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   (2, [#icon(name: "folder") *chicken_variant*: 鸡的变种注册表]),
   (2, [#icon(name: "folder") *cow_variant*: 牛的变种注册表]),
   (2, [#icon(name: "folder") *damage_type*: 伤害类型注册表]),
+  (2, [#icon(name: "folder") *datapacks*: 内置数据包]),
   (2, [#icon(name: "folder") *dialog*: 对话框注册表]),
   (2, [#icon(name: "folder") *dimension*: 维度注册表]),
   (2, [#icon(name: "folder") *dimension_type*: 维度类型注册表]),
   (2, [#icon(name: "folder") *enchantment*: 魔咒注册表]),
-  (2, [#icon(name: "folder") *enchantment_provider*: 魔咒提供器注册表])
+  (2, [#icon(name: "folder") *enchantment_provider*: 魔咒提供器注册表]),
+  (2, [#icon(name: "folder") *frog_variant*: 青蛙的变种注册表]),
+  (2, [#icon(name: "folder") *function*: 函数]),
+  (2, [#icon(name: "folder") *instrument*: 山羊角乐器注册表]),
+  (2, [#icon(name: "folder") *item_modifier*: 物品修饰器注册表]),
+  (2, [#icon(name: "folder") *jukebox_song*: 唱片机曲目注册表]),
+  (2, [#icon(name: "folder") *loot_table*: 战利品表注册表]),
+  (2, [#icon(name: "folder") *painting_variant*: 画的变种注册表]),
+  (2, [#icon(name: "folder") *pig_variant*: 猪的变种注册表]),
+  (2, [#icon(name: "folder") *predicate*: 谓词注册表]),
+  (2, [#icon(name: "folder") *recipe*: 配方注册表]),
+  (2, [#icon(name: "folder") *structure*: 结构]),
+  (2, [#icon(name: "folder") *tags*: 数据包标签]),
+  (2, [#icon(name: "folder") *test_environment*: 测试环境注册表]),
+  (2, [#icon(name: "folder") *test_instance*: 测试实例注册表]),
+  (2, [#icon(name: "folder") *timeline*: 时间线注册表]),
+  (2, [#icon(name: "folder") *trade_set*: 交易集注册表]),
+  (2, [#icon(name: "folder") *trial_spawner*: 试炼刷怪笼配置注册表]),
+  (2, [#icon(name: "folder") *trim_material*: 盔甲纹饰材料注册表]),
+  (2, [#icon(name: "folder") *trim_pattern*: 盔甲纹饰图案注册表]),
+  (2, [#icon(name: "folder") *villager_trade*: 村民交易注册表]),
+  (2, [#icon(name: "folder") *wolf_variant*: 狼的变种注册表]),
+  (2, [#icon(name: "folder") *world_clock*: 世界时钟注册表]),
+  (2, [#icon(name: "folder") *worldgen*: 世界生成模块]),
+  (2, [#icon(name: "folder") *zombie_nautilus_variant*: 僵尸鹦鹉螺变种注册表])
 )
 == 资源包<sec:resourcepack>
 #example(

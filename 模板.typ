@@ -233,105 +233,112 @@
 
 // 例题
 #let exa = counter("exa")
-#let example(question, solution) = {
-  exa.step()
-  v(1em)
-  showybox(
-    breakable: true,
-    footer: [
-      #h(-1em)
-      #box[
-        #box(
-          fill: rgb("#ffcece"),
-          inset: (
-            x: 0.5em,
-            y: 0.5em
-          ),
-          radius: 1em,
-          [解]
-        )
-        #h(-2.4em)
-        #box(
-          baseline: -2pt,
-          fill: rgb("#d71d1d"),
-          inset: (
-            x: 0.5em,
-            y: 0.5em
-          ),
-          radius: 1em,
-          [
-            #set text(
-              fill: white,
-              font: "Minecraft"
-            )
-            解
-          ]
-        )
-      ]
-      #h(1em)
-      #solution
-    ],
-    footer-style: (
-      color: black,
-      sep-thickness: 0pt
-    ),
-    frame: (
-      body-color: rgb("#ffcece"),
-      border-color: rgb("#d71d1d"),
-      footer-color: white,
-      title-color: rgb("#d71d1d"),
-      title-inset: (x: 0.6em, y: 0.5em)
-    ),
-    shadow: (
-      color: rgb("#ff6565"),
-      offset: 3pt
-    ),
-    title: "",
-    title-style: (
-      boxed-style: (
-        anchor: (
-          x: left,
-          y: horizon
-        ),
-        radius: 5pt
-      ),
-      color: white
-    )
-  )[
-    #block(
-      width: 100%,
-      sticky: true,
+#let example(question, solution, label: none, supplement: "例") = figure(
+  kind: "example",
+  supplement: supplement,
+  {
+    block(
       {
-        v(-1.5em)
-        h(-2em)
-        box(
-          {
-            let title-text = {
-              set text(fill: white, font: "Minecraft")
-              [例] + context str(counter(heading).get().at(0)) + "." + context exa.display()
-            }
-            place(dx: 2pt, dy: 2pt)[
+        exa.step()
+        showybox(
+          breakable: true,
+          footer: [
+            #h(-1em)
+            #box[
               #box(
-                fill: rgb("#ff6565"),
-                inset: (x: 0.6em, y: 0.5em),
-                radius: 5pt,
-                hide(title-text)
+                fill: rgb("#ffcece"),
+                inset: (
+                  x: 0.5em,
+                  y: 0.5em
+                ),
+                radius: 1em,
+                [解]
+              )
+              #h(-2.4em)
+              #box(
+                baseline: -2pt,
+                fill: rgb("#d71d1d"),
+                inset: (
+                  x: 0.5em,
+                  y: 0.5em
+                ),
+                radius: 1em,
+                [
+                  #set text(
+                    fill: white,
+                    font: "Minecraft"
+                  )
+                  解
+                ]
               )
             ]
-            h(-2em)
-            box(
-              fill: rgb("#d71d1d"),
-              inset: (x: 0.6em, y: 0.5em),
-              radius: 5pt,
-              title-text
-            )
-          }
-        )
+            #h(1em)
+            #solution
+          ],
+          footer-style: (
+            color: black,
+            sep-thickness: 0pt
+          ),
+          frame: (
+            body-color: rgb("#ffcece"),
+            border-color: rgb("#d71d1d"),
+            footer-color: white,
+            title-color: rgb("#d71d1d"),
+            title-inset: (x: 0.6em, y: 0.5em)
+          ),
+          shadow: (
+            color: rgb("#ff6565"),
+            offset: 3pt
+          ),
+          title: "",
+          title-style: (
+            boxed-style: (
+              anchor: (
+                x: left,
+                y: horizon
+              ),
+              radius: 5pt
+            ),
+            color: white
+          )
+        )[
+          #block(
+            width: 100%,
+            sticky: true,
+            {
+              v(-1.5em)
+              h(-2em)
+              box(
+                {
+                  let title-text = {
+                    set text(fill: white, font: "Minecraft")
+                    [例] + context str(counter(heading).get().at(0)) + "." + context exa.display()
+                  }
+                  place(dx: 2pt, dy: 2pt)[
+                    #box(
+                      fill: rgb("#ff6565"),
+                      inset: (x: 0.6em, y: 0.5em),
+                      radius: 5pt,
+                      hide(title-text)
+                    )
+                  ]
+                  h(-2em)
+                  box(
+                    fill: rgb("#d71d1d"),
+                    inset: (x: 0.6em, y: 0.5em),
+                    radius: 5pt,
+                    title-text
+                  )
+                }
+              )
+            }
+          )
+          #question
+        ]
       }
-    )
-    #question
-  ]
-}
+    ) + label
+  }
+)
 
 // 子图片
 #let sub-figure(align: center, caption: [子图片], columns: 2, gutter: 2em, label: none, rows: auto, ..images) = [
