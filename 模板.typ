@@ -464,6 +464,9 @@
   if name == "json-object" {
     box(image("图标/data/JSON对象.png", height:1em), baseline: 1pt)
   }
+  if name == "nbt-list" {
+    box(image("图标/data/列表.png", height:1em), baseline: 1pt)
+  }
   if name == "vscode" {
     box(image("图标/VSCode.png", height:1em), baseline: 1pt)
   }
@@ -551,8 +554,10 @@
 #let tree(..items) = stringtree(line_color: red, ..items)
 
 // 专有名词
-#let proper-noun(display: "", value) = [*#display*#index(display: display, value)]
-
+#let proper-noun(display: "", value) = {
+  let actual-display = if display == "" { value } else { display }
+  [*#actual-display*#index(display: actual-display, value)]
+}
 // 样式
 #let template-style(main-body) = {
   // 代码块
