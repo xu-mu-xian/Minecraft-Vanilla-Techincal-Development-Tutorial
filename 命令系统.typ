@@ -458,16 +458,16 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
   ]
 )
 为了使不同的命令具有不同的功能，它们使用的参数类型各不相同。有些命令作用的对象为实体，它们则会使用指定实体的参数，有些命令作用的对象为某一个坐标，则其使用坐标参数。游戏使用的命令参数有如布尔值、整型、函数、槽位值、坐标值、目标选择器、JSON、NBT等。一些复杂参数会在本教程后文呈现，下面列举的是基本参数，即在Brigadier中使用的六种基本数据类型：
-#i1(new: true)[#proper-noun(display: "布尔值（Boolean）", "buerzhi")]
+#i1(new: true)[#proper-noun(display: "布尔值（Bool）", "buerzhi")]
 只有两种可用参数，为 `true` 和 `false`，分别代表“是”与“否”。
 #i1[#proper-noun(display: "整数（Integer）", "zhengxing")]
 使用32位整型，即介于 `-2147483648` 和 `2147483647` 之间的整数值，如 `1`、`0`、`-1` 等。不同命令中使用整型的参数规定的最大可用值和最小可用值不一致。
 #i1[#proper-noun(display: "长整数（Long）", "changzhengxing")]
 使用64位整型，即介于 `-9223372036854775808` 和 `9223372036854775807` 之间的整数值。
 #i1[#proper-noun(display: "单精度浮点数（Float）", "danjingdufudianshu")]
-使用占据4字节的浮点数，范围大约介于$-3.4×10^38$和$3.4×10^38$之间，在不同命令中使用单精度浮点数的参数规定的最大可用值和最小可用值不一致。一些单精度浮点数的示例有：`0`、`1.1`、`-1`、`.5` 等，小数形式的整数部分可以省略。在命令参数中使用的浮点数暂时不支持科学计数法#footnote[参见#link("https://bugs.mojang.com/browse/MC/issues/MC-130925")[MC-130925]。]。
+使用占据4字节的浮点数，范围大约介于$-3.4 times 10^38$和$3.4 times 10^38$之间，在不同命令中使用单精度浮点数的参数规定的最大可用值和最小可用值不一致。一些单精度浮点数的示例有：`0`、`1.1`、`-1`、`.5` 等，小数形式的整数部分可以省略。在命令参数中使用的浮点数暂时不支持科学计数法#footnote[参见#link("https://bugs.mojang.com/browse/MC/issues/MC-130925")[MC-130925]。]。
 #i1[#proper-noun(display: "双精度浮点数（Double）", "shuangjingdufudianshu")]
-使用占据4字节的浮点数，范围大约介于$-1.8×10^108$和$1.8×10^108$之间。可以表示比单精度浮点数绝对值更大的有效数字。
+使用占据4字节的浮点数，范围大约介于$-1.8 times 10^108$和$1.8 times 10^108$之间。可以表示比单精度浮点数绝对值更大的有效数字。
 #i1[#proper-noun(display: "字符串（String）", "zifuchuan")]
 #i2[#proper-noun(display: "单个词（Single word）", "dangeci")]
 即不含空格的字符串，如 `word`，若单个词的内容由多个词语组成，则一般使用下划线 `_` 连接相邻词，如 `word_with_underscores`。
@@ -726,7 +726,7 @@ JSON格式键值对的基本语法为：
 JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都为一个十六进制数字。例如，符号★的Unicode为 `U2605`，则在字符串中输入★的方式可以为：
 #codebox("\"text\": \"\u2605\"")
 这样便可以在字符串中输入一些生僻字或是在键盘上无法直接打出来的字符。但是Minecraft的字库是有限的，并非所有的字符都可以在Minecraft中显示。
-#i1[#icon(name: "json-bool") #proper-noun(display: "布尔值（Boolean）", "buerzhi")]
+#i1[#icon(name: "json-bool") #proper-noun(display: "布尔值（Bool）", "buerzhi")]
 由 `true`（真）或 `false`（假）定义，这两者是JSON中的字面量符号，不需要使用双引号引起，举例：
 #codebox("\"bold\": true")
 #codebox("\"italic\": false")
@@ -1108,7 +1108,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 )
 当一个存档中存在多个有效的已启用数据包时，游戏会根据数据包的顺序加载其内容，这里的“有效”是指数据包有合法的元数据且数据包内无任何语法错误。已启用数据包的加载顺序存储于 #icon(name:"nbt") `level.dat` 中。在选择数据包窗口“已选”一栏的加载顺序表现为从下到上。
 
-若这些数据包对同种资源进行定义，则*后加载的数据包会对先加载的数据包进行覆盖*，表明越靠后加载的数据包其优先级越高。可使用命令  `/datapack` 查询、修改、控制这些数据包的启用或禁用，`/datapack` 所需的权限等级为2，以下是所有用法：
+若这些数据包对同种资源进行定义，则*后加载的数据包会对先加载的数据包进行覆盖*，表明*越靠后加载的数据包其优先级越高*。可使用命令  `/datapack` 查询、修改、控制这些数据包的启用或禁用，`/datapack` 所需的权限等级为2，以下是所有用法：
 #i1(new: true)[启用指定数据包]
 #codebox("datapack enable <name>")
 #param-desc(
@@ -1178,6 +1178,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   (1, [#icon(name: "json") *#underline[pack.mcmeta]*: 数据包的元数据。]),
   (1, [#icon(name: "png") *pack.png*: 可选，作为数据包的图标使用。])
 )
+如果该数据包以压缩文件的形式存在，则 #icon(name: "zip") `<数据包名称>.zip` 和 #icon(name: "folder") `<子数据包>`、#icon(name: "folder") `assets`、#icon(name: "json") `pack.mcmeta`、#icon(name: "png") `pack.png` 这些文件（夹）之间不要插入其他层级的文件夹。
 ==== 元数据
 #icon(name: "json") `pack.mcmeta` 是数据包的#proper-noun(display: "元数据（Metadata）", "yuanshuju")。所谓元数据，就是用于决定 #icon(name: "folder") `<数据包名称>` 或 #icon(name: "zip") `<数据包名称>.zip` 这个文件（夹）是否为一个数据包的基本数据。只有当元数据存在时，游戏才能识别数据包。
 
@@ -1190,7 +1191,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   (2, [#icon(name: "json-number")#icon(name: "json-array") *#underline[min_format]*: 数据包最低兼容的版本号。若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon(name: "json-number") 形式或在 #icon(name: "json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0`。]),
   (2, [#icon(name: "json-number") *pack_format*: 25w31a以前用于指定数据包版本号的字段，现已弃用，可用于兼容旧版数据包。]),
   (2, [#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") *supported_formats*: 25w31a以前用于指定数据包版本号兼容范围的字段，现已弃用，可用于兼容旧版数据包。]),
-  (3, [*若使用 #icon(name: "json-number") 形式，则精确匹配，效果与#icon(name: "json-number") pack_format一致*], false),
+  (3, [*若使用 #icon(name: "json-number") 形式，则精确匹配，效果与 #icon(name: "json-number") pack_format一致*], false),
   (3, [*若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为最低兼容的版本号，第二个为最高兼容的版本号*], false),
   (3, [*若使用 #icon(name: "json-object") 形式，则有以下字段：*], false),
   (3, [#icon(name: "json-number") *max_inclusive*: 最高兼容的版本号。]),
@@ -1201,8 +1202,8 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   (1, [#icon(name: "json-object") *filter*: 可选，用于指定在数据包加载列表中优先级低于该包的数据包内要禁用的内容。]),
   (2, [#icon(name: "json-array") *block*: 禁用内容列表。]),
   (3, [#icon(name: "json-object") 一项被禁用的内容。]),
-  (4, [#icon(name: "json-string") *namespace*: 要禁用的命名空间，若省略则禁用所有命名空间，可使用正则表达式。]),
-  (4, [#icon(name: "json-string") *path*: 要禁用的资源路径，若省略则禁用所有路径，可使用正则表达式。]),
+  (4, [#icon(name: "json-string") *namespace*: 要禁用的命名空间，若省略则禁用所有命名空间，可使用#link("https://www.runoob.com/regexp/regexp-syntax.html")[正则表达式]。]),
+  (4, [#icon(name: "json-string") *path*: 要禁用的资源路径，若省略则禁用所有路径，可使用#link("https://www.runoob.com/regexp/regexp-syntax.html")[正则表达式]。]),
   (1, [#icon(name: "json-object") *overlays*: 可选，用于子数据包的识别。]),
   (2, [#icon(name: "json-array") *#underline[entries]*: 可用子数据包的列表。]),
   (3, [#icon(name: "json-object") 一个子数据包。]),
@@ -1304,6 +1305,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   [#h(-2em)一个版本号为88.0的数据包需要使用 #icon(name: "folder") `jigsaw_marker_v1.0` 这个数据包作为其子包，尝试配置子数据包。],
   [
     首先，将数据包 #icon(name: "folder") `jigsaw_marker_v1.0` 移入主数据包，文件夹结构如下：
+    #v(-1em)
     #tree(
       (0, [#icon(name: "folder") *主数据包*]),
       (1, [#icon(name: "folder") *jigsaw_marker_v1.0*]),
@@ -1350,7 +1352,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 
 一个 #icon(name: "folder") `data` 文件夹中可以存在多个不同的命名空间，而命名空间 `minecraft` 下的内容会覆盖原版游戏内容。
 
-在命名空间下的这些文件夹中， #icon(name: "folder") `function` 内的文件使用 `.mcfunction` 格式，#icon(name: "folder") `structure` 内的文件使用 `.nbt` 格式，除 #icon(name: "folder") `datapacks` 外其余文件夹内的文件一律使用 `.json` 格式，编写时务必使用正确的编译软件打开它们。此外，除了 #icon(name: "folder") `datapacks` 的文件夹内部都是可以自由指定资源路径的，那么在各注册项的命名空间ID中就可以使用这些资源路径。可参考@exa:namespaced_id_in_datapack。
+在命名空间下的这些文件夹中， #icon(name: "folder") `function` 内的文件使用 `.mcfunction` 格式，#icon(name: "folder") `structure` 内的文件使用 `.nbt` 格式，除 #icon(name: "folder") `datapacks` 外其余文件夹内的文件一律使用 `.json` 格式，编写时务必使用正确的编译软件打开它们。此外，除了 #icon(name: "folder") `datapacks` 的文件夹内部都是可以自由指定资源路径的，那么在各游戏资源的命名空间ID中就可以使用这些资源路径。可参考@exa:namespaced_id_in_datapack。
 #tree(
   (0, [#icon(name: "folder") *data*]),
   (1, [#icon(name: "folder") *\<命名空间>*]),
@@ -1430,7 +1432,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 )
 其中的 #icon(name: "folder") `<数据包名称>` 即为一个功能数据包，其结构与正常数据包无异，也需要有元数据。但这些数据包无法由自定义的数据包添加，仅由游戏内部提供，仅作了解。
 === 数据包标签定义格式 <subsec:tag_definition>
-小节@subsec:tag_in_datapack 已提出了#proper-noun(display: "数据包标签（Tags in data packs）", "shujubaobiaoqian")的概念，它是将注册项分类的一种办法。玩家不仅可以使用原版数据包既有的数据包标签，也可以新增或删改原有的标签。数据包标签模块在数据包内的文件结构如下：
+小节@subsec:tag_in_datapack 已提出了#proper-noun(display: "数据包标签（Tags in data packs）", "shujubaobiaoqian")的概念，它是将游戏资源分类的一种办法。玩家不仅可以使用原版数据包既有的数据包标签，也可以新增或删改原有的标签。数据包标签模块在数据包内的文件结构如下：
 #tree(
   (0, [#icon(name: "folder") *data*]),
   (1, [#icon(name: "folder") *\<命名空间>*]),
@@ -1438,7 +1440,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   (3, [#icon(name: "folder") *\<注册表>*]),
   (4, [#icon(name: "json") *\<标签>.json*])
 )
-每个注册表下的数据包标签只允许引用该注册表内的注册项。在数据包标签中所有可用的注册表如下表所示：
+每个注册表下的数据包标签只允许引用该注册表内的游戏资源。在数据包标签中所有可用的注册表如下表所示：
 #split-table(
   caption: "数据包标签可用注册表",
   original-cols: (auto, auto),
@@ -1468,10 +1470,226 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 )
 对于一个特定的数据包标签 #icon(name: "json") `data\<命名空间>\tags\<注册名>\<标签>.json`，引用它的方式是带 `#` 号的命名空间ID，其中 `<注册表>` 层级不书写：
 #codebox("#<命名空间>:<标签>")
-`<注册表>` 层级下可以添加一定的路径。例如，#icon(name: "json") `data\<命名空间>\tags\<注册名>\<路径>\<标签>.json` 的引用格式为
+若命名空间不写，则默认使用 `minecraft` 内的数据包标签。`<注册表>` 层级下可以添加一定的路径。例如，#icon(name: "json") `data\<命名空间>\tags\<注册名>\<路径>\<标签>.json` 的引用格式为
 #codebox("#<命名空间>:<路径>/<标签>")
 所有的数据包标签 `.json` 文件，无论其所属的注册表，一律有如下的格式：
+#tree(
+  (0, [#icon(name: "json-object") 文件封装]),
+  (1, [#icon(name: "json-bool") *replace*: 指定此标签的引用是否覆盖较低优先级数据包中同命名空间内的同名标签，若设为 `true`，则忽略较低优先级数据包内的引用；若设为 `false`，则此标签内的引用作为对同名标签内引用内容的补充。默认为 `false`。]),
+  (2, [#icon(name: "json-object") *#underline[values]*: 此标签引用的游戏资源，必须引用同类型的游戏资源。可以引用游戏资源本身，也可以引用其他的同类型数据包标签。]),
+  (3, [#icon(name: "json-string") 一个被引用游戏资源的命名空间ID。]),
+  (3, [#icon(name: "json-string") 一个被引用的同类型数据包标签，需要带 `#` 号。]),
+  (3, [#icon(name: "json-object") 引用游戏资源的完整格式。]),
+  (4, [#icon(name: "json-string") *#underline[id]*: 一个被引用游戏资源的命名空间ID或同类型数据包标签。]),
+  (4, [#icon(name: "json-bool") *required*: 用 `false` 表示该条目是可选的，若该条目 #icon(name: "json-string") `id` 所述内容不存在，则不会使标签加载失败。默认为 `true`。])
+)
+#example(
+  [#h(-2em)原版存在一个名为 `#air` 的方块标签，有三种方块属于这个标签：空气、洞穴空气和虚空空气，试编写这个标签。],
+  [
+    这个标签没有使用命名空间，默认命名空间为 `minecraft`。首先确定这个标签的文件路径：
+    #v(-1em)
+    #tree(
+      (0, [#icon(name: "folder") *data*]),
+      (1, [#icon(name: "folder") *minecraft*]),
+      (2, [#icon(name: "folder") *tags*]),
+      (3, [#icon(name: "folder") *block*]),
+      (4, [#icon(name: "json") *air.json*])
+    )
+    标签内容如下所示：
+    #codefile(
+      lang: "json",
+      title: "minecraft > tags > block > air.json",
+      "{
+  \"values\":[
+    \"minecraft:air\",
+    \"minecraft:void_air\",
+    \"minecraft:cave_air\"
+  ]
+}"
+    )
+  ]
+)
+#example(
+  [
+    #h(-2em)有一个生物群系标签如下所示：
+    #v(-1em)
+    #tree(
+      (0, [#icon(name: "folder") *data*]),
+      (1, [#icon(name: "folder") *the_backrooms*]),
+      (2, [#icon(name: "folder") *tags*]),
+      (3, [#icon(name: "folder") *worldgen*]),
+      (4, [#icon(name: "folder") *biome*]),
+      (5, [#icon(name: "json") *level_37.json*])
+    )
+    #e1(new: true)[写出该标签的引用方式。]
+    #e1[同个数据包内已有如下的生物群系，尝试在该标签中引用这些生物群系。
+    #v(-1em)
+    #tree(
+      (0, [#icon(name: "folder") *data*]),
+      (1, [#icon(name: "folder") *the_backrooms*]),
+      (2, [#icon(name: "folder") *worldgen*]),
+      (3, [#icon(name: "folder") *biome*]),
+      (4, [#icon(name: "folder") *level_37*]),
+      (5, [#icon(name: "json") *normal.json*]),
+      (5, [#icon(name: "json") *deep_water.json*]),
+      (5, [#icon(name: "json") *dark_zone.json*])
+    )]
+  ],
+  [
+    #e1(new: true)[#icon(name: "folder") `the_backrooms` 是命名空间，#icon(name: "folder") `tags` 是标签的路径，#icon(name: "folder") `worldgen` 和 #icon(name: "folder") `biome` 是标签内注册表的路径，因此该标签的引用方式为 `#the_backrooms:level_37`。]
+    #e1[#icon(name: "folder") `the_backrooms` 是命名空间，#icon(name: "folder") `worldgen` 和 #icon(name: "folder") `biome` 是注册表的路径，因此这些生物群系的命名空间ID分别为 `the_backrooms:level_37/normal`、`the_backrooms:level_37/deep_water` 和 `the_backrooms:level_37/dark_zone`，现在在标签内引用它们：
+    #codefile(
+      lang: "json",
+      title: "data > the_backrooms > tags > worldgen > biome > level_37.json",
+      "{
+  \"values\":[
+    \"the_backrooms:level_37/normal\",
+    \"the_backrooms:level_37/deep_water\",
+    \"the_backrooms:level_37/dark_zone\"
+  ]
+}"
+    )]
+  ]
+)
+原版的一些数据包标签具有特殊的行为。例如，实体标签 `#arthropod` 引用的实体均被视为节肢生物，会受到节肢杀手魔咒的作用，如果往标签中添加新的实体，则新使用的实体也会被视为节肢生物。所有的原版数据包标签列举于附录@sec:tag_in_datapack。
 == 资源包<sec:resourcepack>
+为了搭配所制作的小游戏、冒险地图或原版模组，使得游戏的观感和体验感提高，作者通常会系统性地改变游戏的外观，例如方块的纹理、外形等。于是就需要使用资源包。 
+
+#proper-noun(display: "资源包（Resource pack）", "ziyuanbao")允许玩家在不修改源代码的情况下自定义纹理、模型、声音、语言等外观性资源，对客户端有效。资源包本质上是一个文件夹或压缩文件，被储存在 #icon(name: "folder") `.minecraft/resourcepacks` 中，同一个 #icon(name: "folder") `resourcepacks` 文件夹内能存放多个资源包。选项资源包窗口“可用”一栏仅罗列 #icon(name: "folder") `resourcepacks` 文件夹内的所有的有效资源包，可在这一栏选用资源包，只有位于“已选”一栏的资源包有效。点击打开包文件夹后可以手动添加资源包。
+#figure(
+  caption: "选择资源包窗口",
+  image("图片/选择资源包窗口.png", width: 70%)
+)
+在游戏中可以同时使用多个资源包，这些资源包按照“已选”一栏中从下到上的顺序依次加载，资源包的加载顺序可以在该栏中调换。和数据包类似，若这些资源包对同种资源的外观进行定义，则*后加载的资源包会对先加载的资源包进行覆盖*，*表明越靠后加载的资源包其优先级越高*。
+
+资源包也可以以压缩包的形式存放在存档文件夹中，这时资源包作为#proper-noun(display: "世界指定资源包（World specific resources）", "shijiezhidingziyuanbao")使用，仅在当前存档起作用，且会使该资源包的优先级设为最高，并将已定义的资源外观覆盖选项资源包中已启用的资源包。有效的世界指定资源包必须以 #icon(name: "zip") `resources.zip` 为压缩文件名。
+
+在服务器中，管理员可在 #icon(name: "file") `server.properties` 中的 `resource-pack` 一项指定一个 `.zip` 文件的下载地址，从而将此 `.zip` 文件设为服务器的指定资源包。若启用，则游戏会强制将该资源包设为最顶层资源包且无法更改位置。
+
+原版资源包位于 #icon(name: "folder") `.minecraft\versions\<版本号>\<版本号>.jar\assets`，是制作自定义资源包的重要依据，读者可参考之。
+=== 资源包的基本结构
+一个资源包拥有以下的基本结构：
+#tree(
+  (0, [#icon(name: "folder") *\<资源包名称>*或 #icon(name: "zip") *\<资源包名称>.zip*]),
+  (1, [#icon(name: "folder") *\<子资源包>*]),
+  (2, [递归此文件夹结构]),
+  (1, [#icon(name: "folder") *assets*: 资源包的主体内容。]),
+  (1, [#icon(name: "json") *#underline[pack.mcmeta]*: 资源包的元数据。]),
+  (1, [#icon(name: "png") *pack.png*: 可选，作为资源包的图标使用。])
+)
+如果该资源包以压缩文件的形式存在，则 #icon(name: "zip") `<资源包名称>.zip` 和 #icon(name: "folder") `<子数据包>`、#icon(name: "folder") `assets`、#icon(name: "json") `pack.mcmeta`、#icon(name: "png") `pack.png` 这些文件之间不要插入其他层级的文件夹。若该资源包为世界指定资源包，则名称一定为 #icon(name: "zip") `resources.zip`。
+
+资源包中 #icon(name: "folder") `assets` 用于存放各种资源文件，#icon(name: "json") `pack.mcmeta` 作为资源包的#proper-noun(display: "元数据（Metadata）", "yuanshuju")使用。和数据包一样，所谓元数据，就是用于决定 #icon(name: "folder") `<资源包名称>` 或 #icon(name: "zip") `<资源包名称>.zip` 这个文件（夹）是否为一个资源包，只有当元数据存在时，游戏才能识别资源包。
+
+#icon(name: "json") `pack.mcmeta` 包含的内容如下所示：
+#tree(
+  (0, [#icon(name: "json-object") 文件封装]),
+  (1, [#icon(name: "json-object") *#underline[pack]*: 此资源包的基本信息。]),
+  (2, [#icon(name: "json-string")#icon(name: "json-array")#icon(name: "json-object") *#underline[description]*: 任意文本，使用文本组件格式，可用于对资源包的简单介绍。此段文本会出现在选项资源包中。]),
+  (2, [#icon(name: "json-number")#icon(name: "json-array") *#underline[max_format]*: 资源包最高兼容的版本号。若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon(name: "json-number") 形式或在 #icon(name: "json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0x7fffffff`。]),
+  (2, [#icon(name: "json-number")#icon(name: "json-array") *#underline[min_format]*: 资源包最低兼容的版本号。若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon(name: "json-number") 形式或在 #icon(name: "json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0`。]),
+  (2, [#icon(name: "json-number") *pack_format*: 25w31a以前用于指定资源包版本号的字段，现已弃用，可用于兼容旧版资源包。]),
+  (2, [#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") *supported_formats*: 25w31a以前用于指定资源包版本号兼容范围的字段，现已弃用，可用于兼容旧版资源包。]),
+  (3, [*若使用 #icon(name: "json-number") 形式，则精确匹配，效果与 #icon(name: "json-number") pack_format一致*], false),
+  (3, [*若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为最低兼容的版本号，第二个为最高兼容的版本号*], false),
+  (3, [*若使用 #icon(name: "json-object") 形式，则有以下字段：*], false),
+  (3, [#icon(name: "json-number") *max_inclusive*: 最高兼容的版本号。]),
+  (3, [#icon(name: "json-number") *min_inclusive*: 最低兼容的版本号。]),
+  (1, [#icon(name: "json-object") *language*: 可选，用于添加选项卡中的语言，可以添加多个语言。]),
+  (2, [#icon(name: "json-array") *\<语言代码>*: 一个新建的语言，键名按照 `<语言>_<地区>` 的格式，其与 #icon(name: "folder") `assets\minecraft\lang` 中同名的 `.json` 文件相对应。]),
+  (3, [#icon(name: "json-bool") *bidirectional*: 布尔值，若为 `true`，则按照从右到左的格式显示。默认为 `false`。]),
+  (3, [#icon(name: "json-string") *#underline[name]*: 语言的名称。]),
+  (3, [#icon(name: "json-string") *#underline[reigon]*: 国家或地区的名称。]),
+  (1, [#icon(name: "json-object") *filter*: 可选，用于指定在资源包加载列表中优先级低于该包的资源包内要忽略的内容。]),
+  (2, [#icon(name: "json-array") *block*: 忽略内容列表。]),
+  (3, [#icon(name: "json-object") 一项被忽略的内容。若此项为空则完全忽略所有优先级低的资源包。]),
+  (4, [#icon(name: "json-string") *namespace*: 要忽略的命名空间，若省略则忽略所有命名空间，可使用#link("https://www.runoob.com/regexp/regexp-syntax.html")[正则表达式]。]),
+  (4, [#icon(name: "json-string") *path*: 要忽略的资源路径，若省略则忽略所有路径，可使用#link("https://www.runoob.com/regexp/regexp-syntax.html")[正则表达式]。]),
+  (1, [#icon(name: "json-object") *overlays*: 可选，用于子资源包的识别。]),
+  (2, [#icon(name: "json-array") *#underline[entries]*: 可用子资源包的列表。]),
+  (3, [#icon(name: "json-object") 一个子资源包。]),
+  (4, [#icon(name: "json-string") *#underline[directory]*: 该子资源包相对于主资源包根目录的路径。允许使用的字符有：小写字母、`0123456789`、`_` 和 `-`。]),
+  (4, [#icon(name: "json-number")#icon(name: "json-array") *max_format*: 该子资源包最高兼容的版本号。若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon(name: "json-number") 形式或在 #icon(name: "json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0x7fffffff`。]),
+  (4, [#icon(name: "json-number")#icon(name: "json-array") *min_format*: 该子资源包最低兼容的版本号。若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon(name: "json-number") 形式或在 #icon(name: "json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0`。]),
+  (4, [#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") *formats*: 25w31a以前用于指定子资源包版本号兼容范围的字段，现已弃用，可用于兼容旧版资源包。]),
+  (5, [*若使用 #icon(name: "json-number") 形式，则精确匹配*], false),
+  (5, [*若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为最低兼容的版本号，第二个为最高兼容的版本号*], false),
+  (5, [*若使用 #icon(name: "json-object") 形式，则有以下字段：*], false),
+  (5, [#icon(name: "json-number") *max_inclusive*: 最高兼容的版本号。]),
+  (5, [#icon(name: "json-number") *min_inclusive*: 最低兼容的版本号。])
+)
+例如，下面是1.21.11版本的一个标准 #icon(name: "json") `pack.mcmeta` 文件：
+#codefile(
+  lang: "json",
+  title: "pack.mcmeta",
+  "{
+  \"pack\": {
+    \"description\": \"The default look and feel of Minecraft\",
+    \"max_format\": 75.0,
+    \"min_format\": 75.0,
+  }
+}"
+)
+和数据包一样，#proper-noun(display: "资源包版本号（Resource pack format）", "ziyuanbaobanbenhao")是一个用于区分不同版本数据包的参数。每当Mojang对资源包做出修改时，版本号都会发生变动。同样，1.21.8以前的版本号均为整数，例如，1.21.8的数据包版本号为64，25w31a引入了次要版本号，是为65.0。同一个主版本号内的资源包可以向下兼容，例如65.2的资源包可以兼容65.0的资源包。
+
+下表罗列了所有主版本使用的资源包版本号，不包括快照版本。包含快照版本的资源包版本号参考附录@sec:pack_format\中的@tab:pack_format。
+#split-table(
+  caption: "资源包版本号",
+  original-cols: 2,
+  seperator: (2,),
+  header: ([游戏版本], [资源包版本号]),
+  data: (
+    [1.6.1 \~ 1.8.9], [1],
+    [1.9 \~ 1.10.2], [2],
+    [1.11 \~ 1.12.2], [3],
+    [1.13 \~ 1.14.4], [4],
+    [1.15 \~ 1.16.1], [5],
+    [1.16.2 \~ 1.16.5], [6],
+    [1.17 \~ 1.17.1], [7],
+    [1.18 \~ 1.18.2], [8],
+    [1.19 \~ 1.19.2], [9],
+    [1.19.3], [11],
+    [1.19.4], [12],
+    [1.20 \~ 1.20.1], [15],
+    [1.20.2], [18],
+    [1.20.3 \~ 1.20.4], [22],
+    [1.20.5 \~ 1.20.6], [32],
+    [1.21 \~ 1.21.1], [34],
+    [1.21.2 \~ 1.21.3], [42],
+    [1.21.4], [46],
+    [1.21.5], [55],
+    [1.21.6], [63],
+    [1.21.7 \~ 1.21.8], [64],
+    [1.21.9 \~ 1.21.10], [69.0],
+    [1.21.11], [75.0]
+  )
+)
+资源包的版本号同样具有校验规则，也以25w31a（1.21.9）为分水岭实行“新旧双轨制”，如下表所示：
+#general-table(
+  caption: "资源包版本号校验规则",
+  colspan: 4,
+  columns: (2fr, 5fr, 4fr, 4fr),
+  header: ([配置要求], [元数据中必须使用的字段], [元数据中可以使用的字段], [元数据中不能使用的字段]),
+  [仅适用于25w31a之前], [#icon(name: "json-number") `pack_format`], [#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats`\ 若使用，则此区间必须包含 #icon(name: "json-number") `pack_format` 的值，且最大值不能低于16，因为此字段是在23w31a引入的], [#icon(name: "json-number") `max_format` 和\ #icon(name: "json-number") `min_format`],
+  [仅适用于25w31a及之后], [#icon(name: "json-number") `max_format` 和\ #icon(name: "json-number") `min_format`], [-], [#icon(name: "json-number") `pack_format` 和\ #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats`],
+  [同时适用于25w31a之前及之后], [#set align(left)
+  #h(-2em)同时指定 #icon(name: "json-number") `pack_format`、#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats`、#icon(name: "json-number") `max_format` 和 #icon(name: "json-number") `min_format`，且必须满足以下要求：\ *区间验证：\ *#icon(name: "json-number") `pack_format` 必须落在兼容区间内。\ *对最低版本号的验证：*\ #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的下限必须与 #icon(name: "json-number") `min_format` 相等。\ *对最高版本号的验证，以下两种方案二选一：*\ 
+  + #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的上限与 #icon(name: "json-number") `max_format` 相等。
+  + #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的上限固定为64，此时最高版本号由#icon(name: "json-number") `max_format` 决定。], [-], [-]
+)
+和子数据包一样，子资源包的版本号也需要进行校验，校验规则与主资源包的校验规则类似，如下表所示：
+#general-table(
+  caption: "子资源包版本号校验规则",
+  colspan: 3,
+  columns: (auto, auto, auto),
+  header: ([子资源包的配置要求], [#icon(name: "json-object") overlays 必须使用的字段], [#icon(name: "json-object") overlays 不能使用的字段]),
+  [仅适用于25w31a之前], [#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats`], [#icon(name: "json-number") `max_format` 和\ #icon(name: "json-number") `min_format`],
+  [仅适用于25w31a及之后], [#icon(name: "json-number") `max_format` 和\ #icon(name: "json-number") `min_format`\ *注意：如果主数据包适用于25w31a之前，则必须保留 #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats`*], [-],
+  [同时适用于25w31a之前及之后], [#set align(left)
+  #h(-2em)同时指定 #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats`、#icon(name: "json-number") `max_format` 和 #icon(name: "json-number") `min_format`，且必须满足以下要求：\ *对最低版本号的验证：*\ #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats` 的下限必须与 #icon(name: "json-number") `min_format` 相等。\ *对最高版本号的验证，以下两种方案二选一：*\ 
+  + #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats` 的上限与 #icon(name: "json-number") `max_format` 相等。
+  + #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats` 的上限固定为64，此时最高版本号由#icon(name: "json-number") `max_format` 决定。], [-]
+)
 #example(
   [
     #h(-2em)判断以下的资源包元数据是否符合版本号的校验要求。
@@ -1495,18 +1713,119 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
     )
   ],
   [
+    #icon(name: "json-number") `pack_format`、#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats`、#icon(name: "json-number") `max_format` 和 #icon(name: "json-number") `min_format` 四个字段同时存在，说明此资源包同时适用于25w31a之前及之后。
 
+    首先进行区间验证：#icon(name: "json-number") `pack_format` 的值在兼容区间内。
 
+    其次对最低版本号进行验证：#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的下限与 #icon(name: "json-number") `min_format` 相等。
+
+    最后对最高版本号进行验证，#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的上限与 #icon(name: "json-number") `max_format` 不相等。再检查，#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的上限为64，#icon(name: "json-number") `max_format` 是一个大于64的值。
+
+    故此资源包的版本号编写正确。
   ]
 )
+下面展示了 #icon(name: "folder") `assets` 文件夹的基本结构，这些文件（夹）不一定必须全部存在，游戏会根据指定的资源路径读取资源包中的内容，因此若相应的资源文件（夹）需要存在，则必须有正确的资源路径和文件（夹）名称。
+#tree(
+  (0, [#icon(name: "folder") *assets*]),
+  (1, [#icon(name: "folder") *\<命名空间>*]),
+  (2, [#icon(name: "folder") *atlases*: 纹理图集]),
+  (2, [#icon(name: "folder") *blockstates*: 方块状态映射]),
+  (2, [#icon(name: "folder") *equipment*: 装备模型]),
+  (2, [#icon(name: "folder") *font*: 字体]),
+  (2, [#icon(name: "folder") *items*: 物品模型映射]),
+  (2, [#icon(name: "folder") *lang*: 语言]),
+  (2, [#icon(name: "folder") *models*: 烘焙模型]),
+  (2, [#icon(name: "folder") *particles*: 粒子纹理定义]),
+  (2, [#icon(name: "folder") *post_effect*: 后处理管线]),
+  (2, [#icon(name: "folder") *sounds*: 声音]),
+  (2, [#icon(name: "folder") *shaders*: 着色器]),
+  (2, [#icon(name: "folder") *texts*: 文本]),
+  (2, [#icon(name: "folder") *texture*: 纹理]),
+  (2, [#icon(name: "folder") *waypoint_style*: 路径点样式]),
+  (2, [#icon(name: "json") *gpu_warnlist.json*: GPU警告列表]),
+  (2, [#icon(name: "json") *regional_compliancies.json*: 地区合规性警告]),
+  (2, [#icon(name: "json") *sounds.json*: 声音事件定义文件]),
+)
+=== GPU警告列表 \*
+资源包负责游戏的画面渲染。部分计算机显卡太旧、驱动版本不匹配，或者GPU属于某些已知会造成游戏崩溃的型号，因此资源包内存在 #icon(name: "json") `gpu_warnlist.json` 这个用于自检硬件兼容性的配置文件。其格式如下所示：
+#tree(
+  (0, [#icon(name: "json-object") 文件封装]),
+  (1, [#icon(name: "json-array") *#underline[renderer]*: 需要显示渲染器警告的渲染器名称（显卡型号）。]),
+  (2, [#icon(name: "json-string") 一个渲染器名称，使用#link("https://www.runoob.com/regexp/regexp-syntax.html")[正则表达式]。]),
+  (1, [#icon(name: "json-array") *#underline[version]*: 需要显示渲染器版本警告的渲染器版本（通常为显卡驱动的版本号）。]),
+  (2, [#icon(name: "json-string") 一个渲染器版本，使用#link("https://www.runoob.com/regexp/regexp-syntax.html")[正则表达式]。]),
+  (1, [#icon(name: "json-array") *#underline[vendor]*: 需要显示渲染器厂商警告的渲染器生产厂商。]),
+  (2, [#icon(name: "json-string") 一个渲染器厂商，使用#link("https://www.runoob.com/regexp/regexp-syntax.html")[正则表达式]。])
+)
+例如，原版资源包的 #icon(name: "json") `gpu_warnlist.json` 文件内容如下：
+#codefile(
+  lang: "json",
+  title: "assets > minecraft > gpu_warnlist.json",
+  "{
+  \"renderer\" : [],
+  \"version\" : [
+    \"\\\\bMetal\\\\b\"
+  ],
+  \"vendor\" : []
+}"
+)
+这份配置专门针对macOS用户。当渲染器版本信息中包含独立的Metal单词时，会触发警告。因为macOS使用苹果系统独特的图形接口Metal，而不使用OpenGL。
+#figure(
+  caption: "GPU警告页面",
+  image("图片/GPU警告页面.png", width:70%)
+) <fig:warning_gpu>
+警告页面会在玩家开启游戏极佳画质时出现。不过，这个页面以及GPU警告列表的配置都只是警告机制，并不是禁止硬件被匹配到的计算机运行Minecraft。游戏具体的运行情况取决于硬件本身。例如，以下的配置文件可以使得持有RTX 4060显卡的计算机显示警告页面，显示的页面如@fig:warning_gpu 所示。
+#codefile(
+  lang: "json",
+  title: "assets > minecraft > gpu_warnlist.json",
+  "{
+  \"renderer\": [
+    \".*RTX 4060.*\"
+  ],
+  \"version\": [],
+  \"vendor\": []
+}"
+)
+=== 地区合规性警告 \*
+部分国家或地区针对游戏颁布了一定的法律法规，资源包内 #icon(name: "json") `regional_compliancies.json` 可以相应地设置游戏在运行一段时间后出现的弹窗警告，其格式如下所示：
+#tree(
+  (0, [#icon(name: "json-object") 文件封装]),
+  (1, [#icon(name: "json-array") *\<地区代码>*: 键名为#link("https://zh.wikipedia.org/wiki/ISO_3166-1%E4%B8%89%E4%BD%8D%E5%AD%97%E6%AF%8D%E4%BB%A3%E7%A0%81")[ISO 3166-1三位字母地区代码]，游戏会针对该系统地区进行弹窗。]),
+  (2, [#icon(name: "json-object") 一项弹窗。]),
+  (3, [#icon(name: "json-number") *delay*: 第一次弹窗时游戏的运行时间，单位为分钟，默认值为 `0`。]),
+  (3, [#icon(name: "json-number") *period*: 弹窗周期，单位为分钟。]),
+  (3, [#icon(name: "json-string") *title*: 弹窗标题，需要是一个翻译标识符，详见小节@subsec:translate。]),
+  (3, [#icon(name: "json-string") *message*: 弹窗的具体信息，需要是一个翻译标识符，详见小节@subsec:translate。])
+)
+原版资源包内的 #icon(name: "json") `regional_compliancies.json` 内容如下：
+#codefile(
+  lang: "json",
+  title: "assets > minecraft > gpu_warnlist.json",
+  "{
+  \"KOR\" : [
+    {
+      \"delay\": 1440,
+      \"period\": 60,
+      \"title\": \"compliance.playtime.greaterThan24Hours\",
+      \"message\": \"compliance.playtime.message\"
+    },
+    {
+      \"period\": 60,
+      \"title\": \"compliance.playtime.hours\",
+      \"message\": \"compliance.playtime.message\"
+    }
+  ]
+}"
+)
+它只设置了针对韩国的弹窗警告：每1小时提醒一次，连续游戏时间超过24小时也会提醒。
 == 游戏机制
-游戏为命令提供了一个运行环境，为此命令系统不免受到游戏机制的制约。在时间上，命令受到游戏循环驱动的影响，以游戏刻为单位执行；在空间上，命令受到区块加载的影响，只能在允许运算的区块中执行。本节旨在介绍游戏加载、运行、更新的一些基本游戏机制。
+虽然技术性开发是能够调控游戏运行方式的手段，但开发成果还是不免受到游戏机制的制约。在时间上受到游戏循环驱动的影响，以游戏刻为单位计算内容；在空间上受到区块加载的影响，绝大多数操作都只能在允许运算的区块中进行。本节旨在介绍游戏加载、运行、更新的一些基本游戏机制。
 === 端
 Minecraft的架构是*客户端-服务端模型*，顾名思义，Minecraft使用#proper-noun(display:"客户端（Cilent）","kehuduan")和#proper-noun(display:"服务（器）端（Server）","fuwuduan")来运作自身。这两个#proper-noun(display:"端（Sides）","duan")之间的通信是由#proper-noun(display:"封包（Packet）","fengbao")实现的。在网络工程中，这个概念一般译为“数据包”，而Minecraft中另有一个叫Datapack（数据包）的概念，故Packet在Minecraft技术性开发领域会特地译为“封包”。
 
 然而，仅通过客户端和服务端理解Minecraft的运作是远远不够的，因为Minecraft的架构还包括#proper-noun(display:"物理端（Physical sides）","wuliduan")和#proper-noun(display:"逻辑端（Logical sides）","luojiduan")，并且物理端和逻辑端分别具有各自的客户端和服务端。
 ==== 物理客户端
-#proper-noun(display:"物理客户端（Physical client）","wulikehuduan")是指下载游戏版本得到的`<version>.jar`文件，它的默认文件路径为`.minecraft\<版本号>\<version>.jar`。物理客户端包含了游戏的全部内容，也包含了内置的客户端和服务端，即#proper-noun(display:"逻辑客户端（Logical client）","luojikehuduan")和#proper-noun(display:"逻辑服务端（Logical server）","luojifuwuduan")，其中逻辑服务端又称*内置服务器（Integrated server，或译为集成服务端）*#index(display:"内置服务器（Integrated server）","neizhifuwuqi")。内置服务器会受到客户端的影响。
+#proper-noun(display:"物理客户端（Physical client）","wulikehuduan")是指下载游戏版本得到的 `<version>.jar` 文件，它的默认文件路径为 `.minecraft\<版本号>\<version>.jar`。物理客户端包含了游戏的全部内容，也包含了内置的客户端和服务端，即#proper-noun(display:"逻辑客户端（Logical client）","luojikehuduan")和#proper-noun(display:"逻辑服务端（Logical server）","luojifuwuduan")，其中逻辑服务端又称*内置服务器（Integrated server，或译为集成服务端）*#index(display:"内置服务器（Integrated server）","neizhifuwuqi")。内置服务器会受到客户端的影响。
 
 逻辑客户端负责接收来自玩家的输入、处理资源包、渲染游戏画面，并将数据输送给逻辑服务端处理；逻辑服务端负责处理由客户端发送的数据，运行游戏逻辑。例如，当玩家在游戏中移动时，客户端会根据玩家输入的移动方向渲染玩家此时的游戏画面，同时又将玩家移动的信息通过封包发送给逻辑服务端，逻辑服务端计算玩家的坐标、玩家周围是否存在任何的碰撞箱阻止玩家移动，将计算结果通过封包返还给逻辑客户端，渲染玩家移动的游戏画面。客户端的渲染会与服务端产生不一致的情况，例如标记是一种仅存在于服务端的实体，在客户端上并不会渲染标记，参见@sec:technical_entity。
 #figure(
@@ -1514,10 +1833,42 @@ Minecraft的架构是*客户端-服务端模型*，顾名思义，Minecraft使�
   image("图片/逻辑客户端和逻辑服务端的运行流程.png", width: 60%)
 )
 *即使是进行单人游戏，Minecraft依旧会在玩家进入本地世界时创建一个内置服务器，在本地世界关闭时内置服务器即被关闭。*这个内置服务器可以开放至局域网，从而将单人游戏开放为局域网联机的多人游戏。此时内置服务器拥有一个地址，其格式为
-#codebox("<IPv4地址>:<端口>")
-局域网联机的IPv4地址可由CMD的`ipconfig`命令查询。端口是一个数值，可以自由指定，范围为`0`至`65535`（含两端）。除了通过暂停游戏的对局域网开放选项外，玩家还可以通过命令`/publish`开放内置服务器，该命令所需权限等级为4，且仅能在单人游戏中使用，其语法为：
+#codebox("<IPv4地址>:<端口>") <code:ipv4>
+局域网联机的IPv4地址可由CMD的 `ipconfig` 命令查询。端口是一个数值，可以自由指定，范围为 `0` 至 `65535`（含两端）。除了通过暂停游戏的对局域网开放选项外，玩家还可以通过命令 `/publish` 开放内置服务器，该命令所需权限等级为4，且仅能在单人游戏中使用，其语法为：
 #codebox("publish [<allowCommands>] [<gamemode>] [<port>]")
+#param-desc(
+  [`<allowCommands>`（布尔值 `brigadier:bool`）], [可选，指定是否启用命令，默认为否。],
+  [`<gamemode>`（游戏模式 `minecraft:gamemode`）], [指定新玩家进入游戏的游戏模式，可用值有 `survival`（生存模式）、`creative`（创造模式）、`adventure`（冒险模式）和 `spectator`（旁观模式）。若不指定，则使用该游戏世界的默认游戏模式。],
+  [`<port>`（整数 `brigadier:integer`）], [指定端口，必须为介于 `0` 和 `65535` 之间（含）的值，若不指定，则随机选择大于 `1024` 的端口。]
+)
+#example(
+  [#h(-2em)使用命令 `/publish` 开放当前本地世界，要求关闭命令、设置玩家游戏模式为生存模式、端口指定为 `12345`。],
+  [
+    命令为
+    #codebox("publish false survival 12345")
+  ]
+)
+==== 物理服务端
+除了使用局域网联机进行多人游戏，Minecraft提供了另一种进行多人游戏的方法，即#proper-noun(display: "物理服务端（Physical server）", "wulifuwuduan")。物理服务端只包含一个逻辑服务端，并不包含逻辑客户端。这意味着物理服务端只能负责服务端的任务，而不能使用户参与游戏；但同时也意味着若服主不在游戏中，服务器也不会关闭；此外，物理服务端在运行过程中只能加载一个游戏世界，切换其他游戏世界需要重启服务器。
 
+物理服务端内的逻辑服务端又可被称为*专用服务器（Dedicated server，或译为独立服务端）*#index(display: "专用服务器（Dedicated server，独立服务端）", "zhuanyongfuwuqi")，该逻辑服务端包含配置文件 #icon(name: "file") `server.properties`，用于存储服务器的所有设置。专用服务器不会受到连接的逻辑客户端的影响。同局域网联机一样，专用服务器也拥有一个地址，其格式与语法@code:ipv4 所述一致。
+#general-table(
+  caption: "各种情况使用的客户端和服务端",
+  colspan: 4,
+  columns: (auto, auto, auto, auto),
+  header: ([], [单人游戏], [局域网多人游戏], [专用服务器多人游戏]),
+  [客户端], [逻辑客户端], [玩家各自的逻辑客户端], [玩家各自的逻辑客户端],
+  [服务端], [内置服务器], [内置服务器], [专用服务器]
+)
+=== 游戏刻
+由于游戏不可能时时刻刻都进行计算，正常情况下，游戏以一定的频率循环驱动，即每隔一定的时间进行一次计算，计算完毕后游戏会进行休眠，此时游戏不作任何计算直到下一游戏刻。一个循环周期被称为一个#proper-noun(display: "刻（Tick）", "ke")，或*游戏刻（Game tick，简称gt）*#index(display: "游戏刻（Game tick，gt）", "youxike")。
+==== 刻率和帧率
+每秒游戏刻的数量数由*每秒刻数（Ticks per second，简称TPS）*#index(display: "每秒刻数（Ticks per second，TPS）", "meimiaokeshu")这个指标显示；此外还有一个指标与每秒游戏刻数相关，即*每刻毫秒数（Milliseconds per tick，简称MSPT）*#index(display: "每刻毫秒数（Milliseconds per tick，MSPT）", "meikehaomiaoshu")，它反映的是游戏刻计算的平均时间。TPS是一个可变量，它可以由命令 `/tick` 修改，不做修改的默认值为20。也就是说，正常情况下每秒有20gt，或者称最大TPS频率为20。MSPT可以由 `F3`（调试屏幕）查看，这个统计量名称为 `ms ticks`。正常情况下MSPT不会大于50，且只有当MSPT值不大于50时才能保证TPS维持在20。
+
+MSPT与TPS的数量关系可表示为
+$ "MSPT" times "TPS" lt.eq 1000 $
+受限于游戏中的计算量及计算机的性能，若计算量过大，MSPT增大，则TPS会相应地减小，造成*掉刻*。TPS无法维持在最大频率时，可由下式计算出实际的TPS：
+$ "TPS" eq 1000 / "MSPT" $
 == 服务器
 
 == 带有简单参数的命令指引
@@ -1599,6 +1950,8 @@ Minecraft规定：大部分方块的长、宽和高均为1米，体积为1立方
 ==== 二维坐标
 即只由$x$坐标和$z$坐标构成的#proper-noun(display:"二维坐标（Three-dimensional coordinates）","erweizuobiao")。二维坐标的命令参数类型为`minecraft:vec2`，两个元素均为双精度浮点数。二维坐标若为整数，则也使用中心校准。
 = 文本组件<chap:text_component>
+== 文本组件内容
+=== 翻译文本<subsec:translate>
 = 存档格式
 == 存档文件夹的结构<sec:saves>
 == 技术性实体<sec:technical_entity>
@@ -2377,9 +2730,10 @@ Minecraft规定：大部分方块的长、宽和高均为1米，体积为1立方
     [26.1 Snapshot 1], [95.0], [76.0],
     [26.1 Snapshot 2], [96.0], [77.0],
     [26.1 Snapshot 3], [97.0], [78.0],
+    [26.1 Snapshot 4], [97.1], [78.1]
   )
 )<tab:pack_format>
-
+== 数据包标签 <sec:tag_in_datapack>
 #heading(level: 1, numbering: none, [索引])
 #columns(2)[
   #make-index(use-page-counter: true)
