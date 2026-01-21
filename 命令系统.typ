@@ -46,7 +46,6 @@
 #import "模板.typ": *
 #show: template-style
 
-#set heading(numbering: book-heading)
 #heading(level: 1, numbering: none, outlined: false, [第一版序言])
 Minecraft拥有多种多样的玩法，生存、PVP、PVE、模组、建筑、红石电路这些为众多玩家所熟知的玩法自成体系，玩家可以自由选择其中的某一方面深入研究。在这些玩法中，比较默默无闻的一种玩法可能便是广义上的命令，即包含了MC-CMD（命令）、资源包和数据包的系统。
 
@@ -277,26 +276,29 @@ Minecraft有许多不同的游戏资源，如草方块、石头、箭、铁锹�
 ) <tab:writable_registry>
 ==== 不属于任何注册表的游戏资源
 有一些游戏资源不属于任何注册表，这些资源包括数据包内的函数、结构模板以及资源包内的所有内容。这些资源类型中部分都与可写注册表的性质类似，即可以自定义写入资源；部分则不能增添新的资源，但可以修改已有资源的配置文件。
-#i1[数据包内容]
-#i2[函数：可写，即 `function` 路径下的内容。]
-#i2[结构模板：可写，即 `structure` 路径下的内容。]
-#i1[资源包内容]
-#i2[纹理图集：位于资源包内路径 `atlases`。]
-#i2[方块状态：位于 `blockstates`。]
-#i2[纹饰图案：位于 `equipment`。]
-#i2[字体：可写，位于 `font`。]
-#i2[物品模型映射：位于 `items`。]
-#i2[模型：包括方块模型和物品模型，位于 `models`。]
-#i2[粒子：位于 `particles`。]
-#i2[着色器：可写，位于 `shaders`。]
-#i2[后处理管线：位于 `post_effect`。]
-#i2[声音：可写，位于 `sounds`。]
-#i2[纹理：可写，位于 `textures`。]
-#i1[属性修饰符：可写，存储于所属物品的堆叠组件内。]
-#i1[Boss栏：可写，存储于存档文件夹中的 `level.dat`。]
-#i1[命令存储：可写，存储于存档文件夹中的 `data\command_storage_minecraft.dat`。]
-#i1[随机序列：可写，存储于存档文件夹中各自维度的 `data\random_sequences.dat` 文件内。]
-
+#general-table(
+  caption: "其他游戏资源",
+  colspan: 3,
+  columns: (auto, auto, auto),
+  header: ([类别], [游戏资源], [说明]),
+  table.cell(rowspan: 2)[数据包内容], [函数], [可写，`function` 路径下的内容],
+  [结构模板], [可写，`structure` 路径下的内容],
+  table.cell(fill: rgb("#fde9e9"), rowspan: 11)[资源包内容], [纹理图集], [位于资源包内路径 `atlases`],
+  [方块状态], [位于 `blockstates`],
+  [纹饰图案], [位于 `equipment`],
+  [字体], [可写，位于 `font`],
+  [物品模型映射], [位于 `items`],
+  [模型], [包括方块模型和物品模型，位于 `models`],
+  [粒子], [位于 `particles`],
+  [着色器], [可写，位于 `shaders`],
+  [后处理管线], [位于 `post_effect`],
+  [声音], [可写，位于 `sounds`],
+  [纹理], [可写，位于 `textures`],
+  table.cell(colspan: 2)[属性修饰符], [可写，存储于所属物品的堆叠组件内],
+  table.cell(colspan: 2)[Boss栏], [可写，存储于存档文件夹中的 `level.dat`],
+  table.cell(colspan: 2)[命令存储], [可写，存储于存档文件夹中的 `data\command_storage_minecraft.dat`],
+  table.cell(colspan: 2)[随机序列], [可写，存储于存档文件夹中各自维度的 `data\random_sequences.dat` 文件内],
+)
 === 扁平化 \*
 Minecraft的历次版本更新都会对某一些特定的系统进行优化和更改，比如：战斗更新对PVP机制进行了颠覆性的更改，使得1.9之前和之后的PVP是两个完全不同的系统。命令系统也经历过类似的大幅度更改，这便是随着水域更新进行的#proper-noun(display:"扁平化（The flattening）","bianpinghua")。
 
@@ -311,18 +313,14 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 时间来到了2017年，水域更新加入了大量的游戏内容，原先的映射方式已不能适应新版本。于是，*Java版1.13的更新基本上删除了所有的数字ID，使得每一个游戏资源都有其独立的英文ID。同时也删除了用Damage值映射方块的办法，去除了中间层，使得资源的映射方式只需要一个键名即可，这一过程便被称作“扁平化”*#footnote[并非所有数字ID都被移除，至今Minecraft仍保留了部分需要使用数字ID的地方。]。比如，在1.13中给予玩家一块花岗岩的命令为：
 #codebox("give @p granite 1")
 其中参数 `granite` 为花岗岩的键名，`1` 为物品数量。扁平化对所有需要ID的对象都进行了修改，包括但不限于方块、物品、实体、生物群系、粒子、声音事件和画。其具体内容可分为以下几类：
-+ 拆分
-
-  拆分是最能体现扁平化过程的一类。此举移除了用于指定大类下某一种方块的Damage值，使得一类方块下的每一种方块都有其独立的ID。举例：`stone` 一类共有七种不同的方块：石头、花岗岩、磨制花岗岩、闪长岩、磨制闪长岩、安山岩和磨制安山岩，分别对应0 \~ 6的Damage值。拆分后这七种方块都被给予了独立的ID：`stone`、`granite`、`polished_granite`、`diorite`、`polished_diorite`、`andesite` 和 `polished_andesite`。
-+ 重命名
-
-  顾名思义，该类即对原有的英文ID进行重命名。有相当一部分重命名是为了迎合方块或物品的英文名称。举例：草方块在扁平化前的ID为 `grass`，扁平化后被重命名为 `grass_block`。
-+ 重新分类
-
-  这种操作常见于台阶和由双台阶组成的完整方块。扁平化前的台阶和双台阶有两种不一样的ID，扁平化后取消双台阶的ID，并对台阶的下属分类进行拆分，同时取消相关的Damage值。举例：双木台阶被取消，统一更换为木制台阶，同时ID拆分为橡木、云杉、白桦、丛林木、金合欢和深色橡木。
-+ 合并
-
-  合并常见于有不同方块状态的方块。举例：燃烧的熔炉和熔炉有不同的ID，现合并为熔炉一种，同时将是否燃烧设定为方块状态。
+===== 拆分
+拆分是最能体现扁平化过程的一类。此举移除了用于指定大类下某一种方块的Damage值，使得一类方块下的每一种方块都有其独立的ID。举例：`stone` 一类共有七种不同的方块：石头、花岗岩、磨制花岗岩、闪长岩、磨制闪长岩、安山岩和磨制安山岩，分别对应0 \~ 6的Damage值。拆分后这七种方块都被给予了独立的ID：`stone`、`granite`、`polished_granite`、`diorite`、`polished_diorite`、`andesite` 和 `polished_andesite`。
+===== 重命名
+顾名思义，该类即对原有的英文ID进行重命名。有相当一部分重命名是为了迎合方块或物品的英文名称。举例：草方块在扁平化前的ID为 `grass`，扁平化后被重命名为 `grass_block`。
+===== 重新分类
+这种操作常见于台阶和由双台阶组成的完整方块。扁平化前的台阶和双台阶有两种不一样的ID，扁平化后取消双台阶的ID，并对台阶的下属分类进行拆分，同时取消相关的Damage值。举例：双木台阶被取消，统一更换为木制台阶，同时ID拆分为橡木、云杉、白桦、丛林木、金合欢和深色橡木。
+===== 合并
+合并常见于有不同方块状态的方块。举例：燃烧的熔炉和熔炉有不同的ID，现合并为熔炉一种，同时将是否燃烧设定为方块状态。
 === 命名空间ID
 游戏资源的指定有一个前提是这些对象的ID相互之间不能混淆。数字ID及使用Damage值作区分的指定方法能够避免对象之间的冲突，但扁平化后这种指定方法便无效了。为此在当前的版本中统一使用#proper-noun(display: "（赋）命名空间ID（Namespaced identifier）", "mingmingkongjian")来映射注册表内的值。
 
@@ -458,26 +456,27 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
   ]
 )
 为了使不同的命令具有不同的功能，它们使用的参数类型各不相同。有些命令作用的对象为实体，它们则会使用指定实体的参数，有些命令作用的对象为某一个坐标，则其使用坐标参数。游戏使用的命令参数有如布尔值、整型、函数、槽位值、坐标值、目标选择器、JSON、NBT等。一些复杂参数会在本教程后文呈现，下面列举的是基本参数，即在Brigadier中使用的六种基本数据类型：
-#i1(new: true)[#proper-noun(display: "布尔值（Bool）", "buerzhi")]
-只有两种可用参数，为 `true` 和 `false`，分别代表“是”与“否”。
-#i1[#proper-noun(display: "整数（Integer）", "zhengxing")]
-使用32位整型，即介于 `-2147483648` 和 `2147483647` 之间的整数值，如 `1`、`0`、`-1` 等。不同命令中使用整型的参数规定的最大可用值和最小可用值不一致。
-#i1[#proper-noun(display: "长整数（Long）", "changzhengxing")]
-使用64位整型，即介于 `-9223372036854775808` 和 `9223372036854775807` 之间的整数值。
-#i1[#proper-noun(display: "单精度浮点数（Float）", "danjingdufudianshu")]
+===== #proper-noun(display: "布尔值（Bool）", "buerzhi")
+#proper-noun(display: "布尔值（Bool）", "buerzhi")只有两种可用参数，为 `true` 和 `false`，分别代表“是”与“否”。
+===== #proper-noun(display: "整数（Integer）", "zhengxing")
+使用32位整型数值，是介于 `-2147483648` 和 `2147483647` 之间的整数值，如 `1`、`0`、`-1` 等。不同命令中使用整型的参数规定的最大可用值和最小可用值不一致。
+===== #proper-noun(display: "长整数（Long）", "changzhengxing")
+使用64位整型数值，是介于 `-9223372036854775808` 和 `9223372036854775807` 之间的整数值。
+===== #proper-noun(display: "单精度浮点数（Float）", "danjingdufudianshu")
 使用占据4字节的浮点数，范围大约介于$-3.4 times 10^38$和$3.4 times 10^38$之间，在不同命令中使用单精度浮点数的参数规定的最大可用值和最小可用值不一致。一些单精度浮点数的示例有：`0`、`1.1`、`-1`、`.5` 等，小数形式的整数部分可以省略。在命令参数中使用的浮点数暂时不支持科学计数法#footnote[参见#link("https://bugs.mojang.com/browse/MC/issues/MC-130925")[MC-130925]。]。
-#i1[#proper-noun(display: "双精度浮点数（Double）", "shuangjingdufudianshu")]
-使用占据4字节的浮点数，范围大约介于$-1.8 times 10^108$和$1.8 times 10^108$之间。可以表示比单精度浮点数绝对值更大的有效数字。
-#i1[#proper-noun(display: "字符串（String）", "zifuchuan")]
-#i2[#proper-noun(display: "单个词（Single word）", "dangeci")]
+===== #proper-noun(display: "双精度浮点数（Double）", "shuangjingdufudianshu")
+使用占据8字节的浮点数，范围大约介于$-1.8 times 10^108$和$1.8 times 10^108$之间。可以表示比单精度浮点数绝对值更大的有效数字。
+===== #proper-noun(display: "字符串（String）", "zifuchuan")
+字符串是由多个字符组成的序列，可用于表示单词、句子或其他符号组合。
+====== #proper-noun(display: "单个词（Single word）", "dangeci")
 即不含空格的字符串，如 `word`，若单个词的内容由多个词语组成，则一般使用下划线 `_` 连接相邻词，如 `word_with_underscores`。
-#i2[#proper-noun(display: "词组（Quotable phrase）", "cizu")]
+====== #proper-noun(display: "词组（Quotable phrase）", "cizu")
 可以由双引号括起，如 `"quoted phrase"`，也可以使用单引号来定义，如 `'quoted phrase'`，此时单词之间可以有空格。
-#i2[#proper-noun(display: "贪婪词组（Greedy phrase）", "tanlancizu")]
+====== #proper-noun(display: "贪婪词组（Greedy phrase）", "tanlancizu")
 这种形式的词组不带引号，任意使用空格。该形式的参数通常位于命令的末尾，将命令的剩余部分全部作为字符串参数。如：`words with spaces`。上文中命令@code:say_hello_world 就使用了这种参数。
 === 命令的输入
 命令是一种文本输入，以下是可供命令输入的途径：
-#i1(new: true)[使用聊天栏输入命令]
+===== 使用聊天栏输入命令
 为了和普通的聊天文本区分开来，在聊天栏中输入命令时会在命令前加一个前缀 `/`，此前缀必不可少。在不使用按键 `T` 召唤聊天栏时可以直接键入 `/` 输入命令，这是使玩家快速进入命令输入模式的一种办法。
 
 呼出聊天栏后，可以使用 `↑` 或 `↓` 键调用#proper-noun(display: "命令历史（Command history）", "minglinglishi")，即先前键入的命令。如果之前输入的命令有语法错误的话，切换至该命令时依旧会有语法错误，不会自动更正，更不会因为含有语法错误就不显示该命令。这种快捷键在命令方块控制台中不适用。命令历史可以跨存档调用。
@@ -495,7 +494,7 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
   [#image("图片/命令输入过程b.png", height: 4em)\(b)]
 )
 聊天栏的字符数量被限制在256以内，命令开头的 `/` 也会被计入字符数。因此，聊天栏不能用于执行太长的命令。
-#i1[在命令方块或命令方块矿车内输入命令]
+===== 在命令方块或命令方块矿车内输入命令
 命令方块控制台可输入的字符最多为32500个，较聊天栏的限制有很大提升。文本框长度有限，每次只能显示命令的其中一段，需要使用 `鼠标左键` 或 `←`、`→` 键移动光标调整命令显示的位置，且每次打开命令方块GUI时光标总显示在命令的末尾。
 
 在命令方块或命令方块矿车内输入命令时，斜杠前缀 `/` 不是必须的。和在聊天栏中使用命令一样，当文本框中无任何内容时，下方会显示一个命令列表（如@fig:command_block_gui），通过调整鼠标滚轮能够调整命令列表显示的位置，按 `Tab` 键能够在输入命令时自动补全或选择命令的部分。
@@ -503,10 +502,10 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
   caption: [命令方块GUI],
   image("图片/命令方块GUI.png")
 ) <fig:command_block_gui>
-#i1[在数据包函数文件中输入命令]
+===== 在数据包函数文件中输入命令
 这种编写方式需要使用一定的编译软件，常用的编译软件有Windows自带的记事本、Visual Studio Code等。函数中的命令不能带有斜杠前缀。具体的内容可参阅《数据包》教程的描述。
-#i1[在服务器控制台中输入命令]
-#i1[在带有 `run_command` 动作的点击事件的文本组件或对话框按钮中输入命令]
+===== 在服务器控制台中输入命令
+===== 在带有 `run_command` 动作的点击事件的文本组件或对话框按钮中输入命令
 === 权限等级与限制条件
 命令功能强大、种类繁多，如果在任意情况下都能够随意使用，则很有可能会破坏玩家的游戏体验。因此，命令系统有一套专门的机制用于控制游戏内可用命令的情形，即权限等级。#proper-noun(display: "权限等级（Permission level）", "quanxiandengji")用于决定命令执行者可以使用什么样的命令。所有命令都有一个所需的权限等级，如果命令执行者没有达到该有的权限等级，则无法执行该命令。例如：`/advancement` 需要的权限等级为2，命令方块的权限等级也为2，因此命令方块可以执行该命令；而关闭命令的单人游戏玩家的权限为0，所以该玩家不能执行该命令。
 
@@ -633,28 +632,28 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 当一条命令被执行时，该命令一定有一个调用者以及调用环境，这一系列调用者及调用环境构成的集合被称为#proper-noun(display: "命令上下文（Command context）", "minglingshangxiawen")，或称#proper-noun(display: "执行上下文（Execution context）", "zhixingshangxiawen")、#proper-noun(display: "命令源（Command origin）", "minglingyuan")、#proper-noun(display: "命令来源堆叠（Command source stack）", "minglinglaiyuanduidie")。
 
 命令上下文由以下参数构成：
-#i1(new: true)[执行权限等级]
-#i1[#proper-noun(display: "执行者（Executor）", "zhixingzhe")]
+===== 执行权限等级
+===== #proper-noun(display: "执行者（Executor）", "zhixingzhe")
 由“执行者名称”和“执行者实体”两个参数构成，但执行者实体不一定存在，例如执行者为命令方块、命令方块矿车或服务端的时候。
-#i1[#proper-noun(display: "执行位置（Execution position）", "zhixingweizhi")]
+===== #proper-noun(display: "执行位置（Execution position）", "zhixingweizhi")
 这个参数是命令执行时所在的坐标，包含$x$、$y$、$z$三个坐标参数。
-#i1[#proper-noun(display: "执行朝向（Execution rotation）", "zhixingchaoxiang")]
+===== #proper-noun(display: "执行朝向（Execution rotation）", "zhixingchaoxiang")
 这个参数是命令执行时面向的方向，包含偏航角和俯仰角两个参数。
-#i1[#proper-noun(display: "执行锚点（Execution anchor）", "zhixingmaodian")]
+===== #proper-noun(display: "执行锚点（Execution anchor）", "zhixingmaodian")
 这个参数是局部坐标的原点，当执行者为实体时，这个参数可以指定执行的锚点基于实体的脚部还是眼部，因此有脚部和眼部两个可用参数。其中脚部即为原本的执行位置，眼部为原本的执行位置在$y$轴方向加上实体眼睛的高度。
-#i1[#proper-noun(display: "执行维度（Execution dimension）", "zhixingweidu")]
+===== #proper-noun(display: "执行维度（Execution dimension）", "zhixingweidu")
 这个参数是命令执行所在的维度，执行位置位于这个维度内。
-#i1[执行输出反馈]
+===== 执行输出反馈
 尝试执行命令会产生一定的执行效果，并在执行失败或执行成功时返回#proper-noun(display: "成功次数（Success）", "chenggongcishu")和#proper-noun(display: "结果（Result）", "jieguo")两个返回值。其中成功次数总是为0或1，结果一定为整数，遇到小数时则向下取整。下面讨论所有种类的命令执行效果：
-#i2[*无法解析*]
+====== 无法解析
 这种效果会在命令中存在无法解析的参数、输入的命令不完整或执行上下文不符合命令的限制条件，如执行者拥有的权限等级不够、超出游戏世界的限制时出现。此时命令没有返回值。在聊天栏或命令方块内输入的命令若无法解析，则会返回语法错误信息。在函数内的命令若无法解析，则该函数无法加载。
-#i2[*执行错误*]
+====== 执行错误
 出现这种效果说明命令中存在严重的漏洞。此时命令没有返回值。
-#i2[*Void*]
+====== Void
 当且仅当执行命令 `/function` 时会出现这种效果，说明 `/function` 调用了一个void类型的函数，没有返回值。
-#i2[*执行中断*]
+====== 执行中断
 当且仅当执行命令 `/execute` 时会出现这种效果，此时 `/execute` 的分支数量为0，在 `run` 子命令执行前执行就已经中止。此时命令没有返回值。
-#i2[*执行失败*和*执行成功*]
+====== *执行失败*和*执行成功*
 当命令执行效果不是上述4种中任意一种时，才能出现执行失败或执行成功。且只有当执行效果为执行失败或执行成功时，才能返回成功次数和结果。执行失败并不意味着命令没有起作用，执行成功也不意味着命令会对游戏做出更改。
 
 不同情况下的命令上下文列举于下表：
@@ -718,7 +717,7 @@ JSON格式键值对的基本语法为：
 在一个`.json`文件中，须使用花括号 `{}` 将所有的键值对封装包裹在一起，如：
 #codebox("{\"<键>\":<值>,\"<键>\":<值>}")
 对于值而言，每一个不同的键都需的值的类型不尽相同，比如键 `color` 可能需要的是颜色值，`bold` 可能需要的是布尔值，`text` 可能需要的是字符串，等等。JSON一共使用六种不同的数据类型：
-#i1(new: true)[#icon(name: "json-string") #proper-noun(display: "字符串（String）", "zifuchuan")]
+===== #icon(name: "json-string") #proper-noun(display: "字符串（String）", "zifuchuan")
 常见的数据类型，可以包含任意字符（如空格），字符串由一对*（英文）双引号*定义，*不接受单引号*，用法举例：
 #codebox("\"description\": \"The default data for Minecraft\"")
 也可以使用中文：
@@ -726,22 +725,22 @@ JSON格式键值对的基本语法为：
 JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都为一个十六进制数字。例如，符号★的Unicode为 `U2605`，则在字符串中输入★的方式可以为：
 #codebox("\"text\": \"\u2605\"")
 这样便可以在字符串中输入一些生僻字或是在键盘上无法直接打出来的字符。但是Minecraft的字库是有限的，并非所有的字符都可以在Minecraft中显示。
-#i1[#icon(name: "json-bool") #proper-noun(display: "布尔值（Bool）", "buerzhi")]
+===== #icon(name: "json-bool") #proper-noun(display: "布尔值（Bool）", "buerzhi")
 由 `true`（真）或 `false`（假）定义，这两者是JSON中的字面量符号，不需要使用双引号引起，举例：
 #codebox("\"bold\": true")
 #codebox("\"italic\": false")
-#i1[#icon(name: "json-number") #proper-noun(display: "数值（Number）", "shuzhi")]
+===== #icon(name: "json-number") #proper-noun(display: "数值（Number）", "shuzhi")
 由数字定义，允许使用整数、浮点数或是科学计数法表示的数，举例：
 #codebox("\"min\": 1.0")
 在JSON中使用的数值不需要注明它们的数据类型。
-#i1[#icon(name: "json-array") *数组（Array，或称为列表）*#index(display: "数组（Array）", "shuzu")]
+===== #icon(name: "json-array") *数组（Array，或称为列表）*#index(display: "数组（Array）", "shuzu")
 由一对方括号定义，数组中元素与元素之间使用逗号隔开，*最后一个元素后不能有逗号*。这些元素可以是其他的数据类型，如字符串、布尔值、数值和对象，数组中甚至能嵌套数组。在定义其他的数据类型时，需注意这些数据类型的定义方法。以下为包含了数值的数组：
 #codebox("\"frames\": [1, 2, 3, 4, 5]")
 下面为包含了字符串的数组，字符串均由一对双引号定义：
 #codebox("\"text\": [\"A\", \"B\", \"C\"]")
 对于数组内的元素，其数据类型不必完全一致，例如：
 #codebox("\"extra\": [1, {\"text\": \"2\"}, \"3\"]")
-#i1[#icon(name: "json-object") #proper-noun(display: "对象（Object）", "duixiang")]
+===== #icon(name: "json-object") #proper-noun(display: "对象（Object）", "duixiang")
 由一对花括号定义，对象内字段与字段之间使用逗号隔开，*最后一个字段后不能有逗号*。对象中可以包含其他数据类型，也可以在对象中嵌套对象。整个 `.json` 文件就可以看作是一个大的对象。在编写JSON的时候，通常需要用到对象嵌套对象，因此花括号一定要检查是否匹配。用法举例：
 #codebox("{
   \"rolls\": {
@@ -750,7 +749,7 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
     \"p\": 0.2
   }
 }")
-#i1[Null]
+===== Null
 空值，作为字面量符号使用。Minecraft基本不使用这种数据类型。
 
 由于JSON为多层级结构，为了方便说明，本系列教程会使用和Minecraft Wiki一样的树状图来表示。例如：
@@ -785,20 +784,25 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
 #tips(
   [
     如何看懂树状图？
-    #i1(new: true)[父节点和子节点的关系会以这样的方式表示：]
-    #tree(
-      (0, [这是父节点]),
-      (1, [这是子节点])
-    )
-    相同层级的节点会表示为相同的缩进。
-    #i1[对于一个字段：]
-    #icon(name: "json-string") *field*: `这是一个字段`
-    #i2[字段开头的 #icon(name: "json-string")#icon(name: "json-bool")#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") 表示这个字段使用的数据类型。如果出现了多种数据类型，则表示这些数据类型均可使用。]
-    #i2[加粗红色的字表示这个字段的键名。]
-    #i2[冒号后面如果只有 `代码块`，表示此 `代码块` 是该字段使用的真实值。如果冒号后面是一段文字，则这是对于该字段的解释。如：]
-    #icon(name: "json-string") *field*: 这是对于这个字段的解释。
-    #i2[如果键名有下划线，则表示这个字段是必填项：]
-    #icon(name: "json-string") *#underline[string]*: 此项为必选项。
+    + 父节点和子节点的关系会以这样的方式表示：
+
+      #tree(
+        (0, [这是父节点]),
+        (1, [这是子节点])
+      )
+
+      相同层级的节点会表示为相同的缩进。
+    + 对于一个字段：
+
+      #icon(name: "json-string") *field*: `这是一个字段`
+      + 字段开头的 #icon(name: "json-string")#icon(name: "json-bool")#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") 表示这个字段使用的数据类型。如果出现了多种数据类型，则表示这些数据类型均可使用。
+      + 加粗红色的字表示这个字段的键名。
+      + 冒号后面如果只有 `代码块`，表示此 `代码块` 是该字段使用的真实值。如果冒号后面是一段文字，则这是对于该字段的解释。如：
+
+        #icon(name: "json-string") *field*: 这是对于这个字段的解释。
+      + 如果键名有下划线，则表示这个字段是必填项：
+
+        #icon(name: "json-string") *#underline[string]*: 此项为必选项。
   ],
   width: 100%
 )
@@ -864,23 +868,23 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
 游戏的各项数据被零零散散地存放在各个游戏文件里，部分数据对于做技术性开发而言非常重要，因此有必要适当掌握游戏文件的结构。
 === 常用文件格式
 存储Minecraft数据的文件格式有很多种，下面介绍一些常见的文件格式。
-#i1(new: true)[#icon(name: "text") `.txt` 文件]
+===== #icon(name: "text") `.txt` 文件
 `.txt` 文件是非常常见的文本文件，用Windows自带的记事本即可打开。这种文件通常被用于存储一些简易的文本，如游戏标题画面上的闪烁标语，有时也被用于存储游戏中的设置，在这些 `.txt` 文件中更改的内容会在游戏本体上有相应的改动。有时候 `.txt` 文件也可用于记录一些自定义的、不作为游戏数据的文本。有效的 `.txt` 文件必须为无BOM的UTF-8格式。
-#i1[#icon(name: "mcfunction") `.mcfunction` 文件]
+===== #icon(name: "mcfunction") `.mcfunction` 文件
 `.mcfunction` 文件，即函数文件，同样必须为无BOM的UTF-8格式。函数文件可以用Windows10自带的记事本打开并编辑，默认的Windows10记事本已经为无BOM的UTF-8格式，这点从记事本页面下方的状态栏就可以看到。记事本无法指出函数中的语法错误，必须得手动检查，笔者更推荐在编译软件中打开函数文件。本教程推荐的辅助工具是 #icon(name: "dhp") Data-pack Helper Plus（DHP），这是编译软件 #icon(name: "vscode") Visual Studio Code（VS Code）的一个扩展，可在 #icon(name: "vscode") VS Code的应用商店中找到。#icon(name: "dhp") DHP是专门用于制作Minecraft数据包或资源包部分文件的辅助工具，在编写数据包或资源包的过程中，#icon(name: "dhp") 提供了高亮显示，并为部分错误的语法提供解决方案。
 
 《数据包》教程提供了该文件格式的具体编写规范。
-#i1[#icon(name: "json") `.json` 和 `.mcmeta` 文件]
+===== #icon(name: "json") `.json` 和 `.mcmeta` 文件
 `.json` 和 `.mcmeta` 文件都是使用JSON格式的文件。这些文件中的JSON格式是允许换行的，且为了美观、可读性，编写者在习惯上会在所有的 `.json` 和 `.mcmeta` 文件中使用换行，并使得同一层级的字段在行前缩进上保持一致。`.json` 和 `.mcmeta` 文件没有专门用于注释的语法，若需要注释，则使用游戏不需要、不会被游戏识别的键，如 `_comment1`、`_comment2`。
-#i1[#icon(name: "nbt") `.mca`、`.dat`、`.dat_old` 和 `.nbt` 文件]
+===== #icon(name: "nbt") `.mca`、`.dat`、`.dat_old` 和 `.nbt` 文件
 `.mca`、`.dat`、`.dat_old` 和 `.nbt` 文件均是使用NBT格式的文件，通常用于存储世界的全局信息和结构信息。同样地，这两类文件不能用 #icon(name: "dhp") DHP在编译软件内进行编辑，但可以在NBT编辑器内编辑，本教程推荐的编辑器为 #icon(name: "nbtstudio") NbtStudio。一些无法由命令进行编辑的信息可以通过 #icon(name: "nbtstudio") NbtStudio修改。
-#i1[#icon(name: "png") `.png` 文件]
+===== #icon(name: "png") `.png` 文件
 `.png` 文件是图片文件，被用于存储游戏中的绝大部分图像，包括但不限于图标、游戏截图、资源包纹理。可以使用Windows自带的 #icon(name: "paint") 画图、#icon(name: "ps") PS或 #icon(name: "gimp") GIMP处理，但需要注意 #icon(name: "paint") 画图不支持透明背景。
-#i1[#icon(name: "ogg") `.ogg` 文件]
+===== #icon(name: "ogg") `.ogg` 文件
 游戏中所有的声音文件都为 `.ogg` 格式，从外部导入声音时应注意格式转换。直接修改文件名后缀是无效的，可以使用
-#i1[#icon(name: "zip") `.zip` 文件]
+===== #icon(name: "zip") `.zip` 文件
 压缩文件，即 `.zip` 文件，也是常用的文件格式，通常被用于数据包和资源包的压缩。读者可自行选择合适的压缩软件对数据包或资源包进行压缩。
-#i1[其他的文件格式]
+===== 其他的文件格式
 Minecraft还使用其他一些文件格式，如 `.jfr` 文件、`.log` 文件等。具体见下文的说明。
 === .minecraft文件夹 \*
 `.minecraft` 文件夹，macOS上为 #icon(name: "folder") `minecraft`，是存储Java版所有游戏数据的文件夹。
@@ -910,8 +914,9 @@ Minecraft还使用其他一些文件格式，如 `.jfr` 文件、`.log` 文件�
 #tips(
   [
     #icon(name: "folder") `assets` 文件夹内的资源文件都是用#proper-noun(display: "哈希值（Hash value，散列值）", "haxizhi")加密的，以哈希表的方式映射资源位置。要查询 #icon(name: "folder") `assets` 内的任意一个资源文件，需按照以下步骤：
-    #i1(new: true)[打开 #icon(name: "folder") `indexes` 文件夹，找到需要提取资源的 #icon(name: "json") `<版本号>.json` 文件。其中的内容大致如下所示：
-    #codefile(
+    + 打开 #icon(name: "folder") `indexes` 文件夹，找到需要提取资源的 #icon(name: "json") `<版本号>.json` 文件。其中的内容大致如下所示：
+    
+      #codefile(
       lang: "json",
       title: ".minecraft > assets > indexes > <版本号>.json",
   "{
@@ -930,9 +935,9 @@ Minecraft还使用其他一些文件格式，如 `.jfr` 文件、`.log` 文件�
     },
     \"_comment\": \"后续还有很多其他资源\"
   }
-}")]
-    #i1[用编译软件的查询功能在 #icon(name: "json") `<版本号>.json` 文件中查找所需资源，记录对应 #icon(name: "json-string") `hash` 字段的值，此即为映射该资源的哈希值。]
-    #i1[打开 #icon(name: "folder") `objects` 文件夹，找到匹配的 #icon(name: "folder") `<哈希值前两位>` 文件夹，在此文件夹内找寻对应哈希值命名的文件，此即为需要找寻的资源。]
+}")
+    + 用编译软件的查询功能在 #icon(name: "json") `<版本号>.json` 文件中查找所需资源，记录对应 #icon(name: "json-string") `hash` 字段的值，此即为映射该资源的哈希值。
+    + 打开 #icon(name: "folder") `objects` 文件夹，找到匹配的 #icon(name: "folder") `<哈希值前两位>` 文件夹，在此文件夹内找寻对应哈希值命名的文件，此即为需要找寻的资源。
   ]
 )
 #example(
@@ -1100,16 +1105,20 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 #proper-noun(display: "数据包（Data pack）", "shujubao")*允许玩家在不修改游戏代码的前提下覆盖既有的或添加自定义的游戏内容。*因此，*原版技术性开发从不添加任何不在可写注册表内的游戏内容，只会用各种手段模拟这些游戏内容*。数据包本质上是一个文件夹或压缩文件。一个数据包仅对特定的游戏世界有效，它被储存在 `.minecraft\saves\<存档名称>\datapacks` 中。数据包可以是文件夹，也可以是 `.zip` 类型的压缩文件。同一个 #icon(name:"folder") `datapacks` 文件夹内能存放多个数据包。
 
 数据包有两种添加方式——
-+ 手动添加：直接将数据包添加至 `.minecraft\saves\<存档名称>\datapacks`。
-+ 创建世界时添加数据包：在创建新的世界界面，选择 `更多`，点击 `数据包` 选项，此时会进入选择数据包窗口，类似于资源包选项的窗口，可在“可用”一栏内选用数据包，只有“已选”一栏的数据包有效，且数据包的加载顺序可以在该栏中调换。点击 `打开包文件夹` 选项后游戏会弹出一个临时的文件夹，此时可以将数据包拖入其中。
+===== 手动添加
+直接将数据包添加至 `.minecraft\saves\<存档名称>\datapacks`。
+===== 创建世界时添加数据包
+在创建新的世界界面，选择 `更多`，点击 `数据包` 选项，此时会进入选择数据包窗口，类似于资源包选项的窗口，可在“可用”一栏内选用数据包，只有“已选”一栏的数据包有效，且数据包的加载顺序可以在该栏中调换。点击 `打开包文件夹` 选项后游戏会弹出一个临时的文件夹，此时可以将数据包拖入其中。
 #figure(
   caption: [选择数据包窗口],
+  placement: auto,
   image("图片/选择数据包窗口.png", width: 70%)
 )
 当一个存档中存在多个有效的已启用数据包时，游戏会根据数据包的顺序加载其内容，这里的“有效”是指数据包有合法的元数据且数据包内无任何语法错误。已启用数据包的加载顺序存储于 #icon(name:"nbt") `level.dat` 中。在选择数据包窗口“已选”一栏的加载顺序表现为从下到上。
 
 若这些数据包对同种资源进行定义，则*后加载的数据包会对先加载的数据包进行覆盖*，表明*越靠后加载的数据包其优先级越高*。可使用命令  `/datapack` 查询、修改、控制这些数据包的启用或禁用，`/datapack` 所需的权限等级为2，以下是所有用法：
-#i1(new: true)[启用指定数据包]
+#reset-h5
+===== 启用指定数据包
 #codebox("datapack enable <name>")
 #param-desc(
   [`<name>`（字符串 `brigadier:string`）#footnote[括号中内容为该参数的类型及该参数类型在注册表内的命名空间ID，后续教程均如此。]], [指定数据包的名称。必须使用单个词，可用引号括起整个字符串。可用字符有：\
@@ -1123,25 +1132,25 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   反斜杠 `\`。\
   如果用引号括起整个字符串，字符串内的同种引号与反斜杠前需要加上反斜杠 `\` 转义。]
 )
-#i1[禁用指定数据包]
+===== 禁用指定数据包
 #codebox("datapack disable <name>")
-#i1[列举所有数据包]
+===== 列举所有数据包
 #codebox("datapack list [available|enabled]")
 #param-desc(
   [`[available|enabled]`], [可选，若设为 `available` 则列举所有可用数据包，无论是否启用；若设为 `enabled`，则仅列举已启用数据包。默认为 `available`。]
 )
-#i1[启用指定的数据包，并设置其优先级为最低或最高]
+===== 启用指定的数据包，并设置其优先级为最低或最高
 #codebox("datapack enable <name> (first|last)")
 #param-desc(
   [`(first|last)`], [设置 `first` 以将该数据包的加载位次设为*首位*，因此优先级设为*最低*；设置 `last` 以将该数据包的加载位次设为*末位*，因此优先级设为*最高*。]
 )
-#i1[启用指定的数据包，并调整其加载优先级居于另一个数据包]
+===== 启用指定的数据包，并调整其加载优先级居于另一个数据包
 #codebox("datapack enable <name> (before|after) <existing>")
 #param-desc(
   [`(before|after)`], [设置 `before` 以将该数据包的加载放于数据包 `<existing>` *之前1位*，因此优先级比数据包 `<existing>` *低1级*；设置 `after` 以将该数据包的加载放于数据包 `<existing>` *之后1位*，因此优先级比数据包 `<existing>` *高1级*。],
   [`<existing>`（字符串 `brigadier:string`）], [必须为一个存在并已启用的数据包的名称。可用字符与 `<name>` 一致。]
 )
-#i1[新建一个空数据包，并设置此数据包的描述，注意，被创建的数据包默认为禁用状态]
+===== 新建一个空数据包，并设置此数据包的描述，注意，被创建的数据包默认为禁用状态
 #codebox("datapack create <id> <description>")
 #param-desc(
   [`<id>`（字符串 `brigadier:string`）], [新建数据包的名称，可用字符与上述 `<name>` 参数一致。],
@@ -1772,6 +1781,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 这份配置专门针对macOS用户。当渲染器版本信息中包含独立的Metal单词时，会触发警告。因为macOS使用苹果系统独特的图形接口Metal，而不使用OpenGL。
 #figure(
   caption: "GPU警告页面",
+  placement: auto,
   image("图片/GPU警告页面.png", width:70%)
 ) <fig:warning_gpu>
 警告页面会在玩家开启游戏极佳画质时出现。不过，这个页面以及GPU警告列表的配置都只是警告机制，并不是禁止硬件被匹配到的计算机运行Minecraft。游戏具体的运行情况取决于硬件本身。例如，以下的配置文件可以使得持有RTX 4060显卡的计算机显示警告页面，显示的页面如@fig:warning_gpu 所示。
@@ -1869,6 +1879,61 @@ MSPT与TPS的数量关系可表示为
 $ "MSPT" times "TPS" lt.eq 1000 $
 受限于游戏中的计算量及计算机的性能，若计算量过大，MSPT增大，则TPS会相应地减小，造成*掉刻*。TPS无法维持在最大频率时，可由下式计算出实际的TPS：
 $ "TPS" eq 1000 / "MSPT" $
+如果按照默认的每秒20gt的频率渲染画面，难免会产生肉眼可见的不连续画面。因此客户端渲染游戏画面时，并不是完全按照刻率渲染，而是在刻之间*补帧*以形成平滑画面。用于描述渲染频率的指标为*帧率（Frame per second，简称FPS）*#index(display: "帧率（Frame per second，FPS）", "zhenlv")，它反应的是客户端的每秒渲染的帧数。帧率受到客户端渲染计算量、计算机性能的影响，可以通过*最大帧率*选项控制最高FPS。
+
+当客户端渲染计算量较大时，FPS会下降，造成*掉帧*。因此分析客户端画面卡顿时，可以考虑的若干可能性有：渲染计算量较大，或是游戏刻计算量较大造成渲染补帧无法形成平滑画面。若遇到画面较为流畅、但游戏内容卡顿——如实体不移动、放置破坏方块相应时间较长——则说明客户端渲染计算正常而游戏刻计算量大。
+
+游戏的流畅程度是影响玩家游戏体验的关键因素，*无论是搭建红石电路还是制作数据包，均需要综合考虑成品对TPS和FPS的影响*。
+==== 命令/tick的用法
+命令 `/tick` 可用于控制游戏刻运行，该命令所需权限等级为3。以下是所有用法。
+===== 查询当前游戏刻频率，并返回性能数据。语法为：
+#codebox("tick query")
+===== 定义游戏刻频率，语法为：
+#codebox("tick rate <rate>")
+#param-desc(
+  [`<rate>`（浮点数 `brigadier:float`）], [需要设置的游戏刻频率。设置后，最大TPS频率即为这个参数设置的值。]
+)
+#example(
+  [#h(-2em)将游戏刻频率设为40。],
+  [
+    所需命令为
+    #codebox("tick rate 40")
+    负载正常时，MPST应不大于$1000 div 40=25$。
+  ]
+)
+===== 冻结游戏刻，语法为：
+#codebox("tick freeze")
+===== 步进特定数量的游戏刻，语法为：
+#codebox("tick step [<time>]") <code:tick_step>
+该语法仅能在游戏刻已冻结的情况下使用。步进结束后，游戏刻会继续冻结。
+#param-desc(
+  [`[<time>]`（时间 `minecraft:time`）], [步进时间长度。格式为：\ `<单精度浮点数>[<单位>]`\ 单位可以为：`t`（游戏刻），`s`（秒）或 `d`（游戏日，1游戏日固定为24000游戏刻），若不写单位，则默认单位为游戏刻。时间参数会在单位转化成游戏刻后取最近的整数。例如，`.2d` 会换算为$24000 times 2=48000$gt。若游戏刻频率为40，则 `.5s` 会换算为$40 times 0.5=20$gt。]
+)
+#example(
+  [#h(-2em)使游戏刻步进10秒。],
+  [
+    所需命令为
+    #codebox("tick step 10s")
+  ]
+)
+===== 停止正在进行的步进，并冻结游戏刻。语法为：
+#codebox("tick step stop")
+===== 取消冻结游戏刻，语法为：
+#codebox("tick unfreeze")
+===== 忽略游戏刻频率的限制持续进行更新，语法为：
+#codebox("tick sprint [<time>]")
+ 该语法用于在指定的时间 `[<time>]` 内尽可能快地运行游戏，结束后恢复先前的游戏刻速率并返回性能信息。参数 `[<time>]` 的用法与语法@code:tick_step 中所述的一致。
+===== 停止正在进行的忽略游戏刻频率进行的更新，并恢复先前的游戏刻频率。语法为：
+#codebox("tick sprint stop")
+==== 游戏刻计算流程 \*
+Minecraft的游戏计算内容繁多，在同一个线程中的计算不可能同步完成，各模块的计算在同一游戏刻内一定有先后顺序，这种先后顺序被称为*微时序（Microtiming，或称微观延迟）*#index(display: "微时序（Microtiming，微观延迟）", "weishixu")。在一个游戏刻内，服务端的计算流程顺序如下所示#footnote[带\*的项目表示在游戏刻冻结时忽略执行。]：
++ 检查游戏是否被暂停，若已暂停，则自动保存游戏。若此时内置服务器正在主持局域网联机，则统计世界打开时间。
++ 已暂停游戏若恢复运行，则对所有玩家强制时间同步。
++ 运行服务端逻辑。内容顺序如下：
+  + 更新游戏刻计数器。
+  + 若此时正在使用 `/tick step` 步进游戏刻，则计算剩余需步进游戏刻。
+  + 关闭与客户端的网络自动发送队列的刷新。
+  + 如果游戏世界被重新加载（如使用 `/reload`），则调用 `#minecraft:load` 中的函数，调用顺序与列表 #icon(name: "json-array") `value` 中的函数顺序一致。一个函数被调用时按 `.mcfunction` 文件内的命令顺序依次执行命令。
 == 服务器
 
 == 带有简单参数的命令指引

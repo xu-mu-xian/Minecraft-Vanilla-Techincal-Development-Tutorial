@@ -15,43 +15,6 @@
   appendix-part.update(true)
 }
 
-// 有序列表
-#let c1 = counter("L1")
-#let c2 = counter("L2")
-#let c3 = counter("L3")
-#let item(level, body, new: false) = {
-  if new {
-    c1.update(0)
-    c2.update(0)
-    c3.update(0)
-  }
-  if level == 1 { c2.update(0); c3.update(0) }
-  else if level == 2 { c3.update(0) }
-  if level == 1 { c1.step() }
-  else if level == 2 { c2.step() }
-  else if level == 3 { c3.step() }
-  context {
-    let label-text = if level == 1 { c1.display("1.") }
-    else if level == 2 { c2.display("(1)") }
-    else if level == 3 { c3.display("①") }
-    else { c1.display("a.") }
-    let label-width = 2em
-    let gap = 0em
-    let left-indent = (level - 1) * 2em
-    set par(
-      first-line-indent: 0em, 
-      hanging-indent: label-width + gap,
-    )
-    pad(left: left-indent)[
-      #box(width: label-width)[#label-text]#h(gap)#body
-    ]
-  }
-}
-#let i1 = item.with(1)
-#let i2 = item.with(2)
-#let i3 = item.with(3)
-#let i4 = item.with(4)
-
 // 例题内的有序列表
 #let c1 = counter("L1")
 #let c2 = counter("L2")
@@ -406,6 +369,10 @@
         return numbering("I.1.1", ..nums) + space
       } else if level == 4 {
         return numbering("一、", nums.at(3))
+      } else if level == 5 {
+        return text(weight: "regular", numbering("1.", nums.at(4))) + h(1em)
+      } else if level == 6 {
+        return text(weight: "regular", numbering("(1)", nums.at(5))) + h(0.5em)
       } else {
         return none
       }
@@ -418,6 +385,10 @@
         return numbering("1.1.1", ..nums) + space
       } else if level == 4 {
         return numbering("一、", nums.at(3))
+      } else if level == 5 {
+        return text(weight: "regular", numbering("1.", nums.at(4))) + h(1em)
+      } else if level == 6 {
+        return text(weight: "regular", numbering("(1)", nums.at(5))) + h(0.5em)
       } else {
         return none
       }
@@ -425,35 +396,77 @@
   }
 }
 
+// 序号重置
+#let reset-h5 = context {
+  let val = counter(heading).get()
+  if val.len() >= 5 {
+    counter(heading).update(val.slice(0, 4))
+  }
+}
+
 // 提示
-#let tips(width: 100%, content) = block(
-  width: width,
-  showybox(
-    breakable: true,
-    frame: (
-      body-color: rgb("#ffcece"),
-      border-color: rgb("#d71d1d"),
-      title-color: rgb("#d71d1d"),
-      title-inset: (x: 0.6em, y: 0.5em)
-    ),
-    title: (text(font: "Minecraft", size: 0.9em, "小提示")),
-    title-style: (
-      boxed-style: (
-        anchor: (
-          x: left,
-          y: horizon
-        ),
-        radius: 5pt
-      ),
-      color: white
-    ),
+#let tips(width: 100%, content) = {
+  h(0.5em)
+  block(
     width: width,
-    [
-      #set text(size: 0.9em)
-      #content
-    ]
+    showybox(
+      breakable: true,
+      frame: (
+        body-color: rgb("#ffcece"),
+        border-color: rgb("#d71d1d"),
+        title-color: rgb("#d71d1d"),
+        title-inset: (x: 0.6em, y: 0.5em)
+      ),
+      // title: (text(font: "Minecraft", size: 0.9em, "小提示")),
+      title-style: (
+        boxed-style: (
+          anchor: (
+            x: left,
+            y: horizon
+          ),
+          radius: 5pt
+        ),
+        color: white
+      ),
+      width: width,
+      [
+        #block(
+          width: 100%,
+          sticky: true,
+          {
+            v(-1.5em)
+            h(-2em)
+            box(
+              {
+                let title-text = {
+                  set text(fill: white, font: "Minecraft")
+                  [小提示]
+                }
+                place(dx: 2pt, dy: 2pt)[
+                  #box(
+                    fill: rgb("#ff6565"),
+                    inset: (x: 0.6em, y: 0.5em),
+                    radius: 5pt,
+                    hide(title-text)
+                  )
+                ]
+                h(-2em)
+                box(
+                  fill: rgb("#d71d1d"),
+                  inset: (x: 0.6em, y: 0.5em),
+                  radius: 5pt,
+                  title-text
+                )
+              }
+            )
+          }
+        )
+        #set text(size: 0.9em)
+        #content
+      ]
+    )
   )
-)
+}
 
 // 图标
 #let icon(name: none) = {
@@ -685,7 +698,20 @@
     )
     it
   }
-  set enum(numbering: n => text(font:"TeX Gyre Termes", [#n.]))
+  set enum(
+    full: true, 
+    numbering: (..nums) => {
+      let formats = ("1.", "(1)", "①", "A.", "a.")
+      let level = nums.pos().len()
+      let format-str = formats.at(calc.min(level - 1, formats.len() - 1))
+      let current-number = nums.pos().last()
+      if level == 3 {
+        numbering(format-str, current-number)
+      } else {
+        text(font: "TeX Gyre Termes", numbering(format-str, current-number))
+      }
+    }
+  )
   // 代码块
   show raw: it => {
     if it.block {
@@ -713,6 +739,17 @@
     )
     h(2pt) + it + h(2pt)
   }
+  set math.equation(
+    numbering: n => {
+      [(#context if appendix-part.get() {
+          numbering("I", counter(heading).get().at(0)) + "." + str(n)
+        } else {
+          str(counter(heading).get().at(0)) + "." + str(n)
+        })
+      ]
+    },
+    number-align: bottom
+  )
   // 图片
   show figure: set block(above: 1.5em, breakable: true)
   set figure(numbering: n => {
@@ -746,6 +783,7 @@
     }
   }
   // 标题
+  set heading(numbering: book-heading)
   show heading: set align(center)
   show heading: set text(
     font: (
@@ -775,6 +813,16 @@
     set align(left)
     set text(fill: rgb("#d71d1d"), font: "FZHeiTi GB18030L2", size: 1.1em)
     block(v(0.2em) + it + v(0.6em))
+  }
+  show heading.where(level: 5): it => {
+    set align(left)
+    set text(font: ((name: "FZShuSong GB18030L2", covers: regex("[·“”‘’…|/\[\]\{\}<>—]")), "TeX Gyre Termes", "FZShuSong GB18030L2"), weight: "regular")
+    block(v(-0.6em) + it)
+  }
+  show heading.where(level: 6): it => {
+    set align(left)
+    set text(font: ((name: "FZShuSong GB18030L2", covers: regex("[·“”‘’…|/\[\]\{\}<>—]")), "TeX Gyre Termes", "FZShuSong GB18030L2"), weight: "regular")
+    block(v(-0.6em) + it)
   }
   // 引用
   show ref: it => {
@@ -900,5 +948,7 @@
     }
   }
   show outline.entry.where(level: 4): it => {}
+  show outline.entry.where(level: 5): it => {}
+  show outline.entry.where(level: 6): it => {}
   main-body
 }
