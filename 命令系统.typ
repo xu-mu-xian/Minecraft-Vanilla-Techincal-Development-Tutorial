@@ -2056,8 +2056,57 @@ $ L_"s" = max{0, 31-d_"s"} $ <equ:player_simulation_level>
 )
 根据这种传播规则，假设有一个区块$A$被赋予了加载标签，已知其加载等级或计算等级，在周围没有其他区块具有加载标签的情况下，区块等级的传播使用#proper-noun(display: "切比雪夫距离（Chebyshev distance）", "qiebixuefujuli")来计算。则区块$B$的等级为
 $ L_("z",B) = cases(
-  L_("z",A) + max{}, L_("z",A) lt.eq.slant 44
-) $
+  L_("z",A) + d_∞(A,B)& "," &L_("z",A) + d_∞(A,B) lt.eq.slant 44,
+  "不存在"& "," &"otherwise"
+) $ <equ:load_level>
+$ L_("s",B) = min{33,L_("s",A) + d_∞(A,B)} $ <equ:simulation_level>
+#param-desc(
+  prefix: "式中：",
+  [$L_("z",A)$、$L_("z",B)$、$L_("s",A)$、$L_("s",B)$], [下标“z”表示加载等级，“s”表示计算等级，逗号后的字母表示该等级所属的区块。],
+  [$x_A$、$x_B$、$z_A$、$z_B$], [区块$A$、$B$分别在$x$、$z$方向上的区块坐标。],
+  [$d_∞(A,B)$], [区块$A$、$B$之间的切比雪夫距离，$d_∞(A,B) = max{abs(x_B-x_A),abs(z_B-z_A)}$]
+)
+若一个区块接受到多个传播等级，则选取等级最低者作为自己的加载（计算）等级。假设一定区域内存在被赋予加载标签的区块1、2、3、……则该区域内任意区块的加载（计算）等级可表示为
+$ L_"z" = cases(
+  min_(i gt.eq.slant 1){L_("z",i) + d_∞}& "," &min_(i gt.eq.slant 1){L_("z",i) + d_∞} lt.eq.slant 44,
+  "不存在"& "," &"otherwise"
+) $ <equ:chunk_load_level>
+$ L_"s" = cases(
+  min_(i gt.eq.slant 1){L_("s",i) + d_∞}& "," &min_(i gt.eq.slant 1){L_("s",i) + d_∞} lt.eq.slant 44,
+  "不存在"& "," &"otherwise"
+) $ <equ:chunk_simulation_level>
+#param-desc(
+  prefix: "式中：",
+  [$x$、$z$], [被计算区块的区块坐标。],
+  [$x_i$、$z_i$], [区块$i$的区块坐标，$i = 1,2,3...$。],
+  [$d_∞$], [被计算区块到区块$i$的切比雪夫距离，$d_∞ = max{abs(x-x_i),abs(z-z_i)}$。]
+)
+#example(
+  [
+    #h(-2em)@fig:level_propagation_example 展示了一个区域的区块，玩家所在的区块为$P$，此时模拟距离为5，渲染距离为4，判断在区块$A$内能否正常执行命令。
+    #figure(
+      caption: "",
+      image("图片/等级传播例题.png", width: 30%)
+    ) <fig:level_propagation_example>
+  ],
+  [
+    显然区块$P$被赋予了玩家标签，已知模拟距离为5，由@equ:player_simulation_level 可得区块$P$的计算等级为26。已知渲染距离为4，由@equ:render_distance 得以区块$P$为中心$9 times 9$区块的加载等级均为31。由等级的传播，该区域的等级如@fig:level_propagation_example_answer 所示。
+    #sub-figure(
+      caption: "",
+      label: <fig:level_propagation_example_answer>,
+      [#image("图片/等级传播例题解a：计算等级.png", height: 10em)\(a) 计算等级],
+      [#image("图片/等级传播例题解b：加载等级.png", height: 10em)\(b) 加载等级]
+    )
+    则区块A的计算等级为32，加载等级为33，属于加载边界区块，可以使用命令追踪该区块内的实体。
+  ]
+)
+#example(
+  [#h(-2em)一玩家所在区块的区块坐标为$[5,12]$，试通过调整渲染距离和模拟距离使区块$[17,-5]$为强加载区块。],
+  [
+    遇到这种两个区块之间相隔较远不能通过画图直接得到结果的，可先计算两个区块之间的切比雪夫距离$d_∞ = max{abs(17-5),abs(-5-12)} = 17$，要使区块$[17,-5]$为强加载区块，则该区块的加载和计算等级必须均小于等于31，所以渲染距离必须至少为17。设模拟距离为$d_"s"$，则玩家当前区块的计算等级为$max{0, 31-d_"s"}$，切比雪夫距离为17的区块的计算等级$max{0, 31-d_"s"} + 17 lt.eq.slant 31$，得$d_"s" gt.eq.slant 17$。所以渲染距离和模拟距离都应大于17。
+
+  ]
+)
 == 服务器
 
 == 带有简单参数的命令指引

@@ -763,7 +763,10 @@
   // 公式
   show math.equation: it => {
     set text(
-      font: "TeX Gyre Termes Math"
+      font: (
+        "TeX Gyre Termes Math",
+        "FZShuSong GB18030L2"
+      )
     )
     h(2pt) + it + h(2pt)
   }
