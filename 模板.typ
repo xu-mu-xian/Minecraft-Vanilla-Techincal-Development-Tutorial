@@ -244,6 +244,20 @@
         showybox(
           breakable: true,
           footer: [
+            #set enum(
+              full: true, 
+              numbering: (..nums) => {
+                let formats = ("(1)", "①", "A.", "a.")
+                let level = nums.pos().len()
+                let format-str = formats.at(calc.min(level - 1, formats.len() - 1))
+                let current-number = nums.pos().last()
+                if level == 3 {
+                  numbering(format-str, current-number)
+                } else {
+                  text(font: "TeX Gyre Termes", numbering(format-str, current-number))
+                }
+              }
+            )
             #h(-1em)
             #box[
               #box(
@@ -303,6 +317,20 @@
             color: white
           )
         )[
+          #set enum(
+            full: true, 
+            numbering: (..nums) => {
+              let formats = ("(1)", "①", "A.", "a.")
+              let level = nums.pos().len()
+              let format-str = formats.at(calc.min(level - 1, formats.len() - 1))
+              let current-number = nums.pos().last()
+              if level == 3 {
+                numbering(format-str, current-number)
+              } else {
+                text(font: "TeX Gyre Termes", numbering(format-str, current-number))
+              }
+            }
+          )
           #block(
             width: 100%,
             sticky: true,
@@ -682,7 +710,7 @@
   show: el.default-enum-list.with(
     body-indent: 0em,
     label-align: left,
-    label-width: 2em
+    label-width: (2em, 2em, 1.5em, 1.5em, 1em)
   )
   show enum: it => {
     set par(first-line-indent: 0em)
@@ -826,6 +854,9 @@
   }
   // 引用
   show ref: it => {
+    if it.element == none {
+      return it
+    }
     if it.element.func() == heading {
       let nums = counter(heading).at(it.element.location())
       context {
@@ -859,6 +890,7 @@
       it
     }
   }
+  show: el.config.ref.with(supplement: "")
   // 脚注
   set footnote(
     numbering: " ①"

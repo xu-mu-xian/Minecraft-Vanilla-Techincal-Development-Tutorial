@@ -1530,34 +1530,35 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
       (4, [#icon(name: "folder") *biome*]),
       (5, [#icon(name: "json") *level_37.json*])
     )
-    #e1(new: true)[写出该标签的引用方式。]
-    #e1[同个数据包内已有如下的生物群系，尝试在该标签中引用这些生物群系。
-    #v(-1em)
-    #tree(
-      (0, [#icon(name: "folder") *data*]),
-      (1, [#icon(name: "folder") *the_backrooms*]),
-      (2, [#icon(name: "folder") *worldgen*]),
-      (3, [#icon(name: "folder") *biome*]),
-      (4, [#icon(name: "folder") *level_37*]),
-      (5, [#icon(name: "json") *normal.json*]),
-      (5, [#icon(name: "json") *deep_water.json*]),
-      (5, [#icon(name: "json") *dark_zone.json*])
-    )]
+    + 写出该标签的引用方式。
+    + 同个数据包内已有如下的生物群系，尝试在该标签中引用这些生物群系。
+
+      #v(-1em)
+      #tree(
+        (0, [#icon(name: "folder") *data*]),
+        (1, [#icon(name: "folder") *the_backrooms*]),
+        (2, [#icon(name: "folder") *worldgen*]),
+        (3, [#icon(name: "folder") *biome*]),
+        (4, [#icon(name: "folder") *level_37*]),
+        (5, [#icon(name: "json") *normal.json*]),
+        (5, [#icon(name: "json") *deep_water.json*]),
+        (5, [#icon(name: "json") *dark_zone.json*])
+      )
   ],
   [
-    #e1(new: true)[#icon(name: "folder") `the_backrooms` 是命名空间，#icon(name: "folder") `tags` 是标签的路径，#icon(name: "folder") `worldgen` 和 #icon(name: "folder") `biome` 是标签内注册表的路径，因此该标签的引用方式为 `#the_backrooms:level_37`。]
-    #e1[#icon(name: "folder") `the_backrooms` 是命名空间，#icon(name: "folder") `worldgen` 和 #icon(name: "folder") `biome` 是注册表的路径，因此这些生物群系的命名空间ID分别为 `the_backrooms:level_37/normal`、`the_backrooms:level_37/deep_water` 和 `the_backrooms:level_37/dark_zone`，现在在标签内引用它们：
-    #codefile(
-      lang: "json",
-      title: "data > the_backrooms > tags > worldgen > biome > level_37.json",
-      "{
+    + #icon(name: "folder") `the_backrooms` 是命名空间，#icon(name: "folder") `tags` 是标签的路径，#icon(name: "folder") `worldgen` 和 #icon(name: "folder") `biome` 是标签内注册表的路径，因此该标签的引用方式为 `#the_backrooms:level_37`。
+    + #icon(name: "folder") `the_backrooms` 是命名空间，#icon(name: "folder") `worldgen` 和 #icon(name: "folder") `biome` 是注册表的路径，因此这些生物群系的命名空间ID分别为 `the_backrooms:level_37/normal`、`the_backrooms:level_37/deep_water` 和 `the_backrooms:level_37/dark_zone`，现在在标签内引用它们：
+      #codefile(
+        lang: "json",
+        title: "data > the_backrooms > tags > worldgen > biome > level_37.json",
+        "{
   \"values\":[
     \"the_backrooms:level_37/normal\",
     \"the_backrooms:level_37/deep_water\",
     \"the_backrooms:level_37/dark_zone\"
   ]
 }"
-    )]
+    )
   ]
 )
 原版的一些数据包标签具有特殊的行为。例如，实体标签 `#arthropod` 引用的实体均被视为节肢生物，会受到节肢杀手魔咒的作用，如果往标签中添加新的实体，则新使用的实体也会被视为节肢生物。所有的原版数据包标签列举于附录@sec:tag_in_datapack。
@@ -1933,7 +1934,130 @@ Minecraft的游戏计算内容繁多，在同一个线程中的计算不可能�
   + 更新游戏刻计数器。
   + 若此时正在使用 `/tick step` 步进游戏刻，则计算剩余需步进游戏刻。
   + 关闭与客户端的网络自动发送队列的刷新。
-  + 如果游戏世界被重新加载（如使用 `/reload`），则调用 `#minecraft:load` 中的函数，调用顺序与列表 #icon(name: "json-array") `value` 中的函数顺序一致。一个函数被调用时按 `.mcfunction` 文件内的命令顺序依次执行命令。
+  + 如果游戏世界被重新加载（如使用 `/reload`），则调用 `#minecraft:load` 中的函数，调用顺序与列表 #icon(name: "json-array") `value` 中的函数顺序一致。一个函数被调用时按 `.mcfunction` 文件内的命令顺序依次执行命令。<enu:gametick_order_reload> 
+  + \*调用一次 `#minecraft:tick` 中的函数，顺序与@enu:gametick_order_reload 中所述一致。
+  + 遍历所有维度，遍历顺序为：主世界、下界、末地、有先后顺序的自定义维度。遍历到某个维度时，按以下流程计算：
+    + 每隔20 gt对玩家同步一次该维度的时间。
+    + 运行维度游戏刻逻辑，若计算出现异常，则游戏崩溃。游戏刻逻辑按以下流程计算：
+      + 更新世界边界。
+      + \*计算天气循环、更新降雨和雷暴计时器。
+      + 计算日夜更替，若玩家入睡情况满足跳过当前时间至下一次日出，则将时间调整至下一次日出。若此时正在降雨，则重置天气循环。
+      + 更新内部光照等级乘数。
+      + \*更新时间。
+      + \*在非调试维度执行方块计划刻。
+      + \*在非调试维度执行流体计划刻。
+      + \*更新袭击事件。
+      + 计算区块数据，按以下流程计算：
+        + \*更新计算标签。
+        + 计算需要执行区块刻的区块，并打乱区块刻执行顺序。
+        + \*计算生物生成。
+        + \*按区块顺序执行区块刻。
+        + \*执行计划周期生成。
+        + 更新各个玩家追踪的区块。
+        + 更新兴趣点数据。
+        + 卸载不需要的区块。
+      + \*计算方块事件。
+      + 如果维度内有玩家或强加载区块，则重置限制超时。
+      + 如果闲置超时小于300 gt，则运行实体和方块计算逻辑，按以下流程计算：
+        + \*计算末影龙战斗数据。
+        + 遍历所有实体，进行实体计算。
+        + \*计算方块实体。
+      + 加载区块内未加载的实体，卸载不需要的实体。
+  + 检查客户端连接。
+  + 每600gt向所有玩家发送更新延迟网络包。
+  + 若存在服务器GUI，则更新服务器GUI。
+  + 对所有玩家发送正在等待发送的区块网络包，并打开与玩家客户端的网络自动发送队列刷新。
+  + 若与上一次自动保存已有100 gt，则尝试自动保存。
+  + 运行处理队列中的事件。
++ 在客户端更新渲染距离和模拟距离。
+=== 区块加载
+一个Minecraft世界在水平方向上的长宽均超过了六千万格，如果一次性将所有内容全部加载出来，则会消耗非常多的内存。为使游戏运行过程中不占用过多的内存，游戏仅会加载部分区域供玩家游玩，这些加载和数据存储的单位被称为#proper-noun(display: "区块（Chunk）", "qukuai")，每一个区块均是$16 times 384 times 16$的立方体，一个区块又可以沿高度分割成24个$16 times 16 times 16$大小的#proper-noun(display: "区段（Chunk section）", "quduan")，或称#proper-noun(display: "子区块（Sub chunk）", "ziqukuai")。在必要的情况下，游戏会*卸载*一些区块，并在需要的时候*加载*区块。已卸载的区块不会处理游戏的任何事件，这其中也包括了实体的生成、活动，红石电路、命令的运行等等。若长距离执行命令，区块的加载是需要着重考虑的一方面。
+==== 加载等级和计算等级
+游戏使用#proper-noun(display: "加载等级（Load level）", "jiazaidengji")和#proper-noun(display: "计算等级", "jisuandengji")#footnote[无英文原文。]来确定一个区块的加载情况。
+===== 加载等级
+区块的加载等级范围可表示为0 \~ 45（含）的整数，且等级越高，区块内加载的内容就越多。加载等级可划分为如下表所示的不同加载等级类型：
+#general-table(
+  caption: "加载等级类型",
+  colspan: 3,
+  columns: (auto, auto, auto),
+  header: ([类型], [加载等级], [描述]),
+  [实体计算], [$lt.eq.slant 31$], [可以计算实体、方块实体和计划刻，方块修改可以被追踪。],
+  [方块计算], [32], [不可计算但可以追踪实体，可以计算方块实体和计划刻，可以追踪方块修改。],
+  [完全加载], [33], [不可计算但可以追踪实体，不可以计算方块实体和计划刻，不可以追踪方块修改。],
+  table.cell(rowspan: 4)[不可访问], [34], [大于该加载等级时，实体和方块修改都不可以追踪，方块实体和计划刻不可以计算，但可以进行初始化光照计算。],
+  [35], [可进行地形雕刻。],
+  [36], [可填充生物群系。],
+  [37 \~ 44], [结构允许生成。],
+  [卸载], [45], [区块已被卸载]
+)
+===== 计算等级
+类似于加载等级，区块的加载等级范围可表示为0 \~ 33（含）的整数。且等级越高，区块内加载的内容就越多。区块内具体可以加载何内容由加载等级和计算综合决定。下表列举了不同加载程度的区块#footnote[表中一种类型的区块必须同时满足该行加载等级和计算等级的要求。]：
+#general-table(
+  caption: "区块加载类型",
+  colspan: 4,
+  columns: (auto, auto, auto, auto),
+  header: ([区块类型], [加载等级], [计算等级], [每游戏刻的具体行为]),
+  [强加载区块], [$lt.eq.slant 31$], [$lt.eq.slant 31$], [可以计算实体、方块实体和计划刻，任何命令都能正常执行。],
+  [弱加载区块], [32], [32], [可以计算方块实体和计划刻，实体可以被命令追踪和记录，但无法计算实体。],
+  [加载边界区块], [33], [32], [实体可以被命令追踪和记录，但不计算实体、方块实体和计划刻。],
+  [不可访问], [$gt.eq.slant 34$], [33], [不计算实体、方块实体和计划刻，任何命令都不可执行。]
+)
+==== 加载标签
+一个区块加载等级和计算等级的具体数值可以由#proper-noun(display: "加载标签（Load ticket）", "jiazaibiaoqian")决定。一个加载标签有*基础等级*、*标签类型*、*存活时间*和*持久化*四个属性，基础等级指一个区块被赋予某种加载标签时该区块的加载等级和计算等级（两者不一定相等），存活时间指该类加载标签能够持续的时长。以下是注册表内所有类型的加载标签：
+===== 玩家标签
+玩家标签在注册表内分为#proper-noun(display: "玩家加载标签（Player loading ticket）", "wanjiajiazaibiaoqian")和#proper-noun(display: "玩家计算标签（Player simulation ticket）", "wanjiajisuanbiaoqian")。玩家所在的区块会被赋予这玩家标签，其中加载等级由玩家加载标签赋予，计算等级由玩家计算标签赋予，此时该区块的加载等级主要取决于#proper-noun(display: "渲染距离（Render distance）", "xuanranjuli")，计算等级主要取决于#proper-noun(display: "模拟距离（Simulation distance）", "monijuli")，渲染距离和模拟距离均可以由选项设置。渲染距离主要决定游戏世界的渲染距离，即渲染区块的数量，对FPS的影响程度较高。通常来说渲染区域以玩家所在区块为中心，在平面上为正方形，其边长为
+$ a = 2d_"r" + 1 $ <equ:render_distance>
+#param-desc(
+  prefix: "式中：",
+  [$a$], [渲染区域边长。],
+  [$d_"r"$], [在单人游戏中为渲染距离，原版的渲染距离必须为介于2和32之间（含）的整数。在多人游戏中为 `server.properties` 中 `view-distance` 的值。]
+)
+*对于上述正方形区域内的每一个区块，其加载等级均为31。*
+
+模拟距离主要决定实体更新、计算方块计划刻、流体计划刻，这些计算主要由服务端负责，因此相对于渲染距离而言，它对TPS的影响更大。玩家所在区块的计算等级为
+$ L_"s" = max{0, 31-d_"s"} $ <equ:player_simulation_level>
+#param-desc(
+  prefix: "式中：",
+  [$L_"s"$], [计算等级。],
+  [$d_"s"$], [模拟距离，原版的模拟距离必须为介于5和32之间（含）的整数。]
+)
+===== 传送门标签
+当有实体在下界传送门或末地传送门中且正在被传送至另一个维度时，游戏将会为目的维度的目标区块赋予传送门标签，加载等级和计算等级均为30，存活时间为300 gt。
+===== 末影龙标签
+玩家与末影龙发生战斗时会在末地的$[0,0]$区块产生末影龙标签，加载等级和计算等级均为24，存活时间不定，直到末影龙被杀死或与末影龙战斗的玩家数量清零时才撤销该标签。
+===== 强制加载标签
+命令 `/forceload` 所指定区块的加载等级和计算等级为31，并被添加该标签，这是持久性标签，除非使用命令 `/forceload` 移除标签。参见节@subsec:command_forceload。
+===== 末影珍珠标签
+当玩家掷出末影珍珠后，该末影珍珠所在区块每39 gt会被赋予该标签，加载等级和计算等级均为31，存活时间40 gt。
+===== 临时标签
+由游戏代码决定而创建，通常用于计算生物的AI和生成，加载等级一般大于等于32，不设置计算等级。存活时间仅为1 gt。
+
+整理上述信息可得下表：
+#general-table(
+  caption: "加载标签",
+  colspan: 6,
+  columns: (auto, auto, auto, auto, auto, auto),
+  header: (table.cell(rowspan: 2)[标签类型], table.cell(rowspan: 2)[注册名称], table.cell(colspan: 2)[基础等级], table.cell(rowspan: 2)[存活时间], table.cell(rowspan: 2)[持久化], table.cell(fill: rgb("#ff6565"))[#set text(fill: white, font: "FZHeiTi GB18030L2")
+  加载等级], table.cell(fill: rgb("#ff6565"))[#set text(fill: white, font: "FZHeiTi GB18030L2")
+  计算等级]),
+  [玩家加载标签], [`player_loading`], [31], [无], table.cell(rowspan: 2)[永久], table.cell(rowspan: 2)[否],
+  [玩家计算标签], [`player_simulation`], [无], [$max{0,31-d_"s"}$],
+  [传送门标签], [`portal`], table.cell(colspan: 2)[30], [300 gt], [是],
+  [末影龙标签], [`dragon`], table.cell(colspan: 2)[24], [永久], [否],
+  [强制加载标签], [`forced`], table.cell(colspan: 2)[31], [永久], [是],
+  [末影珍珠标签], [`ender_pearl`], table.cell(colspan: 2)[31], [40 gt], [否],
+  [临时标签], [`unknown`], [$gt.eq.slant 32$], [无], [40 gt], [否]
+)
+==== 等级传播
+拥有一定加载等级和计算等级的区块可以向周围的8个区块传播加载等级和计算等级，每次传播时等级增加1。加载等级的最大值为45，等级为45的区块会直接从内存中卸载。计算等级的最大值为33，此时若继续向外传播则等级会维持在33。
+#figure(
+  caption: "等级的传播",
+  image("图片/等级的传播.png")
+)
+根据这种传播规则，假设有一个区块$A$被赋予了加载标签，已知其加载等级或计算等级，在周围没有其他区块具有加载标签的情况下，区块等级的传播使用#proper-noun(display: "切比雪夫距离（Chebyshev distance）", "qiebixuefujuli")来计算。则区块$B$的等级为
+$ L_("z",B) = cases(
+  L_("z",A) + max{}, L_("z",A) lt.eq.slant 44
+) $
 == 服务器
 
 == 带有简单参数的命令指引
@@ -2008,12 +2132,12 @@ Minecraft规定：大部分方块的长、宽和高均为1米，体积为1立方
 这些位置的偏移都位于相对方块两条对边的中心线上，这是因为三维坐标使用了#proper-noun(display:"中心校准（Center correct）","zhongxinjiaozhun")，即使用整数形式的三维坐标，当其某一个坐标参数为$n$（$n∈Z$）时，其实际坐标为$n−0.5$，这样可以使得实体位置与方块位置相适应。注意*中心校准仅适用于$x$坐标和$z$坐标。$y$坐标严格使用实际坐标*。
 
 注意这里不使用“三维坐标根据方块坐标位于方块中心”的说法，是因为三维坐标的三个参数中整数和浮点数形式可以混用，并且使用小数形式的参数严格遵循实际坐标，整数形式的参数则使用中心校准。比如，位于`5 56 17.0`的玩家实际位于$(5.5,56,17.0)$。
-
 ==== 平面方块坐标
 故名思义，平面方块坐标`minecraft:column_pos`就是二维的方块坐标，以西北角的二维坐标作为一个方块纵列的平面坐标，两个元素均为整数。
-
 ==== 二维坐标
 即只由$x$坐标和$z$坐标构成的#proper-noun(display:"二维坐标（Three-dimensional coordinates）","erweizuobiao")。二维坐标的命令参数类型为`minecraft:vec2`，两个元素均为双精度浮点数。二维坐标若为整数，则也使用中心校准。
+== 区块
+=== 命令/forceload <subsec:command_forceload>
 = 文本组件<chap:text_component>
 == 文本组件内容
 === 翻译文本<subsec:translate>
