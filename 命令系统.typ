@@ -111,9 +111,9 @@ Minecraft拥有多种多样的玩法，生存、PVP、PVE、模组、建筑、�
 #pagebreak()
 
 == 注册表与数据值
-Minecraft有许多不同的游戏资源，如草方块、石头、箭、铁锹、猪等，对这些游戏资源进行分类，可以将草方块、石头分为方块，箭、铁锹分为物品，猪划分至实体。方块、物品、实体显然是区分这些游戏资源的“大类”。#proper-noun(display:"注册表（Registry）","zhucebiao")就是对不同资源进行分类管理的机制。除分类管理外，还需要给予每种资源一个独特的“身份证”，目的是与别的资源区分开来，唯一地映射到注册表内的给定值。这些“身份证”被称为游戏资源的数据值，或称ID。
+Minecraft有许多不同的游戏资源，如草方块、石头、箭、铁锹、猪等，对这些游戏资源进行分类，可以将草方块、石头分为方块，箭、铁锹分为物品，猪划分至实体。方块、物品、实体显然是区分这些游戏资源的“大类”。#proper-noun(display:"注册表（Registry）","zhu4 ce4 biao3")就是对不同资源进行分类管理的机制。除分类管理外，还需要给予每种资源一个独特的“身份证”，目的是与别的资源区分开来，唯一地映射到注册表内的给定值。这些“身份证”被称为游戏资源的数据值，或称ID。
 === 注册表 \*
-注册表可分为以下两类：#proper-noun(display:"固有注册表（Built-in registry）","guyouzhucebiao")和#proper-noun(display:"可写注册表（Writable registry）","kexiezhucebiao")。无论资源位于什么类型的注册表，*游戏都只会识别已被注册的资源*。
+注册表可分为以下两类：#proper-noun(display:"固有注册表（Built-in registry）","gu4 you3 zhu4 ce4 biao3")和#proper-noun(display:"可写注册表（Writable registry）","ke3 xie3 zhu4 ce4 biao3")。无论资源位于什么类型的注册表，*游戏都只会识别已被注册的资源*。
 
 下面列举了Minecraft中所有的资源类型：
 ==== 固有注册表
@@ -300,7 +300,7 @@ Minecraft有许多不同的游戏资源，如草方块、石头、箭、铁锹�
   table.cell(colspan: 2)[随机序列], [可写，存储于存档文件夹中各自维度的 `data\random_sequences.dat` 文件内],
 )
 === 扁平化 \*
-Minecraft的历次版本更新都会对某一些特定的系统进行优化和更改，比如：战斗更新对PVP机制进行了颠覆性的更改，使得1.9之前和之后的PVP是两个完全不同的系统。命令系统也经历过类似的大幅度更改，这便是随着水域更新进行的#proper-noun(display:"扁平化（The flattening）","bianpinghua")。
+Minecraft的历次版本更新都会对某一些特定的系统进行优化和更改，比如：战斗更新对PVP机制进行了颠覆性的更改，使得1.9之前和之后的PVP是两个完全不同的系统。命令系统也经历过类似的大幅度更改，这便是随着水域更新进行的#proper-noun(display:"扁平化（The flattening）","bian3 ping2 hua4")。
 
 在Minecraft开发之初，由于游戏资源的数量有限，只需要使用1字节就可以设置所有游戏资源的ID。在历次版本更新中，Minecraft的方块、物品数量越来越多，特别是自缤纷更新以来，方块的数量呈爆炸式增长。在扁平化之前，为了应对这些不断增多的游戏资源，一种解决办法是将一大类全部收归到某一个特定的ID中，用这个ID来表示这一类方块，然后在后面附加一个Damage值来表示这一类方块中的某一种。比如花岗岩属于石头一类，石头的数字ID为1，而花岗岩的Damage值为1，所以在旧版本中给予玩家一块花岗岩的命令为：
 #codebox("give @p 1 1 1")
@@ -322,9 +322,9 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 ===== 合并
 合并常见于有不同方块状态的方块。举例：燃烧的熔炉和熔炉有不同的ID，现合并为熔炉一种，同时将是否燃烧设定为方块状态。
 === 命名空间ID
-游戏资源的指定有一个前提是这些对象的ID相互之间不能混淆。数字ID及使用Damage值作区分的指定方法能够避免对象之间的冲突，但扁平化后这种指定方法便无效了。为此在当前的版本中统一使用#proper-noun(display: "（赋）命名空间ID（Namespaced identifier）", "mingmingkongjian")来映射注册表内的值。
+游戏资源的指定有一个前提是这些对象的ID相互之间不能混淆。数字ID及使用Damage值作区分的指定方法能够避免对象之间的冲突，但扁平化后这种指定方法便无效了。为此在当前的版本中统一使用#proper-noun(display: "（赋）命名空间ID（Namespaced identifier）", "ming4 ming2 kong1 jian1")来映射注册表内的值。
 
-命名空间ID，又称*（赋）命名空间标识符*、#proper-noun(display: "资源路径（Resource location）", "ziyuanlujing")、#proper-noun(display: "资源标识符（Resource identifier）", "ziyuanbiaoshifu")或#proper-noun(display: "命名空间字符串（Namespaced string）", "mingmingkongjianzifuchuan")，是字符串化的映射方式。无论命名空间ID用于映射何种对象，它们都具有同一的表达方式：
+命名空间ID，又称*（赋）命名空间标识符*、#proper-noun(display: "资源路径（Resource location）", "zi1 yuan2 lu4 jing4")、#proper-noun(display: "资源标识符（Resource identifier）", "zi1 yuan2 biao1 shi2 fu2")或#proper-noun(display: "命名空间字符串（Namespaced string）", "ming4 ming2 kong1 jian1 zi4 fu2 chuan4")，是字符串化的映射方式。无论命名空间ID用于映射何种对象，它们都具有同一的表达方式：
 #codebox("<namespace>:<path>")
 #param-desc(
   [`<namespace>`], [命名空间。], [`<path>`], [路径。]
@@ -353,7 +353,7 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
   ),
   [
     
-    #proper-noun(display: "命名空间（Namespace）", "mingmingkongjian")是游戏资源的区界，它位于资源类型的父层级，所有来自Minecraft原版游戏的资源均位于命名空间 `minecraft`。*通过不同的自定义命名空间可以将新增的内容和原版内容区分开来，以防止新内容和原版内容、新内容和其他新内容之间产生冲突。*例如，有两个命名空间ID `minecraft:something` 和 `custom:something`，它们指定的是两个不同的对象，因为它们的命名空间不同，前者为 `minecraft`，后者为 `custom`，即使两者拥有相同的路径（名称） `something`。
+    #proper-noun(display: "命名空间（Namespace）", "ming4 ming2 kong1 jian1")是游戏资源的区界，它位于资源类型的父层级，所有来自Minecraft原版游戏的资源均位于命名空间 `minecraft`。*通过不同的自定义命名空间可以将新增的内容和原版内容区分开来，以防止新内容和原版内容、新内容和其他新内容之间产生冲突。*例如，有两个命名空间ID `minecraft:something` 和 `custom:something`，它们指定的是两个不同的对象，因为它们的命名空间不同，前者为 `minecraft`，后者为 `custom`，即使两者拥有相同的路径（名称） `something`。
   ],
   align: left
 )
@@ -412,10 +412,10 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
     )
   ]
 )
-一般而言，命名空间和路径推荐的写法是#proper-noun(display: "蛇形命名法（Snake case）", "shexingmingmingfa")，即当名称中含有多个单字时，以下划线 `_` 取代每一个空格的写法。蛇形命名法的书写仍需遵守合法字符的规定，不能出现大写字母。例如，下面的命名空间ID在命名空间和路径上均使用了蛇形命名法：
+一般而言，命名空间和路径推荐的写法是#proper-noun(display: "蛇形命名法（Snake case）", "she2 xing2 ming4 ming2 fa3")，即当名称中含有多个单字时，以下划线 `_` 取代每一个空格的写法。蛇形命名法的书写仍需遵守合法字符的规定，不能出现大写字母。例如，下面的命名空间ID在命名空间和路径上均使用了蛇形命名法：
 #codebox("ancient_city:get_out")
 === 数据包标签 <subsec:tag_in_datapack>
-一个单独的命名空间ID只能映射至单独的一个对象，如果要同时映射多个对象，一般的做法是将对象分类，通过映射同一种类别的对象从而映射多个对象。这种将游戏资源分类的手段被称为#proper-noun(display: "数据包标签（Tags in data packs）", "shujubaobiaoqian")，简称#proper-noun(display: "标签（Tag）", "biaoqian")由于命令系统存在多个名为“标签”的概念，笔者不建议使用这样的简称以防止与其他概念的混淆。。原版游戏有一些既有数据包标签，数据包标签的名称大多拥有实际的意义：例如，数据包标签 `#fire` 映射至两种方块，即 `fire`（火焰）和 `soul_fire`（灵魂火焰）；`#mineable/axe` 映射至所有能被斧采集的方块。
+一个单独的命名空间ID只能映射至单独的一个对象，如果要同时映射多个对象，一般的做法是将对象分类，通过映射同一种类别的对象从而映射多个对象。这种将游戏资源分类的手段被称为#proper-noun(display: "数据包标签（Tags in data packs）", "shu4 ju4 bao1 biao1 qian1")，简称#proper-noun(display: "标签（Tag）", "biao1 qian1")由于命令系统存在多个名为“标签”的概念，笔者不建议使用这样的简称以防止与其他概念的混淆。。原版游戏有一些既有数据包标签，数据包标签的名称大多拥有实际的意义：例如，数据包标签 `#fire` 映射至两种方块，即 `fire`（火焰）和 `soul_fire`（灵魂火焰）；`#mineable/axe` 映射至所有能被斧采集的方块。
 
 数据包标签的表示方式类似于命名空间ID，但需要在前面加上井号 `#`，写法为
 #codebox("#<namespace>:<id>")
@@ -423,7 +423,7 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 
 数据包标签涵盖的对象类型非常广，包括方块、实体、物品、游戏事件、生物群系等。读者可以在既有数据包标签的基础上，使用数据包添加一些自定义的数据包标签。数据包标签的定义方式见小节@subsec:tag_definition。
 == 命令
-#proper-noun(display: "命令（Command）", "mingling")，又称#proper-noun(display: "控制台命令（Console command）", "kongzhitaimingling")、#proper-noun(display: "斜杠命令（Slash command）", "xiegangmingling")或#proper-noun("MC-CMD")，*是一种高级的、通过输入具有特定语法文本以实现控制游戏本身运行的功能*。命令文本需要讲究严格的语法，不允许任何模糊的表达。目前MC-CMD已被正式确认为一种编程语言，名称为mcfunction，与C语言、Java、Python等并列——但这是一种只适用于游戏Minecraft内部的编程语言，无法与外部环境进行交互。
+#proper-noun(display: "命令（Command）", "ming4 ling4")，又称#proper-noun(display: "控制台命令（Console command）", "kong4 zhi4 tai2 ming4 ling4")、#proper-noun(display: "斜杠命令（Slash command）", "xie2 gang4 ming4 ling4")或#proper-noun("MC-CMD")，*是一种高级的、通过输入具有特定语法文本以实现控制游戏本身运行的功能*。命令文本需要讲究严格的语法，不允许任何模糊的表达。目前MC-CMD已被正式确认为一种编程语言，名称为mcfunction，与C语言、Java、Python等并列——但这是一种只适用于游戏Minecraft内部的编程语言，无法与外部环境进行交互。
 === 命令参数 <subsec:command_argument>
 参数是命令的组成部分，每一条命令都由一个命令头和若干参数组成，参数之间用空格分隔，由此得到命令的通用格式：
 #codebox("<命令名> [<参数1>] [<参数2>] …")
@@ -456,30 +456,30 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
   ]
 )
 为了使不同的命令具有不同的功能，它们使用的参数类型各不相同。有些命令作用的对象为实体，它们则会使用指定实体的参数，有些命令作用的对象为某一个坐标，则其使用坐标参数。游戏使用的命令参数有如布尔值、整型、函数、槽位值、坐标值、目标选择器、JSON、NBT等。一些复杂参数会在本教程后文呈现，下面列举的是基本参数，即在Brigadier中使用的六种基本数据类型：
-===== #proper-noun(display: "布尔值（Bool）", "buerzhi")
-#proper-noun(display: "布尔值（Bool）", "buerzhi")只有两种可用参数，为 `true` 和 `false`，分别代表“是”与“否”。
-===== #proper-noun(display: "整数（Integer）", "zhengxing")
+===== #proper-noun(display: "布尔值（Bool）", "bu4 er3 zhi2")
+只有两种可用参数，为 `true` 和 `false`，分别代表“是”与“否”。
+===== #proper-noun(display: "整数（Integer）", "zheng3 shu4")
 使用32位整型数值，是介于 `-2147483648` 和 `2147483647` 之间的整数值，如 `1`、`0`、`-1` 等。不同命令中使用整型的参数规定的最大可用值和最小可用值不一致。
-===== #proper-noun(display: "长整数（Long）", "changzhengxing")
+===== #proper-noun(display: "长整数（Long）", "chang2 zheng3 shu4")
 使用64位整型数值，是介于 `-9223372036854775808` 和 `9223372036854775807` 之间的整数值。
-===== #proper-noun(display: "单精度浮点数（Float）", "danjingdufudianshu")
+===== #proper-noun(display: "单精度浮点数（Float）", "dan1 jing1 du4 fu2 dian3 shu4")
 使用占据4字节的浮点数，范围大约介于$-3.4 times 10^38$和$3.4 times 10^38$之间，在不同命令中使用单精度浮点数的参数规定的最大可用值和最小可用值不一致。一些单精度浮点数的示例有：`0`、`1.1`、`-1`、`.5` 等，小数形式的整数部分可以省略。在命令参数中使用的浮点数暂时不支持科学计数法#footnote[参见#link("https://bugs.mojang.com/browse/MC/issues/MC-130925")[MC-130925]。]。
-===== #proper-noun(display: "双精度浮点数（Double）", "shuangjingdufudianshu")
+===== #proper-noun(display: "双精度浮点数（Double）", "shuang1 jing1 du4 fu2 dian3 shu4")
 使用占据8字节的浮点数，范围大约介于$-1.8 times 10^108$和$1.8 times 10^108$之间。可以表示比单精度浮点数绝对值更大的有效数字。
-===== #proper-noun(display: "字符串（String）", "zifuchuan")
+===== #proper-noun(display: "字符串（String）", "zi4 fu2 chuan4")
 字符串是由多个字符组成的序列，可用于表示单词、句子或其他符号组合。
-====== #proper-noun(display: "单个词（Single word）", "dangeci")
+====== #proper-noun(display: "单个词（Single word）", "dan1 ge4 ci2")
 即不含空格的字符串，如 `word`，若单个词的内容由多个词语组成，则一般使用下划线 `_` 连接相邻词，如 `word_with_underscores`。
-====== #proper-noun(display: "词组（Quotable phrase）", "cizu")
+====== #proper-noun(display: "词组（Quotable phrase）", "ci2 zu3")
 可以由双引号括起，如 `"quoted phrase"`，也可以使用单引号来定义，如 `'quoted phrase'`，此时单词之间可以有空格。
-====== #proper-noun(display: "贪婪词组（Greedy phrase）", "tanlancizu")
+====== #proper-noun(display: "贪婪词组（Greedy phrase）", "tan1 lan2 ci2 zu3")
 这种形式的词组不带引号，任意使用空格。该形式的参数通常位于命令的末尾，将命令的剩余部分全部作为字符串参数。如：`words with spaces`。上文中命令@code:say_hello_world 就使用了这种参数。
 === 命令的输入
 命令是一种文本输入，以下是可供命令输入的途径：
 ===== 使用聊天栏输入命令
 为了和普通的聊天文本区分开来，在聊天栏中输入命令时会在命令前加一个前缀 `/`，此前缀必不可少。在不使用按键 `T` 召唤聊天栏时可以直接键入 `/` 输入命令，这是使玩家快速进入命令输入模式的一种办法。
 
-呼出聊天栏后，可以使用 `↑` 或 `↓` 键调用#proper-noun(display: "命令历史（Command history）", "minglinglishi")，即先前键入的命令。如果之前输入的命令有语法错误的话，切换至该命令时依旧会有语法错误，不会自动更正，更不会因为含有语法错误就不显示该命令。这种快捷键在命令方块控制台中不适用。命令历史可以跨存档调用。
+呼出聊天栏后，可以使用 `↑` 或 `↓` 键调用#proper-noun(display: "命令历史（Command history）", "ming4 ling4 li4 shi3")，即先前键入的命令。如果之前输入的命令有语法错误的话，切换至该命令时依旧会有语法错误，不会自动更正，更不会因为含有语法错误就不显示该命令。这种快捷键在命令方块控制台中不适用。命令历史可以跨存档调用。
 
 在聊天栏输入命令时，`Tab` 键可用于补全命令。未输入任何命令字符的时候，使用 `Tab` 键可以看到聊天栏上出现的一个命令列表（如@fig:using_tab_when_typing_command），鼠标滚轮有助于翻找需要的命令。
 #figure(
@@ -507,7 +507,7 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 ===== 在服务器控制台中输入命令
 ===== 在带有 `run_command` 动作的点击事件的文本组件或对话框按钮中输入命令
 === 权限等级与限制条件
-命令功能强大、种类繁多，如果在任意情况下都能够随意使用，则很有可能会破坏玩家的游戏体验。因此，命令系统有一套专门的机制用于控制游戏内可用命令的情形，即权限等级。#proper-noun(display: "权限等级（Permission level）", "quanxiandengji")用于决定命令执行者可以使用什么样的命令。所有命令都有一个所需的权限等级，如果命令执行者没有达到该有的权限等级，则无法执行该命令。例如：`/advancement` 需要的权限等级为2，命令方块的权限等级也为2，因此命令方块可以执行该命令；而关闭命令的单人游戏玩家的权限为0，所以该玩家不能执行该命令。
+命令功能强大、种类繁多，如果在任意情况下都能够随意使用，则很有可能会破坏玩家的游戏体验。因此，命令系统有一套专门的机制用于控制游戏内可用命令的情形，即权限等级。#proper-noun(display: "权限等级（Permission level）", "quan2 xian4 deng3 ji2")用于决定命令执行者可以使用什么样的命令。所有命令都有一个所需的权限等级，如果命令执行者没有达到该有的权限等级，则无法执行该命令。例如：`/advancement` 需要的权限等级为2，命令方块的权限等级也为2，因此命令方块可以执行该命令；而关闭命令的单人游戏玩家的权限为0，所以该玩家不能执行该命令。
 
 权限等级共分为0、1、2、3、4级，表罗列了Java版所有可用命令需要的权限等级与限制条件。除权限等级之外，一些命令还对当前的游戏世界有限制：一些命令只能在专用服务器（以下简称多人游戏）中使用，另有只能在非专用服务器（以下简称单人游戏，无论是否对局域网开放）中使用的命令，然而大部分命令都是无此限制条件的。
 #split-table(
@@ -629,22 +629,22 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 ) <fig:branch_of_command_tag>
 以命令 `/tag` 为例，其命令树如@fig:branch_of_command_tag 所示。`tag` 是根命令，其子节点 `<target>` 是一个需要特定参数类型（这里是 `entity`）的节点，解析此节点的时候，会判断输入的参数是否为 `entity` 类型，若为否则解析异常，命令无法执行。2级子节点是已注册的字面量 `add`、`remove` 和 `list`，解析该级节点的工作比较简单：只需读取该节点的文本是否与注册的字面量吻合。若2级子节点的参数指定为 `add`、`remove`，则读取3级子节点 `<name>`，这个节点又是一个需要自定义的量；若2级子节点的参数指定为 `list`，则不能再添加后续参数。
 === 命令上下文
-当一条命令被执行时，该命令一定有一个调用者以及调用环境，这一系列调用者及调用环境构成的集合被称为#proper-noun(display: "命令上下文（Command context）", "minglingshangxiawen")，或称#proper-noun(display: "执行上下文（Execution context）", "zhixingshangxiawen")、#proper-noun(display: "命令源（Command origin）", "minglingyuan")、#proper-noun(display: "命令来源堆叠（Command source stack）", "minglinglaiyuanduidie")。
+当一条命令被执行时，该命令一定有一个调用者以及调用环境，这一系列调用者及调用环境构成的集合被称为#proper-noun(display: "命令上下文（Command context）", "ming4 ling4 shang4 xia4 wen2")，或称#proper-noun(display: "执行上下文（Execution context）", "zhi2 xing2 shang4 xia4 wen2")、#proper-noun(display: "命令源（Command origin）", "ming4 ling4 yuan2")、#proper-noun(display: "命令来源堆叠（Command source stack）", "ming4 ling4 lai2 yuan2 dui1 die2")。
 
 命令上下文由以下参数构成：
 ===== 执行权限等级
-===== #proper-noun(display: "执行者（Executor）", "zhixingzhe")
+===== #proper-noun(display: "执行者（Executor）", "zhi2 xing2 zhe3")
 由“执行者名称”和“执行者实体”两个参数构成，但执行者实体不一定存在，例如执行者为命令方块、命令方块矿车或服务端的时候。
-===== #proper-noun(display: "执行位置（Execution position）", "zhixingweizhi")
+===== #proper-noun(display: "执行位置（Execution position）", "zhi2 xing2 wei4 zhi4")
 这个参数是命令执行时所在的坐标，包含$x$、$y$、$z$三个坐标参数。
-===== #proper-noun(display: "执行朝向（Execution rotation）", "zhixingchaoxiang")
+===== #proper-noun(display: "执行朝向（Execution rotation）", "zhi2 xing2 chao2 xiang4")
 这个参数是命令执行时面向的方向，包含偏航角和俯仰角两个参数。
-===== #proper-noun(display: "执行锚点（Execution anchor）", "zhixingmaodian")
+===== #proper-noun(display: "执行锚点（Execution anchor）", "zhi2 xing2 mao2 dian3")
 这个参数是局部坐标的原点，当执行者为实体时，这个参数可以指定执行的锚点基于实体的脚部还是眼部，因此有脚部和眼部两个可用参数。其中脚部即为原本的执行位置，眼部为原本的执行位置在$y$轴方向加上实体眼睛的高度。
-===== #proper-noun(display: "执行维度（Execution dimension）", "zhixingweidu")
+===== #proper-noun(display: "执行维度（Execution dimension）", "zhi2 xing2 wei3 du4")
 这个参数是命令执行所在的维度，执行位置位于这个维度内。
 ===== 执行输出反馈
-尝试执行命令会产生一定的执行效果，并在执行失败或执行成功时返回#proper-noun(display: "成功次数（Success）", "chenggongcishu")和#proper-noun(display: "结果（Result）", "jieguo")两个返回值。其中成功次数总是为0或1，结果一定为整数，遇到小数时则向下取整。下面讨论所有种类的命令执行效果：
+尝试执行命令会产生一定的执行效果，并在执行失败或执行成功时返回#proper-noun(display: "成功次数（Success）", "cheng2 gong1 ci4 shu4")和#proper-noun(display: "结果（Result）", "jie2 guo3")两个返回值。其中成功次数总是为0或1，结果一定为整数，遇到小数时则向下取整。下面讨论所有种类的命令执行效果：
 ====== 无法解析
 这种效果会在命令中存在无法解析的参数、输入的命令不完整或执行上下文不符合命令的限制条件，如执行者拥有的权限等级不够、超出游戏世界的限制时出现。此时命令没有返回值。在聊天栏或命令方块内输入的命令若无法解析，则会返回语法错误信息。在函数内的命令若无法解析，则该函数无法加载。
 ====== 执行错误
@@ -698,7 +698,7 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
   }
 }")
 === JSON数据类型
-#proper-noun("JSON（JavaScript Object Notation，JavaScript对象表示法)")是一种轻量级数据交换格式，独立于编程语言，是JavaScript的一个子集。其内容主要由键和值构成，即#proper-noun(display: "键值对（Name-value pair）", "jianzhidui")，这些键值对可认为是一个个#proper-noun(display: "字段（Field）", "ziduan")。这种格式主要有两个优点：第一，便于编写者阅读和修改；第二，由于其轻量级的特点，其对环境的依赖程度较小，因此能用于存储大量不同种类的信息。Minecraft使用的JSON标准为ECMA-404。
+#proper-noun("JSON（JavaScript Object Notation，JavaScript对象表示法)")是一种轻量级数据交换格式，独立于编程语言，是JavaScript的一个子集。其内容主要由键和值构成，即#proper-noun(display: "键值对（Name-value pair）", "jian4 zhi2 dui4")，这些键值对可认为是一个个#proper-noun(display: "字段（Field）", "zi4 duan4")。这种格式主要有两个优点：第一，便于编写者阅读和修改；第二，由于其轻量级的特点，其对环境的依赖程度较小，因此能用于存储大量不同种类的信息。Minecraft使用的JSON标准为ECMA-404。
 
 JSON格式键值对的基本语法为：
 #codebox("\"<键>\":<值>")
@@ -717,7 +717,7 @@ JSON格式键值对的基本语法为：
 在一个`.json`文件中，须使用花括号 `{}` 将所有的键值对封装包裹在一起，如：
 #codebox("{\"<键>\":<值>,\"<键>\":<值>}")
 对于值而言，每一个不同的键都需的值的类型不尽相同，比如键 `color` 可能需要的是颜色值，`bold` 可能需要的是布尔值，`text` 可能需要的是字符串，等等。JSON一共使用六种不同的数据类型：
-===== #icon(name: "json-string") #proper-noun(display: "字符串（String）", "zifuchuan")
+===== #icon(name: "json-string") #proper-noun(display: "字符串（String）", "zi4 fu2 chuan4")
 常见的数据类型，可以包含任意字符（如空格），字符串由一对*（英文）双引号*定义，*不接受单引号*，用法举例：
 #codebox("\"description\": \"The default data for Minecraft\"")
 也可以使用中文：
@@ -725,22 +725,22 @@ JSON格式键值对的基本语法为：
 JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都为一个十六进制数字。例如，符号★的Unicode为 `U2605`，则在字符串中输入★的方式可以为：
 #codebox("\"text\": \"\u2605\"")
 这样便可以在字符串中输入一些生僻字或是在键盘上无法直接打出来的字符。但是Minecraft的字库是有限的，并非所有的字符都可以在Minecraft中显示。
-===== #icon(name: "json-bool") #proper-noun(display: "布尔值（Bool）", "buerzhi")
+===== #icon(name: "json-bool") #proper-noun(display: "布尔值（Bool）", "bu4 er3 zhi2")
 由 `true`（真）或 `false`（假）定义，这两者是JSON中的字面量符号，不需要使用双引号引起，举例：
 #codebox("\"bold\": true")
 #codebox("\"italic\": false")
-===== #icon(name: "json-number") #proper-noun(display: "数值（Number）", "shuzhi")
+===== #icon(name: "json-number") #proper-noun(display: "数值（Number）", "shu4 zhi2")
 由数字定义，允许使用整数、浮点数或是科学计数法表示的数，举例：
 #codebox("\"min\": 1.0")
 在JSON中使用的数值不需要注明它们的数据类型。
-===== #icon(name: "json-array") *数组（Array，或称为列表）*#index(display: "数组（Array）", "shuzu")
+===== #icon(name: "json-array") *数组（Array，或称为列表）*#index(display: "数组（Array）", "shu4 zu3")
 由一对方括号定义，数组中元素与元素之间使用逗号隔开，*最后一个元素后不能有逗号*。这些元素可以是其他的数据类型，如字符串、布尔值、数值和对象，数组中甚至能嵌套数组。在定义其他的数据类型时，需注意这些数据类型的定义方法。以下为包含了数值的数组：
 #codebox("\"frames\": [1, 2, 3, 4, 5]")
 下面为包含了字符串的数组，字符串均由一对双引号定义：
 #codebox("\"text\": [\"A\", \"B\", \"C\"]")
 对于数组内的元素，其数据类型不必完全一致，例如：
 #codebox("\"extra\": [1, {\"text\": \"2\"}, \"3\"]")
-===== #icon(name: "json-object") #proper-noun(display: "对象（Object）", "duixiang")
+===== #icon(name: "json-object") #proper-noun(display: "对象（Object）", "dui4 xiang4")
 由一对花括号定义，对象内字段与字段之间使用逗号隔开，*最后一个字段后不能有逗号*。对象中可以包含其他数据类型，也可以在对象中嵌套对象。整个 `.json` 文件就可以看作是一个大的对象。在编写JSON的时候，通常需要用到对象嵌套对象，因此花括号一定要检查是否匹配。用法举例：
 #codebox("{
   \"rolls\": {
@@ -809,7 +809,7 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
 === JSON的转义序列
 使用JSON字符串时，如果字符串本身的内容中含有英文引号 `"`，如一个JSON字段 `text` 的值需要为 `"Hello World!"`，那该如何编写JSON呢？若使用如下的JSON：
 #codebox("\"text\":\"\"Hello World!\"\"") <code:json_escape_error>
-这样通常会产生报错，这是由于用于定义字符串的引号和值中的英文引号发生了配对从而导致了错误，因此需要使用#proper-noun(display: "转义字符（Escape character）", "zhuanyizifu")`\` 对文本引号进行转义。转义的作用为：将被转义的字符转换成字符，被转换的引号便不再与用于定义字符串的引号发生配对。除用于转义英文引号外，反斜杠还可以用于转义反斜杠以及创造一些特定的转义序列。JSON中可用的转义序列如下：
+这样通常会产生报错，这是由于用于定义字符串的引号和值中的英文引号发生了配对从而导致了错误，因此需要使用#proper-noun(display: "转义字符（Escape character）", "zhuan3 yi4 zi4 fu2")`\` 对文本引号进行转义。转义的作用为：将被转义的字符转换成字符，被转换的引号便不再与用于定义字符串的引号发生配对。除用于转义英文引号外，反斜杠还可以用于转义反斜杠以及创造一些特定的转义序列。JSON中可用的转义序列如下：
 #wrap-content(
   tips([`\b`、`\f`、`\n`、`\r`、`\t` 这些特殊的转义序列能在JSON中使用，但这不代表这些转义序列能在相应的游戏实例中真正起作用。例如，在物品修饰器中定义物品名称时，虽然JSON支持输入换行符 `\n`，但物品名称本身不支持换行。], width: 11em),
   [
@@ -913,7 +913,7 @@ Minecraft还使用其他一些文件格式，如 `.jfr` 文件、`.log` 文件�
 )
 #tips(
   [
-    #icon(name: "folder") `assets` 文件夹内的资源文件都是用#proper-noun(display: "哈希值（Hash value，散列值）", "haxizhi")加密的，以哈希表的方式映射资源位置。要查询 #icon(name: "folder") `assets` 内的任意一个资源文件，需按照以下步骤：
+    #icon(name: "folder") `assets` 文件夹内的资源文件都是用#proper-noun(display: "哈希值（Hash value，散列值）", "ha1 xi1 zhi2")加密的，以哈希表的方式映射资源位置。要查询 #icon(name: "folder") `assets` 内的任意一个资源文件，需按照以下步骤：
     + 打开 #icon(name: "folder") `indexes` 文件夹，找到需要提取资源的 #icon(name: "json") `<版本号>.json` 文件。其中的内容大致如下所示：
     
       #codefile(
@@ -962,7 +962,7 @@ Minecraft还使用其他一些文件格式，如 `.jfr` 文件、`.log` 文件�
   (2, [#icon(name: "text") *crash-\<日期>\_\<时间>-\<逻辑端类型>.txt*: 一份#proper-noun(display: "崩溃报告（Crash Report）", "bengkuibaogao")文件。])
 )
 #tips(
-  [游戏可能会以各种原因而发生#proper-noun(display: "崩溃（Crash）", "bengkui")，读者可以从崩溃报告中查询崩溃原因。例如，以下是一份崩溃报告的开头部分内容：
+  [游戏可能会以各种原因而发生#proper-noun(display: "崩溃（Crash）", "beng1 kui4")，读者可以从崩溃报告中查询崩溃原因。例如，以下是一份崩溃报告的开头部分内容：
   #codefile(
     lang: "txt",
     title: ".minecraft > crash-reports > crash-2024-02-08_21.25.56-server.txt",
@@ -1102,7 +1102,7 @@ entityShadows:true")]),
 == 数据包
 Minecraft的命令系统虽然完善，但其功能十分有限。例如，命令没有办法直接指导游戏世界的生成；直接用命令模拟一些游戏机制也不够灵活。数据包可以看作是命令系统功能的延伸：它不仅为命令提供了程序化执行的环境，更开放了部分API以允许数据驱动内容。
 
-#proper-noun(display: "数据包（Data pack）", "shujubao")*允许玩家在不修改游戏代码的前提下覆盖既有的或添加自定义的游戏内容。*因此，*原版技术性开发从不添加任何不在可写注册表内的游戏内容，只会用各种手段模拟这些游戏内容*。数据包本质上是一个文件夹或压缩文件。一个数据包仅对特定的游戏世界有效，它被储存在 `.minecraft\saves\<存档名称>\datapacks` 中。数据包可以是文件夹，也可以是 `.zip` 类型的压缩文件。同一个 #icon(name:"folder") `datapacks` 文件夹内能存放多个数据包。
+#proper-noun(display: "数据包（Data pack）", "shu4 ju4 bao1")*允许玩家在不修改游戏代码的前提下覆盖既有的或添加自定义的游戏内容。*因此，*原版技术性开发从不添加任何不在可写注册表内的游戏内容，只会用各种手段模拟这些游戏内容*。数据包本质上是一个文件夹或压缩文件。一个数据包仅对特定的游戏世界有效，它被储存在 `.minecraft\saves\<存档名称>\datapacks` 中。数据包可以是文件夹，也可以是 `.zip` 类型的压缩文件。同一个 #icon(name:"folder") `datapacks` 文件夹内能存放多个数据包。
 
 数据包有两种添加方式——
 ===== 手动添加
@@ -1172,7 +1172,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   ],
   align: right
 )
-对于非数据包标签、函数、进度、战利品表、物品修饰器、战利品表谓词或配方的注册项，进入存档会出现#proper-noun(display: "实验性设置（Experimental settings）", "shiyanxingshezhi")的警告，此时可点击创建备份并加载或我知道我在做什么！。但若这些注册项出现各种各样的错误（不一定是语法错误），则进入存档会出现#proper-noun(display: "安全模式（Safe mode）", "anquanmoshi")错误，可在官方启动器设置中打开“当《Minecraft：Java版》启动时输出日志”一项以随时获得错误日志，或在 `.minecraft\debug` 文件夹中获取 `.txt` 输出日志以检查存在的错误。
+对于非数据包标签、函数、进度、战利品表、物品修饰器、战利品表谓词或配方的注册项，进入存档会出现#proper-noun(display: "实验性设置（Experimental settings）", "shi2 yan4 xing4 she4 zhi4")的警告，此时可点击创建备份并加载或我知道我在做什么！。但若这些注册项出现各种各样的错误（不一定是语法错误），则进入存档会出现#proper-noun(display: "安全模式（Safe mode）", "an1 quan2 mo2 shi4")错误，可在官方启动器设置中打开“当《Minecraft：Java版》启动时输出日志”一项以随时获得错误日志，或在 `.minecraft\debug` 文件夹中获取 `.txt` 输出日志以检查存在的错误。
 
 数据包的编写是一个极为繁琐的过程，需要不断地调试、纠错，有时甚至要对其底层逻辑进行重构。在编写数据包之前，读者应提前做好规划，对其可行性进行初步的研究，还要考虑数据包运行过程中的流畅性、玩家游玩过程中的平衡性。编写过程合理使用文件层级，对文件适当分类，以免内容混乱，降低文件可读性。
 
@@ -1189,7 +1189,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 )
 如果该数据包以压缩文件的形式存在，则 #icon(name: "zip") `<数据包名称>.zip` 和 #icon(name: "folder") `<子数据包>`、#icon(name: "folder") `assets`、#icon(name: "json") `pack.mcmeta`、#icon(name: "png") `pack.png` 这些文件（夹）之间不要插入其他层级的文件夹。
 ==== 元数据
-#icon(name: "json") `pack.mcmeta` 是数据包的#proper-noun(display: "元数据（Metadata）", "yuanshuju")。所谓元数据，就是用于决定 #icon(name: "folder") `<数据包名称>` 或 #icon(name: "zip") `<数据包名称>.zip` 这个文件（夹）是否为一个数据包的基本数据。只有当元数据存在时，游戏才能识别数据包。
+#icon(name: "json") `pack.mcmeta` 是数据包的#proper-noun(display: "元数据（Metadata）", "yuan2 shu4 ju4")。所谓元数据，就是用于决定 #icon(name: "folder") `<数据包名称>` 或 #icon(name: "zip") `<数据包名称>.zip` 这个文件（夹）是否为一个数据包的基本数据。只有当元数据存在时，游戏才能识别数据包。
 
 #icon(name: "json") `pack.mcmeta` 使用JSON格式，其包含的内容如下所示：
 #tree(
@@ -1239,9 +1239,9 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 }"
 )
 ==== 数据包版本号
-元数据中有一个很重要的参数：#proper-noun(display: "数据包版本号（Data pack format）", "shujubaobanbenhao")，这是一个用于区分不同版本数据包的参数。每当Mojang对数据包做出修改时，版本号都会发生变动。在1.19.4以前，数据包版本号一般一个大版本变更一次；自1.19.4起，由于Mojang对技术性开发的更新变得频繁，版本号一般每个快照变更一次。数据包应当使用其所在游戏版本的版本号，由于Mojang对数据包的改动可能是颠覆性的，版本号不对应可能会出现错误。
+元数据中有一个很重要的参数：#proper-noun(display: "数据包版本号（Data pack format）", "shu4 ju4 bao1 ban3 ben3 hao2")，这是一个用于区分不同版本数据包的参数。每当Mojang对数据包做出修改时，版本号都会发生变动。在1.19.4以前，数据包版本号一般一个大版本变更一次；自1.19.4起，由于Mojang对技术性开发的更新变得频繁，版本号一般每个快照变更一次。数据包应当使用其所在游戏版本的版本号，由于Mojang对数据包的改动可能是颠覆性的，版本号不对应可能会出现错误。
 
-1.21.8以前的版本号均为整数，例如，1.21.8的数据包版本号为81，25w31a是1.21.9的快照，其引入了#proper-noun(display: "次要版本号（Minor versions）", "ciyaobanbenhao")的概念，原先的整数形式的版本号为#proper-noun(display: "主要版本号（Major versions）", "zhuyaobanbenhao")，25w31a是第一个使用此版本号格式的版本，是为82.0。同一个主版本号内的数据包可以向下兼容，例如83.1的数据包可以兼容83.0的数据包。
+1.21.8以前的版本号均为整数，例如，1.21.8的数据包版本号为81，25w31a是1.21.9的快照，其引入了#proper-noun(display: "次要版本号（Minor versions）", "ci4 yao4 ban3 ben3 hao4")的概念，原先的整数形式的版本号为#proper-noun(display: "主要版本号（Major versions）", "zhu3 yao4 ban3 ben3 hao4")，25w31a是第一个使用此版本号格式的版本，是为82.0。同一个主版本号内的数据包可以向下兼容，例如83.1的数据包可以兼容83.0的数据包。
 
 下表罗列了所有主版本使用的数据包版本号，不包括快照版本。包含快照版本的数据包版本号参考附录@sec:pack_format\中的@tab:pack_format。
 #split-table(
@@ -1418,14 +1418,14 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   (2, [#icon(name: "folder") *zombie_nautilus_variant*: 僵尸鹦鹉螺变种注册表])
 )
 === 实验性内容 \*
-自22w42a起，Minecraft部分更新内容会以内置数据包的形式加入游戏，使玩家可以提前体验这些内容。这些内容被称为#proper-noun(display: "实验性内容（Experiments）", "shiyanxingneirong")。在当前版本（26.1），可用的实验性内容有三项：村民交易平衡性调整、红石实验性内容和矿车改进。
+自22w42a起，Minecraft部分更新内容会以内置数据包的形式加入游戏，使玩家可以提前体验这些内容。这些内容被称为#proper-noun(display: "实验性内容（Experiments）", "shi2 yan4 xing4 nei4 rong2")。在当前版本（26.1），可用的实验性内容有三项：村民交易平衡性调整、红石实验性内容和矿车改进。
 
-所有实验性内容都是#proper-noun(display: "功能数据包（Feature datapack）", "gongnengshujubao")的形式，启用这些实验性内容的方式有两种：一是在选择数据包窗口选择功能数据包；二是创建新世界时点击实验性内容从而操控这些实验性内容的开关。
+所有实验性内容都是#proper-noun(display: "功能数据包（Feature datapack）", "gong1 neng2 shu4 ju4 bao1")的形式，启用这些实验性内容的方式有两种：一是在选择数据包窗口选择功能数据包；二是创建新世界时点击实验性内容从而操控这些实验性内容的开关。
 #figure(
   caption: "试验性内容窗口",
   image("图片/试验性内容窗口.png", width: 70%)
 )
-数据包无法直接修改游戏代码，但功能数据包似乎“注册”了新的游戏内容，功能数据包是否有其独特的行为？其实，实验性内容分为硬编码内容和数据驱动内容，其中的硬编码内容被称为特定组别的#proper-noun(display: "功能元素（Feature Element）", "gongnengyuansu")。#proper-noun(display: "功能开关（Feature Flag）", "gongnengkaiguan")则用于启用或禁用这些功能元素。当一个功能数据包被启用时，元数据中 `enabled` 字段启用，相应的功能开关被打开，其中的功能元素就能在游戏中正常运行。若一个功能数据包被关闭，则相应的功能元素被过滤。
+数据包无法直接修改游戏代码，但功能数据包似乎“注册”了新的游戏内容，功能数据包是否有其独特的行为？其实，实验性内容分为硬编码内容和数据驱动内容，其中的硬编码内容被称为特定组别的#proper-noun(display: "功能元素（Feature Element）", "gong1 neng2 yuan2 su4")。#proper-noun(display: "功能开关（Feature Flag）", "gong1 neng2 kai1 guan1")则用于启用或禁用这些功能元素。当一个功能数据包被启用时，元数据中 `enabled` 字段启用，相应的功能开关被打开，其中的功能元素就能在游戏中正常运行。若一个功能数据包被关闭，则相应的功能元素被过滤。
 
 实验性内容除了可在新创建存档时启用或禁用外，也可以通过修改 #icon(name: "nbt") `level.dat` 中的 #icon(name: "nbt-list") `enabled_features` 字段以在已创建的存档中启用或禁用。相应格式见@sec:saves 节的描述。
 
@@ -1441,7 +1441,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 )
 其中的 #icon(name: "folder") `<数据包名称>` 即为一个功能数据包，其结构与正常数据包无异，也需要有元数据。但这些数据包无法由自定义的数据包添加，仅由游戏内部提供，仅作了解。
 === 数据包标签定义格式 <subsec:tag_definition>
-小节@subsec:tag_in_datapack 已提出了#proper-noun(display: "数据包标签（Tags in data packs）", "shujubaobiaoqian")的概念，它是将游戏资源分类的一种办法。玩家不仅可以使用原版数据包既有的数据包标签，也可以新增或删改原有的标签。数据包标签模块在数据包内的文件结构如下：
+小节@subsec:tag_in_datapack 已提出了#proper-noun(display: "数据包标签（Tags in data packs）", "shu4 ju4 bao1 biao1 qian1")的概念，它是将游戏资源分类的一种办法。玩家不仅可以使用原版数据包既有的数据包标签，也可以新增或删改原有的标签。数据包标签模块在数据包内的文件结构如下：
 #tree(
   (0, [#icon(name: "folder") *data*]),
   (1, [#icon(name: "folder") *\<命名空间>*]),
@@ -1565,7 +1565,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 == 资源包<sec:resourcepack>
 为了搭配所制作的小游戏、冒险地图或原版模组，使得游戏的观感和体验感提高，作者通常会系统性地改变游戏的外观，例如方块的纹理、外形等。于是就需要使用资源包。 
 
-#proper-noun(display: "资源包（Resource pack）", "ziyuanbao")允许玩家在不修改源代码的情况下自定义纹理、模型、声音、语言等外观性资源，对客户端有效。资源包本质上是一个文件夹或压缩文件，被储存在 #icon(name: "folder") `.minecraft/resourcepacks` 中，同一个 #icon(name: "folder") `resourcepacks` 文件夹内能存放多个资源包。选项资源包窗口“可用”一栏仅罗列 #icon(name: "folder") `resourcepacks` 文件夹内的所有的有效资源包，可在这一栏选用资源包，只有位于“已选”一栏的资源包有效。点击打开包文件夹后可以手动添加资源包。
+#proper-noun(display: "资源包（Resource pack）", "zi1 yuan2 bao1")允许玩家在不修改源代码的情况下自定义纹理、模型、声音、语言等外观性资源，对客户端有效。资源包本质上是一个文件夹或压缩文件，被储存在 #icon(name: "folder") `.minecraft/resourcepacks` 中，同一个 #icon(name: "folder") `resourcepacks` 文件夹内能存放多个资源包。选项资源包窗口“可用”一栏仅罗列 #icon(name: "folder") `resourcepacks` 文件夹内的所有的有效资源包，可在这一栏选用资源包，只有位于“已选”一栏的资源包有效。点击打开包文件夹后可以手动添加资源包。
 #figure(
   caption: "选择资源包窗口",
   image("图片/选择资源包窗口.png", width: 70%)
@@ -1589,7 +1589,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 )
 如果该资源包以压缩文件的形式存在，则 #icon(name: "zip") `<资源包名称>.zip` 和 #icon(name: "folder") `<子数据包>`、#icon(name: "folder") `assets`、#icon(name: "json") `pack.mcmeta`、#icon(name: "png") `pack.png` 这些文件之间不要插入其他层级的文件夹。若该资源包为世界指定资源包，则名称一定为 #icon(name: "zip") `resources.zip`。
 
-资源包中 #icon(name: "folder") `assets` 用于存放各种资源文件，#icon(name: "json") `pack.mcmeta` 作为资源包的#proper-noun(display: "元数据（Metadata）", "yuanshuju")使用。和数据包一样，所谓元数据，就是用于决定 #icon(name: "folder") `<资源包名称>` 或 #icon(name: "zip") `<资源包名称>.zip` 这个文件（夹）是否为一个资源包，只有当元数据存在时，游戏才能识别资源包。
+资源包中 #icon(name: "folder") `assets` 用于存放各种资源文件，#icon(name: "json") `pack.mcmeta` 作为资源包的#proper-noun(display: "元数据（Metadata）", "yuan2 shu4 ju4")使用。和数据包一样，所谓元数据，就是用于决定 #icon(name: "folder") `<资源包名称>` 或 #icon(name: "zip") `<资源包名称>.zip` 这个文件（夹）是否为一个资源包，只有当元数据存在时，游戏才能识别资源包。
 
 #icon(name: "json") `pack.mcmeta` 包含的内容如下所示：
 #tree(
@@ -1640,7 +1640,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   }
 }"
 )
-和数据包一样，#proper-noun(display: "资源包版本号（Resource pack format）", "ziyuanbaobanbenhao")是一个用于区分不同版本数据包的参数。每当Mojang对资源包做出修改时，版本号都会发生变动。同样，1.21.8以前的版本号均为整数，例如，1.21.8的数据包版本号为64，25w31a引入了次要版本号，是为65.0。同一个主版本号内的资源包可以向下兼容，例如65.2的资源包可以兼容65.0的资源包。
+和数据包一样，#proper-noun(display: "资源包版本号（Resource pack format）", "zi1 yuan2 bao1 ban3 ben3 hao1")是一个用于区分不同版本数据包的参数。每当Mojang对资源包做出修改时，版本号都会发生变动。同样，1.21.8以前的版本号均为整数，例如，1.21.8的数据包版本号为64，25w31a引入了次要版本号，是为65.0。同一个主版本号内的资源包可以向下兼容，例如65.2的资源包可以兼容65.0的资源包。
 
 下表罗列了所有主版本使用的资源包版本号，不包括快照版本。包含快照版本的资源包版本号参考附录@sec:pack_format\中的@tab:pack_format。
 #split-table(
@@ -1832,11 +1832,11 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 == 游戏机制
 虽然技术性开发是能够调控游戏运行方式的手段，但开发成果还是不免受到游戏机制的制约。在时间上受到游戏循环驱动的影响，以游戏刻为单位计算内容；在空间上受到区块加载的影响，绝大多数操作都只能在允许运算的区块中进行。本节旨在介绍游戏加载、运行、更新的一些基本游戏机制。
 === 端
-Minecraft的架构是*客户端-服务端模型*，顾名思义，Minecraft使用#proper-noun(display:"客户端（Cilent）","kehuduan")和#proper-noun(display:"服务（器）端（Server）","fuwuduan")来运作自身。这两个#proper-noun(display:"端（Sides）","duan")之间的通信是由#proper-noun(display:"封包（Packet）","fengbao")实现的。在网络工程中，这个概念一般译为“数据包”，而Minecraft中另有一个叫Datapack（数据包）的概念，故Packet在Minecraft技术性开发领域会特地译为“封包”。
+Minecraft的架构是*客户端-服务端模型*，顾名思义，Minecraft使用#proper-noun(display:"客户端（Cilent）","ke4 hu4 duan1")和#proper-noun(display:"服务（器）端（Server）","fu2 wu4 duan1")来运作自身。这两个#proper-noun(display:"端（Sides）","duan1")之间的通信是由#proper-noun(display:"封包（Packet）","feng1 bao1")实现的。在网络工程中，这个概念一般译为“数据包”，而Minecraft中另有一个叫Datapack（数据包）的概念，故Packet在Minecraft技术性开发领域会特地译为“封包”。
 
-然而，仅通过客户端和服务端理解Minecraft的运作是远远不够的，因为Minecraft的架构还包括#proper-noun(display:"物理端（Physical sides）","wuliduan")和#proper-noun(display:"逻辑端（Logical sides）","luojiduan")，并且物理端和逻辑端分别具有各自的客户端和服务端。
+然而，仅通过客户端和服务端理解Minecraft的运作是远远不够的，因为Minecraft的架构还包括#proper-noun(display:"物理端（Physical sides）","wu4 li3 duan1")和#proper-noun(display:"逻辑端（Logical sides）","luo2 ji2 duan1")，并且物理端和逻辑端分别具有各自的客户端和服务端。
 ==== 物理客户端
-#proper-noun(display:"物理客户端（Physical client）","wulikehuduan")是指下载游戏版本得到的 `<version>.jar` 文件，它的默认文件路径为 `.minecraft\<版本号>\<version>.jar`。物理客户端包含了游戏的全部内容，也包含了内置的客户端和服务端，即#proper-noun(display:"逻辑客户端（Logical client）","luojikehuduan")和#proper-noun(display:"逻辑服务端（Logical server）","luojifuwuduan")，其中逻辑服务端又称*内置服务器（Integrated server，或译为集成服务端）*#index(display:"内置服务器（Integrated server）","neizhifuwuqi")。内置服务器会受到客户端的影响。
+#proper-noun(display:"物理客户端（Physical client）","wu4 li3 ke4 hu4 duan1")是指下载游戏版本得到的 `<version>.jar` 文件，它的默认文件路径为 `.minecraft\<版本号>\<version>.jar`。物理客户端包含了游戏的全部内容，也包含了内置的客户端和服务端，即#proper-noun(display:"逻辑客户端（Logical client）","luojikehuduan")和#proper-noun(display:"逻辑服务端（Logical server）","luo2 ji2 fu2 wu4 duan1")，其中逻辑服务端又称*内置服务器（Integrated server，或译为集成服务端）*#index(display:"内置服务器（Integrated server）","nei4 zhi4 fu2 wu4 qi4")。内置服务器会受到客户端的影响。
 
 逻辑客户端负责接收来自玩家的输入、处理资源包、渲染游戏画面，并将数据输送给逻辑服务端处理；逻辑服务端负责处理由客户端发送的数据，运行游戏逻辑。例如，当玩家在游戏中移动时，客户端会根据玩家输入的移动方向渲染玩家此时的游戏画面，同时又将玩家移动的信息通过封包发送给逻辑服务端，逻辑服务端计算玩家的坐标、玩家周围是否存在任何的碰撞箱阻止玩家移动，将计算结果通过封包返还给逻辑客户端，渲染玩家移动的游戏画面。客户端的渲染会与服务端产生不一致的情况，例如标记是一种仅存在于服务端的实体，在客户端上并不会渲染标记，参见@sec:technical_entity。
 #figure(
@@ -1861,9 +1861,9 @@ Minecraft的架构是*客户端-服务端模型*，顾名思义，Minecraft使�
   ]
 )
 ==== 物理服务端
-除了使用局域网联机进行多人游戏，Minecraft提供了另一种进行多人游戏的方法，即#proper-noun(display: "物理服务端（Physical server）", "wulifuwuduan")。物理服务端只包含一个逻辑服务端，并不包含逻辑客户端。这意味着物理服务端只能负责服务端的任务，而不能使用户参与游戏；但同时也意味着若服主不在游戏中，服务器也不会关闭；此外，物理服务端在运行过程中只能加载一个游戏世界，切换其他游戏世界需要重启服务器。
+除了使用局域网联机进行多人游戏，Minecraft提供了另一种进行多人游戏的方法，即#proper-noun(display: "物理服务端（Physical server）", "wu4 li3 fu2 wu4 duan1")。物理服务端只包含一个逻辑服务端，并不包含逻辑客户端。这意味着物理服务端只能负责服务端的任务，而不能使用户参与游戏；但同时也意味着若服主不在游戏中，服务器也不会关闭；此外，物理服务端在运行过程中只能加载一个游戏世界，切换其他游戏世界需要重启服务器。
 
-物理服务端内的逻辑服务端又可被称为*专用服务器（Dedicated server，或译为独立服务端）*#index(display: "专用服务器（Dedicated server，独立服务端）", "zhuanyongfuwuqi")，该逻辑服务端包含配置文件 #icon(name: "file") `server.properties`，用于存储服务器的所有设置。专用服务器不会受到连接的逻辑客户端的影响。同局域网联机一样，专用服务器也拥有一个地址，其格式与语法@code:ipv4 所述一致。
+物理服务端内的逻辑服务端又可被称为*专用服务器（Dedicated server，或译为独立服务端）*#index(display: "专用服务器（Dedicated server，独立服务端）", "zhuan1 yong4 fu2 wu4 qi4")，该逻辑服务端包含配置文件 #icon(name: "file") `server.properties`，用于存储服务器的所有设置。专用服务器不会受到连接的逻辑客户端的影响。同局域网联机一样，专用服务器也拥有一个地址，其格式与语法@code:ipv4 所述一致。
 #general-table(
   caption: "各种情况使用的客户端和服务端",
   colspan: 4,
@@ -1873,15 +1873,15 @@ Minecraft的架构是*客户端-服务端模型*，顾名思义，Minecraft使�
   [服务端], [内置服务器], [内置服务器], [专用服务器]
 )
 === 游戏刻
-由于游戏不可能时时刻刻都进行计算，正常情况下，游戏以一定的频率循环驱动，即每隔一定的时间进行一次计算，计算完毕后游戏会进行休眠，此时游戏不作任何计算直到下一游戏刻。一个循环周期被称为一个#proper-noun(display: "刻（Tick）", "ke")，或*游戏刻（Game tick，简称gt）*#index(display: "游戏刻（Game tick，gt）", "youxike")。
+由于游戏不可能时时刻刻都进行计算，正常情况下，游戏以一定的频率循环驱动，即每隔一定的时间进行一次计算，计算完毕后游戏会进行休眠，此时游戏不作任何计算直到下一游戏刻。一个循环周期被称为一个#proper-noun(display: "刻（Tick）", "ke4")，或*游戏刻（Game tick，简称gt）*#index(display: "游戏刻（Game tick，gt）", "you2 xi4 ke4")。
 ==== 刻率和帧率
-每秒游戏刻的数量数由*每秒刻数（Ticks per second，简称TPS）*#index(display: "每秒刻数（Ticks per second，TPS）", "meimiaokeshu")这个指标显示；此外还有一个指标与每秒游戏刻数相关，即*每刻毫秒数（Milliseconds per tick，简称MSPT）*#index(display: "每刻毫秒数（Milliseconds per tick，MSPT）", "meikehaomiaoshu")，它反映的是游戏刻计算的平均时间。TPS是一个可变量，它可以由命令 `/tick` 修改，不做修改的默认值为20。也就是说，正常情况下每秒有20gt，或者称最大TPS频率为20。MSPT可以由 `F3`（调试屏幕）查看，这个统计量名称为 `ms ticks`。正常情况下MSPT不会大于50，且只有当MSPT值不大于50时才能保证TPS维持在20。
+每秒游戏刻的数量数由*每秒刻数（Ticks per second，简称TPS）*#index(display: "每秒刻数（Ticks per second，TPS）", "mei3 miao3 ke4 shu4")这个指标显示；此外还有一个指标与每秒游戏刻数相关，即*每刻毫秒数（Milliseconds per tick，简称MSPT）*#index(display: "每刻毫秒数（Milliseconds per tick，MSPT）", "mei3 ke4 hao2 miao3 shu4")，它反映的是游戏刻计算的平均时间。TPS是一个可变量，它可以由命令 `/tick` 修改，不做修改的默认值为20。也就是说，正常情况下每秒有20gt，或者称最大TPS频率为20。MSPT可以由 `F3`（调试屏幕）查看，这个统计量名称为 `ms ticks`。正常情况下MSPT不会大于50，且只有当MSPT值不大于50时才能保证TPS维持在20。
 
 MSPT与TPS的数量关系可表示为
 $ "MSPT" times "TPS" lt.eq 1000 $
 受限于游戏中的计算量及计算机的性能，若计算量过大，MSPT增大，则TPS会相应地减小，造成*掉刻*。TPS无法维持在最大频率时，可由下式计算出实际的TPS：
 $ "TPS" eq 1000 / "MSPT" $
-如果按照默认的每秒20gt的频率渲染画面，难免会产生肉眼可见的不连续画面。因此客户端渲染游戏画面时，并不是完全按照刻率渲染，而是在刻之间*补帧*以形成平滑画面。用于描述渲染频率的指标为*帧率（Frame per second，简称FPS）*#index(display: "帧率（Frame per second，FPS）", "zhenlv")，它反应的是客户端的每秒渲染的帧数。帧率受到客户端渲染计算量、计算机性能的影响，可以通过*最大帧率*选项控制最高FPS。
+如果按照默认的每秒20gt的频率渲染画面，难免会产生肉眼可见的不连续画面。因此客户端渲染游戏画面时，并不是完全按照刻率渲染，而是在刻之间*补帧*以形成平滑画面。用于描述渲染频率的指标为*帧率（Frame per second，简称FPS）*#index(display: "帧率（Frame per second，FPS）", "zhen1 lv4")，它反应的是客户端的每秒渲染的帧数。帧率受到客户端渲染计算量、计算机性能的影响，可以通过*最大帧率*选项控制最高FPS。
 
 当客户端渲染计算量较大时，FPS会下降，造成*掉帧*。因此分析客户端画面卡顿时，可以考虑的若干可能性有：渲染计算量较大，或是游戏刻计算量较大造成渲染补帧无法形成平滑画面。若遇到画面较为流畅、但游戏内容卡顿——如实体不移动、放置破坏方块相应时间较长——则说明客户端渲染计算正常而游戏刻计算量大。
 
@@ -1928,7 +1928,7 @@ $ "TPS" eq 1000 / "MSPT" $
 ===== 停止正在进行的忽略游戏刻频率进行的更新，并恢复先前的游戏刻频率。语法为：
 #codebox("tick sprint stop")
 ==== 游戏刻计算流程 \*
-Minecraft的游戏计算内容繁多，在同一个线程中的计算不可能同步完成，各模块的计算在同一游戏刻内一定有先后顺序，这种先后顺序被称为*微时序（Microtiming，或称微观延迟）*#index(display: "微时序（Microtiming，微观延迟）", "weishixu")。在一个游戏刻内，服务端的计算流程顺序如下所示#footnote[带\*的项目表示在游戏刻冻结时忽略执行。]：
+Minecraft的游戏计算内容繁多，在同一个线程中的计算不可能同步完成，各模块的计算在同一游戏刻内一定有先后顺序，这种先后顺序被称为*微时序（Microtiming，或称微观延迟）*#index(display: "微时序（Microtiming，微观延迟）", "wei1 shi2 xu4")。在一个游戏刻内，服务端的计算流程顺序如下所示#footnote[带\*的项目表示在游戏刻冻结时忽略执行。]：
 + 检查游戏是否被暂停，若已暂停，则自动保存游戏。若此时内置服务器正在主持局域网联机，则统计世界打开时间。
 + 已暂停游戏若恢复运行，则对所有玩家强制时间同步。
 + 运行服务端逻辑。内容顺序如下：
@@ -1972,9 +1972,9 @@ Minecraft的游戏计算内容繁多，在同一个线程中的计算不可能�
   + 运行处理队列中的事件。
 + 在客户端更新渲染距离和模拟距离。
 === 区块加载
-一个Minecraft世界在水平方向上的长宽均超过了六千万格，如果一次性将所有内容全部加载出来，则会消耗非常多的内存。为使游戏运行过程中不占用过多的内存，游戏仅会加载部分区域供玩家游玩，这些加载和数据存储的单位被称为#proper-noun(display: "区块（Chunk）", "qukuai")，每一个区块均是$16 times 384 times 16$的立方体，一个区块又可以沿高度分割成24个$16 times 16 times 16$大小的#proper-noun(display: "区段（Chunk section）", "quduan")，或称#proper-noun(display: "子区块（Sub chunk）", "ziqukuai")。在必要的情况下，游戏会*卸载*一些区块，并在需要的时候*加载*区块。已卸载的区块不会处理游戏的任何事件，这其中也包括了实体的生成、活动，红石电路、命令的运行等等。若长距离执行命令，区块的加载是需要着重考虑的一方面。
+一个Minecraft世界在水平方向上的长宽均超过了六千万格，如果一次性将所有内容全部加载出来，则会消耗非常多的内存。为使游戏运行过程中不占用过多的内存，游戏仅会加载部分区域供玩家游玩，这些加载和数据存储的单位被称为#proper-noun(display: "区块（Chunk）", "qu1 kuai4")，每一个区块均是$16 times 384 times 16$的立方体，一个区块又可以沿高度分割成24个$16 times 16 times 16$大小的#proper-noun(display: "区段（Chunk section）", "qu1 duan4")，或称#proper-noun(display: "子区块（Sub chunk）", "zi3 qu1 kuai4")。在必要的情况下，游戏会*卸载*一些区块，并在需要的时候*加载*区块。已卸载的区块不会处理游戏的任何事件，这其中也包括了实体的生成、活动，红石电路、命令的运行等等。若长距离执行命令，区块的加载是需要着重考虑的一方面。
 ==== 加载等级和计算等级
-游戏使用#proper-noun(display: "加载等级（Load level）", "jiazaidengji")和#proper-noun(display: "计算等级", "jisuandengji")#footnote[无英文原文。]来确定一个区块的加载情况。
+游戏使用#proper-noun(display: "加载等级（Load level）", "jia1 zai3 deng3 ji2")和#proper-noun(display: "计算等级", "ji4 suan4 deng3 ji2")#footnote[无英文原文。]来确定一个区块的加载情况。
 ===== 加载等级
 区块的加载等级范围可表示为0 \~ 45（含）的整数，且等级越高，区块内加载的内容就越多。加载等级可划分为如下表所示的不同加载等级类型：
 #general-table(
@@ -2004,9 +2004,9 @@ Minecraft的游戏计算内容繁多，在同一个线程中的计算不可能�
   [不可访问], [$gt.eq.slant 34$], [33], [不计算实体、方块实体和计划刻，任何命令都不可执行。]
 )
 ==== 加载标签
-一个区块加载等级和计算等级的具体数值可以由#proper-noun(display: "加载标签（Load ticket）", "jiazaibiaoqian")决定。一个加载标签有*基础等级*、*标签类型*、*存活时间*和*持久化*四个属性，基础等级指一个区块被赋予某种加载标签时该区块的加载等级和计算等级（两者不一定相等），存活时间指该类加载标签能够持续的时长。以下是注册表内所有类型的加载标签：
+一个区块加载等级和计算等级的具体数值可以由#proper-noun(display: "加载标签（Load ticket）", "jia1 zai3 biao1 qian1")决定。一个加载标签有*基础等级*、*标签类型*、*存活时间*和*持久化*四个属性，基础等级指一个区块被赋予某种加载标签时该区块的加载等级和计算等级（两者不一定相等），存活时间指该类加载标签能够持续的时长。以下是注册表内所有类型的加载标签：
 ===== 玩家标签
-玩家标签在注册表内分为#proper-noun(display: "玩家加载标签（Player loading ticket）", "wanjiajiazaibiaoqian")和#proper-noun(display: "玩家计算标签（Player simulation ticket）", "wanjiajisuanbiaoqian")。玩家所在的区块会被赋予这玩家标签，其中加载等级由玩家加载标签赋予，计算等级由玩家计算标签赋予，此时该区块的加载等级主要取决于#proper-noun(display: "渲染距离（Render distance）", "xuanranjuli")，计算等级主要取决于#proper-noun(display: "模拟距离（Simulation distance）", "monijuli")，渲染距离和模拟距离均可以由选项设置。渲染距离主要决定游戏世界的渲染距离，即渲染区块的数量，对FPS的影响程度较高。通常来说渲染区域以玩家所在区块为中心，在平面上为正方形，其边长为
+玩家标签在注册表内分为#proper-noun(display: "玩家加载标签（Player loading ticket）", "wan2 jia1 jia1 zai3 biao1 qian1")和#proper-noun(display: "玩家计算标签（Player simulation ticket）", "wan2 jia1 ji4 suan4 biao1 qian1")。玩家所在的区块会被赋予这玩家标签，其中加载等级由玩家加载标签赋予，计算等级由玩家计算标签赋予，此时该区块的加载等级主要取决于#proper-noun(display: "渲染距离（Render distance）", "xuan4 ran3 ju4 li2")，计算等级主要取决于#proper-noun(display: "模拟距离（Simulation distance）", "mo2 ni3 ju4 li2")，渲染距离和模拟距离均可以由选项设置。渲染距离主要决定游戏世界的渲染距离，即渲染区块的数量，对FPS的影响程度较高。通常来说渲染区域以玩家所在区块为中心，在平面上为正方形，其边长为
 $ a = 2d_"r" + 1 $ <equ:render_distance>
 #param-desc(
   prefix: "式中：",
@@ -2055,7 +2055,7 @@ $ L_"s" = max{0, 31-d_"s"} $ <equ:player_simulation_level>
   caption: "等级的传播",
   image("图片/等级的传播.png")
 )
-根据这种传播规则，假设有一个区块$A$被赋予了加载标签，已知其加载等级或计算等级，在周围没有其他区块具有加载标签的情况下，区块等级的传播使用#proper-noun(display: "切比雪夫距离（Chebyshev distance）", "qiebixuefujuli")来计算。则区块$B$的等级为
+根据这种传播规则，假设有一个区块$A$被赋予了加载标签，已知其加载等级或计算等级，在周围没有其他区块具有加载标签的情况下，区块等级的传播使用#proper-noun(display: "切比雪夫距离（Chebyshev distance）", "qie1 bi3 xue3 fu1 ju4 li2")来计算。则区块$B$的等级为
 $ L_("z",B) = cases(
   L_("z",A) + d_∞(A,B)& "," &L_("z",A) + d_∞(A,B) lt.eq.slant 44,
   "不存在"& "," &"otherwise"
@@ -2109,11 +2109,11 @@ $ L_"s" = cases(
   ]
 )
 ==== 闲置超时
-若玩家离开某一维度的时间超过300 gt，除非该维度中有其他玩家或有使用 `/forceload` 强制加载的区块，否则该维度会无视区块加载等级而停止方块实体、实体等有关的运算，这种限制被称为#proper-noun(display: "闲置超时（Idle timeout）", "xianzhichaoshi")。玩家进入或离开维度时均会重制闲置超时。
+若玩家离开某一维度的时间超过300 gt，除非该维度中有其他玩家或有使用 `/forceload` 强制加载的区块，否则该维度会无视区块加载等级而停止方块实体、实体等有关的运算，这种限制被称为#proper-noun(display: "闲置超时（Idle timeout）", "xian2 zhi4 chao1 shi2")。玩家进入或离开维度时均会重制闲置超时。
 === 区块刻#h(1em)随机刻#h(1em)计划刻#h(1em)红石刻
 游戏刻的计算过程中还有一些特殊的计算模式。
 ==== 区块刻
-游戏计算区块数据时，以区块为单位进行一次计算，该计算被称为#proper-noun(display: "区块刻（Chunk tick）", "qukuaike")。区块刻按以下流程计算：
+游戏计算区块数据时，以区块为单位进行一次计算，该计算被称为#proper-noun(display: "区块刻（Chunk tick）", "qu1 kuai4 ke4")。区块刻按以下流程计算：
 + 按随机顺序遍历所有满足区块刻条件、加载标签类型为实体计算、水平方向上区块中心距玩家128格以内的区块。
   + 增加区块时间。
   + 如果当前为雷暴，执行雷暴相关逻辑。
@@ -2122,7 +2122,7 @@ $ L_"s" = cases(
   + 如果正在降雨，执行雨雪相关逻辑。
   + 执行随机刻。
 ==== 随机刻
-接受到区块刻的区块会随机挑选区块内的一些方块并赋予#proper-noun(display: "随机刻（Random tick）", "suijike")，接收到随机刻的方块会进行方块更新，如农作物的生长、藤蔓的蔓延、草方块的蔓延等。随机刻的赋予规则是：每一游戏刻在所有区段内随机挑选若干方块，游戏规则 `randomTickSpeed` 可用于指定随机挑选方块的数量（默认为3），每次挑选的方块可以为同一个。
+接受到区块刻的区块会随机挑选区块内的一些方块并赋予#proper-noun(display: "随机刻（Random tick）", "sui2 ji1 ke4")，接收到随机刻的方块会进行方块更新，如农作物的生长、藤蔓的蔓延、草方块的蔓延等。随机刻的赋予规则是：每一游戏刻在所有区段内随机挑选若干方块，游戏规则 `randomTickSpeed` 可用于指定随机挑选方块的数量（默认为3），每次挑选的方块可以为同一个。
 
 假设 `randomTickSpeed` 的值为$m$，则在一个游戏刻内区段内某方块被选中的概率为
 $ p_0 &= 1 - "C"_0^m (1 / 16^3)^0 (1 - 1 / 16^3)^m\
@@ -2133,9 +2133,9 @@ $ P(X = t) = (1 - p_0)^(t-1) p_0 $ <equ:random_tick_distribution>
 $ E(X) = sum_(t-1)^(+∞) X_t P_t = 1 / p_0 = 1 / display(1 - (1 - 1 / 16^3))^m $ <equ:random_tick_mean>
 上式结果的单位为游戏刻。若将 `randomTickSpeed` 的默认值3代入，且此时游戏刻率为20，可以得到默认的随机刻的平均间隔时间1365.67 gt，合68.28秒。若 `randomTickSpeed` 的值为零，有$limits(lim)_(x arrow.r 0) E(X) = +∞$，即永远不会接受到随机刻。在设计方块更新的速率时可参考上述公式。不过，上述公式是在概率论及数理统计的范围内讨论的，并不意味着随机刻平均间隔时间一定是该值，极端情况下可能会出现1 gt或超过1000000 gt的间隔，只能说接受到随机刻这一事件大致服从几何分布。总体上来说，`randomTickSpeed` 的值越大，方块更新的频率就越高。
 ==== 计划刻 \*
-一些方块除了会被动接受随机刻，有时还会主动请求在未来某一游戏刻更新方块，这种更新方式被称为#proper-noun(display: "计划刻（Schedule tick）", "jihuake")，如水的流动、红石中继器的信号变更等。计划刻分为*方块计划刻*和*流体计划刻*，分别控制普通方块和液体的计划更新。方块计划刻会根据优先级按顺序依次执行，优先级一般为非正数，且优先级越小，执行时间越早。流体计划刻则没有优先级。一个游戏刻内最多执行65536个计划刻。超出限制数量的计划刻将延后至下一游戏刻处理。
+一些方块除了会被动接受随机刻，有时还会主动请求在未来某一游戏刻更新方块，这种更新方式被称为#proper-noun(display: "计划刻（Schedule tick）", "ji4 hua4 ke4")，如水的流动、红石中继器的信号变更等。计划刻分为*方块计划刻*和*流体计划刻*，分别控制普通方块和液体的计划更新。方块计划刻会根据优先级按顺序依次执行，优先级一般为非正数，且优先级越小，执行时间越早。流体计划刻则没有优先级。一个游戏刻内最多执行65536个计划刻。超出限制数量的计划刻将延后至下一游戏刻处理。
 ==== 红石刻
-一般而言，大部分红石元件的工作时间以2 gt为基本单位，可令2 gt为1个*红石刻（Redstone tick，简称rt）*#index(display: "红石刻（Redstone tick，rt）", "hongshike")以方便计算电路的延迟。在TPS等于20的情况下，1 rt等效于0.1秒。不过，红石刻不是真实存在的游戏机制，是仅在红石电路或使用命令方块的命令系统中用于描述延迟的基本单位。
+一般而言，大部分红石元件的工作时间以2 gt为基本单位，可令2 gt为1个*红石刻（Redstone tick，简称rt）*#index(display: "红石刻（Redstone tick，rt）", "hong2 shi2 ke4")以方便计算电路的延迟。在TPS等于20的情况下，1 rt等效于0.1秒。不过，红石刻不是真实存在的游戏机制，是仅在红石电路或使用命令方块的命令系统中用于描述延迟的基本单位。
 #example(
   [#h(-2em)创造一个10秒的延迟至少需要多少红石中继器？],
   [
@@ -2144,13 +2144,13 @@ $ E(X) = sum_(t-1)^(+∞) X_t P_t = 1 / p_0 = 1 / display(1 - (1 - 1 / 16^3))^m 
   ]
 )
 === 方块
-#proper-noun(display: "方块（Block）", "fangkuai")是构成Minecraft的基本单位。一般而言方块是$1 times 1 times 1$大小的实物，部分方块可能有特殊的大小和形状。
+#proper-noun(display: "方块（Block）", "fang1 kuai4")是构成Minecraft的基本单位。一般而言方块是$1 times 1 times 1$大小的实物，部分方块可能有特殊的大小和形状。
 
 *空气*和*液体*是两类特殊的方块。其中空气包括普通空气（命名空间ID `minecraft:air`）、洞穴空气（命名空间ID `minecraft:cave_air`）和虚空空气（命名空间ID `minecraft:void_air`）三种。洞穴空气是生成世界时创建洞穴生成的空气，虚空空气是生成于建造区域以外的空气。这三类空气共同填满了任何未被其他方块占用的空间，因此使用命令移除其他方块是通过在这些方块的位置上放置空气从而实现的。此外，物品形式的空气也广泛存在于物品栏中未被其他物品填充的槽位，使用命令 `/item` 移除物品栏中的物品也是通过在该槽位放置空气从而实现的。
 
 液体是可以自由流动的方块，目前游戏中只有水和熔岩两种液体。液体会扩散，具有深度，该性质用于控制液体最大可扩散的距离。
 ==== 方块状态
-特别地、当指定部分方块时，这些方块很可能拥有变种，比如门的开关状态、小麦的成熟度等，这些变种便是#proper-noun(display: "方块属性（Block property）", "fangkuaishuxing")。不同方块属性的集合被称为#proper-noun(display: "方块状态（Block states）", "fangkuaizhuangtai")，相应地，液体的属性集合是#proper-noun(display: "流体状态（Fluid states）", "liutizhuangtai")。方块状态在命名空间ID的基础上进一步定义了一个方块的模型、行为，方块状态是方块本身拥有的性质，是硬编码的。附录@sec:block_state 列举了所有方块及其可用的方块状态。
+特别地、当指定部分方块时，这些方块很可能拥有变种，比如门的开关状态、小麦的成熟度等，这些变种便是#proper-noun(display: "方块属性（Block property）", "fang1 kuai4 shu3 xing4")。不同方块属性的集合被称为#proper-noun(display: "方块状态（Block states）", "fang1 kuai4 zhuang4 tai4")，相应地，液体的属性集合是#proper-noun(display: "流体状态（Fluid states）", "liu2 ti3 zhuang4 tai4")。方块状态在命名空间ID的基础上进一步定义了一个方块的模型、行为，方块状态是方块本身拥有的性质，是硬编码的。附录@sec:block_state 列举了所有方块及其可用的方块状态。
 
 以Minecraft中的门为例，如果给门的开关状态分别配置一个ID，那门的一个ID就会被拆分成两个。不仅如此，门还有不同的朝向、上半扇和下半扇、门轴的位置、是否被激活这些变种，不同的变种组合在一起的所有结果一共有64种。
 
@@ -2165,15 +2165,15 @@ $ E(X) = sum_(t-1)^(+∞) X_t P_t = 1 / p_0 = 1 / display(1 - (1 - 1 / 16^3))^m 
 #codebox("minecraft:iron_door[open=true,face=east]")
 不定义任何方块状态时，系统会选择这个方块的默认方块状态，铁门的默认方块状态为朝向北、关闭。
 
-#proper-noun(display: "调试棒（Debug stick）", "tiaoshibang")可用于快速更改一个方块的方块状态，对方块点击（默认为 `鼠标左键`）可以切换更改的方块状态种类，对方块使用（默认为 `鼠标右键`）可以切换此方块状态的值。
+#proper-noun(display: "调试棒（Debug stick）", "tiao2 shi4 bang4")可用于快速更改一个方块的方块状态，对方块点击（默认为 `鼠标左键`）可以切换更改的方块状态种类，对方块使用（默认为 `鼠标右键`）可以切换此方块状态的值。
 ==== 方块实体
-#proper-noun(display: "方块实体（Block entity）", "fangkuaishiti")是一个很有趣的概念，它将一般被认为相对静态的方块和相对动态的实体结合起来。这样做的意义在于——在方块状态规定的有穷集合的基础上，使方块能够容纳更多数据，并使得方块数据便于编辑、修改。方块实体可以每游戏刻都进行计算，从而提供更好的渲染动画，但同时也可能使得计算量超过游戏刻计算的负载。
+#proper-noun(display: "方块实体（Block entity）", "fang1 kuai4 shi2 ti3")是一个很有趣的概念，它将一般被认为相对静态的方块和相对动态的实体结合起来。这样做的意义在于——在方块状态规定的有穷集合的基础上，使方块能够容纳更多数据，并使得方块数据便于编辑、修改。方块实体可以每游戏刻都进行计算，从而提供更好的渲染动画，但同时也可能使得计算量超过游戏刻计算的负载。
 
 例如，告示牌是典型的既有方块实体又有多个方块状态的方块，其方块状态 `Rotation` 决定告示牌为何种朝向（告示牌的朝向只有16种），从而调用相应的模型使告示牌显示出需要的朝向。而告示牌又是一种可以显示文本的方块，显然几个模型无法承载大量各种式样的文本，因此使用方块实体让告示牌能够容纳更多的数据。
 
 和方块状态一样，只有部分方块拥有方块实体。方块实体的数据使用NBT格式，详见节@sec:block_entity。
 ==== 方块更新 \*
-受限于计算机性能，游戏无法每游戏刻都对方块进行计算。只有当方块被放置、破坏、修改，或方块状态产生变化时，该方块会通知其毗邻方块（即上、下、东、南、西、北六个面的邻接方块）进行相应，这种游戏机制被称为#proper-noun(display: "方块更新（Block update）", "fangkuaigengxin")。使用非 `strict` 模式的命令放置、移除方块时也会产生方块更新。Minecraft有三种类型的方块更新，即PP更新、NC更新和比较器更新。
+受限于计算机性能，游戏无法每游戏刻都对方块进行计算。只有当方块被放置、破坏、修改，或方块状态产生变化时，该方块会通知其毗邻方块（即上、下、东、南、西、北六个面的邻接方块）进行相应，这种游戏机制被称为#proper-noun(display: "方块更新（Block update）", "fang1 kuai4 geng1 xin1")。使用非 `strict` 模式的命令放置、移除方块时也会产生方块更新。Minecraft有三种类型的方块更新，即PP更新、NC更新和比较器更新。
 
 方块更新一般依照以下的顺序依次计算：调用被替代方块状态的破坏行为$ arrow.r$调用替代方块状态的放置行为$ arrow.r$进行NC更新$ arrow.r$进行比较器更新$ arrow.r$进行PP更新。
 
@@ -2185,9 +2185,9 @@ NC更新是一种在红石元件中更常见的更新类型，除了方块放置
 
 比较器更新只适用于在放置后可发出模拟信号的方块。
 === 实体
-#proper-noun(display: "实体（Entity）", "shiti")是一个动态的对象，包括*玩家*、*生物*、交通运输工具（所有种类的船和所有种类的矿车）、物品、物品展示框、画、盔甲架、经验球、所有的弹射物、激活的TNT、下落的方块、漂浮的鱼饵、闪电、栓绳结、末影水晶、尖牙和标记等。*实体每游戏刻都会被计算，是技术性开发的主要研究对象。又由于其计算量较大，当已加载区域的实体数量过多，则容易引起掉刻，因此在开发过程中涉及实体计算的部分需要仔细斟酌。*
+#proper-noun(display: "实体（Entity）", "shi2 ti3")是一个动态的对象，包括*玩家*、*生物*、交通运输工具（所有种类的船和所有种类的矿车）、物品、物品展示框、画、盔甲架、经验球、所有的弹射物、激活的TNT、下落的方块、漂浮的鱼饵、闪电、栓绳结、末影水晶、尖牙和标记等。*实体每游戏刻都会被计算，是技术性开发的主要研究对象。又由于其计算量较大，当已加载区域的实体数量过多，则容易引起掉刻，因此在开发过程中涉及实体计算的部分需要仔细斟酌。*
 
-#proper-noun(display: "判定箱（Hitbox）", "pandingxiang")是规定的方块和实体的边界，用于计算碰撞和选取。所有实体的判定箱都是长方形，无论该实体的外形如何。末影龙比较特殊，它的判定箱是由多个判定箱组合而成的。同方块判定箱一样，实体判定箱也是硬编码的，无法通过命令或数据包修改，但可以通过修改实体属性对其进行放缩。实体判定箱有以下几种类型：#proper-noun(display: "边界箱（Boundary box）", "bianjiexiang")是计算实体碰撞、交互事件的区界，可使用快捷键 `F3` + `B` 查看；#proper-noun(display: "视平线（Eye level）", "shipingxian")显示为红色，用于判定窒息和溺水伤害。
+#proper-noun(display: "判定箱（Hitbox）", "pan4 ding4 xiang1")是规定的方块和实体的边界，用于计算碰撞和选取。所有实体的判定箱都是长方形，无论该实体的外形如何。末影龙比较特殊，它的判定箱是由多个判定箱组合而成的。同方块判定箱一样，实体判定箱也是硬编码的，无法通过命令或数据包修改，但可以通过修改实体属性对其进行放缩。实体判定箱有以下几种类型：#proper-noun(display: "边界箱（Boundary box）", "bian1 jie4 xiang1")是计算实体碰撞、交互事件的区界，可使用快捷键 `F3` + `B` 查看；#proper-noun(display: "视平线（Eye level）", "shi4 ping2 xian4")显示为红色，用于判定窒息和溺水伤害。
 
 Java版原版所有可用的实体可分为若干类别，这些实体的命名空间均为 `minecraft`。下面列举了所有可用的实体：
 ===== 玩家
@@ -2349,7 +2349,11 @@ Java版原版所有可用的实体可分为若干类别，这些实体的命名�
 ===== 栓神结 `leash_knot`
 ===== 闪电束 `lightning_bolt`
 === 游戏规则
-#proper-noun(display: "游戏规则（Game rule）", "youxiguize")是控制游戏玩法的一种手段
+#proper-noun(display: "游戏规则（Game rule）", "you2 xi4 gui1 ze2")是控制游戏玩法的一种手段。Minecraft拥有很多种游戏规则，自25w44a起，游戏规则变为了注册项，被移动到了注册表中，现使用命名空间ID映射这些游戏规则。不同的游戏规则可以设置它们各自的值，
+#figure(
+  caption: "游戏规则页面",
+  image("图片/游戏规则页面.png", width: 70%)
+)
 
 所有游戏规则及其可用值如表\hspace{2pt}\ref{tab:gamerule}\hspace{2pt}所示，不是所有的游戏规则都适用布尔值。
 == 服务器管理
@@ -2361,7 +2365,7 @@ Java版原版所有可用的实体可分为若干类别，这些实体的命名�
 #codebox("gamemode=survival")
 #codebox("enable-command-block=false")
 = 坐标
-Minecraft的游戏世界是三维的。在编写数据包的时候，有时需要确定实例所需的位置参数。这样的参数被称为#proper-noun(display:"坐标（Coordinate）","zuobiao")。本章将详细介绍各种坐标参数以及这些参数在命令上的应用。
+Minecraft的游戏世界是三维的。在编写数据包的时候，有时需要确定实例所需的位置参数。这样的参数被称为#proper-noun(display:"坐标（Coordinate）","zuo biao")。本章将详细介绍各种坐标参数以及这些参数在命令上的应用。
 #pagebreak()
 == 坐标系与坐标
 Minecraft使用的空间直角坐标系是右手坐标系。在这种空间直角坐标系中，$x$轴和$z$轴所反映的是水平方向上的位置，$y$轴所反映的是垂直方向上的位置。其中，*$x$轴的正方向指向正东，而$z$轴的正方向指向正南*。
