@@ -1246,7 +1246,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 下表罗列了所有主版本使用的数据包版本号，不包括快照版本。包含快照版本的数据包版本号参考附录@sec:pack_format\中的@tab:pack_format。
 #split-table(
   caption: "数据包版本号",
-  original-cols: 2,
+  original-cols: (auto, auto),
   seperator: (2,),
   header: ([游戏版本], [数据包版本号]),
   data: (
@@ -1645,7 +1645,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 下表罗列了所有主版本使用的资源包版本号，不包括快照版本。包含快照版本的资源包版本号参考附录@sec:pack_format\中的@tab:pack_format。
 #split-table(
   caption: "资源包版本号",
-  original-cols: 2,
+  original-cols: (auto, auto),
   seperator: (2,),
   header: ([游戏版本], [资源包版本号]),
   data: (
@@ -1841,6 +1841,7 @@ Minecraft的架构是*客户端-服务端模型*，顾名思义，Minecraft使�
 逻辑客户端负责接收来自玩家的输入、处理资源包、渲染游戏画面，并将数据输送给逻辑服务端处理；逻辑服务端负责处理由客户端发送的数据，运行游戏逻辑。例如，当玩家在游戏中移动时，客户端会根据玩家输入的移动方向渲染玩家此时的游戏画面，同时又将玩家移动的信息通过封包发送给逻辑服务端，逻辑服务端计算玩家的坐标、玩家周围是否存在任何的碰撞箱阻止玩家移动，将计算结果通过封包返还给逻辑客户端，渲染玩家移动的游戏画面。客户端的渲染会与服务端产生不一致的情况，例如标记是一种仅存在于服务端的实体，在客户端上并不会渲染标记，参见@sec:technical_entity。
 #figure(
   caption: [逻辑客户端和逻辑服务端的运行流程],
+  placement: auto,
   image("图片/逻辑客户端和逻辑服务端的运行流程.png", width: 60%)
 )
 *即使是进行单人游戏，Minecraft依旧会在玩家进入本地世界时创建一个内置服务器，在本地世界关闭时内置服务器即被关闭。*这个内置服务器可以开放至局域网，从而将单人游戏开放为局域网联机的多人游戏。此时内置服务器拥有一个地址，其格式为
@@ -2068,11 +2069,11 @@ $ L_("s",B) = min{33,L_("s",A) + d_∞(A,B)} $ <equ:simulation_level>
 )
 若一个区块接受到多个传播等级，则选取等级最低者作为自己的加载（计算）等级。假设一定区域内存在被赋予加载标签的区块1、2、3、……则该区域内任意区块的加载（计算）等级可表示为
 $ L_"z" = cases(
-  min_(i gt.eq.slant 1){L_("z",i) + d_∞}& "," &min_(i gt.eq.slant 1){L_("z",i) + d_∞} lt.eq.slant 44,
+  limits(min)_(i gt.eq.slant 1){L_("z",i) + d_∞}& "," &limits(min)_(i gt.eq.slant 1){L_("z",i) + d_∞} lt.eq.slant 44,
   "不存在"& "," &"otherwise"
 ) $ <equ:chunk_load_level>
 $ L_"s" = cases(
-  min_(i gt.eq.slant 1){L_("s",i) + d_∞}& "," &min_(i gt.eq.slant 1){L_("s",i) + d_∞} lt.eq.slant 44,
+  limits(min)_(i gt.eq.slant 1){L_("s",i) + d_∞}& "," &limits(min)_(i gt.eq.slant 1){L_("s",i) + d_∞} lt.eq.slant 44,
   "不存在"& "," &"otherwise"
 ) $ <equ:chunk_simulation_level>
 #param-desc(
@@ -2107,10 +2108,258 @@ $ L_"s" = cases(
 
   ]
 )
-== 服务器
+==== 闲置超时
+若玩家离开某一维度的时间超过300 gt，除非该维度中有其他玩家或有使用 `/forceload` 强制加载的区块，否则该维度会无视区块加载等级而停止方块实体、实体等有关的运算，这种限制被称为#proper-noun(display: "闲置超时（Idle timeout）", "xianzhichaoshi")。玩家进入或离开维度时均会重制闲置超时。
+=== 区块刻#h(1em)随机刻#h(1em)计划刻#h(1em)红石刻
+游戏刻的计算过程中还有一些特殊的计算模式。
+==== 区块刻
+游戏计算区块数据时，以区块为单位进行一次计算，该计算被称为#proper-noun(display: "区块刻（Chunk tick）", "qukuaike")。区块刻按以下流程计算：
++ 按随机顺序遍历所有满足区块刻条件、加载标签类型为实体计算、水平方向上区块中心距玩家128格以内的区块。
+  + 增加区块时间。
+  + 如果当前为雷暴，执行雷暴相关逻辑。
+  + 在世界边界内执行周期生成。
++ 遍历所有满足区块刻条件的区块。
+  + 如果正在降雨，执行雨雪相关逻辑。
+  + 执行随机刻。
+==== 随机刻
+接受到区块刻的区块会随机挑选区块内的一些方块并赋予#proper-noun(display: "随机刻（Random tick）", "suijike")，接收到随机刻的方块会进行方块更新，如农作物的生长、藤蔓的蔓延、草方块的蔓延等。随机刻的赋予规则是：每一游戏刻在所有区段内随机挑选若干方块，游戏规则 `randomTickSpeed` 可用于指定随机挑选方块的数量（默认为3），每次挑选的方块可以为同一个。
 
-== 带有简单参数的命令指引
+假设 `randomTickSpeed` 的值为$m$，则在一个游戏刻内区段内某方块被选中的概率为
+$ p_0 &= 1 - "C"_0^m (1 / 16^3)^0 (1 - 1 / 16^3)^m\
+&= 1 - (1 - 1 / 16^3)^m $ <equ:random_tick_probability>
+显然该方块在$t$gt内获取随机刻是独立的重复伯努利试验，服从参数为$p_0$的几何分布，则第$t$gt得到随机刻的概率为
+$ P(X = t) = (1 - p_0)^(t-1) p_0 $ <equ:random_tick_distribution>
+则方块接受到随机刻的平均间隔为
+$ E(X) = sum_(t-1)^(+∞) X_t P_t = 1 / p_0 = 1 / display(1 - (1 - 1 / 16^3))^m $ <equ:random_tick_mean>
+上式结果的单位为游戏刻。若将 `randomTickSpeed` 的默认值3代入，且此时游戏刻率为20，可以得到默认的随机刻的平均间隔时间1365.67 gt，合68.28秒。若 `randomTickSpeed` 的值为零，有$limits(lim)_(x arrow.r 0) E(X) = +∞$，即永远不会接受到随机刻。在设计方块更新的速率时可参考上述公式。不过，上述公式是在概率论及数理统计的范围内讨论的，并不意味着随机刻平均间隔时间一定是该值，极端情况下可能会出现1 gt或超过1000000 gt的间隔，只能说接受到随机刻这一事件大致服从几何分布。总体上来说，`randomTickSpeed` 的值越大，方块更新的频率就越高。
+==== 计划刻 \*
+一些方块除了会被动接受随机刻，有时还会主动请求在未来某一游戏刻更新方块，这种更新方式被称为#proper-noun(display: "计划刻（Schedule tick）", "jihuake")，如水的流动、红石中继器的信号变更等。计划刻分为*方块计划刻*和*流体计划刻*，分别控制普通方块和液体的计划更新。方块计划刻会根据优先级按顺序依次执行，优先级一般为非正数，且优先级越小，执行时间越早。流体计划刻则没有优先级。一个游戏刻内最多执行65536个计划刻。超出限制数量的计划刻将延后至下一游戏刻处理。
+==== 红石刻
+一般而言，大部分红石元件的工作时间以2 gt为基本单位，可令2 gt为1个*红石刻（Redstone tick，简称rt）*#index(display: "红石刻（Redstone tick，rt）", "hongshike")以方便计算电路的延迟。在TPS等于20的情况下，1 rt等效于0.1秒。不过，红石刻不是真实存在的游戏机制，是仅在红石电路或使用命令方块的命令系统中用于描述延迟的基本单位。
+#example(
+  [#h(-2em)创造一个10秒的延迟至少需要多少红石中继器？],
+  [
+    10秒钟的延迟即100 rt，一个红石中继器最多可提供4 rt的延迟，至少需要$100 div 4 =25$个红石中继器。
 
+  ]
+)
+=== 方块
+#proper-noun(display: "方块（Block）", "fangkuai")是构成Minecraft的基本单位。一般而言方块是$1 times 1 times 1$大小的实物，部分方块可能有特殊的大小和形状。
+
+*空气*和*液体*是两类特殊的方块。其中空气包括普通空气（命名空间ID `minecraft:air`）、洞穴空气（命名空间ID `minecraft:cave_air`）和虚空空气（命名空间ID `minecraft:void_air`）三种。洞穴空气是生成世界时创建洞穴生成的空气，虚空空气是生成于建造区域以外的空气。这三类空气共同填满了任何未被其他方块占用的空间，因此使用命令移除其他方块是通过在这些方块的位置上放置空气从而实现的。此外，物品形式的空气也广泛存在于物品栏中未被其他物品填充的槽位，使用命令 `/item` 移除物品栏中的物品也是通过在该槽位放置空气从而实现的。
+
+液体是可以自由流动的方块，目前游戏中只有水和熔岩两种液体。液体会扩散，具有深度，该性质用于控制液体最大可扩散的距离。
+==== 方块状态
+特别地、当指定部分方块时，这些方块很可能拥有变种，比如门的开关状态、小麦的成熟度等，这些变种便是#proper-noun(display: "方块属性（Block property）", "fangkuaishuxing")。不同方块属性的集合被称为#proper-noun(display: "方块状态（Block states）", "fangkuaizhuangtai")，相应地，液体的属性集合是#proper-noun(display: "流体状态（Fluid states）", "liutizhuangtai")。方块状态在命名空间ID的基础上进一步定义了一个方块的模型、行为，方块状态是方块本身拥有的性质，是硬编码的。附录@sec:block_state 列举了所有方块及其可用的方块状态。
+
+以Minecraft中的门为例，如果给门的开关状态分别配置一个ID，那门的一个ID就会被拆分成两个。不仅如此，门还有不同的朝向、上半扇和下半扇、门轴的位置、是否被激活这些变种，不同的变种组合在一起的所有结果一共有64种。
+
+可见，如果将这些方块的每一个变种都用单独的命名空间ID来表示则可能会占用更多的内存，也会让原本清晰的命名空间ID变得难以书写、阅读，而使用数字ID附带Damage值的做法在扁平化后已被淘汰了。为此，在指定方块状态的时候，不直接使用命名空间ID，而是在命名空间ID后添加类似键值对的表示方式，格式为：
+#codebox("<命名空间>:<ID>[<属性>=<值>,<属性>=<值>,…]")
+注意：
++ 括号 `{}` 要紧贴命名空间ID，不能出现空格。
++ 不同的键值对之间用英文逗号 `,` 隔开，最后一个键值对后面不要加逗号。
++ 属性必须是这个方块所拥有的，门没有年龄这个属性，因此无法对门设置年龄这种方块状态。属性可以使用 `Tab` 键补全。
++ 属性的值必须按照Minecraft要求的参数格式填写，比如布尔值、方向或是整型。每个属性都有其需要的参数类型，这些参数类型不尽相同，有些需要布尔值、有些需要方向值。比如，门的 `open` 属性需要布尔值 `true` 或 `false`，像 `east` 这样的方向值是无效的。
+例如，一个开启的、朝向为东的铁门可写成如下的形式：
+#codebox("minecraft:iron_door[open=true,face=east]")
+不定义任何方块状态时，系统会选择这个方块的默认方块状态，铁门的默认方块状态为朝向北、关闭。
+
+#proper-noun(display: "调试棒（Debug stick）", "tiaoshibang")可用于快速更改一个方块的方块状态，对方块点击（默认为 `鼠标左键`）可以切换更改的方块状态种类，对方块使用（默认为 `鼠标右键`）可以切换此方块状态的值。
+==== 方块实体
+#proper-noun(display: "方块实体（Block entity）", "fangkuaishiti")是一个很有趣的概念，它将一般被认为相对静态的方块和相对动态的实体结合起来。这样做的意义在于——在方块状态规定的有穷集合的基础上，使方块能够容纳更多数据，并使得方块数据便于编辑、修改。方块实体可以每游戏刻都进行计算，从而提供更好的渲染动画，但同时也可能使得计算量超过游戏刻计算的负载。
+
+例如，告示牌是典型的既有方块实体又有多个方块状态的方块，其方块状态 `Rotation` 决定告示牌为何种朝向（告示牌的朝向只有16种），从而调用相应的模型使告示牌显示出需要的朝向。而告示牌又是一种可以显示文本的方块，显然几个模型无法承载大量各种式样的文本，因此使用方块实体让告示牌能够容纳更多的数据。
+
+和方块状态一样，只有部分方块拥有方块实体。方块实体的数据使用NBT格式，详见节@sec:block_entity。
+==== 方块更新 \*
+受限于计算机性能，游戏无法每游戏刻都对方块进行计算。只有当方块被放置、破坏、修改，或方块状态产生变化时，该方块会通知其毗邻方块（即上、下、东、南、西、北六个面的邻接方块）进行相应，这种游戏机制被称为#proper-noun(display: "方块更新（Block update）", "fangkuaigengxin")。使用非 `strict` 模式的命令放置、移除方块时也会产生方块更新。Minecraft有三种类型的方块更新，即PP更新、NC更新和比较器更新。
+
+方块更新一般依照以下的顺序依次计算：调用被替代方块状态的破坏行为$ arrow.r$调用替代方块状态的放置行为$ arrow.r$进行NC更新$ arrow.r$进行比较器更新$ arrow.r$进行PP更新。
+
+方块更新会向外传播，在执行更新的过程中可能在毗邻方块产生新的更新，一直到所有可用的更新都执行完毕，但是在更新无法完全清除的情况下可能会造成游戏崩溃。例如在只有一层沙子的超平坦世界中破坏任意沙子，则方块更新传播会持续进行，并且计算更新的方块数量越来越多，最终会不可避免地造成游戏崩溃。服务器配置文件 `server.properties` 的 `max-chained-neighbor-updates` 一项可用于设置最大的连锁更新数量，超过此值的新增更新将会被忽略。
+
+当一个方块发生变化时，即产生PP更新。对于一个方块上的六个毗邻方块，依次沿$x$、$z$、$y$轴的方向，各方向上先检查负轴方向上的方块，再检查正轴方向上的方块，即按照西、东、北、南、下、上的顺序传播PP更新。PP更新是广泛存在的一种更新类型，包括但不限于附着性方块的掉落、连接性方块的连接判断、重力方块的掉落检测等。
+
+NC更新是一种在红石元件中更常见的更新类型，除了方块放置、修改或移除外，方块实体也可能会产生NC更新。与PP更新不同，除红石线外，NC更新的传播次序是西、东、下、上、北、南；对于红石线则为更新传入方向的后、前、左、右、下、上方。
+
+比较器更新只适用于在放置后可发出模拟信号的方块。
+=== 实体
+#proper-noun(display: "实体（Entity）", "shiti")是一个动态的对象，包括*玩家*、*生物*、交通运输工具（所有种类的船和所有种类的矿车）、物品、物品展示框、画、盔甲架、经验球、所有的弹射物、激活的TNT、下落的方块、漂浮的鱼饵、闪电、栓绳结、末影水晶、尖牙和标记等。*实体每游戏刻都会被计算，是技术性开发的主要研究对象。又由于其计算量较大，当已加载区域的实体数量过多，则容易引起掉刻，因此在开发过程中涉及实体计算的部分需要仔细斟酌。*
+
+#proper-noun(display: "判定箱（Hitbox）", "pandingxiang")是规定的方块和实体的边界，用于计算碰撞和选取。所有实体的判定箱都是长方形，无论该实体的外形如何。末影龙比较特殊，它的判定箱是由多个判定箱组合而成的。同方块判定箱一样，实体判定箱也是硬编码的，无法通过命令或数据包修改，但可以通过修改实体属性对其进行放缩。实体判定箱有以下几种类型：#proper-noun(display: "边界箱（Boundary box）", "bianjiexiang")是计算实体碰撞、交互事件的区界，可使用快捷键 `F3` + `B` 查看；#proper-noun(display: "视平线（Eye level）", "shipingxian")显示为红色，用于判定窒息和溺水伤害。
+
+Java版原版所有可用的实体可分为若干类别，这些实体的命名空间均为 `minecraft`。下面列举了所有可用的实体：
+===== 玩家
+===== 生物
+#triple-split-table(
+  caption: "所有可用生物及其ID",
+  original-cols: (auto, auto),
+  seperator: (2,),
+  header: ([ID], [名称]),
+  data: (
+    [`allay`], [悦灵],
+    [`armadillo`], [犰狳],
+    [`armor_stand`], [盔甲架],
+    [`axolotl`], [美西螈],
+    [`bat`], [蝙蝠],
+    [`bee`], [蜜蜂],
+    [`blaze`], [烈焰人],
+    [`breeze`], [旋风人],
+    [`camel`], [骆驼],
+    [`cat`], [猫],
+    [`cave_spider`], [洞穴蜘蛛],
+    [`chicken`], [鸡],
+    [`cod`], [鳕鱼],
+    [`copper_golem`], [铜傀儡],
+    [`cow`], [牛],
+    [`creaking`], [嘎吱],
+    [`creeper`], [苦力怕],
+    [`dolphin`], [海豚],
+    [`donkey`], [驴],
+    [`drowned`], [溺尸],
+    [`elder_guardian`], [远古守卫者],
+    [`ender_dragon`], [末影龙],
+    [`enderman`], [末影人],
+    [`endermite`], [末影螨],
+    [`evoker`], [唤魔者],
+    [`fox`], [狐狸],
+    [`frog`], [青蛙],
+    [`ghast`], [恶魂],
+    [`giant`], [巨人],
+    [`glow_squid`], [发光鱿鱼],
+    [`goat`], [山羊],
+    [`guardian`], [守卫者],
+    [`happy_ghast`], [快乐恶魂],
+    [`hoglin`], [疣猪兽],
+    [`horse`], [马],
+    [`husk`], [尸壳],
+    [`illusioner`], [幻术师],
+    [`iron_golem`], [铁傀儡],
+    [`llama`], [羊驼],
+    [`magma_cube`], [岩浆怪],
+    [`mannequin`], [玩家模型],
+    [`mooshroom`], [哞菇],
+    [`mule`], [骡],
+    [`nautilus`], [鹦鹉螺],
+    [`ocelot`], [豹猫],
+    [`panda`], [熊猫],
+    [`parrot`], [鹦鹉],
+    [`phantom`], [幻翼],
+    [`pig`], [猪],
+    [`piglin`], [猪灵],
+    [`piglin_brute`], [猪灵蛮兵],
+    [`pillager`], [掠夺者],
+    [`polar_bear`], [北极熊],
+    [`pufferfish`], [河豚],
+    [`rabbit`], [兔子],
+    [`ravager`], [劫掠兽],
+    [`salmon`], [鲑鱼],
+    [`sheep`], [绵羊],
+    [`shulker`], [潜影贝],
+    [`silverfish`], [蠹虫],
+    [`skeleton`], [骷髅],
+    [`skeleton_horse`], [骷髅马],
+    [`slime`], [史莱姆],
+    [`sniffer`], [嗅探兽],
+    [`snow_golem`], [雪傀儡],
+    [`spider`], [蜘蛛],
+    [`squid`], [鱿鱼],
+    [`stray`], [流浪者],
+    [`strider`], [炽足兽],
+    [`tadpole`], [蝌蚪],
+    [`trade_llama`], [行商羊驼],
+    [`tropical_fish`], [热带鱼],
+    [`turtle`], [海龟],
+    [`vex`], [恼鬼],
+    [`villager`], [村民],
+    [`vindicator`], [卫道士],
+    [`wandering_trader`], [流浪商人],
+    [`warden`], [监守者],
+    [`witch`], [女巫],
+    [`wither`], [凋灵],
+    [`wither_skeleton`], [凋灵骷髅],
+    [`wolf`], [狼],
+    [`zombie`], [僵尸],
+    [`zombie_horse`], [僵尸马],
+    [`zombie_nautilus`], [僵尸鹦鹉螺],
+    [`zombified_piglin`], [僵尸猪灵],
+    [`zombie_villager`], [僵尸村民],
+    [`zoglin`], [僵尸疣猪兽]
+  )
+)
+===== 弹射物
+#triple-split-table(
+  caption: "所有可用弹射物及其ID",
+  original-cols: (auto, auto),
+  seperator: (2,5),
+  header: ([ID], [名称]),
+  data: (
+    [`arrow`], [箭],
+    [`breeze_wind_charge`], [旋风人风弹],
+    [`dragon_fireball`], [末影龙火球],
+    [`egg`], [掷出的鸡蛋],
+    [`ender_pearl`], [掷出的末影珍珠],
+    [`experience_bottle`], [掷出的附魔之瓶],
+    [`fireball`], [火球],
+    [`firework_rocket`], [烟花火箭],
+    [`fishing_bobber`], [浮漂],
+    [`llama_spit`], [羊驼唾沫],
+    [`potion`], [药水],
+    [`shulker_bullet`], [潜影弹],
+    [`small_fireball`], [小火球],
+    [`snowball`], [雪球],
+    [`spectral_arrow`], [光灵箭],
+    [`trident`], [三叉戟],
+    [`wind_charge`], [风弹],
+    [`wither_skull`], [凋灵之首]
+  )
+)
+===== 交通工具
+#triple-split-table(
+  caption: "所有可用交通工具及其ID",
+  original-cols: (auto, auto),
+  seperator: (2,5),
+  header: ([ID], [名称]),
+  data: (
+    [`boat`], [船],
+    [`chest_boat`], [运输船],
+    [`minecart`], [矿车],
+    [`chest_minecart`], [运输矿车],
+    [`command_block_minecart`], [命令方块矿车],
+    [`furnace_minecart`], [动力矿车],
+    [`hopper_minecart`], [漏斗矿车],
+    [`spawner_minecart`], [刷怪笼矿车],
+    [`tnt_minecart`], [TNT矿车]
+  )
+)
+===== 可悬挂实体
+这一类实体有物品展示框 `item_display`、荧光物品展示框 `glow_item_frame`、画 `painting`。
+===== 技术类实体
+这一类实体有标记 `marker`、展示实体和交互实体 `interaction`。其中展示实体分为方块展示实体 `block_display`、物品展示实体 `item_display` 和文本展示实体 `text_display`。
+===== 物品 `item`，即掉落物形式的物品，*它是一种实体*。
+===== 下落的方块 `falling_block`
+===== 被激活的TNT `tnt`
+===== 末地水晶 `end_crystal`
+===== 区域效果云 `area_effect_cloud`
+===== 唤魔者尖牙 `evoker_fangs`
+===== 经验球 `experience_orb`
+===== 末影之眼 `eye_of_ender`
+===== 烟花火箭 `firework_rocket`
+===== 栓神结 `leash_knot`
+===== 闪电束 `lightning_bolt`
+=== 游戏规则
+#proper-noun(display: "游戏规则（Game rule）", "youxiguize")是控制游戏玩法的一种手段
+
+所有游戏规则及其可用值如表\hspace{2pt}\ref{tab:gamerule}\hspace{2pt}所示，不是所有的游戏规则都适用布尔值。
+== 服务器管理
+服务器是在Minecraft中实现多人游戏的一种手段。玩家们可以连接服务器游玩各种小游戏，体验SMP、PVP或各种自定义多人游戏地图，极大地提高了Minecraft的可玩性。篇幅有限，本教程并不提供服务器的架设方法，仅提供服务器配置以及能够在服务器上使用的命令的解释，供服务器管理人员参考。
+=== server.properties \*
+`server.properties` 是存储服务器所有配置的文件，文件中一个属性占据一行，每一行的格式为：
+#codebox("<属性>=<值>")
+例如：
+#codebox("gamemode=survival")
+#codebox("enable-command-block=false")
 = 坐标
 Minecraft的游戏世界是三维的。在编写数据包的时候，有时需要确定实例所需的位置参数。这样的参数被称为#proper-noun(display:"坐标（Coordinate）","zuobiao")。本章将详细介绍各种坐标参数以及这些参数在命令上的应用。
 #pagebreak()
@@ -2186,12 +2435,13 @@ Minecraft规定：大部分方块的长、宽和高均为1米，体积为1立方
 ==== 二维坐标
 即只由$x$坐标和$z$坐标构成的#proper-noun(display:"二维坐标（Three-dimensional coordinates）","erweizuobiao")。二维坐标的命令参数类型为`minecraft:vec2`，两个元素均为双精度浮点数。二维坐标若为整数，则也使用中心校准。
 == 区块
-=== 命令/forceload <subsec:command_forceload>
+=== 命令/forceload<subsec:command_forceload>
 = 文本组件<chap:text_component>
 == 文本组件内容
 === 翻译文本<subsec:translate>
 = 存档格式
 == 存档文件夹的结构<sec:saves>
+== 方块实体<sec:block_entity>
 == 技术性实体<sec:technical_entity>
 #appendix
 = 数据库
@@ -2971,7 +3221,8 @@ Minecraft规定：大部分方块的长、宽和高均为1米，体积为1立方
     [26.1 Snapshot 4], [97.1], [78.1]
   )
 )<tab:pack_format>
-== 数据包标签 <sec:tag_in_datapack>
+== 方块状态<sec:block_state>
+== 数据包标签<sec:tag_in_datapack>
 #heading(level: 1, numbering: none, [索引])
 #columns(2)[
   #make-index(use-page-counter: true)

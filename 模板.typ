@@ -231,6 +231,56 @@
     ..combined-content
   )
 }
+#let triple-split-table(
+  caption: [三栏表格标题],
+  original-cols: 2,
+  gutter-width: 3pt,
+  seperator: (),
+  header: (),
+  data: (),
+) = {
+  let col-widths = if type(original-cols) == array { original-cols } else { (1fr,) * original-cols }
+  let col-count = col-widths.len()
+  let missing = calc.rem(data.len(), col-count)
+  let padded-data = data + (([],) * (if missing > 0 { col-count - missing } else { 0 }))
+  let rows = padded-data.chunks(col-count)
+  let total-rows = rows.len()
+  let part-size = calc.ceil(total-rows / 3)
+  let left-part = rows.slice(0, part-size)
+  let mid-part  = rows.slice(part-size, calc.min(part-size * 2, total-rows))
+  let right-part = rows.slice(calc.min(part-size * 2, total-rows))
+  let combined-content = ()
+  for i in range(part-size) {
+    combined-content += left-part.at(i)
+    combined-content += ([],)
+    if i < mid-part.len() {
+      combined-content += mid-part.at(i)
+    } else {
+      combined-content += ([],) * col-count
+    }
+    combined-content += ([],) 
+    if i < right-part.len() {
+      combined-content += right-part.at(i)
+    } else {
+      combined-content += ([],) * col-count
+    }
+  }
+  let triple-columns = col-widths + (gutter-width,) + col-widths + (gutter-width,) + col-widths
+  let triple-header = header + ([],) + header + ([],) + header
+  let total-span = col-count * 3 + 2
+  let new-seperator = seperator
+  for s in seperator {
+    new-seperator.push(s + col-count + 1)
+  }
+  general-table(
+    caption: caption,
+    columns: triple-columns,
+    colspan: total-span,
+    header: triple-header,
+    seperator: new-seperator,
+    ..combined-content
+  )
+}
 
 // 例题
 #let exa = counter("exa")
@@ -848,7 +898,7 @@
   show heading.where(level: 5): it => {
     set align(left)
     set text(font: ((name: "FZShuSong GB18030L2", covers: regex("[·“”‘’…|/\[\]\{\}<>—]")), "TeX Gyre Termes", "FZShuSong GB18030L2"), weight: "regular")
-    block(v(-0.6em) + it)
+    block(v(-0.7em) + it)
   }
   show heading.where(level: 6): it => {
     set align(left)
