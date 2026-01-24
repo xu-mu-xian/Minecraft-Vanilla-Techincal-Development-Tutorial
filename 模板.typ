@@ -77,7 +77,7 @@
             set text(
               font: (
                 "Consolas",
-                "FZShuSong GB18030L2"
+                "Source Han Serif"
               ),
               size: 0.85em
             )
@@ -112,12 +112,12 @@
   let pos-args = args.pos()
   grid(
     columns: (auto, 1fr),
-    column-gutter: 0.2em,
-    row-gutter: 0.65em,
+    column-gutter: 0.7em,
+    row-gutter: 0.8em,
     ..pos-args.chunks(2).enumerate().map(((i, pair)) => {
       let (info, desc) = pair
       (
-        grid.cell(align: right)[
+        grid.cell(align: right, inset: (x: -0.3em))[
           #if i == 0 [#prefix]
           #info——],
         desc
@@ -448,9 +448,9 @@
       } else if level == 4 {
         return numbering("一、", nums.at(3))
       } else if level == 5 {
-        return text(weight: "regular", numbering("1.", nums.at(4))) + h(1em)
+        return box(inset: 0pt, width: 1.7em, text(weight: "regular", numbering("1.", nums.at(4))))
       } else if level == 6 {
-        return text(weight: "regular", numbering("(1)", nums.at(5))) + h(0.5em)
+        return box(inset: 0pt, width: 1.7em, text(weight: "regular", numbering("(1)", nums.at(5))))
       } else {
         return none
       }
@@ -464,9 +464,9 @@
       } else if level == 4 {
         return numbering("一、", nums.at(3))
       } else if level == 5 {
-        return text(weight: "regular", numbering("1.", nums.at(4))) + h(1em)
+        return box(inset: 0pt, width: 1.7em, text(weight: "regular", numbering("1.", nums.at(4))))
       } else if level == 6 {
-        return text(weight: "regular", numbering("(1)", nums.at(5))) + h(0.5em)
+        return box(inset: 0pt, width: 1.7em, text(weight: "regular", numbering("(1)", nums.at(5))))
       } else {
         return none
       }
@@ -549,70 +549,70 @@
 // 图标
 #let icon(name: none) = {
   if name == "folder" {
-    box(image("图标/data/文件夹.png", height:1em), baseline: 1pt)
+    box(image("图标/data/文件夹.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "file" {
-    box(image("图标/data/文件.png", height:1em), baseline: 1pt)
+    box(image("图标/data/文件.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "text" {
-    box(image("图标/data/文本文件.png", height:1em), baseline: 1pt)
+    box(image("图标/data/文本文件.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "png" {
-    box(image("图标/data/图片文件.png", height:1em), baseline: 1pt)
+    box(image("图标/data/图片文件.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "nbt" {
-    box(image("图标/data/NBT文件.png", height:1em), baseline: 1pt)
+    box(image("图标/data/NBT文件.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "json" {
-    box(image("图标/data/JSON文件.png", height:1em), baseline: 1pt)
+    box(image("图标/data/JSON文件.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "mcfunction" {
-    box(image("图标/data/函数文件.png", height:1em), baseline: 1pt)
+    box(image("图标/data/函数文件.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "ogg" {
-    box(image("图标/data/声音文件.png", height:1em), baseline: 1pt)
+    box(image("图标/data/声音文件.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "zip" {
-    box(image("图标/data/压缩文件.png", height:1em), baseline: 1pt)
+    box(image("图标/data/压缩文件.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "jar" {
-    box(image("图标/data/JAR文件.png", height:1em), baseline: 1pt)
+    box(image("图标/data/JAR文件.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "json-string" {
-    box(image("图标/data/JSON字符串.png", height:1em), baseline: 1pt)
+    box(image("图标/data/JSON字符串.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "json-bool" {
-    box(image("图标/data/JSON布尔值.png", height:1em), baseline: 1pt)
+    box(image("图标/data/JSON布尔值.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "json-number" {
-    box(image("图标/data/JSON数值.png", height:1em), baseline: 1pt)
+    box(image("图标/data/JSON数值.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "json-array" {
-    box(image("图标/data/JSON数组.png", height:1em), baseline: 1pt)
+    box(image("图标/data/JSON数组.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "json-object" {
-    box(image("图标/data/JSON对象.png", height:1em), baseline: 1pt)
+    box(image("图标/data/JSON对象.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "nbt-list" {
-    box(image("图标/data/列表.png", height:1em), baseline: 1pt)
+    box(image("图标/data/列表.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "vscode" {
-    box(image("图标/VSCode.png", height:1em), baseline: 1pt)
+    box(image("图标/VSCode.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "dhp" {
-    box(image("图标/DHP.png", height:1em), baseline: 1pt)
+    box(image("图标/DHP.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "nbtstudio" {
-    box(image("图标/NBTStudio.png", height:1em), baseline: 1pt)
+    box(image("图标/NBTStudio.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "paint" {
-    box(image("图标/画图.png", height:1em), baseline: 1pt)
+    box(image("图标/画图.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "ps" {
-    box(image("图标/PS.png", height:1em), baseline: 1pt)
+    box(image("图标/PS.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "gimp" {
-    box(image("图标/GIMP.png", height:1em), baseline: 1pt)
+    box(image("图标/GIMP.png", height:1em), baseline: 0pt, height:0.85em)
   }
 }
 
@@ -626,7 +626,7 @@
         fill: white,
         font: (
           "Consolas",
-          "FZShuSong GB18030L2"
+          "Source Han Serif"
         ),
         weight: "bold"
       )
@@ -675,7 +675,7 @@
     stroke: 1pt + rgb("#d71d1d"),
     zebra-fill: rgb("#fde9e9")
   )
-  show raw: set text(font: ("Consolas", "FZShuSong GB18030L2"))
+  show raw: set text(font: ("Consolas", "Source Han Serif"))
   raw(body, block: true, lang: lang)
 }
 
@@ -695,18 +695,17 @@
   set text(
     font: (
       (
-        name: "FZShuSong GB18030L2",
+        name: "Source Han Serif",
         covers: regex("[·“”‘’…|/\[\]\{\}<>—]")
       ),
       "TeX Gyre Termes",
-      "FZShuSong GB18030L2"
+      "Source Han Serif"
     ),
     lang: "zh"
   )
   show strong: it => {
     set text(
-      font: ("TeX Gyre Termes", "FZHeiTi GB18030L2"),
-      weight: "bold", 
+      font: ("Roboto", "Source Han Sans SC"),
       fill: red,
     )
     it 
@@ -718,7 +717,8 @@
       amount: 2em
     ),
     justify: true,
-    spacing: 0.65em
+    leading: 0.8em,
+    spacing: 0.8em
   )
   // 页面
   set page(
@@ -731,8 +731,8 @@
         [
           #set text(
             font: (
-              "TeX Gyre Termes",
-              "FZKaiTi GB18030L2"
+              "Minecraft",
+              "Unifont"
             )
           )
           #hydra(skip-starting: false, 1)
@@ -743,8 +743,8 @@
         [
           #set text(
             font: (
-              "TeX Gyre Termes",
-              "FZKaiTi GB18030L2"
+              "Minecraft",
+              "Unifont"
             )
           )
           徐木弦原版技术性开发系列教程
@@ -767,11 +767,11 @@
     set text(
       font: (
         (
-          name: "FZShuSong GB18030L2",
+          name: "Source Han Serif",
           covers: regex("[·“”‘’…|/\[\]\{\}<>—]")
         ),
         "TeX Gyre Termes",
-        "FZShuSong GB18030L2"
+        "Source Han Serif"
       )
     )
     it
@@ -801,7 +801,7 @@
         fill: rgb("#fef2f2"),
         stroke: 0.5pt + red,
         radius: 2pt,
-        text(font: ("Consolas","FZShuSong GB18030L2"), size: 0.9em, it)
+        text(font: ("Consolas","Source Han Serif"), size: 0.9em, it)
       ) + h(0.25em)
     }
   }
@@ -815,7 +815,7 @@
     set text(
       font: (
         "TeX Gyre Termes Math",
-        "FZShuSong GB18030L2"
+        "Source Han Serif"
       )
     )
     h(2pt) + it + h(2pt)
@@ -844,13 +844,13 @@
   show table: it => xubiao.update(false) + it
   show figure.where(kind: table): set figure(gap: 0.3em)
   show figure.where(kind: table): set figure.caption(position: top, separator: "  ")
-  show figure.caption: set text(font: ("TeX Gyre Termes", "FZHeiTi GB18030L2",), size: 0.85em, weight: "bold")
+  show figure.caption: set text(font: ("TeX Gyre Termes", "Source Han Sans SC",), size: 0.85em, weight: "bold")
   show figure.caption: set block(sticky: true)
   show table.cell: it => {
     if it.y == 1 {
       set text(
         fill: white,
-        font: ("TeX Gyre Termes", "FZHeiTi GB18030L2"),
+        font: ("TeX Gyre Termes", "Source Han Sans SC"),
         size: 0.85em,
         weight: "bold"
       )
@@ -882,7 +882,7 @@
     block(v(5em) + it + v(2em))
   }
   show heading.where(level: 2): it => {
-    set text(fill: rgb("#d71d1d"), size: 1.8em)
+    set text(fill: rgb("#d71d1d"), font: ("Minecraft", "Unifont"), size: 1.8em)
     block(v(1em) + it + v(1em))
   }
   show heading.where(level: 3): it => {
@@ -892,18 +892,18 @@
   }
   show heading.where(level: 4): it => {
     set align(left)
-    set text(fill: rgb("#d71d1d"), font: "FZHeiTi GB18030L2", size: 1.1em)
+    set text(fill: rgb("#d71d1d"), font: "Source Han Sans SC", size: 1.1em)
     block(v(0.2em) + it + v(0.6em))
   }
   show heading.where(level: 5): it => {
     set align(left)
-    set text(font: ((name: "FZShuSong GB18030L2", covers: regex("[·“”‘’…|/\[\]\{\}<>—]")), "TeX Gyre Termes", "FZShuSong GB18030L2"), weight: "regular")
+    set text(font: ((name: "Source Han Serif", covers: regex("[·“”‘’…|/\[\]\{\}<>—]")), "TeX Gyre Termes", "Source Han Serif"), weight: "regular")
     block(v(-0.7em) + it)
   }
   show heading.where(level: 6): it => {
     set align(left)
-    set text(font: ((name: "FZShuSong GB18030L2", covers: regex("[·“”‘’…|/\[\]\{\}<>—]")), "TeX Gyre Termes", "FZShuSong GB18030L2"), weight: "regular")
-    block(v(-0.6em) + it)
+    set text(font: ((name: "Source Han Serif", covers: regex("[·“”‘’…|/\[\]\{\}<>—]")), "TeX Gyre Termes", "Source Han Serif"), weight: "regular")
+    block(v(-0.7em) + it)
   }
   // 引用
   show ref: it => {
@@ -985,6 +985,16 @@
     }
   }
   show outline.entry.where(level: 2): it => {
+    set text(
+      font: (
+        (
+          name: "TeX Gyre Termes",
+          covers: regex("[.1234567890]")
+        ),
+        "Minecraft",
+        "Unifont"
+      )
+    )
     let loc = it.element.location()
     context {
       let is-app = appendix-part.at(loc)
@@ -1006,12 +1016,6 @@
     }
   }
   show outline.entry.where(level: 3): it => {
-    set text(
-      font: (
-        "TeX Gyre Termes",
-        "FandolFang R"
-      )
-    )
     let loc = it.element.location()
     context {
       let is-app = appendix-part.at(loc)

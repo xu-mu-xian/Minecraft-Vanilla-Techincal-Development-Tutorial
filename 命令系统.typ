@@ -12,7 +12,7 @@
       )
       #[
         #set text(
-          font: "FZHeiTi GB18030L2"
+          font: "Source Han Sans SC"
         )
         原版技术性开发系列教程
         #v(1em)
@@ -33,7 +33,7 @@
     #[
       #set text(
         fill: rgb("#e9dede"),
-        font: "FZHeiTi GB18030L2",
+        font: "Source Han Sans SC",
         size: 1.5em
       )
       徐木弦#h(1em)主编\
@@ -484,7 +484,7 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 在聊天栏输入命令时，`Tab` 键可用于补全命令。未输入任何命令字符的时候，使用 `Tab` 键可以看到聊天栏上出现的一个命令列表（如@fig:using_tab_when_typing_command），鼠标滚轮有助于翻找需要的命令。
 #figure(
   caption: [在聊天栏输入命令时使用 `Tab` 键],
-  image("图片/在聊天栏输入命令时使用Tab键.png", width: 20%)
+  image("图片/在聊天栏输入命令时使用Tab键.png", width: 10em)
 ) <fig:using_tab_when_typing_command>
 读者可以直接在命令列表中点击需要的命令，或者如@fig:command_typing (a) 所示，输入命令的前若干字符后使用 `Tab` 键补全。若这个命令后续还有其他参数，则也可以如@fig:command_typing (b) 所示用 `Tab` 键补全。
 #sub-figure(
@@ -625,7 +625,7 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 游戏在读取命令后，会首先解析根节点是否是已注册的命令，其次解析下一个参数即子节点是否可用，然后依次解析余下的节点。Brigadier读取到某一个节点时，会枚举其子节点的所有可行节点，并在聊天栏或命令方块控制台内显示为可读性较强的可视化参数列表。
 #figure(
   caption: [命令 `tag` 的所有结点和分支],
-  image("图片/命令tag的所有结点和分支.png", width: 40%)
+  image("图片/命令tag的所有结点和分支.png", width: 18em)
 ) <fig:branch_of_command_tag>
 以命令 `/tag` 为例，其命令树如@fig:branch_of_command_tag 所示。`tag` 是根命令，其子节点 `<target>` 是一个需要特定参数类型（这里是 `entity`）的节点，解析此节点的时候，会判断输入的参数是否为 `entity` 类型，若为否则解析异常，命令无法执行。2级子节点是已注册的字面量 `add`、`remove` 和 `list`，解析该级节点的工作比较简单：只需读取该节点的文本是否与注册的字面量吻合。若2级子节点的参数指定为 `add`、`remove`，则读取3级子节点 `<name>`，这个节点又是一个需要自定义的量；若2级子节点的参数指定为 `list`，则不能再添加后续参数。
 === 命令上下文
@@ -650,7 +650,7 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 ====== 执行错误
 出现这种效果说明命令中存在严重的漏洞。此时命令没有返回值。
 ====== Void
-当且仅当执行命令 `/function` 时会出现这种效果，说明 `/function` 调用了一个void类型的函数，没有返回值。
+当且仅当执行命令 `/function` 时会出现这种效果，说明 `/function` 调用了一个Void类型的函数，没有返回值。
 ====== 执行中断
 当且仅当执行命令 `/execute` 时会出现这种效果，此时 `/execute` 的分支数量为0，在 `run` 子命令执行前执行就已经中止。此时命令没有返回值。
 ====== *执行失败*和*执行成功*
@@ -1064,7 +1064,7 @@ Description: Ticking entity"
   (4, [#icon(name: "folder") *net*: 自25w45a起，Mojang发布的未经混淆的客户端其源代码均存储于该文件夹内。其中的类文件均未被混淆，可查看，是制作Mods的重要依据。]),
   (5, [#icon(name: "folder") *minecraft*]),
   (6, [#icon(name: "file") *\<名称>.class*: 一个未混淆的Java类文件。]),
-  (4, [#h(-2em)#icon(name: "png") *pack.png*: 原版资源包的图标。#figure(caption: [原版资源包的图标（pack.png）],image("图片/原版资源包的图标（pack.png）.png", width: 10%))]),
+  (4, [#h(-2em)#icon(name: "png") *pack.png*: 原版资源包的图标。#figure(caption: [原版资源包的图标（pack.png）],image("图片/原版资源包的图标（pack.png）.png", width: 4em))]),
   (4, [#icon(name: "json") *versions.json*: 版本信息文件，存储该版本的信息。]),
   (3, [#icon(name: "json") *\<版本号>.json*: 客户端清单文件。]),
   (1, [#icon(name: "folder") *webcache2*]),
@@ -1111,8 +1111,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 在创建新的世界界面，选择 `更多`，点击 `数据包` 选项，此时会进入选择数据包窗口，类似于资源包选项的窗口，可在“可用”一栏内选用数据包，只有“已选”一栏的数据包有效，且数据包的加载顺序可以在该栏中调换。点击 `打开包文件夹` 选项后游戏会弹出一个临时的文件夹，此时可以将数据包拖入其中。
 #figure(
   caption: [选择数据包窗口],
-  placement: auto,
-  image("图片/选择数据包窗口.png", width: 70%)
+  image("图片/选择数据包窗口.png", width: 28em)
 )
 当一个存档中存在多个有效的已启用数据包时，游戏会根据数据包的顺序加载其内容，这里的“有效”是指数据包有合法的元数据且数据包内无任何语法错误。已启用数据包的加载顺序存储于 #icon(name:"nbt") `level.dat` 中。在选择数据包窗口“已选”一栏的加载顺序表现为从下到上。
 
@@ -1423,7 +1422,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 所有实验性内容都是#proper-noun(display: "功能数据包（Feature datapack）", "gong1 neng2 shu4 ju4 bao1")的形式，启用这些实验性内容的方式有两种：一是在选择数据包窗口选择功能数据包；二是创建新世界时点击实验性内容从而操控这些实验性内容的开关。
 #figure(
   caption: "试验性内容窗口",
-  image("图片/试验性内容窗口.png", width: 70%)
+  image("图片/试验性内容窗口.png", width: 28em)
 )
 数据包无法直接修改游戏代码，但功能数据包似乎“注册”了新的游戏内容，功能数据包是否有其独特的行为？其实，实验性内容分为硬编码内容和数据驱动内容，其中的硬编码内容被称为特定组别的#proper-noun(display: "功能元素（Feature Element）", "gong1 neng2 yuan2 su4")。#proper-noun(display: "功能开关（Feature Flag）", "gong1 neng2 kai1 guan1")则用于启用或禁用这些功能元素。当一个功能数据包被启用时，元数据中 `enabled` 字段启用，相应的功能开关被打开，其中的功能元素就能在游戏中正常运行。若一个功能数据包被关闭，则相应的功能元素被过滤。
 
@@ -1568,7 +1567,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 #proper-noun(display: "资源包（Resource pack）", "zi1 yuan2 bao1")允许玩家在不修改源代码的情况下自定义纹理、模型、声音、语言等外观性资源，对客户端有效。资源包本质上是一个文件夹或压缩文件，被储存在 #icon(name: "folder") `.minecraft/resourcepacks` 中，同一个 #icon(name: "folder") `resourcepacks` 文件夹内能存放多个资源包。选项资源包窗口“可用”一栏仅罗列 #icon(name: "folder") `resourcepacks` 文件夹内的所有的有效资源包，可在这一栏选用资源包，只有位于“已选”一栏的资源包有效。点击打开包文件夹后可以手动添加资源包。
 #figure(
   caption: "选择资源包窗口",
-  image("图片/选择资源包窗口.png", width: 70%)
+  image("图片/选择资源包窗口.png", width: 28em)
 )
 在游戏中可以同时使用多个资源包，这些资源包按照“已选”一栏中从下到上的顺序依次加载，资源包的加载顺序可以在该栏中调换。和数据包类似，若这些资源包对同种资源的外观进行定义，则*后加载的资源包会对先加载的资源包进行覆盖*，*表明越靠后加载的资源包其优先级越高*。
 
@@ -1782,8 +1781,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 这份配置专门针对macOS用户。当渲染器版本信息中包含独立的Metal单词时，会触发警告。因为macOS使用苹果系统独特的图形接口Metal，而不使用OpenGL。
 #figure(
   caption: "GPU警告页面",
-  placement: auto,
-  image("图片/GPU警告页面.png", width:70%)
+  image("图片/GPU警告页面.png", width: 28em)
 ) <fig:warning_gpu>
 警告页面会在玩家开启游戏极佳画质时出现。不过，这个页面以及GPU警告列表的配置都只是警告机制，并不是禁止硬件被匹配到的计算机运行Minecraft。游戏具体的运行情况取决于硬件本身。例如，以下的配置文件可以使得持有RTX 4060显卡的计算机显示警告页面，显示的页面如@fig:warning_gpu 所示。
 #codefile(
@@ -1841,8 +1839,7 @@ Minecraft的架构是*客户端-服务端模型*，顾名思义，Minecraft使�
 逻辑客户端负责接收来自玩家的输入、处理资源包、渲染游戏画面，并将数据输送给逻辑服务端处理；逻辑服务端负责处理由客户端发送的数据，运行游戏逻辑。例如，当玩家在游戏中移动时，客户端会根据玩家输入的移动方向渲染玩家此时的游戏画面，同时又将玩家移动的信息通过封包发送给逻辑服务端，逻辑服务端计算玩家的坐标、玩家周围是否存在任何的碰撞箱阻止玩家移动，将计算结果通过封包返还给逻辑客户端，渲染玩家移动的游戏画面。客户端的渲染会与服务端产生不一致的情况，例如标记是一种仅存在于服务端的实体，在客户端上并不会渲染标记，参见@sec:technical_entity。
 #figure(
   caption: [逻辑客户端和逻辑服务端的运行流程],
-  placement: auto,
-  image("图片/逻辑客户端和逻辑服务端的运行流程.png", width: 60%)
+  image("图片/逻辑客户端和逻辑服务端的运行流程.png", width: 24em)
 )
 *即使是进行单人游戏，Minecraft依旧会在玩家进入本地世界时创建一个内置服务器，在本地世界关闭时内置服务器即被关闭。*这个内置服务器可以开放至局域网，从而将单人游戏开放为局域网联机的多人游戏。此时内置服务器拥有一个地址，其格式为
 #codebox("<IPv4地址>:<端口>") <code:ipv4>
@@ -2038,8 +2035,8 @@ $ L_"s" = max{0, 31-d_"s"} $ <equ:player_simulation_level>
   caption: "加载标签",
   colspan: 6,
   columns: (auto, auto, auto, auto, auto, auto),
-  header: (table.cell(rowspan: 2)[标签类型], table.cell(rowspan: 2)[注册名称], table.cell(colspan: 2)[基础等级], table.cell(rowspan: 2)[存活时间], table.cell(rowspan: 2)[持久化], table.cell(fill: rgb("#ff6565"))[#set text(fill: white, font: "FZHeiTi GB18030L2")
-  加载等级], table.cell(fill: rgb("#ff6565"))[#set text(fill: white, font: "FZHeiTi GB18030L2")
+  header: (table.cell(rowspan: 2)[标签类型], table.cell(rowspan: 2)[注册名称], table.cell(colspan: 2)[基础等级], table.cell(rowspan: 2)[存活时间], table.cell(rowspan: 2)[持久化], table.cell(fill: rgb("#ff6565"))[#set text(fill: white, font: "Source Han Sans SC")
+  加载等级], table.cell(fill: rgb("#ff6565"))[#set text(fill: white, font: "Source Han Sans SC")
   计算等级]),
   [玩家加载标签], [`player_loading`], [31], [无], table.cell(rowspan: 2)[永久], table.cell(rowspan: 2)[否],
   [玩家计算标签], [`player_simulation`], [无], [$max{0,31-d_"s"}$],
@@ -2087,7 +2084,7 @@ $ L_"s" = cases(
     #h(-2em)@fig:level_propagation_example 展示了一个区域的区块，玩家所在的区块为$P$，此时模拟距离为5，渲染距离为4，判断在区块$A$内能否正常执行命令。
     #figure(
       caption: "",
-      image("图片/等级传播例题.png", width: 30%)
+      image("图片/等级传播例题.png", width: 12em)
     ) <fig:level_propagation_example>
   ],
   [
@@ -2122,16 +2119,16 @@ $ L_"s" = cases(
   + 如果正在降雨，执行雨雪相关逻辑。
   + 执行随机刻。
 ==== 随机刻
-接受到区块刻的区块会随机挑选区块内的一些方块并赋予#proper-noun(display: "随机刻（Random tick）", "sui2 ji1 ke4")，接收到随机刻的方块会进行方块更新，如农作物的生长、藤蔓的蔓延、草方块的蔓延等。随机刻的赋予规则是：每一游戏刻在所有区段内随机挑选若干方块，游戏规则 `randomTickSpeed` 可用于指定随机挑选方块的数量（默认为3），每次挑选的方块可以为同一个。
+接受到区块刻的区块会随机挑选区块内的一些方块并赋予#proper-noun(display: "随机刻（Random tick）", "sui2 ji1 ke4")，接收到随机刻的方块会进行方块更新，如农作物的生长、藤蔓的蔓延、草方块的蔓延等。随机刻的赋予规则是：每一游戏刻在所有区段内随机挑选若干方块，游戏规则 `random_tick_speed` 可用于指定随机挑选方块的数量（默认为3），每次挑选的方块可以为同一个。
 
-假设 `randomTickSpeed` 的值为$m$，则在一个游戏刻内区段内某方块被选中的概率为
+假设 `random_tick_speed` 的值为$m$，则在一个游戏刻内区段内某方块被选中的概率为
 $ p_0 &= 1 - "C"_0^m (1 / 16^3)^0 (1 - 1 / 16^3)^m\
 &= 1 - (1 - 1 / 16^3)^m $ <equ:random_tick_probability>
 显然该方块在$t$gt内获取随机刻是独立的重复伯努利试验，服从参数为$p_0$的几何分布，则第$t$gt得到随机刻的概率为
 $ P(X = t) = (1 - p_0)^(t-1) p_0 $ <equ:random_tick_distribution>
 则方块接受到随机刻的平均间隔为
 $ E(X) = sum_(t-1)^(+∞) X_t P_t = 1 / p_0 = 1 / display(1 - (1 - 1 / 16^3))^m $ <equ:random_tick_mean>
-上式结果的单位为游戏刻。若将 `randomTickSpeed` 的默认值3代入，且此时游戏刻率为20，可以得到默认的随机刻的平均间隔时间1365.67 gt，合68.28秒。若 `randomTickSpeed` 的值为零，有$limits(lim)_(x arrow.r 0) E(X) = +∞$，即永远不会接受到随机刻。在设计方块更新的速率时可参考上述公式。不过，上述公式是在概率论及数理统计的范围内讨论的，并不意味着随机刻平均间隔时间一定是该值，极端情况下可能会出现1 gt或超过1000000 gt的间隔，只能说接受到随机刻这一事件大致服从几何分布。总体上来说，`randomTickSpeed` 的值越大，方块更新的频率就越高。
+上式结果的单位为游戏刻。若将 `random_tick_speed` 的默认值3代入，且此时游戏刻率为20，可以得到默认的随机刻的平均间隔时间1365.67 gt，合68.28秒。若 `random_tick_speed` 的值为零，有$limits(lim)_(x arrow.r 0) E(X) = +∞$，即永远不会接受到随机刻。在设计方块更新的速率时可参考上述公式。不过，上述公式是在概率论及数理统计的范围内讨论的，并不意味着随机刻平均间隔时间一定是该值，极端情况下可能会出现1 gt或超过1000000 gt的间隔，只能说接受到随机刻这一事件大致服从几何分布。总体上来说，`random_tick_speed` 的值越大，方块更新的频率就越高。
 ==== 计划刻 \*
 一些方块除了会被动接受随机刻，有时还会主动请求在未来某一游戏刻更新方块，这种更新方式被称为#proper-noun(display: "计划刻（Schedule tick）", "ji4 hua4 ke4")，如水的流动、红石中继器的信号变更等。计划刻分为*方块计划刻*和*流体计划刻*，分别控制普通方块和液体的计划更新。方块计划刻会根据优先级按顺序依次执行，优先级一般为非正数，且优先级越小，执行时间越早。流体计划刻则没有优先级。一个游戏刻内最多执行65536个计划刻。超出限制数量的计划刻将延后至下一游戏刻处理。
 ==== 红石刻
@@ -2349,21 +2346,124 @@ Java版原版所有可用的实体可分为若干类别，这些实体的命名�
 ===== 栓神结 `leash_knot`
 ===== 闪电束 `lightning_bolt`
 === 游戏规则
-#proper-noun(display: "游戏规则（Game rule）", "you2 xi4 gui1 ze2")是控制游戏玩法的一种手段。Minecraft拥有很多种游戏规则，自25w44a起，游戏规则变为了注册项，被移动到了注册表中，现使用命名空间ID映射这些游戏规则。不同的游戏规则可以设置它们各自的值，
+#proper-noun(display: "游戏规则（Game rule）", "you2 xi4 gui1 ze2")是控制游戏玩法的一种手段。Minecraft拥有很多种游戏规则，自25w44a起，游戏规则变为了注册项，被移动到了注册表中，现使用命名空间ID映射这些游戏规则。不同的游戏规则可以设置它们各自的值，不是所有的游戏规则都适用布尔值，一些游戏规则会使用整数，这些整数的可用范围为有符号的32位整数，即$-2147483648$\~ 2147483647（含）。每个游戏规则都会有一个默认值，玩家没有指定它们的值时，便使用这些默认值。
 #figure(
   caption: "游戏规则页面",
-  image("图片/游戏规则页面.png", width: 70%)
+  image("图片/游戏规则页面.png", width: 28em)
 )
-
-所有游戏规则及其可用值如表\hspace{2pt}\ref{tab:gamerule}\hspace{2pt}所示，不是所有的游戏规则都适用布尔值。
+在创建游戏世界时，可以通过 `更多`$arrow.r$`游戏规则` 页面修改。自26.1-snapshot-3起，也可以在游戏过程中点击 `世界选项…`$arrow.r$`编辑游戏规则` 手动修改。命令 `/gamerule` 也可用于更改游戏模式，其所需权限等级为2，语法为：
+#codebox("gamerule <rulename> [<value>]")
+#param-desc(
+  [`<rulename>` ], [必须为有效的游戏规则。],
+  [`[<value>]` ], [可选，必须为该游戏规则的可用值，如不指定则查询该游戏规则的当前值。]
+)
+所有游戏规则及其可用值如@tab:gamerule 所示，表中所有游戏规则均省略其命名空间前缀 `minecraft`。
+#general-table(
+  caption: "游戏规则表",
+  colspan: 4,
+  columns: (auto, auto, auto, auto),
+  header: ([游戏规则], [说明], [可用值], [默认值]),
+  [`advance_time`], [游戏内时间是否流逝。], [布尔值], [`true`],
+  [`advance_weather`], [天气是否更替。], [布尔值], [`true`],
+  [`allow_entering_nether_using_portals`], [是否允许实体通过下界传送门进入下界。], [布尔值], [`true`],
+  [`block_drops`], [方块被破坏时是否掉落物品和经验球。], [布尔值], [`true`],
+  [`block_explosion_drop_decay`], [在床或重生锚的爆炸中，方块是否有概率不会掉落战利品。], [布尔值], [`true`],
+  [`command_block_output`], [是否广播命令方块的输出。], [布尔值], [`true`],
+  [`command_blocks_work`], [是否启用命令方块。], [布尔值], [`true`],
+  [`drowning_damage`], [是否有溺水伤害。], [布尔值], [`true`],
+  [`elytra_movement_check`], [是否启用鞘翅移动检测。], [布尔值], [`true`],
+  [`ender_pearls_vanish_on_death`], [玩家投掷的末影珍珠是否在玩家死亡时消失。], [布尔值], [`true`],
+  [`entity_drops`], [非生物实体是否掉落战利品。], [布尔值], [`true`],
+  [`fall_damage`], [是否有掉落伤害。], [布尔值], [`true`],
+  [`fire_damage`], [是否有火焰伤害。], [布尔值], [`true`],
+  [`fire_spread_radius_around_player`], [以玩家为中心一定范围内火焰可以更新（包括火焰蔓延、熄灭及自然生成）的半径。若为 `0`，则禁用火焰更新；若为 `-1`，则无视玩家位置，所有位置都会进行火焰更新。], [整数], [`128`],
+  [`forgive_dead_players`], [是否宽恕死亡玩家。若为 `true`，则愤怒的中立型生物将在其目标玩家于附近死亡后息怒。], [布尔值], [`true`],
+  [`freeze_damage`], [是否有冰冻伤害。], [布尔值], [`true`],
+  [`global_sound_events`], [特定游戏事件发生时，声音是否可在所有地方听见。], [布尔值], [`true`],
+  [`immediate_respawn`], [玩家死亡时是否立即重生。], [布尔值], [`false`],
+  [`keep_inventory`], [死亡后是否保留物品栏物品和经验。], [布尔值], [`false`],
+  [`lava_source_conversion`], [是否允许流动熔岩转化成熔岩源。], [布尔值], [`false`],
+  [`limited_crafting`], [是否需要配方。若启用，玩家只能使用已解锁的配方合成。], [布尔值], [`false`],
+  [`locator_bar`], [是否启用玩家定位条。], [布尔值], [`true`],
+  [`log_admin_commands`], [是否在日志中记录管理员使用的命令。], [布尔值], [`true`],
+  [`max_block_modifications`], [一条命令（如 `/fill` 和 `/clone`）修改方块的数量限制。], [整数], [`32768`],
+  [`max_command_forks`], [命令能够执行的最大分支数量。], [整数], [`65536`],
+  [`max_command_sequence_length`], [命令连锁执行数量限制，应用于命令方块链和函数。], [整数], [`65536`],
+  [`max_entity_cramming`], [实体挤压数量上限。], [整数], [`24`],
+  [`max_minecart_speed`], [此游戏规则仅在启用“矿车改进”后可用。控制矿车最大运行速度，单位为格 / 秒。上限为1000。], [整数], [`8`],
+  [`max_snow_accumulation_height`], [下雪时地面的雪能够堆积的最大层数。], [整数], [`1`],
+  [`mob_drops`], [生物在死亡时是否掉落物品和经验球。], [布尔值], [`true`],
+  [`mob_explosion_drop_decay`], [在生物爆炸中，方块是否有概率不会掉落战利品。], [布尔值], [`true`],
+  [`mob_griefing`], [是否允许生物破坏性行为。生物破坏性行为包括：生物放置、修改或破坏方块的行为、生物捡起物品、村民繁殖、幻魔者更改绵羊颜色等。], [布尔值], [`true`],
+  [`natural_health_regeneration`], [生命值是否自然恢复。], [布尔值], [`true`],
+  [`player_movement_check`], [是否启用玩家移动检测。], [布尔值], [`true`],
+  [`players_nether_portal_creative_delay`], [创造模式的玩家需要在下界传送门内等待多少游戏刻才能进入另一维度。], [整数], [`0`],
+  [`players_nether_portal_default_delay`], [非创造模式的玩家需要在下界传送门内等待多少游戏刻才能进入另一维度。], [整数], [`80`],
+  [`players_sleeping_percentage`], [入睡比例：跳过夜晚所需的入睡玩家占比。设为 `0` 时仅需1个玩家入睡即可跳过夜晚。设为大于 `100` 的值会使玩家无法跳过夜晚。], [整数], [`100`],
+  [`projectiles_can_break_blocks`], [弹射物能否破坏紫颂花、滴水石锥或饰纹陶罐。], [布尔值], [`true`],
+  [`pvp`], [是否启用PVP。], [布尔值], [`true`],
+  [`raids`], [是否启用袭击。], [布尔值], [`true`],
+  [`random_tick_speed`], [一个游戏刻内随机刻挑选方块的数量。], [整数], [`3`],
+  [`reduced_debug_info`], [是否简化调试信息、限制调试屏幕的内容。], [布尔值], [`false`],
+  [`respawn_radius`], [重生点半径。], [整数], [`10`],
+  [`send_command_feedback`], [是否发送命令反馈。], [布尔值], [`true`],
+  [`show_advancement_messages`], [是否在聊天栏中通知进度的达成。], [布尔值], [`true`],
+  [`show_death_messages`], [是否显示死亡信息。], [布尔值], [`true`],
+  [`spawn_mobs`], [是否自然生成生物，一些实体可能有其特定的规则，如刷怪笼、命令 `/summon` 生成的生物不受此影响。], [布尔值], [`true`],
+  [`spawn_monsters`], [是否自然生成敌对生物。], [布尔值], [`true`],
+  [`spawn_patrols`], [是否生成灾厄巡逻队。], [布尔值], [`true`],
+  [`spawn_phantoms`], [是否生成幻翼。], [布尔值], [`true`],
+  [`spawn_wandering_traders`], [是否生成流浪商人。], [布尔值], [`true`],
+  [`spawn_wardens`], [是否生成监守者。], [布尔值], [`true`],
+  [`spawner_blocks_work`], [刷怪笼和试炼刷怪笼是否运作。], [布尔值], [`true`],
+  [`spectators_generate_chunks`], [是否允许旁观模式的玩家生成区块。], [布尔值], [`true`],
+  [`spread_vines`], [藤蔓是否蔓延。], [布尔值], [`true`],
+  [`tnt_explodes`], [TNT是否可被激活并爆炸], [布尔值], [`true`],
+  [`tnt_explosion_drop_decay`], [在TNT爆炸中，方块是否有概率不会掉落战利品。], [布尔值], [`false`],
+  [`universal_anger`], [是否启用无差别愤怒，若值为 `true`，愤怒的中立型生物将攻击附近所有的玩家，而不限于激怒它们的玩家。], [布尔值], [`false`],
+  [`water_source_conversion`], [是否允许流动水转化成水源。], [布尔值], [`true`]
+) <tab:gamerule>
 == 服务器管理
-服务器是在Minecraft中实现多人游戏的一种手段。玩家们可以连接服务器游玩各种小游戏，体验SMP、PVP或各种自定义多人游戏地图，极大地提高了Minecraft的可玩性。篇幅有限，本教程并不提供服务器的架设方法，仅提供服务器配置以及能够在服务器上使用的命令的解释，供服务器管理人员参考。
+专用服务器是在Minecraft中实现多人游戏的一种手段。玩家们可以连接服务器游玩各种小游戏，体验SMP、PVP或各种自定义多人游戏地图，极大地提高了Minecraft的可玩性。篇幅有限，本教程并不提供服务器的架设方法，仅提供服务器配置以及能够在服务器上使用的命令的解释，供服务器管理人员参考。
 === server.properties \*
 `server.properties` 是存储服务器所有配置的文件，文件中一个属性占据一行，每一行的格式为：
 #codebox("<属性>=<值>")
 例如：
 #codebox("gamemode=survival")
 #codebox("enable-command-block=false")
+下表列举了所有可用的属性：
+#general-table(
+  caption: [ `server.properties` 可用属性表],
+  colspan: 4,
+  columns: (auto, auto, auto, auto),
+  header: ([属性], [值类型], [默认值], [描述]),
+  [`accepts-transfers`], [布尔值], [`false`], [服务器是否接受以Transfers封包作为登录请求的传入连接。],
+  [`allow-flight`], [布尔值], [`false`], [是否允许玩家在安装添加飞行功能的Mods前提下在生存模式下飞行。],
+  [`broadcast-console-to-ops`], [布尔值], [`true`], [是否向所有在线管理员发送命令执行输出。],
+  [`broadcast-rcon-to-ops`], [布尔值], [`true`], [是否向所有在线管理员发送RCON命令执行输出。],
+  [`difficulty`], [字符串], [`easy`], [游戏的难度，可用值：`peaceful`（和平）、`easy`（简单）、`normal`（普通）、`hard`（困难）。],
+  [`enable-jmx-monitoring`], [布尔值], [`false`], [是否暴露一个具有对象名 `net.minecraft.server:type=Server` 的MBean和两个属性 `averageTickTime` 和 `tickTimes` 用于暴露以毫秒为单位的tick时间。],
+  [`enable-query`], [布尔值], [`false`], [是否允许使用GameSpy4协议的服务器监听器。],
+  [`enable-rcon`], [布尔值], [`false`], [是否允许远程访问服务器控制台（RCON）。],
+  [`enable-status`], [布尔值], [`true`], [是否使服务器在服务器列表中显示为在线。],
+  [`enforce-secure-profile`], [布尔值], [`true`], [是否要求进入服务器的玩家必须具有Mojang签名的公钥。],
+  [`enforce-whitelist`], [布尔值], [`false`], [是否强制启用白名单。],
+  [`entity-broadcast-range-percentage`], [整型], [`100`], [控制实体需要距离玩家有多近才会将封包发送给客户端。值越高，则实体可以在更远的地方被渲染。可用值为 `10` \~ `1000`（含）。],
+  [`force-gamemode`], [布尔值], [`false`], [是否强制玩家加入时为默认游戏模式。],
+  [`function-permission-level`], [整型], [`2`], [设置函数的权限等级，可用值为`1` \~ `4`（含）。],
+  [`gamemode`], [字符串], [`survival`], [设置默认游戏模式，可用值：`survival`（生存模式）、`creative`（创造模式）、`adventure`（冒险模式）、`spectator`（旁观模式）。],
+  [`generate-structures`], [布尔值], [`true`], [是否在未生成的区块中生成结构。],
+  [`generator-settings`], [字符串], [`{}`], [定义自定义世界的生成。],
+  [`hardcore`], [布尔值], [`false`], [是否使用极限模式进行游戏。],
+  [`hide-online-players`], [布尔值], [`false`], [是否在响应客户端状态请求时不返回在线玩家列表。值为 `true` 时不返回。],
+  [`initial-disabled-packs`], [字符串], [无], [设置在创建世界过程中需要禁用的数据包名称，存在多个数据包时用逗号分隔。],
+  [`initial-enabled-packs`], [字符串], [`vanilla`], [设置在创建世界过程中需要启用用的数据包名称，存在多个数据包时用逗号分隔。],
+  [`level-name`], [字符串], [`world`], [设置该游戏世界的自定义名称及文件夹名。],
+  [`level-seed`], [字符串], [无], [该游戏世界的种子。],
+  [`level-type`], [字符串], [`minecraft:normal`], [定义使用的世界预设ID，以命名空间ID表示，冒号 `:` 前需要加 `\` 以转义。原版世界预设可省略命名空间。],
+  [`log-ips`], [布尔值], [`true`], [定义是否当新玩家加入游戏时在服务器日志中记录其IP地址。],
+  [`management-server-enabled`], [布尔值], [`false`], [是否启用Minecraft服务器管理协议。]
+)
 = 坐标
 Minecraft的游戏世界是三维的。在编写数据包的时候，有时需要确定实例所需的位置参数。这样的参数被称为#proper-noun(display:"坐标（Coordinate）","zuo biao")。本章将详细介绍各种坐标参数以及这些参数在命令上的应用。
 #pagebreak()
