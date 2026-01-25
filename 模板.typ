@@ -989,7 +989,7 @@
       font: (
         (
           name: "TeX Gyre Termes",
-          covers: regex("[.1234567890]")
+          covers: regex("[.1234567890IV]")
         ),
         "Minecraft",
         "Unifont"

@@ -104,7 +104,7 @@ Minecraft拥有多种多样的玩法，生存、PVP、PVE、模组、建筑、�
 #pagebreak()
 #counter(page).update(1)
 = 绪论
-原版技术性开发，Minecraft Wiki称为“Java版可自定义内容”#cite(<minecraft_wiki>, form: none)，是由命令、资源包、数据包及相关的组件附件组合成的一个板块。技术性开发成果丰富，这些成果即是社区玩家常用的Mods、冒险地图、数据包、资源包、服务器等。Minecraft的技术性开发大致分为Mods开发和原版开发，其区别在于是否对游戏的源代码进行了修改。
+原版技术性开发，Minecraft Wiki称为“Java版可自定义内容”#cite(<minecraft_wiki>, form: none)，是由命令、资源包、数据包及相关的组件附件组合成的一个板块。技术性开发成果丰富，这些成果即是社区玩家常用的Mods、冒险地图、数据包、资源包、服务器等。Minecraft的技术性开发大致分为Mods开发和原版开发，其区别在于是否对游戏的源代码进行了修改。#cite(<minecraft_wiki_en>, form: none)
 
 本系列教程针对的是原版技术性开发，这一部分玩家的工作方向通常为制作冒险地图、开发原版模组、制作资源包或者管理服务器。
 
@@ -676,11 +676,11 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 #tips(
   [
     玩家的权限等级与其游戏模式无关，需要分情况讨论：
-    + 若该玩家是服务器管理员，则他的权限等级由`ops.json`中的值决定，默认为4级；
+    + 若该玩家是服务器管理员，则他的权限等级由 #icon(name: "json")  `ops.json` 中的值决定，默认为4级；
     + 若该玩家处于启用命令的单人世界中或为启用命令的局域网世界所有者，则他的权限等级为4级；
     + 若该玩家处于启用命令的局域网世界中，则他的权限等级为4级；
     + 非上述情况者权限等级一律为0级。
-    函数的权限等级默认为2级，可在`server.properties`中修改。
+    函数的权限等级默认为2级，可在 #icon(name: "file") `server.properties` 中修改。
   ],
   width: 100%
 )
@@ -1115,7 +1115,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 )
 当一个存档中存在多个有效的已启用数据包时，游戏会根据数据包的顺序加载其内容，这里的“有效”是指数据包有合法的元数据且数据包内无任何语法错误。已启用数据包的加载顺序存储于 #icon(name:"nbt") `level.dat` 中。在选择数据包窗口“已选”一栏的加载顺序表现为从下到上。
 
-若这些数据包对同种资源进行定义，则*后加载的数据包会对先加载的数据包进行覆盖*，表明*越靠后加载的数据包其优先级越高*。可使用命令  `/datapack` 查询、修改、控制这些数据包的启用或禁用，`/datapack` 所需的权限等级为2，以下是所有用法：
+若这些数据包对同种资源进行定义，则*后加载的数据包会对先加载的数据包进行覆盖*，表明*越靠后加载的数据包其优先级越高*。可使用命令  `/datapack` 查询、修改、控制这些数据包的启用或禁用，`/datapack` 所需的权限等级为2，以下是所有用法：#index(index: "command", "datapack")
 #reset-h5
 ===== 启用指定数据包
 #codebox("datapack enable <name>")
@@ -1843,7 +1843,7 @@ Minecraft的架构是*客户端-服务端模型*，顾名思义，Minecraft使�
 )
 *即使是进行单人游戏，Minecraft依旧会在玩家进入本地世界时创建一个内置服务器，在本地世界关闭时内置服务器即被关闭。*这个内置服务器可以开放至局域网，从而将单人游戏开放为局域网联机的多人游戏。此时内置服务器拥有一个地址，其格式为
 #codebox("<IPv4地址>:<端口>") <code:ipv4>
-局域网联机的IPv4地址可由CMD的 `ipconfig` 命令查询。端口是一个数值，可以自由指定，范围为 `0` 至 `65535`（含两端）。除了通过暂停游戏的对局域网开放选项外，玩家还可以通过命令 `/publish` 开放内置服务器，该命令所需权限等级为4，且仅能在单人游戏中使用，其语法为：
+局域网联机的IPv4地址可由CMD的 `ipconfig` 命令查询。端口是一个数值，可以自由指定，范围为 `0` 至 `65535`（含两端）。除了通过暂停游戏的对局域网开放选项外，玩家还可以通过命令 `/publish` 开放内置服务器，该命令所需权限等级为4，且仅能在单人游戏中使用，其语法为：#index(index: "command", "publish")
 #codebox("publish [<allowCommands>] [<gamemode>] [<port>]")
 #param-desc(
   [`<allowCommands>`（布尔值 `brigadier:bool`）], [可选，指定是否启用命令，默认为否。],
@@ -1884,7 +1884,7 @@ $ "TPS" eq 1000 / "MSPT" $
 
 游戏的流畅程度是影响玩家游戏体验的关键因素，*无论是搭建红石电路还是制作数据包，均需要综合考虑成品对TPS和FPS的影响*。
 ==== 命令/tick的用法
-命令 `/tick` 可用于控制游戏刻运行，该命令所需权限等级为3。以下是所有用法。
+命令 `/tick` 可用于控制游戏刻运行，该命令所需权限等级为3。以下是所有用法。#index(index: "command", "tick")
 ===== 查询当前游戏刻频率，并返回性能数据。语法为：
 #codebox("tick query")
 ===== 定义游戏刻频率，语法为：
@@ -2008,7 +2008,7 @@ $ a = 2d_"r" + 1 $ <equ:render_distance>
 #param-desc(
   prefix: "式中：",
   [$a$], [渲染区域边长。],
-  [$d_"r"$], [在单人游戏中为渲染距离，原版的渲染距离必须为介于2和32之间（含）的整数。在多人游戏中为 `server.properties` 中 `view-distance` 的值。]
+  [$d_"r"$], [在单人游戏中为渲染距离，原版的渲染距离必须为介于2和32之间（含）的整数。在多人游戏中为 #icon(name: "file") `server.properties` 中 `view-distance` 的值。]
 )
 *对于上述正方形区域内的每一个区块，其加载等级均为31。*
 
@@ -2174,7 +2174,7 @@ $ E(X) = sum_(t-1)^(+∞) X_t P_t = 1 / p_0 = 1 / display(1 - (1 - 1 / 16^3))^m 
 
 方块更新一般依照以下的顺序依次计算：调用被替代方块状态的破坏行为$ arrow.r$调用替代方块状态的放置行为$ arrow.r$进行NC更新$ arrow.r$进行比较器更新$ arrow.r$进行PP更新。
 
-方块更新会向外传播，在执行更新的过程中可能在毗邻方块产生新的更新，一直到所有可用的更新都执行完毕，但是在更新无法完全清除的情况下可能会造成游戏崩溃。例如在只有一层沙子的超平坦世界中破坏任意沙子，则方块更新传播会持续进行，并且计算更新的方块数量越来越多，最终会不可避免地造成游戏崩溃。服务器配置文件 `server.properties` 的 `max-chained-neighbor-updates` 一项可用于设置最大的连锁更新数量，超过此值的新增更新将会被忽略。
+方块更新会向外传播，在执行更新的过程中可能在毗邻方块产生新的更新，一直到所有可用的更新都执行完毕，但是在更新无法完全清除的情况下可能会造成游戏崩溃。例如在只有一层沙子的超平坦世界中破坏任意沙子，则方块更新传播会持续进行，并且计算更新的方块数量越来越多，最终会不可避免地造成游戏崩溃。服务端配置文件 #icon(name: "file") `server.properties` 的 `max-chained-neighbor-updates` 一项可用于设置最大的连锁更新数量，超过此值的新增更新将会被忽略。
 
 当一个方块发生变化时，即产生PP更新。对于一个方块上的六个毗邻方块，依次沿$x$、$z$、$y$轴的方向，各方向上先检查负轴方向上的方块，再检查正轴方向上的方块，即按照西、东、北、南、下、上的顺序传播PP更新。PP更新是广泛存在的一种更新类型，包括但不限于附着性方块的掉落、连接性方块的连接判断、重力方块的掉落检测等。
 
@@ -2345,13 +2345,23 @@ Java版原版所有可用的实体可分为若干类别，这些实体的命名�
 ===== 烟花火箭 `firework_rocket`
 ===== 栓神结 `leash_knot`
 ===== 闪电束 `lightning_bolt`
-=== 游戏规则
+=== 难度#h(1em)游戏模式#h(1em)游戏规则
+难度、游戏模式和游戏规则是基本的游戏设置。
+==== 难度
+#proper-noun(display: "难度（Difficulty）", "nan2 du4")是控制游戏难易程度的选项。游戏中一共有四种难度，难易程度由低到高依次为*和平*、*简单*、*普通*和*困难*。玩家可以在选项中调整游戏难度，也可以通过命令 `/difficulty` 来调整，该命令用于更改游戏难度，所需权限等级为2，语法为：#index(index: "command", "difficulty")
+#codebox("difficulty [easy|hard|normal|peaceful]")
+#param-desc(
+  [`[easy|hard|normal|peaceful]` ], [游戏难度，依次为简单、普通、困难、和平，若不指定该参数则视作查询当前游戏难度。]
+)
+==== 游戏模式
+
+==== 游戏规则
 #proper-noun(display: "游戏规则（Game rule）", "you2 xi4 gui1 ze2")是控制游戏玩法的一种手段。Minecraft拥有很多种游戏规则，自25w44a起，游戏规则变为了注册项，被移动到了注册表中，现使用命名空间ID映射这些游戏规则。不同的游戏规则可以设置它们各自的值，不是所有的游戏规则都适用布尔值，一些游戏规则会使用整数，这些整数的可用范围为有符号的32位整数，即$-2147483648$\~ 2147483647（含）。每个游戏规则都会有一个默认值，玩家没有指定它们的值时，便使用这些默认值。
 #figure(
   caption: "游戏规则页面",
   image("图片/游戏规则页面.png", width: 28em)
 )
-在创建游戏世界时，可以通过 `更多`$arrow.r$`游戏规则` 页面修改。自26.1-snapshot-3起，也可以在游戏过程中点击 `世界选项…`$arrow.r$`编辑游戏规则` 手动修改。命令 `/gamerule` 也可用于更改游戏模式，其所需权限等级为2，语法为：
+在创建游戏世界时，可以通过 `更多`$arrow.r$`游戏规则` 页面修改。自26.1-snapshot-3起，也可以在游戏过程中点击 `世界选项…`$arrow.r$`编辑游戏规则` 手动修改。命令 `/gamerule` 也可用于更改游戏模式，其所需权限等级为2，语法为：#index(index: "command", "gamerule")
 #codebox("gamerule <rulename> [<value>]")
 #param-desc(
   [`<rulename>` ], [必须为有效的游戏规则。],
@@ -2426,18 +2436,18 @@ Java版原版所有可用的实体可分为若干类别，这些实体的命名�
 == 服务器管理
 专用服务器是在Minecraft中实现多人游戏的一种手段。玩家们可以连接服务器游玩各种小游戏，体验SMP、PVP或各种自定义多人游戏地图，极大地提高了Minecraft的可玩性。篇幅有限，本教程并不提供服务器的架设方法，仅提供服务器配置以及能够在服务器上使用的命令的解释，供服务器管理人员参考。
 === server.properties \*
-`server.properties` 是存储服务器所有配置的文件，文件中一个属性占据一行，每一行的格式为：
+#icon(name: "file") `server.properties`，即*服务端配置文件*，文件中一个配置属性占据一行，每一行的格式为：
 #codebox("<属性>=<值>")
 例如：
 #codebox("gamemode=survival")
 #codebox("enable-command-block=false")
 下表列举了所有可用的属性：
 #general-table(
-  caption: [ `server.properties` 可用属性表],
+  caption: [ #icon(name: "file") `server.properties` 可用属性表],
   colspan: 4,
   columns: (auto, auto, auto, auto),
   header: ([属性], [值类型], [默认值], [描述]),
-  [`accepts-transfers`], [布尔值], [`false`], [服务器是否接受以Transfers封包作为登录请求的传入连接。],
+  [`accepts-transfers`], [布尔值], [`false`], [服务器是否接受以Transfers封包作为登录请求的传入连接。若为 `true`，则在其他服务器中使用命令 `/tranfer` 能将玩家转移至该服务器。],
   [`allow-flight`], [布尔值], [`false`], [是否允许玩家在安装添加飞行功能的Mods前提下在生存模式下飞行。],
   [`broadcast-console-to-ops`], [布尔值], [`true`], [是否向所有在线管理员发送命令执行输出。],
   [`broadcast-rcon-to-ops`], [布尔值], [`true`], [是否向所有在线管理员发送RCON命令执行输出。],
@@ -2470,7 +2480,6 @@ Java版原版所有可用的实体可分为若干类别，这些实体的命名�
   [`management-server-tls-enabled`], [布尔值], [`true`], [是否启用TLS。],
   [`management-server-tls-keystore`], [字符串], [无], [保存服务端用于TLS的私钥和证书的KeyStore。],
   [`management-server-tls-keystore-password`], [字符串], [无], [KeyStore的密码。],
-  [`status-heartbeat-interval`], [整数], [`0`], [控制管理服务器向已连接的客户端发送心跳通知的间隔，单位为秒。若为 `0`，则禁用此功能。],
   [`max-chained-neighbor-updates`], [整数], [`1000000`], [限制连锁NC更新的数量，超过此数量的连锁NC更新会被跳过。],
   [`max-players`], [整数], [`20`], [设置服务器同时能容纳的最大玩家数量。可用值 `0` \~ `2147483647`（含）。],
   [`max-tick-time`], [整数], [`60000`], [设置每个tick花费的最大毫秒数。可用值 `0` \~ $2^63-1$（含）],
@@ -2478,12 +2487,112 @@ Java版原版所有可用的实体可分为若干类别，这些实体的命名�
   [`motd`], [字符串], [`A Minecraft Server`], [玩家客户端的多人游戏服务器列表中显示的服务器信息。],
   [`network-compression-threshold`], [整数], [`256`], [若值为$n$，则允许$n-1$字节的封包正常发送, 如果封包为$n$字节或更大时会进行压缩。`-1` 代表完全禁用封包压缩，`0` 代表压缩全部封包。],
   [`online-mode`], [布尔值], [`true`], [是否让服务器对比Minecraft账户数据库验证登录信息，为 `true` 时只允许正版玩家进入。],
-  [`op-permission-level`], [整数], [4], [设定使用 `/op` 命令时管理员的权限等级，可用值 `1` \~ `4`（含）。],
+  [`op-permission-level`], [整数], [`4`], [设定使用 `/op` 命令时管理员的权限等级，可用值 `1` \~ `4`（含）。],
   [`pause-when-empty-seconds`], [整数], [`60`], [服务器在没有玩家在线后多少秒暂停。],
   [`player-idle-timeout`], [整数], [`0`], [设置玩家可空闲不被提出服务器的最大时间（单位为分钟），为 `0` 时不踢出。],
   [`prevent-proxy-connections`], [布尔值], [`false`], [是否允许玩家使用虚拟专用网络或代理。],
-  [`query.port`], [整型], [`25565`], [设置监听服务器的端口号，可用值 `1` \~ `65534`（含）。]
+  [`query.port`], [整数], [`25565`], [设置监听服务器的端口号，可用值 `1` \~ `65534`（含）。],
+  [`rate-limit`], [整数], [`0`], [设置玩家被踢出服务器前可发送的封包数量，设为 `0` 表示不发送。],
+  [`rcon.password`], [字符串], [无], [RCON远程访问的密码。],
+  [`rcon.port`], [整数], [`25575`], [RCON远程访问的端口号，可用值 `1` \~ `65534`（含）。],
+  [`region-file-compression`], [字符串], [`deflate`], [设置区域文件压缩算法，可用值：`deflate`（Deflate算法）、`lz4`（LZ4算法）、`none`（不压缩）。],
+  [`require-resource-pack`], [布尔值], [`false`], [是否对玩家强制启用服务器资源包。],
+  [`resource-pack`], [字符串], [无], [可选，指向一个资源包的URI，玩家可选择是否使用该资源包。值中的 `:` 和 `/` 前必须有 `\` 作为转义。],
+  [`resource-pack-id`], [UUID], [无], [可选，`resource-pack` 指定的资源包的UUID。],
+  [`resource-pack-prompt`], [字符串], [无], [可选，使用 `require-resource-pack` 时在资源包提示界面显示自定义信息。],
+  [`resource-pack-sha1`], [字符串], [无], [资源包的SHA-1值，必须为小写十六进制。],
+  [`server-ip`], [字符串], [无], [将服务器与特定IP绑定。],
+  [`server-port`], [整数], [`25565`], [服务器监听端口号，可用值 `1` \~ `65534`（含）。],
+  [`simulation-distance`], [整数], [`10`], [模拟距离，可用值`3` \~ `32`（含）。],
+  [`spawn-protection`], [整数], [`16`], [设该值为$x$，则以出生点所在方块为中心边长为$2x+1$的正方形区域内存在出生点保护。若值为 `0` 则禁用出生点保护。],
+  [`status-heartbeat-interval`], [整数], [`0`], [控制管理服务器向已连接的客户端发送心跳通知的间隔，单位为秒。若为 `0`，则禁用此功能。],
+  [`sync-chunk-writes`], [布尔值], [`true`], [是否使区块文件以同步模式写入。],
+  [`text-filtering-config`], [字符串], [无], [服务器中需要被屏蔽的文本。],
+  [`text-filtering-version`], [整数], [`0`], [服务器中需要被屏蔽文本格式的版本。],
+  [`use-native-transport`], [布尔值], [`true`], [是否使用针对Linux平台的封包收发优化。],
+  [`view-distance`], [整数], [`10`], [渲染距离，可用值`3` \~ `32`（含）。],
+  [`white-list`], [布尔值], [`false`], [是否启用白名单。]
+) <tab:server_properties>
+=== 多人游戏命令
+多人游戏命令是对服务器管理有用的一类命令，且仅能在多人游戏中使用。由于它们的权限等级均大于2，因此在命令方块上和数据包内无法运行这些命令。
+==== 用于封禁玩家与设置黑名单的命令
+===== 命令 `/ban` #index(index: "command", "ban")
+#codebox("ban <targets> [reason]")
+该命令用于封禁特定的玩家，并将其加入黑名单。加入黑名单的玩家将不被允许进入服务器。该命令所需权限等级为3。
+#param-desc(
+  [`<targets>`（游戏档案 `minecraft:game_profile`）], [需要是玩家名称或UUID，无论玩家是否在线。成功后，拥有该名称的所有玩家都无法进入该服务器。],
+  [`[reason]`（文本 `minecraft:message`）], [可选，是一个贪婪词组，接受含空格的字符串。用于表示封禁的理由。可记录于服务器日志中。]
 )
+===== 命令 `/ban-ip` #index(index: "command", "ban-ip")
+#codebox("ban-ip <target> [reason]")
+该命令主要是针对IP地址的封禁，并将此IP地址列入黑名单，但也可以支持对玩家名称的封禁（不能是UUID），成功后所有由被封IP进入服务器的玩家都不被允许。该命令所需权限等级为3。
+#param-desc(
+  [`<target>`（字符串 `brigadier:string`）], [需要被封禁的IP地址或玩家名称。]
+)
+===== 命令 `/banlist` #index(index: "command", "banlist")
+#codebox("banlist (ips|players)")
+该命令可供查询被封禁的IP地址或玩家，所需权限等级为3。
+#param-desc(
+  [`(ips|players)` ], [在 `ips` 和 `players` 中任选其一，表示需要查询的内容为处在黑名单中的IP地址或玩家。]
+)
+==== 设置玩家解封的命令
+===== 命令 `/pardon` #index(index: "command", "pardon")
+#codebox("pardon <targets>")
+该命令用于解封特定的玩家，并将该玩家从黑名单中移除。该命令所需权限等级为3。
+===== 命令 `/pardon-ip` #index(index: "command", "pardon-ip")
+#codebox("pardon-ip <target>")
+该命令用于解封特定的IP地址，并将该IP地址从黑名单中移除。该命令所需权限等级为3。
+==== 白名单
+黑名单制度通常用于管理开放类型的服务器，并对个别不遵守服务器规则的玩家实施单独的封禁，其他玩家依旧可以自由进出服务器。而白名单制度常见于一些私人服务器，仅针对特定的玩家开放，这样可以最大限度地防止外来人员对服务器造成破坏。命令 `/whitelist` 是专门针对白名单的命令，该命令所需权限等级为3，它有以下几种语法：#index(index: "command", "whitelist")
+===== 添加玩家至白名单
+#codebox("whitelist add <targets>")
+===== 查询在白名单上的玩家
+#codebox("whitelist list")
+===== 关闭白名单
+#codebox("whitelist off")
+===== 开启白名单
+#codebox("whitelist on")
+===== 重新加载白名单
+#codebox("whitelist reload")
+===== 将玩家从白名单上移除
+#codebox("whitelist remove <targets>")
+==== 管理员命令
+===== 命令 `/op` #index(index: "command", "op")
+用于给予玩家管理员权限。该命令所需权限等级为3，语法为：
+#codebox("op <targets>")
+此管理员权限等级由 #icon(name: "file") `server.properties` 中的 `op-permission-level` 决定，详见@tab:server_properties。
+===== 命令 `/deop` #index(index: "command", "deop")
+剥夺玩家的管理员权限。该命令所需权限等级为3，语法为：
+#codebox("deop <targets>")
+==== 用于设置玩家在服务器中最长挂机时间的命令 `/setidletimeout` #index(index: "command", "setidletimeout")
+该命令所需权限等级为3，语法为：
+#codebox("setidletimeout <minutes>")
+#param-desc(
+  [`<minutes>`（整型 `brigadier:integer`）], [单位是分钟不是而不是游戏刻，可用范围$[0,214748364]$。]
+)
+==== 服务器保存相关的命令
+以下命令所需权限等级均为4。
+===== 命令 `/save-all`：将服务器手动保存至硬盘。 #index(index: "command", "save-all")
+#codebox("save-all [flush]")
+#param-desc(
+  [`[flush]`], [可选字面量，若填入该字面量，则服务器会立即保存所有的区块数据，并造成服务器临时冻结。]
+)
+===== 命令 `/save-off`：关闭自动保存服务器，无附加参数。 #index(index: "command", "save-off")
+#codebox("save-off")
+===== 命令 `/save-on`：开启自动保存服务器，无附加参数。 #index(index: "command", "save-on")
+#codebox("save-on")
+==== 用于关闭服务器的命令 `/stop`
+该命令所需权限等级均为4，语法为：#index(index: "command", "stop")
+#codebox("stop")
+==== 将玩家从一个服务器转移至另一服务器的命令 `/transfer` #index(index: "command", "transfer")
+此命令仅会发出请求，实际能否转移成功取决于目的服务器 #icon(name: "file") `server.properties` 中的 `accepts-transfers` 配置，详见@tab:server_properties。`/transfer` 的语法为：
+#codebox("transfer <hostname> [<port>] [<players>]")
+#param-desc(
+  [`<hostname>`（字符串 `brigadier:string`）], [目的服务器的主机名。],
+  [`[<port>]`（整型 `brigadier:integer`）], [可选，目的服务器端口号，若不指定则为 `25565`。],
+  [`[<players>]`（实体 `minecraft:entity`）], [可选，被转移的玩家，必须为玩家名、目标选择器或UUID。若不指定则默认为命令执行者。]
+)
+#heading(level: 2, numbering: none, [第一章思考题与习题])
 = 坐标
 Minecraft的游戏世界是三维的。在编写数据包的时候，有时需要确定实例所需的位置参数。这样的参数被称为#proper-noun(display:"坐标（Coordinate）","zuo biao")。本章将详细介绍各种坐标参数以及这些参数在命令上的应用。
 #pagebreak()
@@ -3347,10 +3456,17 @@ Minecraft规定：大部分方块的长、宽和高均为1米，体积为1立方
 )<tab:pack_format>
 == 方块状态<sec:block_state>
 == 数据包标签<sec:tag_in_datapack>
-#heading(level: 1, numbering: none, [索引])
+= 索引
+== 本书命令
 #columns(2)[
-  #make-index(use-page-counter: true)
+  #make-index(entry-casing: k => k, indexes: ("command",), use-page-counter: true)
 ]
+#pagebreak()
+== 专有名词（汉语拼音顺序）
+#columns(2)[
+  #make-index(indexes: ("Default",), use-page-counter: true)
+]
+== 重要方法
 #bibliography(
   "参考文献.bib",
   title: "参考文献",
