@@ -2348,13 +2348,25 @@ Java版原版所有可用的实体可分为若干类别，这些实体的命名�
 === 难度#h(1em)游戏模式#h(1em)游戏规则
 难度、游戏模式和游戏规则是基本的游戏设置。
 ==== 难度
-#proper-noun(display: "难度（Difficulty）", "nan2 du4")是控制游戏难易程度的选项。游戏中一共有四种难度，难易程度由低到高依次为*和平*、*简单*、*普通*和*困难*。玩家可以在选项中调整游戏难度，也可以通过命令 `/difficulty` 来调整，该命令用于更改游戏难度，所需权限等级为2，语法为：#index(index: "command", "difficulty")
+#proper-noun(display: "难度（Difficulty）", "nan2 du4")是控制游戏难易程度的选项。游戏中一共有四种难度，难易程度由低到高依次为*和平*、*简单*、*普通*和*困难*。玩家可以在选项中调整游戏难度，也可以通过命令 `/difficulty` 来调整，该命令所需权限等级为2，语法为：#index(index: "command", "difficulty")
 #codebox("difficulty [easy|hard|normal|peaceful]")
 #param-desc(
   [`[easy|hard|normal|peaceful]` ], [游戏难度，依次为简单、普通、困难、和平，若不指定该参数则视作查询当前游戏难度。]
 )
 ==== 游戏模式
+#proper-noun(display: "游戏模式（Game mode）", "you2 xi4 mo2 shi4")是玩家进行游戏的方式，Minecraft一共有四种游戏模式：*生存模式*、*创造模式*、*冒险模式*和*旁观模式*，*注意极限模式是一种世界设置而不是一种游戏模式。*
 
+每一个游戏世界都有其默认的游戏模式，使得新进入世界（服务器）的玩家会使用该默认游戏模式。在创建新世界页面选择的游戏模式是该世界的默认游戏模式，极限模式比较特殊，它使用的默认游戏模式为生存模式。默认游戏模式可以在游戏过程中通过命令 `defaultgamemode` 修改，该命令所需权限等级为2，语法为：#index(index: "command", "defaultgamemode")
+#codebox("defaultgamemode <mode>") <code:command_defaultgamemode>
+#param-desc(
+  [`<mode>`（游戏模式 `minecraft:gamemode`）], [必须为下列值其中一者：`survival`（生存模式）、`creative`（创造模式）、`adventure`（冒险模式）、`spectator`（旁观模式）。]
+)
+玩家自身的游戏模式不一定必须是世界默认游戏模式，可以由命令 `/gamemode` 修改，该命令所需权限等级为2，语法为：#index(index: "command", "gamemode")
+#codebox("gamemode <mode> [<targets>]")
+#param-desc(
+  [`<mode>`（游戏模式 `minecraft:gamemode`）], [与语法@code:command_defaultgamemode 一致。],
+  [`[<targets>]`（实体 `minecraft:entity`）], [可选，指定需要更改游戏模式的玩家，必须为玩家名称、UUID或目标选择器，且目标选择器必须指定玩家。如不指定则更改命令执行者的游戏模式。]
+)
 ==== 游戏规则
 #proper-noun(display: "游戏规则（Game rule）", "you2 xi4 gui1 ze2")是控制游戏玩法的一种手段。Minecraft拥有很多种游戏规则，自25w44a起，游戏规则变为了注册项，被移动到了注册表中，现使用命名空间ID映射这些游戏规则。不同的游戏规则可以设置它们各自的值，不是所有的游戏规则都适用布尔值，一些游戏规则会使用整数，这些整数的可用范围为有符号的32位整数，即$-2147483648$\~ 2147483647（含）。每个游戏规则都会有一个默认值，玩家没有指定它们的值时，便使用这些默认值。
 #figure(
