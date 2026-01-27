@@ -1311,7 +1311,6 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   [#h(-2em)一个版本号为88.0的数据包需要使用 #icon(name: "folder") `jigsaw_marker_v1.0` 这个数据包作为其子包，尝试配置子数据包。],
   [
     首先，将数据包 #icon(name: "folder") `jigsaw_marker_v1.0` 移入主数据包，文件夹结构如下：
-    #v(-1em)
     #tree(
       (0, [#icon(name: "folder") *主数据包*]),
       (1, [#icon(name: "folder") *jigsaw_marker_v1.0*]),
