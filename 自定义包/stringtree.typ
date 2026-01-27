@@ -47,9 +47,10 @@
           grid.cell(stroke: (left: if has_v_line_current { line_thickness + line_color } else { none }), [])
         )
       }).flatten()
+      let grid_block_breakable = item.at(3, default: false)
       grid.cell(
         colspan: total_columns,
-        block(breakable: false, width: 100%)[
+        block(breakable: grid_block_breakable, width: 100%)[
           #grid(
             columns: (..range(max_level).map(_ => (indent_half, indent_half)).flatten(), 1fr),
             stroke: none,

@@ -474,10 +474,16 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 可以由双引号括起，如 `"quoted phrase"`，也可以使用单引号来定义，如 `'quoted phrase'`，此时单词之间可以有空格。
 ====== #proper-noun(display: "贪婪词组（Greedy phrase）", "tan1 lan2 ci2 zu3")
 这种形式的词组不带引号，任意使用空格。该形式的参数通常位于命令的末尾，将命令的剩余部分全部作为字符串参数。如：`words with spaces`。上文中命令@code:say_hello_world 就使用了这种参数。
+
+Minecraft的命令有很多，可用 `/help` 命令查询任何可用命令的语法，`/help` 本身的语法为#index(index: "command", "help")
+#codebox("help [<command>]")
+#param-desc(
+  [`[<command>]`（字符串 `brigadier:string`）], [可选，若不指定，则在执行权限等级下列出所有可用的命令。若指定了该参数，则必须为可用的命令，比如 `help help` 会返回 `/help` 这条命令的语法指引。由于该参数是一个贪婪词组，因此也可以输入命令的多个参数，例如若要查询 `/execute` 命令下的 `if` 子命令用法，则可以输入 `help execute if`，然后会返回 `execute if` 的具体用法。]
+)
 === 命令的输入
 命令是一种文本输入，以下是可供命令输入的途径：
 ===== 使用聊天栏输入命令
-为了和普通的聊天文本区分开来，在聊天栏中输入命令时会在命令前加一个前缀 `/`，此前缀必不可少。在不使用按键 `T` 召唤聊天栏时可以直接键入 `/` 输入命令，这是使玩家快速进入命令输入模式的一种办法。
+为了和普通的聊天文本区分开来，在聊天栏中输入命令时会在命令前加一个前缀 `/`，此前缀必不可少。在不使用按键 `T` 召唤聊天栏时可以直接键入 `/` 输入命令，这是使玩家快速进入命令输入模式的一种办法。比如，玩家可以在聊天栏中输入 `/help` 以查询命令语法。
 
 呼出聊天栏后，可以使用 `↑` 或 `↓` 键调用#proper-noun(display: "命令历史（Command history）", "ming4 ling4 li4 shi3")，即先前键入的命令。如果之前输入的命令有语法错误的话，切换至该命令时依旧会有语法错误，不会自动更正，更不会因为含有语法错误就不显示该命令。这种快捷键在命令方块控制台中不适用。命令历史可以跨存档调用。
 
@@ -500,7 +506,7 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 在命令方块或命令方块矿车内输入命令时，斜杠前缀 `/` 不是必须的。和在聊天栏中使用命令一样，当文本框中无任何内容时，下方会显示一个命令列表（如@fig:command_block_gui），通过调整鼠标滚轮能够调整命令列表显示的位置，按 `Tab` 键能够在输入命令时自动补全或选择命令的部分。
 #figure(
   caption: [命令方块GUI],
-  image("图片/命令方块GUI.png")
+  image("图片/命令方块GUI.png", width: 28em)
 ) <fig:command_block_gui>
 ===== 在数据包函数文件中输入命令
 这种编写方式需要使用一定的编译软件，常用的编译软件有Windows自带的记事本、Visual Studio Code等。函数中的命令不能带有斜杠前缀。具体的内容可参阅《数据包》教程的描述。
@@ -617,6 +623,7 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
     [`/xp`], [2], []
   )
 )
+权限等级和限制条件也会影响命令 `/help` 的行为。比如，若执行权限等级为0，则 `/help` 仅列出所需权限等级为0的命令；若执行权限等级为2，则仅列出所需权限等级小于等于2的命令。
 === 命令的解析 \*
 游戏处理命令的过程可分为*解析*和*执行*两个阶段。Minecraft使用*Brigadier*作为命令的解析器、派发器。
 
@@ -909,9 +916,8 @@ Minecraft还使用其他一些文件格式，如 `.jfr` 文件、`.log` 文件�
   (2, [#icon(name: "folder") *skins*]),
   (3, [#icon(name: "folder") *\<哈希值前两位>*]),
   (4, [#icon(name: "file") *\<哈希值>*: 散列资源文件。]),
-  (2, [#icon(name: "folder") *virtual*])
-)
-#tips(
+  (2, [#icon(name: "folder") *virtual*]),
+  (1, [#tips(
   [
     #icon(name: "folder") `assets` 文件夹内的资源文件都是用#proper-noun(display: "哈希值（Hash value，散列值）", "ha1 xi1 zhi2")加密的，以哈希表的方式映射资源位置。要查询 #icon(name: "folder") `assets` 内的任意一个资源文件，需按照以下步骤：
     + 打开 #icon(name: "folder") `indexes` 文件夹，找到需要提取资源的 #icon(name: "json") `<版本号>.json` 文件。其中的内容大致如下所示：
@@ -949,19 +955,15 @@ Minecraft还使用其他一些文件格式，如 `.jfr` 文件、`.log` 文件�
   \"size\": 459788
 }")
     这时获取到哈希值 `4674523c91196e0898c24a06531f94154111f2a3`，其前两位是 `46`。然后打开文件夹 #icon(name: "folder") `objects\46`，在其中找到名为 #icon(name: "file") `4674523c91196e0898c24a06531f94154111f2a3` 的文件，此即为简体中文的语言文件。打开后会发现文件中的汉字均是用Unicode码表示的。
-  ]
-)
-#tree(
-  (0, [#icon(name: "folder") *.minecraft*]),
+  ])], false, true),
   (1, [#icon(name: "folder") *backups*: 存放备份存档的文件夹。]),
   (2, [#icon(name: "zip") *\<日期>\_\<时间>\_\<存档名称>.zip*: 一个备份存档。]),
   (1, [#icon(name: "folder") *bin*]),
   (2, [#icon(name: "folder") *\<随机ID>*]),
   (3, [#icon(name: "file") `.dll` 或 `.so` 文件]),
   (1, [#icon(name: "folder") *crash-reports*: 存储游戏崩溃报告的文件夹。]),
-  (2, [#icon(name: "text") *crash-\<日期>\_\<时间>-\<逻辑端类型>.txt*: 一份#proper-noun(display: "崩溃报告（Crash Report）", "bengkuibaogao")文件。])
-)
-#tips(
+  (2, [#icon(name: "text") *crash-\<日期>\_\<时间>-\<逻辑端类型>.txt*: 一份#proper-noun(display: "崩溃报告（Crash Report）", "bengkuibaogao")文件。]),
+  (1, [#tips(
   [游戏可能会以各种原因而发生#proper-noun(display: "崩溃（Crash）", "beng1 kui4")，读者可以从崩溃报告中查询崩溃原因。例如，以下是一份崩溃报告的开头部分内容：
   #codefile(
     lang: "txt",
@@ -974,16 +976,10 @@ Description: Ticking entity"
   )
   其中第二行是“诙谐的评论”，对崩溃报告的分析没有作用。`Description` 行是崩溃原因，此处的崩溃原因是 `Ticking entity`，这种崩溃通常意味着有实体发生了错误。后文通常是崩溃的具体原因。
   
-  鉴于崩溃原因多种多样，本教程无法介绍每一种崩溃原因及其解决办法，读者可以从社区获取各种崩溃原因的解决办法或者使用AI分析。]
-)
-#tree(
-  (0, [#icon(name: "folder") *.minecraft*]),
+  鉴于崩溃原因多种多样，本教程无法介绍每一种崩溃原因及其解决办法，读者可以从社区获取各种崩溃原因的解决办法或者使用AI分析。])], false, true),
   (1, [#icon(name: "folder") *debug*: 存储函数调试结果的文件夹。]),
-  (2, [#icon(name: "text") *debug-trace-\<日期>\_\<时间>.txt*: 一份调试结果。])
-)
-#tips(
-  [
-    命令 `/debug` 可用于函数的调试，并将调试的结果以 `.txt` 的文件格式存入 #icon(name: "folder") debug 中。文件中的内容极为详细，可以以此观察函数的整个运行过程，并从中找到错误的地方。调试结果的具体内容如：
+  (2, [#icon(name: "text") *debug-trace-\<日期>\_\<时间>.txt*: 一份调试结果。]),
+  (1, [#tips([命令 `/debug` 可用于函数的调试，并将调试的结果以 `.txt` 的文件格式存入 #icon(name: "folder") `debug` 中。文件中的内容极为详细，可以以此观察函数的整个运行过程，并从中找到错误的地方。调试结果的具体内容如：
     #codefile(
       lang: "txt",
       title: ".minecraft > debug > debug-trace-2022-10-10_19.16.40.txt",
@@ -1003,18 +999,14 @@ Description: Ticking entity"
     [C] execute as @a if score @s max_health matches 2 run attribute @s max_health base set 2 -> 0"
     )
     其中首行是函数的命名空间ID。以 `[C]` 开头的内容为函数中的命令行；以 `[E]` 开头的内容指明了上一条命令行出现错误的地方；以 `[M]` 开头的内容说明上一条命令执行成功，并有 `[R=<值>]` 输出执行的结果。`[F]` 说明上一条命令引用了其他函数，并指出被引用的函数的大小。
-  ]
-)
-#tree(
-  (0, [#icon(name: "folder") *.minecraft*]),
+  ])], false, true),
   (1, [#icon(name: "folder") *libraries*: 按Maven仓库的标准目录结构组织和存储的第三方库。]),
   (2, [#icon(name: "folder") 一个第三方库。]),
   (1, [#icon(name: "folder") *logs*: 存储日志文件的文件夹。]),
   (2, [#icon(name: "zip") *\<日期>-\<日志编号>.log.gz*: 压缩文件，可使用解压软件打开。]),
   (3, [#icon(name: "file") *\<日期>-\<日志编号>.log*: 日志文件。]),
-  (2, [#icon(name: "file") *latest.log*: 最新一次游戏或当前正在进行的游戏所生成的日志文件。])
-)
-#tips(
+  (2, [#icon(name: "file") *latest.log*: 最新一次游戏或当前正在进行的游戏所生成的日志文件。]),
+  (1, [#tips(
   [日志文件会存储游戏运行全过程的各种反馈，包括加载错误时的反馈，这些文件对游戏调试很重要。文件内容大致如下所示：
   #codefile(
     title: ".minecraft > log > 2025-03-07-1.log.gz > 2025-03-07-1.log",
@@ -1040,10 +1032,7 @@ Description: Ticking entity"
 [19:24:38] [Server thread/INFO]: [XVExodus: 已将XVExodus传送至Mu_xian]
 [19:25:06] [Server thread/INFO]: [XVExodus: 已将XVExodus传送至Mu_xian]"
   )
-  ]
-)
-#tree(
-  (0, [#icon(name: "folder") *.minecraft*]),
+  ])], false, true),
   (1, [#icon(name: "folder") *resourcepacks*: 存储所有资源包的文件夹，其基本结构见@sec:resourcepack，具体的制作方式将在《资源包》教程中给出。]),
   (1, [#icon(name: "folder") *saves*: 存储游戏中所有存档的文件夹，具体结构见@sec:saves 。]),
   (2, [#icon(name: "folder") *\<存档名称>*: 一个存档。]),
@@ -1055,7 +1044,16 @@ Description: Ticking entity"
   (4, [#icon(name: "folder") *assets*: 存放该版本号原版资源包内容的文件夹，它决定了客户端游戏内容的外观。在制作资源包时可以参考这个文件夹的结构。不含在 #icon(name: "folder") `.minecraft\assets` 中存放的语言和声音文件。]),
   (4, [#icon(name: "folder") *com*]),
   (4, [#icon(name: "folder") *data*: 存放该版本号原版数据包内容的文件夹，它决定了可写注册表的内容，如进度、战利品表、配方、结构等。在制作数据包时可以参考这个文件夹的结构。]),
-  (4, [#icon(name: "file") *flightrecorder-config.jfc*: Java Flight Recorder配置文件，可用于JFR分析。]),
+  (4, [#h(-2em)#icon(name: "file") *flightrecorder-config.jfc*: Java Flight Recorder配置文件，可用于JFR分析。JFR分析，即使用Java Flight Recorder分析数据和某些自定义事件。自定义事件包括：
+  #param-desc(
+    prefix: "",
+    [`minecraft.ServerTickTime` ], [采样事件。],
+    [`minecraft.ChunkGeneration` ], [生成单个区块阶段所需的时间。],
+    [`minecraft.PacketRead` 或 `minecraft.PacketSent` ], [网络流量。],
+    [`minecraft.WorldLoadFinishedEvent` ], [初始化世界加载耗费的时间。]
+  )
+  #h(-2em)在游戏中可使用命令 `/jfr` 进行JFR分析，此命令用于开始或结束JFR分析，分析结果以JSON的格式写入日志或 `debug` 文件夹。该命令所需权限等级为4，语法为：#index(index: "command", "jfr")
+  #codebox("jfr (start|stop)")]),
   (4, [#icon(name: "folder") *META-INF*: `.jar` 文件的元数据。]),
   (5, [#icon(name: "file") *LICENSE*: 游戏许可协议。]),
   (5, [#icon(name: "file") *MANIFEST.MF*: 清单文件。]),
@@ -1087,7 +1085,7 @@ ao:true
 biomeBlendRadius:2
 enableVsync:false
 entityDistanceScaling:1.0
-entityShadows:true")]),
+entityShadows:true")], true, true),
   (1, [#icon(name: "file") *output-client.log*]),
   (1, [#icon(name: "file") *output-server.log*]),
   (1, [#icon(name: "json") *realms\_persistence.json*: 存储Realms数据的文件。]),
@@ -2525,18 +2523,18 @@ Java版原版所有可用的实体可分为若干类别，这些实体的命名�
   [`view-distance`], [整数], [`10`], [渲染距离，可用值`3` \~ `32`（含）。],
   [`white-list`], [布尔值], [`false`], [是否启用白名单。]
 ) <tab:server_properties>
-=== 多人游戏命令
-多人游戏命令是对服务器管理有用的一类命令，且仅能在多人游戏中使用。由于它们的权限等级均大于2，因此在命令方块上和数据包内无法运行这些命令。
+=== 仅在多人游戏可用命令
+本小节讲述的一系列命令是对服务器管理有用的一类命令，仅能在多人游戏中使用。由于它们的权限等级均大于2，因此在命令方块上无法运行这些命令。如果 #icon(name: "file") `server.properties` 中的 `function-permission-level` 没有设为足够的权限等级，那么数据包函数也是不能执行这些命令的。
 ==== 用于封禁玩家与设置黑名单的命令
 ===== 命令 `/ban` #index(index: "command", "ban")
-#codebox("ban <targets> [reason]")
+#codebox("ban <targets> [reason]") <code:command_ban>
 该命令用于封禁特定的玩家，并将其加入黑名单。加入黑名单的玩家将不被允许进入服务器。该命令所需权限等级为3。
 #param-desc(
   [`<targets>`（游戏档案 `minecraft:game_profile`）], [需要是玩家名称或UUID，无论玩家是否在线。成功后，拥有该名称的所有玩家都无法进入该服务器。],
   [`[reason]`（文本 `minecraft:message`）], [可选，是一个贪婪词组，接受含空格的字符串。用于表示封禁的理由。可记录于服务器日志中。]
 )
 ===== 命令 `/ban-ip` #index(index: "command", "ban-ip")
-#codebox("ban-ip <target> [reason]")
+#codebox("ban-ip <target> [reason]") <code:command_ban-ip>
 该命令主要是针对IP地址的封禁，并将此IP地址列入黑名单，但也可以支持对玩家名称的封禁（不能是UUID），成功后所有由被封IP进入服务器的玩家都不被允许。该命令所需权限等级为3。
 #param-desc(
   [`<target>`（字符串 `brigadier:string`）], [需要被封禁的IP地址或玩家名称。]
@@ -2603,6 +2601,14 @@ Java版原版所有可用的实体可分为若干类别，这些实体的命名�
   [`<hostname>`（字符串 `brigadier:string`）], [目的服务器的主机名。],
   [`[<port>]`（整型 `brigadier:integer`）], [可选，目的服务器端口号，若不指定则为 `25565`。],
   [`[<players>]`（实体 `minecraft:entity`）], [可选，被转移的玩家，必须为玩家名、目标选择器或UUID。若不指定则默认为命令执行者。]
+)
+=== 其他与服务器相关的命令
+==== 命令 `/kick`
+将玩家踢出服务器，注意只是踢出，如果不加封禁，该玩家还可以继续加入服务器。事实上，该命令不仅在多人游戏中可用，在单人游戏中同样可用。该命令所需权限等级为3，语法为：
+#codebox("kick <targets> [reason]")
+#param-desc(
+  [`<targets>`（实体 `minecraft:entity`）], [指定提出服务器的玩家，必须为玩家名、目标选择器或UUID。],
+  [`[reason]`（文本 `minecraft:message`）], [可选，格式与语法@code:command_ban、@code:command_ban-ip 一致。]
 )
 #heading(level: 2, numbering: none, [第一章思考题与习题])
 = 坐标
