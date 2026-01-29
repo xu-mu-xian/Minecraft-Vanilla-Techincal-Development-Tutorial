@@ -878,7 +878,7 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
 ===== #icon(name: "text") `.txt` 文件
 `.txt` 文件是非常常见的文本文件，用Windows自带的记事本即可打开。这种文件通常被用于存储一些简易的文本，如游戏标题画面上的闪烁标语，有时也被用于存储游戏中的设置，在这些 `.txt` 文件中更改的内容会在游戏本体上有相应的改动。有时候 `.txt` 文件也可用于记录一些自定义的、不作为游戏数据的文本。有效的 `.txt` 文件必须为无BOM的UTF-8格式。
 ===== #icon(name: "mcfunction") `.mcfunction` 文件
-`.mcfunction` 文件，即函数文件，同样必须为无BOM的UTF-8格式。函数文件可以用Windows10自带的记事本打开并编辑，默认的Windows10记事本已经为无BOM的UTF-8格式，这点从记事本页面下方的状态栏就可以看到。记事本无法指出函数中的语法错误，必须得手动检查，笔者更推荐在编译软件中打开函数文件。本教程推荐的辅助工具是 #icon(name: "dhp") Data-pack Helper Plus（DHP），这是编译软件 #icon(name: "vscode") Visual Studio Code（VS Code）的一个扩展，可在 #icon(name: "vscode") VS Code的应用商店中找到。#icon(name: "dhp") DHP是专门用于制作Minecraft数据包或资源包部分文件的辅助工具，在编写数据包或资源包的过程中，#icon(name: "dhp") 提供了高亮显示，并为部分错误的语法提供解决方案。
+`.mcfunction` 文件，即函数文件，同样必须为无BOM的UTF-8格式。函数文件可以用Windows10自带的记事本打开并编辑，默认的Windows 10记事本已经为无BOM的UTF-8格式，这点从记事本页面下方的状态栏就可以看到。记事本无法指出函数中的语法错误，必须得手动检查，笔者更推荐在编译软件中打开函数文件。本教程推荐的辅助工具是 #icon(name: "dhp") Data-pack Helper Plus（DHP），这是编译软件 #icon(name: "vscode") Visual Studio Code（VS Code）的一个扩展，可在 #icon(name: "vscode") VS Code的应用商店中找到。#icon(name: "dhp") DHP是专门用于制作Minecraft数据包或资源包部分文件的辅助工具，在编写数据包或资源包的过程中，#icon(name: "dhp") 提供了高亮显示，并为部分错误的语法提供解决方案。
 
 《数据包》教程提供了该文件格式的具体编写规范。
 ===== #icon(name: "json") `.json` 和 `.mcmeta` 文件
@@ -2647,6 +2647,92 @@ Java版原版所有可用的实体可分为若干类别，这些实体的命名�
 
   羊毛、旗帜、唱片、红砂岩台阶、火把、雪块、红石中继器、煤炭、岩浆块、树叶、海晶石、末地石砖。
 + 查阅相关资料，填写下列方块的所有属性以及各自的可用值。
+
+  例：铁砧——方块状态 `facing`，可用值 `north`、`south`、`east`、`west`。
+
+  织布机、树叶、漏斗、讲台、砂轮、南瓜灯、原木、下界疣、梯子、虞美人、红石粉、雪、水、唱片机、可可果、灯笼、树苗、甘蔗、织布机、干草块、玻璃板	、堆肥桶、紫颂花。
++ 在TPS为20的情况下，将下列时间单位进行换算（不考虑命令中的取整）：
+  #grid(
+    columns: (1fr, 1fr, 1fr, 1fr),
+    row-gutter: 0.8em,
+    [2 s$=$#blank d], [18 t$=$#blank s], [0.25 d$=$#blank s], [0.8 d$=$#blank t],
+    [1.2 s$=$#blank t], [360 t$=$#blank d]
+  )
++ 解释下列名词：
+
+  命令、命令历史、权限等级、命令执行者、命名空间、方块状态、数据值、扁平化、MSPT、强加载区块、物理服务端。
++ 在游戏刻频率为40的情况下，由调试屏幕查阅得到MSPT值为20，则此时TPS值为何？若MSPT值为100，则TPS值又为何？
++ 能进行方块更新的区块可以正常运行命令这一说法是否正确？反之，可以正常运行命令的区块是否一定能进行方块更新？
++ 游戏中发生掉帧的原因可能有哪些？
++ 假如一个玩家在某服务器中发现画面很流畅，而实体完全不移动，可能的原因是什么？
++ 判断下列命名空间ID的解析结果。
+  + `minecraft`
+  + `custom`
+  + `minecraft:custom`
+  + `custom:minecraft`
+  + `minecraft:custom/custom`
+  + `custom:minecraft/custom`
+  + `minecraft/custom:custom`
+  + `minecraft:custom:custom`
++ \*尝试列举命令 `/tick` 在解析中出现的所有节点。
++ 已知一个玩家位于区块$[17,39]$，渲染距离为17，模拟距离为15，则区块$[10,20]$的加载等级和计算等级分别为多少？
++ 当渲染距离为16时，以玩家为中心的强加载区块个数为#blank，弱加载区块个数为#blank。
++ 将以下树状形式的数据写为JSON。
+  #tree(
+    (0, [#icon(name: "json-object") 文件封装]),
+    (1, [#icon(name: "json-string") *condition*: `minecraft:entity_properties`]),
+    (1, [#icon(name: "json-string") *entity*: `this`]),
+    (1, [#icon(name: "json-object") *predicate*]),
+    (2, [#icon(name: "json-string") *type*: `minecraft:player`]),
+    (2, [#icon(name: "json-object") *flags*]),
+    (3, [#icon(name: "json-bool") *is\_{}sprinting*: `true`])
+  )
++ 若一个字符串类型的JSON字段 #icon(name: "json-string") `text` 需要的值分别如下所示，写出各自对应的字段。
+  + `分节符"\"的作用很大`
+  + `\\"Hello World!\\"`
+  + `JSON形式的文本组件为{"text":"\\Hello World!\\"}`
+  + `在SNBT中，反斜杠\直接使用反斜杠\转义即可，即\\`
++ \*什么是 `.txt` 文件？#icon(name: "folder") `.minecraft`文件夹中有哪些文件是以 `.txt` 的格式存在的？
++ \*任意列举10个需要使用JSON格式的文件。
++ \*如何在#icon(name: "folder") `assets` 文件夹中寻找村民悠闲时的声音文件？
++ \*若一份完整的 `debug` 文件内容如下所示，则该函数中能够成功执行的命令有多少条？
+  #codefile(
+    lang: "txt",
+    title: "debug-trace-2024-10-19_15.19.03.txt",
+    "the_backrooms:developer/temp
+  [F] the_backrooms:developer/temp size=15
+    [C] tag @s remove evidence_1
+      [E] 对象没有这个标签                [M] 对象没有这个标签
+    [C] tag @s remove gaming
+      [E] 对象没有这个标签                [M] 对象没有这个标签
+    [C] data remove storage the_backrooms:player data
+      [E] 无变化，所指定的属性已有这些值                [M] 无变化，所指定的属性已有这些值
+    [C] execute in the_frontrooms:main store result score #forceload bug_test run forceload add -1 -1 0 0
+      [M] 已将the_frontrooms:main中的[-1, -1]至[0, 0]间的4个区块标记为强制加载
+    [R = 4] execute in the_frontrooms:main store result score #forceload bug_test run forceload add -1 -1 0 0
+    [C] tellraw @a {\"score\":{\"name\":\"#forceload\",\"objective\":\"bug_test\"}} -> 1
+    [C] execute in the_frontrooms:main if dimension the_frontrooms:main run say 该命令在前厅内执行 -> 1
+    [C] execute in the_frontrooms:main positioned 0 0 0 store result score #decorations bug_test if entity @e[tag=decorations]
+      [E] 测试失败                [M] 测试失败
+    [C] tellraw @a {\"score\":{\"name\":\"#decorations\",\"objective\":\"bug_test\"}} -> 1
+    [C] execute in the_frontrooms:main positioned 0 0 0 store result score #decorations bug_test run kill @e[tag=decorations]
+      [E] 未找到实体                [M] 未找到实体
+    [C] tellraw @a {\"score\":{\"name\":\"#decorations\",\"objective\":\"bug_test\"}} -> 1
+    [C] execute in the_frontrooms:main positioned 0 0 0 store result score #decorations bug_test if entity @e[type=painting]
+      [E] 测试失败                [M] 测试失败
+    [C] tellraw @a {\"score\":{\"name\":\"#paintings\",\"objective\":\"bug_test\"}} -> 1
+    [C] execute in the_frontrooms:main positioned 0 0 0 store result score #paintings bug_test run kill @e[type=painting]
+      [E] 未找到实体                [M] 未找到实体
+    [C] tellraw @a {\"score\":{\"name\":\"#paintings\",\"objective\":\"bug_test\"}} -> 1
+    [C] execute in the_frontrooms:main run forceload remove all
+      [M] 已解除标记the_frontrooms:main内所有的强制加载区块
+    [R = 0] execute in the_frontrooms:main run forceload remove all"
+  )
++ 解释下列名词：数据包、实验性设置、安全模式错误、元数据、数据包标签。
++ 编写一个数据包的元数据，使得此数据包能支持从45到100.0的数据版本。
++ 编写一个资源包的元数据，使得此资源包能支持从20到80.0的数据版本。
++ 列举出在数据包内所有不使用 `.json` 格式的数据项类型。
++ 尝试覆盖原版数据包中定义的 `#base_stone_overworld` 方块标签，使其仅引用石头（`stone`）、深板岩（`deepslate`）两种方块。
 = 坐标
 Minecraft的游戏世界是三维的。在编写数据包的时候，有时需要确定实例所需的位置参数。这样的参数被称为#proper-noun(display:"坐标（Coordinate）","zuo biao")。本章将详细介绍各种坐标参数以及这些参数在命令上的应用。
 #pagebreak()
@@ -2658,7 +2744,7 @@ Minecraft使用的空间直角坐标系是右手坐标系。在这种空间直�
 )
 在命令参数中，可以用三个分量来表示某一点的位置，这是一个有序的实数三元组：
 #codebox("<x> <y> <z>")
-比如，用数学方法表示的点$(0,4,4)$在一些命令参数中直接表示为`0 4 4`。
+比如，用数学方法表示的点$(0,4,4)$在一些命令参数中直接表示为 `0 4 4`。
 
 #example(
   [
@@ -2673,7 +2759,7 @@ Minecraft使用的空间直角坐标系是右手坐标系。在这种空间直�
 虽然不同的坐标表示方式基本一致，但不同的命令作用的对象不同，其坐标参数类型也不完全一致，下文将梳理命令系统使用的所有种类的坐标参数。
 
 === 坐标的命令参数类型
-命令使用4种与坐标相关的参数类型：方块坐标`minecraft:block_pos`、三维坐标`minecraft:vec3`、平面方块坐标`minecraft:column_pos`和二维坐标`minecraft:vec2`。它们的关系和应用场景可以很清晰地列于下表：
+命令使用4种与坐标相关的参数类型：方块坐标 `minecraft:block_pos`、三维坐标 `minecraft:vec3`、平面方块坐标 `minecraft:column_pos` 和二维坐标 `minecraft:vec2`。它们的关系和应用场景可以很清晰地列于下表：
 #general-table(
   caption: [Minecraft中的坐标参数],
   columns: 3,
@@ -2692,7 +2778,7 @@ Minecraft规定：大部分方块的长、宽和高均为1米，体积为1立方
   caption: [用方块这个方向的顶点来表示方块坐标],
   image("图片/用方块这个方向的顶点来表示方块坐标.png", width: 35%)
 )
-由于方块的角总是位于整数坐标点，作为命令参数`minecraft:block_pos`的方块坐标一定是由三个整数构成的有序三元组。
+由于方块的角总是位于整数坐标点，作为命令参数 `minecraft:block_pos` 的方块坐标一定是由三个整数构成的有序三元组。
 #example(
   [
     #h(-2em)如图所示，方块坐标为`0 0 0`的方块为哪一个？
@@ -2703,24 +2789,111 @@ Minecraft规定：大部分方块的长、宽和高均为1米，体积为1立方
 
   ]
 )
-
 ==== 三维坐标
-#proper-noun(display:"三维坐标（Three-dimensional coordinates）","sanweizuobiao")是精确表示一个位置的坐标参数，命令参数类型为`minecraft:vec3`，用于表示坐标位置的三个元素均为双精度浮点数。三维坐标一般应用于实体，它也可能会在粒子生成和声音播放的时候被使用。例如，这是一个合法的三维坐标：
+#proper-noun(display:"三维坐标（Three-dimensional coordinates）","sanweizuobiao")是精确表示一个位置的坐标参数，命令参数类型为 `minecraft:vec3`，用于表示坐标位置的三个元素均为双精度浮点数。三维坐标一般应用于实体，它也可能会在粒子生成和声音播放的时候被使用。例如，这是一个合法的三维坐标：
 #codebox("5.0 56.0 17.0")
 #h(-2em)这个坐标带有小数点，因为三维坐标的三个参数均是双精度浮点数。但是，这并不意味着三维坐标只能使用浮点数。也可以在三维坐标中使用整数形式，如：
 #codebox("5 56 17")
-注意，上述这两个坐标描述的位置并不是一致的。在实际操作中，却发现这个玩家位于三维坐标$(5.5,56.0,17.5)$。如图，可以观察到玩家的坐标发生了“偏移”，与实际坐标有所出入。其中$x$坐标和$z$坐标都发生了“偏移”，而$y$坐标不受影响。
+注意，上述这两个坐标描述的位置并不是一致的。在实际操作中，可以发现参数 `5 56 17` 指定的坐标实际上是$(5.5,56.0,17.5)$，这个现象在 `/tp`、`/summon` 等命令使用的坐标参数中都可以观察到。如图，可以观察到$x$坐标和$z$坐标都发生了“偏移”，与实际坐标有所出入，而$y$坐标不受影响。
 #figure(
   caption: [整数坐标发生的“偏移”],
-  image("图片/整数坐标发生的“偏移”.png",width: 80%)
+  image("图片/整数坐标发生的“偏移”.png", width: 36em)
 )
-这些位置的偏移都位于相对方块两条对边的中心线上，这是因为三维坐标使用了#proper-noun(display:"中心校准（Center correct）","zhongxinjiaozhun")，即使用整数形式的三维坐标，当其某一个坐标参数为$n$（$n∈Z$）时，其实际坐标为$n−0.5$，这样可以使得实体位置与方块位置相适应。注意*中心校准仅适用于$x$坐标和$z$坐标。$y$坐标严格使用实际坐标*。
+这些位置的偏移都位于相对方块两条对边的中心线上，这是因为三维坐标使用了#proper-noun(display:"中心校准（Center correct）","zhongxinjiaozhun")，即使用整数形式的三维坐标，当其某一个坐标参数为$n$（$n∈Z$）时，其实际坐标为$n−0.5$，这样可以与方块的位置相适应。注意*中心校准仅适用于$x$坐标和$z$坐标。$y$坐标严格使用实际坐标*。
 
-注意这里不使用“三维坐标根据方块坐标位于方块中心”的说法，是因为三维坐标的三个参数中整数和浮点数形式可以混用，并且使用小数形式的参数严格遵循实际坐标，整数形式的参数则使用中心校准。比如，位于`5 56 17.0`的玩家实际位于$(5.5,56,17.0)$。
+注意这里不使用“三维坐标根据方块坐标位于方块中心”的说法，是因为三维坐标的三个参数中整数和浮点数形式可以混用，并且使用小数形式的参数严格遵循实际坐标，整数形式的参数则使用中心校准。比如，位于 `5 56 17.0` 的玩家实际位于$(5.5,56,17.0)$。
 ==== 平面方块坐标
-故名思义，平面方块坐标`minecraft:column_pos`就是二维的方块坐标，以西北角的二维坐标作为一个方块纵列的平面坐标，两个元素均为整数。
+故名思义，平面方块坐标 `minecraft:column_pos` 就是二维的方块坐标，以西北角的二维坐标作为一个方块纵列的平面坐标，两个元素均为整数。
 ==== 二维坐标
-即只由$x$坐标和$z$坐标构成的#proper-noun(display:"二维坐标（Three-dimensional coordinates）","erweizuobiao")。二维坐标的命令参数类型为`minecraft:vec2`，两个元素均为双精度浮点数。二维坐标若为整数，则也使用中心校准。
+即只由$x$坐标和$z$坐标构成的#proper-noun(display:"二维坐标（Three-dimensional coordinates）","erweizuobiao")。二维坐标的命令参数类型为 `minecraft:vec2`，两个元素均为双精度浮点数。二维坐标若为整数，则也使用中心校准。
+=== 相对坐标#h(1em)局部坐标
+==== 相对坐标
+世界坐标是以空间直角坐标系为基准的、固定的坐标体系，每一个位置都有其固定的坐标。在表示这些坐标的时候，有时候需要确定“相对位置”，即抛开固有的以原点为基准的坐标系，使用“相对偏移量”来表达一个位置相对于另一个位置的坐标，即下文所要介绍的#proper-noun(display:"相对坐标（Relative world coordinates）", "xiang1 dui4 zuo4 biao1")。与之相对的固定空间直角坐标系坐标被称为#proper-noun(display:"绝对坐标（Absolute world coordinates）", "jue2 dui4 zuo4 biao1")。
+
+在相对坐标系中，必须要确定一个原点，这个原点通常是命令执行位置。如果命令由玩家执行，则原点为玩家所在的位置；如果命令由命令方块执行，则原点为该命令方块所在的位置。相对坐标用波浪号 `~` 和相对偏移量表示，即
+#codebox("~[<dx>] ~[<dy>] ~[<dz>]")
+若相对偏移量 `[<dx>]`、`[<dy>]`、`[<dz>]` 不填写，则偏移量为0。偏移量可以为负数。这就相当于建立了一个以命令执行位置为原点的空间直角坐标系，一个世界中可以存在多个不同的相对坐标系，只要这些坐标都有特定的执行位置。例如，相对于该点正东面的3格距离可以表示为 `~3 ~ ~`。
+#figure(
+  caption: "在绝对坐标系中建立的相对坐标系",
+  image("图片/在绝对坐标系中建立的相对坐标系.png", width: 15em)
+)
+#example(
+  [#h(-2em)一个位于点$(-24,55,10)$的命令方块，其相对坐标 `~12 ~-3 ~-5` 所指的方块坐标为#blank。],
+  [
+    相对坐标规定命令方块所在的位置即为原点，在将相对坐标转换为绝对坐标时，只需要在绝对坐标的基础上做相应的加减，这个题中的方块坐标为$(-24-12,55-3,10-5)$，计算可得$(-12,52,5)$。
+
+  ]
+)
+*相对坐标可以与绝对坐标混合使用。*在不使用波浪号的坐标参数中，计算绝对坐标。比如，`~10 10 ~10` 会根据锚点变换$x$坐标和$z$坐标，但$y$坐标被固定为10。
+==== 局部坐标
+除了相对坐标外，命令系统还有一种更加灵活的坐标，即#proper-noun(display:"局部坐标（Local coordinates）", "ju2 bu4 zuo4 biao1")。局部坐标也用于表示相对偏移量，由脱字符 `^` 和相对偏移量的格式来表示：
+#codebox("^[<dx>] ^[<dy>] ^[<dz>]")
+与相对坐标不同的是，局部坐标脱离了绝对坐标系规定的方向，它使用命令执行者的朝向作为基准，由朝向角度参数决定，可以是任意的。如@fig:local_coordinate_system，使用局部坐标相当于建立了一个坐标轴方向任意的坐标系，但是坐标轴之间的正交关系不变。若执行朝向发生变动，这个坐标系也之转动。
+#figure(
+  caption: "局部坐标系",
+  image("图片/局部坐标系.png", width: 15em)
+) <fig:local_coordinate_system>
+局部坐标系规定：*命令执行朝向即为$z$轴的正方向，若命令执行者为命令方块，则局部坐标系与相对坐标系无异*，因此$x$轴正方向位于命令执行位置的左边，$y$轴正方向位于命令执行位置的上方。比如，执行位置右边3米距离的局部坐标为 `^-3 ^ ^`。*由于局部坐标不使用绝对坐标系规定的坐标轴方向，因此局部坐标不能与绝对坐标和相对坐标混用。*
+=== 调试屏幕的坐标
+使用 `F3` 打开调试屏幕时，屏幕上会显示和坐标有关的一些信息。首先是屏幕中央的准星会由十字形变成一个简约的正交分解三维坐标轴。规定红线代表$x$轴正方向，绿线代表$y$轴正方向，蓝线代表$z$轴正方向。这个图形会随着玩家的朝向改变而旋转，可以很容易地通过该图形中辨别方向。
+
+使用 `F3` + `F6` 打开调试选项页面，其中的 `player_position`、`player_section_position`、`looking_at_block`、`looking_at_fluid` 等都会显示坐标信息。`player_position` 中一共有四行用于显示世界坐标的信息，如@fig:coordinate_in_debug_screen 所示。在框内信息中，第一行表示的是玩家当前的位置，其中$y$坐标表示的是玩家脚底的$y$坐标。第二行表示的是玩家脚部的方块坐标。第三行显示的是区块信息，第四行是玩家的朝向信息，指明了玩家大致的方向朝向（东南西北）以及具体的朝向角度参数（偏航角/俯仰角）。`player_section_position` 显示的是玩家在区块内的相对坐标。
+#figure(
+  caption: "调试屏幕中的玩家坐标",
+  image("图片/调试屏幕中的玩家坐标.png", height: 4em)
+) <fig:coordinate_in_debug_screen>
+如@fig:block_position_in_debug_screen，当 `looking_at_block` 开启时，若玩家指向一个方块，调试屏幕会显示玩家指向方块的方块坐标及其方块状态与其所属的数据包标签；当 `looking_at_fluid` 开启时，会显示指向液体的信息。
+#figure(
+  caption: "调试屏幕中的方块坐标信息",
+  image("图片/调试屏幕中的方块坐标信息.png", height: 6em)
+) <fig:block_position_in_debug_screen>
+== 朝向
+上一节对局部坐标的描述使用了“朝向”这一概念。通常地、为了在空间直角坐标系中实体的朝向，可以使用两个旋转角度来表示：即水平方向上的#proper-noun(display:"偏航角（Yaw）", "pian1 hang2 jiao3")和竖直方向上的#proper-noun(display:"俯仰角（Pitch）", "fu3 yang3 jiao3")。其中偏航角表示实体使用这两个参数可表示三维空间中实体所有朝向，因为原版的Minecraft并未使用翻滚角。在命令中，所有的朝向均采用角度制，参数不写度数符号，一般来说命令参数类型为 `minecraft:rotation`，其中含有两个参数，分开表示成
+#codebox("<yaw> <pitch>")
+=== 偏航角
+偏航角定义了实体绕绝对坐标$y$轴旋转的角度，因此它也可以被称为绕$y$轴旋转角度。它是一个实体的水平朝向与绝对坐标$z$轴的夹角$gamma$，其中$gamma in [-180,180)$。并且规定：$gamma$随顺时针方向增大，$z$轴正方向$gamma=0$。
+#figure(
+  caption: "偏航角",
+  image("图片/偏航角.png", width: 18em)
+)
+$gamma$的符号可以按如下方法判断：对水平面内的向量进行正交分解，若有同向平行于$x$轴正方向或与$x$轴重合的分向量，则$gamma<0$；反向平行于$x$轴则$gamma >0$。用方位的语言描述：水平朝向偏向东，则$gamma<0$；偏向西则$gamma>0$。
+
+注意在以上描述中，$gamma$的值都被限定在$[-180,180)$内。这个范围一般被视为偏航角的可用值（调试屏幕显示的范围），但是超出这个范围的参数仍然可以被识别。识别的规则是：*给一个偏航角参数加上或减去360，则新的偏航角参数与原来的偏航角参数等效*，最终将任意偏航角换算至$[-180,180)$的范围内。例如，`180` 会被识别为 `-180`，即正北方向；`270` 会被识别为 `-90`；`580` 会被识别为 `-140`。
+#example(
+  [#h(-2em)要求设置某实体的朝向为北偏东$75 degree$，则偏航角参数应为#blank。],
+  [
+    如@fig:yaw_example 所示，根据偏航角的旋转角度特性，北偏东$75 degree$的方向参数就是在正北方向参数上加75，即$-180+75=-105$。偏航角参数为 `-105`。本题没有规定参数范围，因此填 `255`、`-465` 之类的答案也算正确。
+    #figure(
+      caption: "",
+      image("图片/偏航角例题.png", width: 6em)
+    ) <fig:yaw_example>
+  ]
+)
+类似于相对坐标，游戏允许使用 `~` 和相对偏移量表示相对偏航角，格式为：
+#codebox("~[<yaw>]")
+表示在原来偏航角的基础上增加一定角度值后形成的偏航角。例如，若初始偏航角参数为 `30`， `~15` 则表示在 `30` 的基础上增加15，即 `45`。
+=== 俯仰角
+俯仰角定义了实体绕局部坐标$x$轴旋转的角度，因此它也可以被称为绕$x$轴旋转角度。它是一个实体的水平朝向与局部坐标$x$轴的夹角$theta$，其中$theta in [-90,90]$。并且规定：$theta$随俯视方向增大，与$y O z$平面平行时$theta=0$。
+
+$theta$的符号可以按如下方法判断：对局部坐标$y O z$面内的向量进行正交分解，若与$y$轴正方向重合，则$theta<0$；与$y$轴反向则$theta>0$。用方位的语言描述：仰视时$theta<0$；俯视则$theta>0$。
+#sub-figure(
+  caption: "俯仰角",
+  [#image("图片/俯仰角a.png", height: 8em)\(a)],
+  [#image("图片/俯仰角b.png", height: 8em)\(b)]
+)
+在以上描述中，$theta$的值都被限定在$[-90,90]$内。这个范围一般被视为俯仰角的可用值（调试屏幕显示的范围），但是超出这个范围的参数仍然可以被识别。识别的规则是：*给一个俯仰角参数加上或减去360，则新的俯仰角参数与原来的俯仰角参数等效*。最终将任意俯仰角换算至的范围$[-90,90]$内。例如，`370` 会被识别为 `10`。但是显然任意俯仰角的范围局限于$[-90+360n, 90+360n]$，$n in ZZ$，诸如 `-180` 这样的参数不在此范围内，因此该参数是无效的。
+
+和相对偏航角一样，游戏也允许使用~和相对偏移量表示相对俯仰角，格式为：
+#codebox("~[<pitch>]")
+表示在原来俯仰角的基础上增加一定角度值后形成的俯仰角。由偏航角、俯仰角组成的朝向参数允许绝对朝向和相对朝向混用。
+=== 朝向与局部坐标的关系 \*
+对于空间内的任意向量$bold(alpha)$，在计算其朝向时，可以先将其正交分解为两个向量：即如@equ:any_rotation 所示的平行于水平面的向量$bold(alpha)_parallel$和垂直于水平面的向量$bold(alpha)_perp$。偏航角是分向量$bold(alpha)_parallel$与z轴的夹角（注意符号），俯仰角是$bold(alpha)$与其水平分向量的夹角（注意符号）。运用方向角公式可以求出两个向量$bold(alpha)_1=(x_1,y_1,z_1)$、$bold(alpha)_2=(x_2,y_2,z_2)$之间的夹角$gamma$：
+$ cos(gamma)= (bold(alpha)_1bold(alpha)_2)/(bar.v.double bold(alpha)_1bar.v.double bar.v.double bold(alpha)_2 bar.v.double)=(x_1 x_2+y_1 y_2+z_1 z_2)/(sqrt(x_1^2+y_1^2+z_1^2)sqrt(x_2^2+y_2^2+z_2^2)) $
+#figure(
+  caption: "任意朝向",
+  image("图片/任意朝向.png", width: 12em)
+) <equ:any_rotation>
+据此可以求出两个朝向参数。计算偏航角的时候需要构造同向平行于$z$轴的单位向量。下面举一例以说明之。
 == 区块
 === 命令/forceload<subsec:command_forceload>
 = 文本组件<chap:text_component>

@@ -682,6 +682,9 @@
 // 树状图
 #let tree(..items) = stringtree(line_color: red, ..items)
 
+// 填空空格
+#let blank = underline("                ")
+
 // 专有名词
 #let proper-noun(display: "", value) = {
   let actual-display = if display == "" { value } else { display }
@@ -876,6 +879,7 @@
     set text(size: 2em)
     counter(figure.where(kind: image)).update(0)
     counter(figure.where(kind: table)).update(0)
+    counter(math.equation).update(0)
     context codeline.update(0)
     context exa.update(0)
     pagebreak(weak: true)
