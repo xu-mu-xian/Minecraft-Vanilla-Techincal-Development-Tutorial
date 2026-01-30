@@ -3123,8 +3123,203 @@ $ S=(abs(x_1-x_2)+1)(abs(y_1-y_2)+1)(abs(z_1-z_2)+1) $ <equ:source_region_volume
 #codebox("setworldspawn [<pos>] [<angle>]")
 === 使用三维坐标的命令
 命令 `/tp` 和 `/teleport` 使用的坐标参数均为三维坐标 `minecraft:vec3`，一般使用浮点数，允许使用整数以进行中心校准。这两条命令可以互通，语法也完全相同。出于习惯以及在实际操作中为了方便输入命令，通常在语法格式介绍中使用更为简便的 `tp` 字符。`/tp` 的主要作用为传送实体至指定的位置或指定其朝向，所需权限等级为2，以下是它的所有用法。#index(index: "command", "tp")#index(index: "command", "teleport")
+===== 将命令执行者直接传送至指定的目标实体，并与目标实体保持相同的朝向，语法为：
+#codebox("tp <destination>") <code:command_tp_destination>
+#param-desc(
+  [`<destination>`（实体 `minecraft:entity`）], [指定要传送至的实体，可以是玩家名称、UUID或目标选择器，但只允许选择一个实体。]
+)
+===== 将命令执行者传送至指定的坐标，朝向保持不变，语法：
+#codebox("tp <location>")
+#param-desc(
+  [`<location>`（三维坐标 `minecraft:vec3`）], [可以使用整数坐标以进行中心校准。]
+)
+===== 将指定的实体传送至其他目标实体，并与目标实体保持相同的朝向，语法为：
+#codebox("tp <targets> <destination>")
+#param-desc(
+  [`<targets>`（实体 `minecraft:entity`）], [被传送的实体。],
+  [`<destination>`（实体 `minecraft:entity`）], [同语法@code:command_tp_destination 一致。]
+)
+例如，将玩家A传送至玩家B（不要混淆成将玩家B传送至玩家A）：
+#codebox("tp A B")
+===== 将指定的实体传送至指定的坐标，并允许修改被传送者的朝向角度，语法为：
+#codebox("tp <targets> <location> [<rotation>]")
+#param-desc(
+  [`[<rotation>]`（朝向 `minecraft:rotation`）], [选填，偏航角在前，俯仰角在后。如果不使用该参数，则会保持指定实体原本的朝向。]
+)
+===== 将指定的目标实体传送至指定的坐标位置，并指定其朝向的坐标，语法为：
+#codebox("tp <targets> <location> facing <facingLocation>")
+#param-desc(
+  [`<facingLocation>`（三维坐标 `minecraft:vec3`）], [决定目标实体朝向的坐标。]
+)
+执行锚点会对该命令的执行结果造成影响，因为它会改变命令上下文。若该命令的执行者锚点为 `feet`，则以朝向位置对脚底的方向作为视线方向（如@fig:raycasting_by_anchor (a)，因此如果朝向位置的$y$坐标与指定实体脚底$y$坐标相等，理论上该指定实体的视线方向应是水平的；若该命令的执行者锚点为 `eyes`（如@fig:raycasting_by_anchor (b)），则以朝向位置对眼睛的方向作为视线方向 。若该命令单独使用，则默认锚点为 `feet`，如果需要将锚点设为 `eyes`，则可以用 `/execute` 命令修改。
+#sub-figure(
+  caption: "锚点与朝向位置的关系对视线方向的影响",
+  label: <fig:raycasting_by_anchor>,
+  [#image("图片/锚点与朝向位置的关系对视线方向的影响a.png", height: 10em)\(a)],
+  [#image("图片/锚点与朝向位置的关系对视线方向的影响b.png", height: 10em)\(b)]
+)
+===== 将指定实体传送至指定的坐标位置，并指定其朝向的实体，语法为：
+#codebox("tp <targets> <location> facing entity <facingEntity> [<facingAnchor>]")
+#param-desc(
+  [`<facingEntity>`（实体 `minecraft:entity`）], [指定要朝向的实体。],
+  [`[<facingAnchor>]`（实体锚点 `minecraft:entity_anchor`）], [可选，指定朝向实体的何种锚点，可以为 `eyes` 或 `feet`，默认为 `feet`。]
+)
+朝向的准则遵循图@fig:raycasting_by_anchor 所示的规律，视线方向会严格按照锚点之间的位置关系。例如，单独使用如下的命令：
+#codebox("tp A ~ ~ ~ facing entity B eyes")
+这时指定实体A的锚点为 `feet`，而朝向为实体B的锚点 `eyes`，此时朝向实体的上方而不是实体B的眼睛部位，如@fig:command_tp_anchor_example 所示。
+#figure(
+  caption: [`/tp` 命令锚点例子],
+  image("图片/tp命令锚点例子.png", height: 10em)
+) <fig:command_tp_anchor_example>
+只有当实体A的锚点为 `eyes` 时，才会朝向实体B的眼睛部位，这时需要使用命令 `/execute`。
+=== 使用二维坐标的命令
+`/spreadplayers` 和 `/worldborder` 使用的坐标参数均为二维坐标 `minecraft:vec2`。
+==== 命令 `/spreadplayers`
+这条命令用于分散多个实体、将实体传送到任意位置，所需权限等级为2，语法为：#index(index: "command", "spreadplayers")
+#codebox("spreadplayers <center> <spreadDistance> <maxRange> [under <maxHeight>] <respectTeams> <targets>")
+#param-desc(
+  [`<center>`（二维坐标 `minecraft:vec2`）], [只使用$x$坐标和$z$坐标，两个元素均为双精度浮点数，指定传送区域的中心点。],
+  [`<spreadDistance>`（浮点数 `brigadier:float`）], [目标实体之间的最小间距，最小值 `0.0`。],
+  [`<maxRange>`（浮点数 `brigadier:float`）], [指传送区域的边界与中心点在$x$轴和$z$轴上的距离，最小值应为 `1.0`。因此传送区域为一个正方形而不是圆形。],
+  [`[under <maxHeight>]`], [可选，包含两个参数：`under` 是字面量，无需更改写法，`<maxHeight>` 参数类型为整型 `brigadier:integer`，参数之间的空格不要缺失。如果指定了实体传送的最大高度，则在最大范围内一定要保证该最大高度下有足够的空间，否则命令执行失败。],
+  [`<respectTeams>`（布尔值 `brigadier:bool`）], [若为 `true`，则同队伍的所有成员会传送到同一个位置。],
+  [`<targets>`（实体 `minecraft:entity`）], [需要被传送的实体，可以为多个玩家名称、UUID或目标选择器，玩家名称之间应该用空格隔开。也可以指定除玩家外的实体。]
+)
+#figure(
+  caption: [命令 `/spreadplayers` 图解],
+  image("图片/命令spreadplayers图解.png", height: 9em)
+) <fig:command_spreadplayers>
+如@fig:command_spreadplayers，$O$点为传送区域的中心点，最大范围决定了$O$点离正方形边界的距离，分散间距决定了实体$A$和实体$B$之间的最短距离。在实际的命令编写中还需要考虑的问题是分散间距与最大范围的关系，如果最大范围无法满足分散间距的需求，则命令执行失败。在这条命令中，两个实体的间距不能大于传送区域的边长，否则便会判定最大范围无法满足分散间距的需求。根据正方形的几何性质来看，当目标实体数量不大于4个时，分散间距必须小于最大范围的两倍。
+
+下面为该命令的具体使用举例：
+#example(
+  [
+    #h(-2em)使用 `/spreadplayers` 按要求写出下列命令：
+    + 将两个不属于同一队伍的玩家 `Waterman12345`、`Mu_xian` 传送至随机位置，其中中心点为命令执行者所在位置，最大范围为12，两个玩家间距不能小于7；
+    + 将所有实体随机传送，要求：中心点为$(0,0)$，最大范围100，传送的最大高度为100，同队的所有实体必须传送在一起，队伍与队伍之间最小间距为12。
+  ],
+  [
+    + 命令为
+      #codebox("spreadplayers ~ ~ 7 12 false Waterman12345 Mu_xian")
+    + 命令为
+      #codebox("spreadplayers 0 0 12 100 under 100 true @e")
+  ]
+)
+==== 命令 `/worldborder`
+虽然Minecraft的游戏世界巨大无比，但其仍然是有可玩游戏区域界限的，自定义世界边界则是这个界限的一种保障。从宏观上来看，世界边界是一个巨大的正方形边框。世界边界的中心决定了世界边界的位置，而正方形边界的边长则决定了世界边界的大小，两种参数均可自定义。
+#figure(
+  caption: "宏观的世界边界及边界中心",
+  image("图片/宏观的世界边界及边界中心.png", height: 9em)
+) <fig:world_border>
+#proper-noun(display: "边界中心（World border's center）", "bian1 jie4 zhong1 xin1")使用二维坐标。由于二维坐标缺少$y$坐标，因此它不能用于指定方块坐标，所有的二维坐标无论其是否为整数均指定精确的实际$x O z$坐标。玩家可以自定义一些带有小数的二维坐标世界中心，并且世界边界会严格按照边界中心确定其位置。默认的边界中心为$(0,0)$。边界中心与出生点区块和玩家出生点无关，`/setworldspawn` 和 `/spawnpoint` 无法指定边界中心。
+
+边界的大小一般指#proper-noun(display: "世界边界直径（World border diameter）", "shi4 jie4 bian1 jie4 zhi2 jing4")，即@fig:world_border 中正方形的*边长*。该参数可以为小数并且世界边界会严格按照该参数确定其大小。世界边界直径可以接受的最大值为 `59999968`，最小值为 `1`，因此边界中心距世界边界的最大值为 `29999984`，最小值则为 `0.5`。#index(index: "command", "worldborder")
+===== 设置世界边界直径增量，语法为：
+#codebox("worldborder add <distance> [<time>]")
+#param-desc(
+  [`<distance>`（双精度浮点数 `brigadier:double`）], [即世界边界直径。在原来的世界边界直径基础上增加或减少指定的距离，距离参数可以为负。若该参数为正，则世界边界直径增加，若为负，则减小。],
+  [`[<time>]`（整型 `brigadier:integer`）], [选填，用于指定世界边界直径发生变化所需的时间，注意*该参数类型实际上是整型而非真正的时间参数，且单位为秒而非游戏刻*。若不指定则默认为 `0`，即世界边界直径会瞬间发生变化。]
+)
+===== 设置世界边界直径大小，语法为：
+#codebox("worldborder set <distance> [<time>]")
+#param-desc(
+  [`<distance>`（双精度浮点数 `brigadier:double`）], [直接指定世界边界直径的大小。]
+)
+#example(
+  [#h(-2em)有中心位于$(0,0)$、原直径为300的世界边界，要使该世界边界在一定时间内直径变化至50。且由于地图制作的要求，一堵边界墙的移动速度需要约等于玩家正常步行的速度（4.317m/s）。写出符合要求的命令，各参数需要精确到个位。],
+  [
+    世界边界的变化可用 `/worldborder add` 和 `/worldborder set` 指定，如@fig:world_border_example 所示：
+    #figure(
+      caption: "",
+      image("图片/世界边界例题.png", width: 10em)
+    ) <fig:world_border_example>
+    先探讨 `/worldborder add` 命令所需的参数：由正方形的性质，可以很快求得边界墙移动距离#box(baseline: 30%, inset: (y: 0.5em))[$Delta d=display((300-50)/2)=125$]，该结果即为距离参数。又该世界边界直径缩小，所以距离参数应为负，即$-125$。同时要求边界墙的移动速度需要等于玩家正常步行的速度，故时间参数为#box(baseline: 30%, inset: (y: 0.5em))[$t=display((Delta d)/v=125/4.317) approx 29$]。所以可用的命令可以是
+    #codebox("/worldborder add -125 29")
+    在 `/worldborder set` 的情况下，时间参数的计算仍然需要使用边界墙移动距离$Delta d$，但是$Delta d$本身不会出现在命令参数中。所以可用的命令也可以是
+    #codebox("worldborder set 50 29")
+  ]
+)
+===== 设置边界中心的位置，语法为：
+#codebox("worldborder center <pos>")
+#param-desc(
+  [`<pos>`（二维坐标 `minecraft:vec2`）], [世界中心，两个元素均为双精度浮点数。]
+)
+===== 设置玩家越过世界边界后作用于玩家的伤害，语法为：
+#codebox("worldborder damage buffer <distance>")
+#codebox("worldborder damage amount <damagePerBlock>")
+#param-desc(
+  [`<distance>`（双精度浮点数 `brigadier:double`）], [边界墙的外围有一层缓冲区，在这层缓冲区中的玩家可免受世界边界的伤害，此参数指定该缓冲区的宽度。该参数为浮点数，必须为非负数，若指定为 `0`，则边界外围没有缓冲区，玩家一旦越过边界墙即受到伤害。],
+  [`<damagePerBlock>`（浮点数 `brigadier:float`）], [缓冲区的外围是一层层的伤害区，每一层伤害区宽度为1格方块，此参数用于决定每一层伤害区每秒钟对玩家造成的伤害，其计算方法为：]
+)
+$ D_n=n dot d $
+#param-desc(
+  prefix: "式中：",
+  [$D_n$], [第$n$层伤害区每秒造成伤害。],
+  [$n$], [层数。],
+  [$d$], [`<damagePerBlock>` 的值。]
+)
+例如，`/worldborder damage amount 0.1` 会让玩家在第5层伤害区受到每秒0.5的伤害值。每方格伤害值必须为浮点数和非负数，其默认值为 `0.2`。
+#sub-figure(
+  caption: "世界边界作用于玩家的伤害区域",
+  [#image("图片/世界边界作用于玩家的伤害区域a.png", height: 10em)\(a)],
+  [#image("图片/世界边界作用于玩家的伤害区域b.png", height: 10em)\(b)]
+)
+===== 返回当前世界边界的直径，语法为：
+#codebox("worldborder get")
+===== 设置世界边界的警告
+#wrap-content(
+  tips(
+    [当玩家靠近边界墙时，玩家的屏幕会变红，但若图像设置为流畅，则屏幕不会变红。这种视觉效果在冒险地图中被广泛使用，且通常用于表现紧张或恐惧的情景。],
+    width: 20em
+  ),
+  [
+    世界边界的警告可用 `distance` 和 `time` 两种模式来指定。若指定：玩家距离边界墙一定距离$d$时产生警告，适用 `distance` 模式；若指定：某位置在$t$秒后即将被边界墙越过，若玩家进入该位置即产生警告，则适用 `time` 模式。语法分别为：
+
+  ],
+  align: right
+)
+#codebox("worldborder warning distance <distance>")
+#codebox("worldborder warning time <time>")
+#param-desc(
+  [`<distance>`（整型 `brigadier:integer`）], [最小值可以为 `0`，默认值为 `5`。],
+  [`<time>`（整型 `brigadier:integer`）], [最小值可以为 `0`，默认值为 `15`。]
+)
+#figure(
+  caption: "边界墙与警告区域（灰色）的位置关系",
+  image("图片/边界墙与警告区域（灰色）的位置关系.png", width: 9em)
+)
 == 区块
+Minecraft游戏世界的加载单位被称为*区块*，一个区块的水平横截面为$16 times 16$的方格。在高度未扩展之前，一个区块高256格方块，覆盖方块$y$坐标0 \~ 255的高度。1.18游戏高度扩展之后，一个区块高达384格方块，覆盖方块$y$坐标$-64$ \~ 319的高度。
+=== 区块坐标和区段坐标
+快捷键 `F3` + `G` 可以显示区块边界。区块的边缘总是与方块边缘相贴合，当$x$坐标或$z$坐标能被16整除时该位置为区块的边界，因此两个区块的接触面方程可以表示为$x=16n$或$z=16n$（$n in ZZ$）。因此在$x O z$平面内，一个区块任意顶点的二维坐标可以表示为$(16n_1,16n_2)$（$n_1$、$n_2 in ZZ$）。
+#figure(
+  caption: [水平面上$(0,0)$附近的区块],
+  image("图片/水平面上(0,0)附近的区块.png", width: 25em)
+) <fig:chunks_nearby_origin>
+由于Minecraft一个世界中区块数量众多，因此有必要对这些区块进行一定处理以方便了解它们大致的位置。表述一个方块的位置使用的是直角坐标系，它对每个方块都规定了其坐标。那么能否使用类似坐标的手段对区块进行描述呢？
+
+对于一个方块而言，其西北下角的顶点是其方块坐标；对于一个区块而言，同样可以使用其西北角的棱作为其区块坐标。在$x O z$平面内，若一个区块截面的西北角顶点坐标为$(16n_1,16n_2)$（$n_1$、$n_2 in ZZ$），则该区块的区块坐标可用方括号表示为$[n_1,n_2]$（$n_1$、$n_2 in ZZ$）。如@fig:chunks_nearby_origin 所示，若要表示由$x=16$、$z=16$、$x$轴和$z$轴围成区块的区块坐标，其西北角的点为坐标轴原点，则区块坐标可以表示为$[0,0]$。
+
+对于一个区块内的区段，它相比区块而言多了$y$轴方向的度量，并且当$y$坐标能被16整除时该位置为区段顶部或底部的边界。游戏使用区段的西北下角顶点作为它的区段坐标：若一个区段的西北下角顶点为$(16n_1,16n_2,16n_3)$（$n_1$、$n_2$、$n_3 in ZZ$），则该区段的区段坐标可表示为$[n_1,n_2,n_3]$（$n_1$、$n_2$、$n_3 in ZZ$）。这对于$y$坐标小于0的空间同样适用。
+#figure(
+  caption: "一个区块被分成若干个区段",
+  image("图片/一个区块被分成若干个区段.png", width: 4em)
+)
+当描述一个方块在该区块内的位置时，就需要使用到区段坐标。并且需要在该区段的西北下角建立一个空间直角坐标系，用这个坐标系描述方块在区段内的相对位置。因此在这个坐标系内，所有坐标参数均为大于等于0且小于等于15的整数，西北下角的方块在区段内位置可表示为$(0,0,0)$。
+
+对于一个方块坐标为$(a,b,c)$（$a$、$b$、$c in ZZ$）的方块，可以直接使用floor函数#footnote[floor函数即向下取整函数，取不大于该实数的最大整数。数学语言一般记作$floor.l x floor.r$，例如$floor(3.14)=3$，$floor(-1.5)=-2$，$floor(1)=1$。]求得该方块所在区段的区段坐标为：
+$ [floor(a/16), floor(b/16), floor(c/16)] $
+该数据显示于调试屏幕 `Chunk` 一行。因此该方块所在区块为
+$ [floor(a/16), floor(c/16)] $
+该区段西北下角方块的方块坐标可由区段坐标转化：
+$ (16floor(a/16), 16floor(b/16), 16floor(c/16)) $
+而西北下角的方块在区段内位置表示为$(0,0,0)$，由坐标与方向的关系知结构西北下角的所有坐标参数在结构内最小，而该方块的方块坐标为$(a,b,c)$，则该方块在区块中的位置可表示为
+$ (a-16floor(a/16), b-16floor(b/16), c-16floor(c/16)) $
+对于任何方块坐标，都可以通过代入上式计算其所在的区块，并求得该方块在区块中的位置。如果是玩家的坐标，也可以以此计算调试屏幕中 `player_section_position` 的数据。
 === 命令/forceload<subsec:command_forceload>
+在18w31a之前，根据预传送加载标签的原理，一般使用 `/spreadplayers` 来加载所需要的区块，但是这种加载方式非常地不稳定。于18w31a加入的命令 `/chunk`（后改名为 `/forceload}` 很好地解决了这个问题。
+
+`/forceload` 用于指定强制加载的区块，并把这些区块的加载等级和计算等级指定为31。它需要的权限等级为2，所有用法如下：#index(index: "command", "forceload")
 = 文本组件<chap:text_component>
 == 文本组件内容
 === 翻译文本<subsec:translate>
