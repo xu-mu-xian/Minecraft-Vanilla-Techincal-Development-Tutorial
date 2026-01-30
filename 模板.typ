@@ -54,7 +54,6 @@
 #let e4 = item.with(4)
 
 // 有编号代码行
-#let codeline = counter("codeline")
 #let codebox(body, label: none, supplement: none) = figure(
   supplement: supplement,
   kind: "codebox",
@@ -95,16 +94,15 @@
               size: 0.85em,
               weight: "bold"
             )
-            context[#counter(heading).get().at(0)] + "." + h(-0.5em) + [
-              #codeline.step()
-              #context codeline.display()
-            ]
+            context {
+              let it = query(selector(figure).before(here())).last()
+              numbering(it.numbering, ..counter(figure.where(kind: "codebox")).at(here()))
+            }
           }
         )
       )
     ) + label
-  },
-  numbering: it => [#counter(heading).get().at(0).#(counter("codeline").get().at(0)+1)]
+  }
 )
 
 // 参数解释
@@ -283,14 +281,12 @@
 }
 
 // 例题
-#let exa = counter("exa")
 #let example(question, solution, label: none, supplement: "例") = figure(
   kind: "example",
   supplement: supplement,
   {
     block(
       {
-        exa.step()
         showybox(
           breakable: true,
           footer: [
@@ -391,7 +387,10 @@
                 {
                   let title-text = {
                     set text(fill: white, font: "Minecraft")
-                    [例] + context str(counter(heading).get().at(0)) + "." + context exa.display()
+                    [例] + context {
+                      let it = query(selector(figure).before(here())).last()
+                      numbering(it.numbering, ..counter(figure.where(kind: "example")).at(here()))
+                    }
                   }
                   place(dx: 2pt, dy: 2pt)[
                     #box(
@@ -880,8 +879,8 @@
     counter(figure.where(kind: image)).update(0)
     counter(figure.where(kind: table)).update(0)
     counter(math.equation).update(0)
-    context codeline.update(0)
-    context exa.update(0)
+    counter(figure.where(kind: "codebox")).update(0)
+    counter(figure.where(kind: "example")).update(0)
     pagebreak(weak: true)
     block(v(5em) + it + v(2em))
   }

@@ -647,7 +647,14 @@ Minecraft的命令有很多，可用 `/help` 命令查询任何可用命令的�
 ===== #proper-noun(display: "执行朝向（Execution rotation）", "zhi2 xing2 chao2 xiang4")
 这个参数是命令执行时面向的方向，包含偏航角和俯仰角两个参数。
 ===== #proper-noun(display: "执行锚点（Execution anchor）", "zhi2 xing2 mao2 dian3")
-这个参数是局部坐标的原点，当执行者为实体时，这个参数可以指定执行的锚点基于实体的脚部还是眼部，因此有脚部和眼部两个可用参数。其中脚部即为原本的执行位置，眼部为原本的执行位置在$y$轴方向加上实体眼睛的高度。
+#proper-noun(display: "实体锚点（Entity Anchor）", "shi2 ti3 mao2 dian3")是实体身上用于定位的*点*，有两个可用的实体锚点：脚部和眼部。故名思义，脚部位于实体碰撞箱的底部中心点，这个位置实际上就是实体本身的位置，也是*默认使用的实体锚点*。眼部位于实体眼睛高度处碰撞箱的中心点。眼部和脚部在水平方向上的位置是一样的，在$y$轴上，这个实体眼睛部位的高度就是眼部和脚部高度的差值。
+#figure(
+  caption: "玩家的实体锚点",
+  image("图片/玩家的实体锚点.png", width: 9em)
+)
+对于玩家而言，其眼部与脚部的高度差约为1.62格，如上图所示。但是不同实体的眼部高度实际上是不一致的，不能笼统地认为所有实体的眼部高度均为1.62格。
+
+相应地，锚点也作为命令上下文参数的一部分，是为执行锚点。如果执行位置为一个实体所在的位置，则脚部与执行位置实际上是重合的。事实上在所有的命令中，*执行锚点默认都是脚部*。无论锚点是否被修改为眼部，执行位置一定是在实体碰撞箱的底部中心点，不会随着锚点的变化而发生变动。
 ===== #proper-noun(display: "执行维度（Execution dimension）", "zhi2 xing2 wei3 du4")
 这个参数是命令执行所在的维度，执行位置位于这个维度内。
 ===== 执行输出反馈
@@ -2828,12 +2835,20 @@ Minecraft规定：大部分方块的长、宽和高均为1米，体积为1立方
 ==== 局部坐标
 除了相对坐标外，命令系统还有一种更加灵活的坐标，即#proper-noun(display:"局部坐标（Local coordinates）", "ju2 bu4 zuo4 biao1")。局部坐标也用于表示相对偏移量，由脱字符 `^` 和相对偏移量的格式来表示：
 #codebox("^[<dx>] ^[<dy>] ^[<dz>]")
-与相对坐标不同的是，局部坐标脱离了绝对坐标系规定的方向，它使用命令执行者的朝向作为基准，由朝向角度参数决定，可以是任意的。如@fig:local_coordinate_system，使用局部坐标相当于建立了一个坐标轴方向任意的坐标系，但是坐标轴之间的正交关系不变。若执行朝向发生变动，这个坐标系也之转动。
+与相对坐标不同的是，局部坐标脱离了绝对坐标系规定的方向，它以命令执行朝向作为基准，由朝向角度参数决定，可以是任意的。如@fig:local_coordinate_system，使用局部坐标相当于建立了一个坐标轴方向任意的坐标系，但是坐标轴之间的正交关系不变。若执行朝向发生变动，这个坐标系也之转动。
 #figure(
   caption: "局部坐标系",
   image("图片/局部坐标系.png", width: 15em)
 ) <fig:local_coordinate_system>
-局部坐标系规定：*命令执行朝向即为$z$轴的正方向，若命令执行者为命令方块，则局部坐标系与相对坐标系无异*，因此$x$轴正方向位于命令执行位置的左边，$y$轴正方向位于命令执行位置的上方。比如，执行位置右边3米距离的局部坐标为 `^-3 ^ ^`。*由于局部坐标不使用绝对坐标系规定的坐标轴方向，因此局部坐标不能与绝对坐标和相对坐标混用。*
+局部坐标系规定：*命令执行朝向被视为$z$轴的正方向，若命令执行者为命令方块，则局部坐标系与相对坐标系无异*，因此$x$轴正方向位于命令执行位置的左边，$y$轴正方向位于命令执行位置的上方。比如，执行位置右边3米距离的局部坐标为 `^-3 ^ ^`。*由于局部坐标不使用绝对坐标系规定的坐标轴方向，因此同一坐标参数中局部坐标不能与绝对坐标和相对坐标混用。*
+
+局部坐标会被执行锚点影响。当锚点是脚部时，*相对坐标和局部坐标的原点都在执行位置（脚部）*。而当锚点是眼部时，*相对坐标的原点在执行位置，也就是脚部；局部坐标的原点在眼部*。
+
+以下举一个例子以进一步说明：
+#codebox("execute as @a at @s anchored eyes run setblock ~ ~ ~ stone")
+这条命令将执行锚点设为玩家的眼部，而执行位置仍然为玩家碰撞箱底部中心点，这个位置被相对坐标 `~ ~ ~` 使用，因此石头会放置在玩家下半身所在方块。
+#codebox("execute as @a at @s anchored eyes run setblock ^ ^ ^ stone")
+同样是将执行锚点设为玩家的眼部，但 `^ ^ ^` 使用执行锚点，因此石头会放置在玩家上半身所在方块。
 === 调试屏幕的坐标
 使用 `F3` 打开调试屏幕时，屏幕上会显示和坐标有关的一些信息。首先是屏幕中央的准星会由十字形变成一个简约的正交分解三维坐标轴。规定红线代表$x$轴正方向，绿线代表$y$轴正方向，蓝线代表$z$轴正方向。这个图形会随着玩家的朝向改变而旋转，可以很容易地通过该图形中辨别方向。
 
@@ -2852,12 +2867,12 @@ Minecraft规定：大部分方块的长、宽和高均为1米，体积为1立方
 #codebox("<yaw> <pitch>")
 === 偏航角
 偏航角定义了实体绕绝对坐标$y$轴旋转的角度，因此它也可以被称为绕$y$轴旋转角度。它是一个实体的水平朝向与绝对坐标$z$轴的夹角$gamma$，其中$gamma in [-180,180)$。并且规定：$gamma$随顺时针方向增大，$z$轴正方向$gamma=0$。
+
+$gamma$的符号可以按如下方法判断：对水平面内的向量进行正交分解，若有同向平行于$x$轴正方向或与$x$轴重合的分向量，则$gamma<0$；反向平行于$x$轴则$gamma >0$。用方位的语言描述：水平朝向偏向东，则$gamma<0$；偏向西则$gamma>0$。
 #figure(
   caption: "偏航角",
   image("图片/偏航角.png", width: 18em)
 )
-$gamma$的符号可以按如下方法判断：对水平面内的向量进行正交分解，若有同向平行于$x$轴正方向或与$x$轴重合的分向量，则$gamma<0$；反向平行于$x$轴则$gamma >0$。用方位的语言描述：水平朝向偏向东，则$gamma<0$；偏向西则$gamma>0$。
-
 注意在以上描述中，$gamma$的值都被限定在$[-180,180)$内。这个范围一般被视为偏航角的可用值（调试屏幕显示的范围），但是超出这个范围的参数仍然可以被识别。识别的规则是：*给一个偏航角参数加上或减去360，则新的偏航角参数与原来的偏航角参数等效*，最终将任意偏航角换算至$[-180,180)$的范围内。例如，`180` 会被识别为 `-180`，即正北方向；`270` 会被识别为 `-90`；`580` 会被识别为 `-140`。
 #example(
   [#h(-2em)要求设置某实体的朝向为北偏东$75 degree$，则偏航角参数应为#blank。],
@@ -2888,12 +2903,226 @@ $theta$的符号可以按如下方法判断：对局部坐标$y O z$面内的向
 表示在原来俯仰角的基础上增加一定角度值后形成的俯仰角。由偏航角、俯仰角组成的朝向参数允许绝对朝向和相对朝向混用。
 === 朝向与局部坐标的关系 \*
 对于空间内的任意向量$bold(alpha)$，在计算其朝向时，可以先将其正交分解为两个向量：即如@equ:any_rotation 所示的平行于水平面的向量$bold(alpha)_parallel$和垂直于水平面的向量$bold(alpha)_perp$。偏航角是分向量$bold(alpha)_parallel$与z轴的夹角（注意符号），俯仰角是$bold(alpha)$与其水平分向量的夹角（注意符号）。运用方向角公式可以求出两个向量$bold(alpha)_1=(x_1,y_1,z_1)$、$bold(alpha)_2=(x_2,y_2,z_2)$之间的夹角$gamma$：
-$ cos(gamma)= (bold(alpha)_1bold(alpha)_2)/(bar.v.double bold(alpha)_1bar.v.double bar.v.double bold(alpha)_2 bar.v.double)=(x_1 x_2+y_1 y_2+z_1 z_2)/(sqrt(x_1^2+y_1^2+z_1^2)sqrt(x_2^2+y_2^2+z_2^2)) $
+$ cos gamma= (bold(alpha)_1bold(alpha)_2)/(bar.v.double bold(alpha)_1bar.v.double bar.v.double bold(alpha)_2 bar.v.double)=(x_1 x_2+y_1 y_2+z_1 z_2)/(sqrt(x_1^2+y_1^2+z_1^2)sqrt(x_2^2+y_2^2+z_2^2)) $
 #figure(
   caption: "任意朝向",
-  image("图片/任意朝向.png", width: 12em)
+  image("图片/任意朝向.png", width: 10em)
 ) <equ:any_rotation>
 据此可以求出两个朝向参数。计算偏航角的时候需要构造同向平行于$z$轴的单位向量。下面举一例以说明之。
+#example(
+  [#h(-2em)有一锚点为$A(12,100,-170)$的实体，其朝向为坐标$B(14,102,-172)$的位置，求该实体的朝向角度（取值范围$[-180,180)$，取三位有效数字）。],
+  [
+    首先进行向量的分解，先得出向量$arrow.r(A B)=(2,2,-2)$在水平面上的分向量，如@fig:horizontal_projection 所示。
+    #figure(
+      caption: "水平投影",
+      image("图片/水平投影.png", width: 12em)
+    ) <fig:horizontal_projection>
+    水平分向量$arrow.r(A' B')=(2,0,-2)$，此时只需要计算它与$z$轴的方向角，取同向平行于$z$轴的单位向量$bold(e)=(0,0,1)$，应用方向角余弦公式可得
+    $ cos gamma=(-2)/(sqrt(2^2+(-2)^2)times 1)=-(sqrt(2))/2 $
+    因为方向向量的指向偏东，故偏航角为 `-135`。
+
+    计算俯仰角则只需求$arrow.r(A B)$与$arrow.r(A' B')=(2,0,-2)$的夹角，则
+    $ cos theta=(2 times 2+(-2)times(-2))/(sqrt(2^2+2^2+(-2)^2)times sqrt(2^2+(-2)^2))=sqrt(6)/(3) $
+    又$arrow.r(A' B')=(2,0,-2)$的竖直分量与$y$轴正方向平行，故$theta<0$，则俯仰角取近似值 `-35.3`。
+  ]
+)
+引入偏航角、俯仰角两个朝向参数后，局部坐标指向的具体位置便可以准确计算出来了。设偏航角为$gamma$，俯仰角$theta$，则局部坐标系内某向量$bold(alpha)$实际上也跟随朝向角度增量发生转动得到向量$bold(alpha)'=(x',y',z')$，这里称为等效的相对坐标。@fig:projection_of_vectors (b) 是这两个向量在$x O z$平面上的投影，@fig:projection_of_vectors (c) 是它们在$y O z$平面上的投影。
+#sub-figure(
+  caption: "两个向量的投影结果",
+  columns: 3,
+  label: <fig:projection_of_vectors>,
+  [#image("图片/两个向量的投影结果a.png", height: 8em)\(a)],
+  [#image("图片/两个向量的投影结果b.png", height: 8em)\(b)],
+  [#image("图片/两个向量的投影结果c.png", height: 8em)\(c)]
+)
+先分析在$x O z$平面上的投影，实际上水平方向的旋转即绕$y$轴旋转，此时$y$坐标不变。假设向量$bold(alpha)_parallel$与$x$轴的夹角为$phi$，令$bold(alpha)_parallel$的模为$l$，则有
+$ cases(
+  x=l cos phi,
+  y=y_0,
+  z=l sin phi
+) $ <equ:rotation_derivation_1>
+同理可得向量$bold(alpha)'_parallel$的坐标关系
+$ cases(
+  x'_parallel=l cos(phi+gamma)=l cos phi cos gamma-l sin phi sin gamma,
+  y'_parallel=y_0,
+  z'_parallel=l sin(phi+gamma)=l sin phi cos gamma+l cos phi sin gamma
+) $
+@equ:rotation_derivation_1 代入得
+$ cases(
+  x'_parallel=x cos phi-z sin phi,
+  y'_parallel=y,
+  z'_parallel=x sin phi+z cos phi
+) $ <equ:rotation_derivation_3>
+*矩阵*是一种用于求解线性方程组和实现线性变换的数学工具，可以将@equ:rotation_derivation_3 写成矩阵形式
+$ mat(
+  x'_parallel;
+  y'_parallel;
+  z'_parallel
+) = mat(
+  cos gamma, 0, -sin gamma;
+  0, 1, 0;
+  sin gamma, 0, cos gamma
+)mat(
+  x;
+  y;
+  z
+) $
+其中令矩阵
+$ bold(R)_y (gamma) = mat(
+  cos gamma, 0, -sin gamma;
+  0, 1, 0;
+  sin gamma, 0, cos gamma
+) $
+即得到向量绕$y$轴旋转的矩阵#footnote[这个矩阵与数学上通用的旋转矩阵不同，数学上向量旋转以逆时针为正方向，Minecraft的朝向角度以顺时针为正方向。]，这个矩阵与偏航角相关。
+
+同理可以分析$y O z$上的投影，此时向量绕$x$轴旋转，得到旋转矩阵
+$ bold(R)_x (theta) = mat(
+  1, 0, 0;
+  0, cos theta, -sin theta;
+  0, sin theta, cos theta
+) $
+这个矩阵与俯仰角相关。绕$z$轴旋转的情况这里不需要使用，因为Minecraft暂时还不存在翻滚角。等效的相对坐标计算可以直接使用这两个矩阵，即
+$ bold(alpha)'=bold(R)_y (gamma)bold(R)_x (theta)bold(alpha) $ <equ:equivalent_relative_coordinates>
+用向量形式表示的实际绝对坐标$bold(beta)$即等效的相对坐标与命令执行位置$(x_0,y_0,z_0)$的和
+$ bold(beta)=bold(alpha)'+(x_0,y_0,z_0)^"T" $
+下面举一个计算的例子。
+#example(
+  [#h(-2em)有一个位于点$(30,50,10)$的命令执行者，执行位置为该点，其偏航角和俯仰角分别为 `45` 和 `45`，求其局部坐标 `^10 ^ ^10` 的绝对坐标。],
+  [
+    由题意得$gamma=45 degree$，$theta=45 degree$，$alpha=(10,0,10)^"T"$。由@equ:equivalent_relative_coordinates，此坐标对于命令执行者的相对坐标为
+    $ bold(alpha)'&=bold(R)_y (gamma)bold(R)_x (theta)bold(alpha)\
+    &=mat(
+      cos 45 degree, 0, -sin 45 degree;
+      0, 1, 0;
+      sin 45 degree, 0, cos 45 degree
+    )mat(
+      cos 45 degree, 0, -sin 45 degree;
+      0, 1, 0;
+      sin 45 degree, 0, cos 45 degree
+    )mat(10; 0; 10)\
+    &=mat(5sqrt(2)-5; -5sqrt(2); 5sqrt(2)+5) $
+    则绝对坐标为
+    $ bold(beta)=bold(alpha)'+(30,50,10)^"T"=mat(5sqrt(2)+25; -5sqrt(2)+50; 5sqrt(2)+15)approx mat(32.07; 42.93; 22.07) $
+  ]
+)
+== 坐标参数在命令中的应用
+本节讲述一些使用坐标参数的命令语法。
+=== 使用方块坐标的命令
+一些命令使用的坐标参数均为方块坐标 `minecraft:block_pos`，这部分命令包括用于放置方块的 `/setblock`、`/fill`、`/clone` 和用于设置出生点的 `/spawnpoint`、`/setworldspawn`。
+==== 命令 `/setblock`
+此命令用于更改单个方块。这里的“单个方块”意为长宽高均小于等于1米的方块，如石头一类的标准方块，楼梯、台阶、栅栏、玻璃板一类的“不完整方块”。若遇到长度或高度大于1米的方块则无法使用单个 `/setblock` 命令以放置完整的方块，如床、门等。此命令所需权限等级为2，语法为：#index(index: "command", "setblock")
+#codebox("setblock <pos> <block> [destroy|keep|replace|strict]") <code:command_setblock>
+#param-desc(
+  [`<pos>`（方块坐标 `minecraft:block_pos`）], [需要放置方块的坐标。],
+  [`<block>`（方块状态 `minecraft:block_state`）], [参数格式为 `命名空间ID[方块状态]{NBT}`，表示被放置的方块，其中方块状态和方块实体NBT是可选的。],
+  [`[destroy|keep|replace|strict]` ], [选填，四种有效值的效果如下：],
+  [`destroy` ], [原方块会像被不带有精准采集或时运的工具破坏那样掉落其掉落物，并且会播放方块被破坏的声音。例如，将玻璃方块更改为其他方块时不会掉落任何掉落物，更改草方块时会掉落泥土，以此类推。],
+  [`keep` ], [只有空气方块会被更改，非空气方块将被保留。注意：如果使用 `/setblock` 去更改非空气方块，则命令执行失败。],
+  [`replace` ], [完全更改原方块，原方块不会掉落其掉落物、没有被破坏的声音。如果不指定参数 `[destroy|keep|replace|strict]`，命令默认使用这种更改方式。],
+  [`strict` ], [使用这种模式时更改方块不会触发方块更新。其他模式均会触发方块更新。]
+)
+#example(
+  [#h(-2em)在$(0,0,0)$放置一个石头。],
+  [
+    命令为
+    #codebox("setblock 0 0 0 minecraft:stone")
+  ]
+)
+#example(
+  [#h(-2em)在$(0,0,0)$放置一个浮空的沙子。],
+  [
+    如果使用非 `strict` 模式放置，则命令会触发方块更新，进一步造成沙子坠落而无法浮空，因此需使用 `strict` 模式：
+    #codebox("setblock 0 0 0 minecraft:sand strict")
+  ]
+)
+==== 命令 `/fill`
+该命令用指定的方块填充一个长方体区域的全部或部分，所需权限等级为2。以下是它的一种语法，这条语法仅会更改填充区域内的非空气方块，与 `/setblock` 中的 `keep` 模式完全相同。#index(index: "command", "fill")
+#codebox("fill <from> <to> <block> keep")
+#param-desc(
+  [`<from>`、`<to>`（方块坐标 `minecraft:block_pos`）], [如@fig:command_fill 所示，两个对角方块可以决定空间内的一个长方体，一般将这个长方体占据的空间称为#proper-noun(display: "源区域（Source region）", "yuan2 qu1 yu4")。在 `/fill` 命令中，决定源区域的两个方块坐标不必刻意强调其某个坐标轴上坐标参数的大小。],
+  [`<block>`（方块状态 `minecraft:block_state`）], [与语法@code:command_setblock 一致。]
+)
+`/fill` 的另一种语法如下：
+#codebox("fill <from> <to> <block> [replace <filter>] [destroy|hollow|outline|strict]")
+#param-desc(
+  [`[<filter>]`（方块谓词 `minecraft:block_predicate`）], [可选，用于指定需要被替换的方块种类；若不指定，则所有方块都会被替换，注意此时字面量 `replace` 也需要省略。对于方块谓词这种参数，可以用命名空间ID指定某一种方块，也可以用数据包标签指定某一类方块，同时允许指定方块状态或方块实体NBT。具体格式为：\ `<命名空间ID>[<方块状态>=<值>,…]{<方块实体数据>}`\ 其中 `[<方块状态>=<值>,…]` 和 `{<方块实体数据>}` 在不需要时可以省略。检查方块时只会检查此参数指定的方块状态是否匹配。],
+  [`[destroy|hollow|outline|strict]` ], [可选，方块处理方式。注意无论是哪种处理方式，其更改的方块都只能是 `[<filter>]` 指定的方块，除非不指定被替换的方块。`destroy` 与 `strict` 的用法和效果与 `/setblock` 中的用法完全相同，参考语法@code:command_setblock。其他的可选参数有其特殊的用处：],
+  [`hollow` ], [它的效果相当于一个空心的、外部只有一层方块包裹的长方体。源区域的外层将被替换为指定的方块，内部将被替换为空气。],
+  [`outline` ], [与 `hollow` 类似，`outline` 也会生成有一层方块包裹的长方体，但是内部的方块则不会发生变化。这样的效果可以理解为为内部的结构套一层方块外框。]
+)
+一条 `/fill` 命令的源区域的方块数量上限由游戏规则 `max_block_modifications` 决定，默认为 `32768`，可由命令 `/gamerule` 修改。*若源区域体积超过此上限则命令执行失败，无论实际上修改的方块数量。*
+#figure(
+  caption: [`/fill` 命令图解],
+  image("图片/fill命令图解.png", width: 20em)
+) <fig:command_fill>
+例如，以下两条命令均能够被识别，且二者表示的源区域完全相同。
+#codebox("fill 12 24 17 13 18 16 stone")
+#codebox("fill 13 18 16 12 24 17 stone")
+设第一个方块坐标为$(x_1,y_1,z_1)$，第二个方块坐标为$(x_2,y_2,z_2)$，则源区域的方块总数
+$ S=(abs(x_1-x_2)+1)(abs(y_1-y_2)+1)(abs(z_1-z_2)+1) $ <equ:source_region_volume>
+#example(
+  [
+    #h(-2em)判断下列命令是否超过了默认的 `max_block_modifications` 规定的限制。
+    + 其中源区域均为空气方块：
+      #codebox("fill ~ ~ ~ ~24 ~-22 ~17 stone")
+    + 其中源区域含有600个非空气方块：
+      #codebox("fill 23 179 66 5 223 104 stone keep")
+    + 其中源区域均为空气方块：
+      #codebox("fill ~3 ~ ~9 ~36 ~-25 ~-49 stone outline")
+  ],
+  [
+    + 直接代入@equ:source_region_volume 得$S=25 times 23 times 18=10350$，小于默认的 `32768` 上限。
+    + 代入公式得源区域方块总数$S=19 times 45 times 39=33345$，虽然源区域有600个非空气方块，实际更改的方块数量为$33345-600=32745<32768$，但源区域的方块总数已超限。
+    + 代入公式，$S=34 times 26 times 41=36244>32768$，超限。
+  ]
+)
+==== 命令 `/clone`
+此命令用于将某一个区域的方块复制到另一个区域。对于被复制的区域一般称其为*源区域*，而 `/clone` 的目的位置称为#proper-noun(display: "目标区域（Destination region）", "mu4 biao1 qu1 yu4")。允许跨维度复制区域。它所需权限等级为2，语法为：#index(index: "command", "clone")
+#codebox("clone [from <sourceDimension>] <begin> <end> [to <targetDimension>] <destination> [strict] [replace|masked] [force|move|normal]") <code:command_clone_replace>
+或
+#codebox("clone [from <sourceDimension>] <begin> <end> [to <targetDimension>] <destination> [strict] filtered <filter> [force|move|normal]") <code:command_clone_filtered>
+#param-desc(
+  [`[from <sourceDimension>]` ], [区域复制来源维度，选填，若需指定，字面量 `from` 必不可少。参数 `<sourceDimension>` 的类型为 `minecraft:dimension`，必须为维度的命名空间ID。不指定则默认使用命令执行维度。],
+  [`<begin>`、`<end>`（方块坐标 `minecraft:block_pos`）], [决定源区域的两个方块坐标。],
+  [`[to <targetDimension>]` ], [区域复制目标维度，选填，若需指定，字面量 `to` 必不可少。参数 `<sourceDimension>` 的类型为 `minecraft:dimension`，必须为维度的命名空间ID。不指定则默认使用命令执行维度。],
+  [`<destination>`（方块坐标 `minecraft:block_pos`）], [#h(-2em)目的位置被定义为目标区域西北下角的方块，复制到目标区域的结构在每个坐标轴上均位于该方块坐标的正方向，如@fig:command_clone_destination 所示。#figure(caption: [`/clone` 命令目的位置方块在目标区域中的位置], image("图片/clone命令目的位置方块在目标区域中的位置.png", width: 10em)) <fig:command_clone_destination>],
+  [`[strict]` ], [可选，若使用该参数则不会触发方块更新。]
+)
+对于语法@code:command_clone_replace 而言，
+#param-desc(
+  [`[replace|masked]` ], [可选，两者各自的作用为：],
+  [`replace` ], [强制复制所有方块，即用源区域的方块完全替换目标区域的方块。为方块处理方式的默认值。],
+  [`masked` ], [仅复制非空气方块，即只有目标区域中源区域非空气方块对应的位置会被替换，源区域空气方块对应的位置则保持不变。],
+  [`[force|move|normal]` ], [可选，它们各自的作用是：],
+  [`force` ], [无论源区域和目标区域是否有重叠，一律强制复制。若有重叠的部分，则该部分目标区域会覆盖源区域。],
+  [`move` ], [将源区域“移动”到目标区域，即复制过后源区域会被替换为空气。],
+  [`normal` ], [默认的复制方式，在该复制方式下，源区域和目标区域不能有重叠的部分。]
+)
+语法@code:command_clone_filtered 是 `/clone` 命令的过滤模式，
+#param-desc(
+  [`<filter>`（方块谓词 `minecraft:block_predicate`）], [在源区域中选定需要被复制的方块ID，只有指定的方块才会被复制到目标区域中。]
+)
+#example(
+  [#h(-2em)将对于命令执行位置而言 `~ ~ ~` 和 `~2 ~1 ~3` 之间区域的所有草方块按其在区域内的位置复制到 `~ ~10 ~`。],
+  [
+    显然需要使用 `/clone` 的过滤模式，命令为：
+    #codebox("clone ~ ~ ~ ~2 ~1 ~3 ~ ~10 ~ filtered minecraft:grass_block")
+  ]
+)
+==== 命令 `/spawnpoint`
+这条命令用于设置玩家的出生点，需要的权限等级为2，其语法为：#index(index: "command", "spawnpoint")
+#codebox("spawnpoint [<targets>] [<pos>] [<angle>]")
+#param-desc(
+  [`[<targets>]`（实体 `minecraft:entity`）], [如果不填指定的玩家，则默认作用于命令执行者。如果命令执行者为命令方块，则必须填写指定的玩家。允许使用目标选择器指定玩家。],
+  [`[<pos>]`（方块坐标 `minecraft:block_pos`）], [三个参数必须为整数，因此无法在设置玩家出生点时使用精确的实际坐标，所以玩家的出生点只能被设置在一个方块底部的中心点。若不填写坐标参数则会将玩家出生点设置在命令执行者的当前位置。],
+  [`[<angle>]`（角度 `minecraft:angle`）], [指定玩家出生时的偏航角，只有偏航角一个参数，不可指定俯仰角。]
+)
+读者也可以使用这条命令设置在任意维度的出生点。但是在末地使用 `/spawnpoint` 需谨慎，因为末地传送门会将玩家传送回出生点，无论该出生点所在的维度，因此很有可能会将玩家困在末地，不过玩家依旧可以使用 `/tp` 传送至其他维度的玩家或使用 `/execute` 子命令 `in` 直接传送至指定维度。
+==== 命令 `/setworldspawn`
+用于设置世界出生点，当命令执行成功后出生点区块会变为该出生点所在区块，也会影响区块刻的赋予。注意：该命令不能用于设置除主世界外其他维度的世界出生点，需要的权限等级为2，语法为：#index(index: "command", "setworldspawn")
+#codebox("setworldspawn [<pos>] [<angle>]")
+=== 使用三维坐标的命令
+命令 `/tp` 和 `/teleport` 使用的坐标参数均为三维坐标 `minecraft:vec3`，一般使用浮点数，允许使用整数以进行中心校准。这两条命令可以互通，语法也完全相同。出于习惯以及在实际操作中为了方便输入命令，通常在语法格式介绍中使用更为简便的 `tp` 字符。`/tp` 的主要作用为传送实体至指定的位置或指定其朝向，所需权限等级为2，以下是它的所有用法。#index(index: "command", "tp")#index(index: "command", "teleport")
 == 区块
 === 命令/forceload<subsec:command_forceload>
 = 文本组件<chap:text_component>
