@@ -613,6 +613,12 @@
   if name == "gimp" {
     box(image("图标/GIMP.png", height:1em), baseline: 0pt, height:0.85em)
   }
+  if name == "mine_stone" {
+    box(image("图标/advancement/石器时代.png", height:auto), baseline: 1em, height:3em)
+  }
+  if name == "obtain_armor" {
+    box(image("图标/advancement/整装上阵.png", height:auto), baseline: 1em, height:3em)
+  }
 }
 
 // 文件
