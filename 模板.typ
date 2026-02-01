@@ -411,7 +411,7 @@
               )
             }
           )
-          #question
+          #h(-2em)#question
         ]
       }
     ) + label
