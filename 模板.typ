@@ -592,6 +592,18 @@
   if name == "json-object" {
     box(image("图标/data/JSON对象.png", height:1em), baseline: 0pt, height:0.85em)
   }
+  if name == "nbt-byte" {
+    box(image("图标/data/字节型.png", height:1em), baseline: 0pt, height:0.85em)
+  }
+  if name == "nbt-bool" {
+    box(image("图标/data/布尔值.png", height:1em), baseline: 0pt, height:0.85em)
+  }
+  if name == "nbt-short" {
+    box(image("图标/data/短整型.png", height:1em), baseline: 0pt, height:0.85em)
+  }
+  if name == "nbt-interger" {
+    box(image("图标/data/短整型.png", height:1em), baseline: 0pt, height:0.85em)
+  }
   if name == "nbt-list" {
     box(image("图标/data/列表.png", height:1em), baseline: 0pt, height:0.85em)
   }

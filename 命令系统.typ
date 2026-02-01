@@ -3393,7 +3393,7 @@ $ (a-16floor(a/16), b-16floor(b/16), c-16floor(c/16)) $
 一些命令，诸如 `/tp`、`/spreadplayers` 等，不可避免地会与实体产生互动。这些命令基本上都会使用有如 `minecraft:entity`、`minecraft:game_profile` 的参数类型。这些参数类型的表示方式是：如果要选择特定玩家，则可以直接指定*玩家的名称*，选择其他实体的情况则可能需要使用其他的参数，这便是下文所讲的UUID和目标选择器。
 #pagebreak()
 == UUID
-实体种类繁多，不同的实体可能拥有不同的名称，存储有不同的NBT数据，行为、基础属性也不尽相同。为了区分这些实体，现在给每个实体单独派发一张“身份证”，每张“身份证”都标有一个号码，这些号码彼此之间各不相同。这些用于区分不同对象的数字串即*通用唯一识别码（Universally Unique Identifier，简称UUID）*#index(display: "通用唯一识别码（Universally Unique Identifier，UUID）", "tong1 yong4 wei2 yi1 shi2 bie2 ma3")。
+实体种类繁多，不同的实体可能拥有不同的名称，存储有不同的NBT数据，行为、基础属性也不尽相同。为了区分这些实体，现在给每个实体单独派发一张“身份证”，每张“身份证”都标有一个号码，这些号码彼此之间各不相同。这些用于区分不同对象的数字串即*通用唯一识别码（Universally Unique Identifier，简称UUID）*#index("UUID（Universally Unique Identifier，通用唯一识别码）")。
 
 UUID具有以下性质：
 ===== 唯一性
@@ -3650,7 +3650,6 @@ UUID有以下几种表示方式：
 数量参数的语法为：
 #codebox("limit=<值>")
 数量参数的值只能为正整数，不接受浮点数范围。事实上，这个数量参数充当了“最大选择数量”的角色，当场上所有符合要求的实体数小于该值时，则所有符合要求的实体都会被选择；反之则会在所有符合要求的实体中选择数量为该值的实体。
-
 #wrap-content(
   tips(
     [
@@ -3717,10 +3716,89 @@ UUID有以下几种表示方式：
 ==== NBT参数
 NBT参数用于选择有指定NBT的实体，有关NBT的内容参考@chap:nbt\及@chap:level_format，语法为：
 #codebox("[nbt=<NBT>]")
-在填写NBT时，需要加上花括号，括号内严格按照NBT的格式与层级关系填写。举例，选择所有手持石头的玩家：
+在填写NBT时，需要加上花括号，括号内严格按照NBT的格式与层级关系填写。此处的NBT是一个测试NBT，用于对比实体的NBT数据，具体的对比规则见节@sec:testing_nbt。举例，选择所有手持石头的玩家：
 #codebox("@a[nbt={SelectedItem:{id:\"minecraft:stone\"}}]")
-禁止写这种，不然对你哈气
+然而，由于实体NBT的计算本身是耗费较大的项目，加上目标选择器本身的高消耗，因此不建议在目标选择器中定义NBT参数，应尽量改用@chap:command_execute\讲述的 `if data` 或 `if items` 子命令。或将实体数据存储于其他低消耗的媒介再进行测试比对。
+==== 谓词参数
+选择匹配指定战利品表谓词的目标，有关谓词的内容参考《数据包》教程，语法为：
+#codebox("[predicate=<命名空间ID>]")
+其中 `<命名空间ID>` 为指定谓词的命名空间ID，谓词文件的路径一定要填写正确。不能使用内联形式。若需要选择不匹配指定谓词的目标，则语法为：
+#codebox("[predicate=!<命名空间ID>]")
+同样，在目标选择器中直接指定谓词也是耗费较大算量的做法，为了优化命令的执行，应尽量改用@chap:command_execute\讲述的 `if predicate` 子命令。
+#heading(level: 2, numbering: none, [第三章思考题与习题])
+根据下面的要求，分别编写目标选择器：
++ 所有处于创造模式的玩家；
++ 任意3个玩家；
++ 距离$(3,2,4)$不超过10格又不小于5格、且距离该点最近的一个玩家；
++ 当前实体；
++ 既没有记分板标签A又没有记分板标签B的所有实体；
++ Johnny卫道士；
++ 在队伍 `frank` 中、`[ai]` 分数小于0的所有玩家；
++ 随机的一个实体；
++ 随机选择一个玩家，要求水平朝向范围和竖直朝向范围分别如下图所示：
+  #sub-figure(
+    caption: "",
+    [#image("图片/第三章思考题与习题图1a.png", width: 14em)\(a)],
+    [#image("图片/第三章思考题与习题图1b.png", width: 14em)\(b)]
+  )
++ 由$(117,83,-95)$和$(120,90,-67)$决定的长方体区域内的所有标记；
+
+  #[
+    #set text(font: "Minecraft")
+    \
+    如@fig:chapter_3_exercise_2 所示，★为命令执行者（盔甲架）且位于同心圆圆心，●均为盔甲架，同心圆每往外一层，半径就增加4格，最里面的圆半径为4，据此选择第11 \~ 13题所需的实体。
+    #figure(
+      caption: "",
+      image("图片/第三章思考题与习题图2.png", width: 11em)
+    ) <fig:chapter_3_exercise_2>
+  ]
++ A、C、E；
++ B；
++ A、D。
++ 过获取黑石 `blackstone` 以取得进度 #icon(name: "mine_stone") 石器时代 `story/mine_stone` 的所有玩家。
 = NBT格式<chap:nbt>
+一个面包、一块石砖、一只绵羊……这些游戏内容本质上是许多游戏数据构成的集合，Minecraft的游戏数据主要由这种格式存储——NBT。
+#pagebreak()
+== 概述
+Minecraft存在一种用于存储数据的格式，即*二进制命名标签（Named Binary Tags），简称NBT*#index("NBT（Named Binary Tags，二进制命名标签）")，它是一种树状的数据存储格式，是由Mojang Studio首创的、极具Minecraft游戏特色的一种数据存储格式。NBT存储的内容比较精细化，主要包含方块、实体、物品等数据。
+=== SNBT的概念
+Minecraft中大部分具体游戏资源的数据都是以NBT文件的格式存储在游戏文件夹中的，这些具体的内容可能是——某一个方块、某一个区块、区块内某一个实体等。这些内容使用统一的NBT格式存储数据，鉴于其可读性较低，且在命令中无法直接处理这样的数据。因此在命令中使用一种便于编写的NBT格式，即*字符串化的二进制命名标签（Stringified NBT），简称SNBT*#index("SNBT（Stringified NBT，字符串化的二进制命名标签）")。当命令中的标签解析成功时，SNBT就会被转换为NBT以存储数据。
+
+SNBT的基本格式为键值对。写法为
+#codebox("<标签名>:<值>")
+举例：
+#codebox("tag:123")
+SNBT的标签名允许包含字母A \~ Z、a \~ z、数字0 \~ 9、下划线 `_` 和引号 `"`，对大小写敏感，不允许含有空格、中文字符等其他字符（文件中存储的一些标签可能带有空格）。比如，`tag` 和 `Tag` 是两个不同的标签名。对于由多个单词组成的标签名，其命名方法一般有三种——#proper-noun(display: "大驼峰命名法（Upper camel case）", "da4 tuo2 feng1 ming4 ming2 fa3")，即所有单词首字母均大写，如 `CanDestory`；#proper-noun(display: "小驼峰命名法（Lower camel case）", "xiao3 tuo2 feng1 ming4 ming2 fa3")，即除首个单词外的所有单词首字母均大写，如 `maxUses`；#proper-noun(display: "蛇形命名法（Snake case）", "she2 xing2 ming4 ming2 fa3")，即所有字母均小写、单词之间用下划线隔开，如 `map_scale_direction`。近年来游戏新数据在标签名上一般采用蛇形命名法，且原有的数据标签名也逐步改为了蛇形命名法，为便于统一管理游戏数据，建议读者自己进行开发时，尽量使用蛇形命名法定义标签。
+=== 数据类型与数据树
+在SNBT中，对于每一个诸如 `<标签名>:<值>` 这样形式的内容，称其为一个单独的#proper-noun(display: "标签（Tag）", "biao1 qian1")。一个标签由三部分组成：一是*标签类型*，它用于决定该标签需要使用什么类型的数据；二是*标签名*，它用于区分不同的标签；三是*该标签存储的数据*，对于不同类型的标签，其需要的数据也不尽相同。NBT本身一共存在13种数据类型，在SNBT中一共可以使用13种标签类型，其中包含一种较为特殊的标签类型。本教程在介绍SNBT的语法时，采用与Minecraft Wiki一致的结构化树状图。下面分类介绍所有的数据类型：
+==== 整型类数据
+===== #icon(name: "nbt-byte")#footnote[本教程使用这些图标表示各SNBT数据类型。] 字节型
+#proper-noun(display: "字节型（Byte）", "zi4 jie2 xing2")占据1个字节，存储容量为$-128$ \~ 127，且数值必须为整数。在填写字节型数据时，可以在数值后面加一个字母 `b`，大小写均可，格式为：
+#codebox("<标签名>:<值>b")
+示例：
+#codebox("Difficulty:2b")
+结构化表示为
+#tree(
+  (0, [#icon(name: "nbt-byte") *Difficulty*: `2`])
+)
+这个字母 `b` 被称为数据的后缀，后缀用于决定该数据为何种类型的数据，同时也有助于将SNBT转换为NBT。字母 `b` 决定了这个数据为字节型数据。不过后缀是可选的，因为NBT的数据类型是自动更正的。然而笔者还是强烈建议不要省略后缀以避免小概率解析不成功的情况。
+===== #icon(name: "nbt-bool") 布尔值
+NBT本身并没有#proper-noun(display: "布尔值（Bool）", "bu4 er3 zhi2")这种数据类型，因此使用字节型数据的 `0b` 来表示布尔值中的“假”，用非 `0b` 的数据来表示布尔值中的“真”。但出于习惯，一般用 `1b` 来表示“真”。在SNBT中可以直接使用 `true` 和 `false`，它们分别能转换为NBT格式的\code `1b` 和 `0b`。事实上，在SNBT中直接使用字节形式的 `1b` 和 `0b` 也是可接受的。示例：
+#codebox("NoAI:true")
+或
+#codebox("NoAI:1b")
+结构化表示为
+#tree(
+  (0, [#icon(name: "nbt-bool") *NoAI*: `true`])
+)
+===== #icon(name: "nbt-short") 短整型
+#proper-noun(display: "短整型（Short）", "duan3 zheng3 xing2")占据2个字节，存储容量为$-32768$ \~ 32767，且值必须为整数。该数据类型需要的后缀为 `s`，大小写均可。示例：
+#codebox("Fire:10s")
+结构化表示为
+#tree(
+  (0, [#icon(name: "nbt-short") *Fire*: `10`])
+)
+== 测试NBT<sec:testing_nbt>
 = 文本组件<chap:text_component>
 == 文本组件内容
 === 翻译文本<subsec:translate>
@@ -3730,6 +3808,7 @@ NBT参数用于选择有指定NBT的实体，有关NBT的内容参考@chap:nbt\�
 == 技术性实体<sec:technical_entity>
 = 记分板
 == 队伍与标签<sec:team_and_tag>
+= 命令/execute<chap:command_execute>
 #appendix
 = 数据库
 == 数据包和资源包版本号<sec:pack_format>
@@ -4521,6 +4600,7 @@ NBT参数用于选择有指定NBT的实体，有关NBT的内容参考@chap:nbt\�
 #columns(2)[
   #make-index(indexes: ("Default",), use-page-counter: true)
 ]
+#pagebreak()
 == 重要方法
 #bibliography(
   "参考文献.bib",
