@@ -466,6 +466,8 @@
         return box(inset: 0pt, width: 1.7em, text(weight: "regular", numbering("1.", nums.at(4))))
       } else if level == 6 {
         return box(inset: 0pt, width: 1.7em, text(weight: "regular", numbering("(1)", nums.at(5))))
+      } else if level == 7 {
+        return box(inset: 0pt, width: 1.7em, text(weight: "regular", numbering("①", nums.at(6))))
       } else {
         return none
       }
@@ -473,12 +475,19 @@
   }
 }
 
-// 序号重置
+// 5级序号重置
 #let reset-h5 = context {
-  let val = counter(heading).get()
-  if val.len() >= 5 {
-    counter(heading).update(val.slice(0, 4))
+  if counter(heading).get().len() >= 5 {
+    counter(heading).update(counter(heading).get().slice(0, 4))
   }
+}
+
+// 5级序号接续
+#let fake_h4 = counter("fake_heading_4")
+#let continue-h5(title) = {
+  set text(fill: rgb("#d71d1d"), weight: "bold", font: "Source Han Sans SC", size: 1.1em)
+  fake_h4.step()
+  block(v(0.6em) + h(-2em) + context fake_h4.display("一、 ") + title + v(0.6em))
 }
 
 // 提示
@@ -494,7 +503,6 @@
         title-color: rgb("#d71d1d"),
         title-inset: (x: 0.6em, y: 0.5em)
       ),
-      // title: (text(font: "Minecraft", size: 0.9em, "小提示")),
       title-style: (
         boxed-style: (
           anchor: (
@@ -601,11 +609,35 @@
   if name == "nbt-short" {
     box(image("图标/data/短整型.png", height:1em), baseline: 0pt, height:0.85em)
   }
-  if name == "nbt-interger" {
-    box(image("图标/data/短整型.png", height:1em), baseline: 0pt, height:0.85em)
+  if name == "nbt-int" {
+    box(image("图标/data/整型.png", height:1em), baseline: 0pt, height:0.85em)
+  }
+  if name == "nbt-long" {
+    box(image("图标/data/长整型.png", height:1em), baseline: 0pt, height:0.85em)
+  }
+  if name == "nbt-float" {
+    box(image("图标/data/单精度浮点数.png", height:1em), baseline: 0pt, height:0.85em)
+  }
+  if name == "nbt-double" {
+    box(image("图标/data/双精度浮点数.png", height:1em), baseline: 0pt, height:0.85em)
+  }
+  if name == "nbt-string" {
+    box(image("图标/data/字符串.png", height:1em), baseline: 0pt, height:0.85em)
+  }
+  if name == "nbt-byte_array" {
+    box(image("图标/data/字节型数组.png", height:1em), baseline: 0pt, height:0.85em)
+  }
+  if name == "nbt-int_array" {
+    box(image("图标/data/整型数组.png", height:1em), baseline: 0pt, height:0.85em)
+  }
+  if name == "nbt-long_array" {
+    box(image("图标/data/长整型数组.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "nbt-list" {
     box(image("图标/data/列表.png", height:1em), baseline: 0pt, height:0.85em)
+  }
+  if name == "nbt-compound" {
+    box(image("图标/data/复合标签.png", height:1em), baseline: 0pt, height:0.85em)
   }
   if name == "vscode" {
     box(image("图标/VSCode.png", height:1em), baseline: 0pt, height:0.85em)
@@ -922,6 +954,11 @@
     block(v(-0.7em) + it)
   }
   show heading.where(level: 6): it => {
+    set align(left)
+    set text(font: ((name: "Source Han Serif", covers: regex("[·“”‘’…|/\[\]\{\}<>—]")), "TeX Gyre Termes", "Source Han Serif"), weight: "regular")
+    block(v(-0.7em) + it)
+  }
+  show heading.where(level: 7): it => {
     set align(left)
     set text(font: ((name: "Source Han Serif", covers: regex("[·“”‘’…|/\[\]\{\}<>—]")), "TeX Gyre Termes", "Source Han Serif"), weight: "regular")
     block(v(-0.7em) + it)
