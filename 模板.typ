@@ -1097,5 +1097,6 @@
   show outline.entry.where(level: 4): it => {}
   show outline.entry.where(level: 5): it => {}
   show outline.entry.where(level: 6): it => {}
+  show outline.entry.where(level: 7): it => {}
   main-body
 }

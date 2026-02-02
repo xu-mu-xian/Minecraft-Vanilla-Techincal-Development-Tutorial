@@ -3976,8 +3976,67 @@ NBT本身并没有#proper-noun(display: "布尔值（Bool）", "bu4 er3 zhi2")�
 NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始标准，是GZip格式的压缩文件，但仍有小部分未被压缩。在被压缩的NBT文件中，一定使用一个复合标签用于文件的封装，也就是说，这个未命名的复合标签便是根标签。
 
 每个NBT文件都使用*二进制格式*，其内容是由一个个字节组成的，可读性较低。将每个字节用十六进制表示，如：
-#codebox(text(blue)[01 ] + text(purple)[00 05 ] + text(red)[63 6f 75 61 74 ] + text(olive)[01])
+#codebox(text(blue)[01 ] + text(purple)[00 05 ] + text(red)[63 6f 75 61 74 ] + text(olive)[01]) <code:binary_format_1>
+对于这样的格式，有一套特定的方法将其转换为可读性高的SNBT。对于所有的标签，它们首先需要一个字节存储各自的数据类型，因此每种数据类型都有一个ID作为它们的标识。各数据类型的ID以及各ID的二进制格式如@tab:data_type_and_binary_format 所示。
+#general-table(
+  caption: "数据类型及其二进制格式",
+  colspan: 4,
+  columns: (auto, auto, auto, auto),
+  header: ([ID], [数据类型], [图标], [二进制格式]),
+  [0], [结束], [-], [`00`],
+  [1], [字节型], [#icon(name: "nbt-byte")], [`01`],
+  [2], [短整型], [#icon(name: "nbt-short")], [`02`],
+  [3], [整型], [#icon(name: "nbt-int")], [`03`],
+  [4], [长整型], [#icon(name: "nbt-long")], [`04`],
+  [5], [单精度浮点数], [#icon(name: "nbt-float")], [`05`],
+  [6], [双精度浮点数], [#icon(name: "nbt-double")], [`06`],
+  [7], [字节型数组], [#icon(name: "nbt-byte_array")], [`07`],
+  [8], [字符串], [#icon(name: "nbt-string")], [`08`],
+  [9], [列表], [#icon(name: "nbt-list")], [`09`],
+  [10], [复合标签], [#icon(name: "nbt-compound")], [`0a`],
+  [11], [整型数组], [#icon(name: "nbt-int_array")], [`0b`],
+  [12], [长整型数组], [#icon(name: "nbt-long_array")], [`0c`]
+) <tab:data_type_and_binary_format>
+===== 结束
+对于结束类型的数据，它只有一个字节的长度，且这个字节固定为 `00`，它一定会出现在复合标签的末尾。
+===== 字节型、短整型、整型和长整型
+对于这四种类型的数据，每一个标签都由四部分组成：第1个字节标识该标签的类型。第2、3字节标识该标签之标签名长度，必须为无符号整数，两个字节能存储的最大数值为65535，因此一个标签的标签名最多不能超过65535个字符。根据第2、3字节定义的标签名长度，接下来若干字节用于存储该标签的标签名，名称中每个ASCII字符占据一个字节，第2、3字节定义的值有多大，则这部分的字节数量就为多少。最后若干字节是该标签的负载，负载包括了该标签的值。对于 #icon(name: "nbt-byte") 字节型，此部分的字节数为1；对于 #icon(name: "nbt-short") 短整型则为2；对于 #icon(name: "nbt-int") 整型则为4，对于 #icon(name: "nbt-long_array") 长整型则为8。四种数据类型的负载均包含有符号的值。
+
+例如，数据@code:binary_format_1 的第1位为 `01`，这一位定义了数据类型，为 #icon(name: "nbt-byte") 字节型，第2、3位为 `00 05`，它定义了标签名的长度，说明该标签名有五个字节。往后数5位，第4 \~ 8位 `63 6f 75 61 74` 是标签名的字符，根据ASCII码，`63` 代表 `c`、`6f` 代表 `o`、`75` 代表 `u`、`61` 代表 `n`、`74` 代表 `t`，因此标签名为 `count`。最后一位 `01` 是负载，定义了该标签的值 `1`。综上所述，该标签为
+#codebox("count: 1b")
+===== 浮点数
+对于单精度浮点数和双精度浮点数，它们的字节构成与上述整型数据类似，唯一不同之处在于浮点数的负载字节遵循IEEE 754-2008标准。对于 #icon(name: "nbt-float") 单精度浮点数，负载字节长4位；对于 #icon(name: "nbt-double") 双精度浮点数，负载字节长8位。
+
+例如，对于如下的数据：
+#codebox(text(blue)[05 ] + text(purple)[00 06 ] + text(red)[48 65 61 6c 74 68 ] + text(olive)[40 90 00 00])
+由 `05 00 06 48 65 61 6c 74 68` 知该标签类型为 #icon(name: "nbt-float") 单精度浮点数，标签名为 `Health`，`40 90 00 00` 为负载，需将其转化为单精度浮点数。先将 `40 90 00 00` 转化为二进制
+#codebox("01000000 10010000 00000000 00000000")
+接下来按1位符号位、8位指数位、23位尾数位分割这个数据：
+#codebox("0 10000001 00100000000000000000000")
+最高位 `0` 表示该值为正数，`10000001` 是指数部分，指数可计算得$2^8+2^0-127=129-127=2$，`00100000000000000000000` 是尾数部分，可计算得$1+2^(-3)=1.125$，浮点数为$(-1)^0 times 2^2 times 1.125=4.5$。因此该标签为
+#codebox("Health: 4.5f")
+===== 字符串
+#icon(name: "nbt-string") 字符串的二进制格式为：1位类型标识、2位标签名长度、若干位标签名字符、2位值长度、若干位负载。例如，对于如下的数据：
+#codebox(text(blue)[08 ] + text(purple)[00 02 ] + text(red)[49 64 ] + text(fuchsia)[00 0e ] + text(olive)[6d 69 6e 65 63 72 61 66 74 3a 73 74 6f 6e 65])
+`08` 表示该标签为 #icon(name: "nbt-string") 字符串类型，`00 02 69 64` 表示标签名为 `id`，`00 0e` 表示值有15个字符，后面的 `6d 69 6e 65 63 72 61 66 74 3a 73 74 6f 6e 65` 表示值为 `minecraft:stone`。故该标签为
+#codebox("id: \"minecraft:stone\"")
+===== 字节型数组、整型数组、长整型数组
+对于这三类数组，二进制格式为：1位类型标识、2位标签名长度、若干位标签名字符、4位有符号整数表示数组的长度。若数组的长度为$n$，则最后使用$n times s$字节表示负载，其中$s$的值对于 #icon(name: "nbt-byte_array") 字节型数组而言为1，对于 #icon(name: "nbt-int_array") 整型数组是4，对于 #icon(name: "nbt-long_array") 长整型数组是8。例如：
+#codebox(text(blue)[11 ] + text(purple)[00 04 ] + text(red)[55 55 49 44 ] + text(maroon)[00 00 00 04 ] + text(olive)[4d 90 3b 0b ] + text(teal)[2b 4b 98 b3 ] + text(olive)[0f 8e 7d 8e ] + text(teal)[f2 95 15 c3])
+其中 11 表示该标签为 #icon(name: "nbt-int_array") 整型数组，`00 04` 表示该标签的标签名有4个字符，`55 55 49 44` 表示该标签的标签名为 `UUID`，`00 00 00 04` 表示该数组有4个元素，`4d 90 3b 0b 2b 4b 98 b3 0f 8e 7d 8e f2 95 15 c3` 存储了这4个元素的值，由于每个值均为整型，因此每4个字节为1个有符号整数，换算结果为 `188452941`、`-1281864917`、`-1904374257`、`-1021995534`，综上所述，该标签为
+#codebox("UUID: [I; 188452941, -1281864917, -1904374257, -1021995534]")
+===== 列表
+#icon(name: "nbt-list") 列表的二进制格式在1位类型标识、2位标签名长度和若干位标签名字符后，又使用了1字节用于标识列表内元素的数据类型，其值仍按表@tab:data_type_and_binary_format 使用。然后是4位有符号整数表示数组的长度以及和长度相符的若干位负载。例如：
+#codebox(text(blue)[09 ] + text(purple)[00 08 ] + text(red)[52 6f 74 61 74 69 6f 6e ] + text(navy)[05 ] + text(maroon)[00 00 00 02 ] + text(olive)[42 b4 00 00 ] + text(teal)[00 00 00 00])
+`09` 代表该标签为 #icon(name: "nbt-list") 列表，`00 08 52 6f 74 61 74 69 6f 6e` 是该标签的标签名 `Rotation`，`05` 说明该列表内元素均为单精度浮点数，`00 00 00 02` 是列表长度，`42 b4 00 00` 和 `00 00 00 00` 分别为列表内的元素 `90`、`0`，故标签为
+#codebox("Rotation: [90f, 0f]")
+===== 复合标签
+一个 #icon(name: "nbt-compound") 复合标签使用1字节标识数据类型，2字节标识标签名长度，若干字节表示标签名。紧随其后使用若干字节表示其子标签，各子标签的格式与上文所述完全一致，但复合标签末尾一定存在一个 `00` 字节。例如：
+#codebox(text(blue)[0a ] + text(purple)[00 0d ] + text(red)[62 6c 65 6e 64 69 6e 67 5f 64 61 74 61 ] + text(blue)[03 ] + text(purple)[00 0b ] + text(red)[6d 61 78 5f 73 65 63 74 69 6f 6e ] + text(olive)[00 00 00 20 ] + text(blue)[03 ] + text(purple)[00 0b ] + text(red)[6d 69 6e 5f 73 65 63 74 69 6f 6e ] + text(olive)[ff ff ff fc ] + text(orange)[00])
+其中 `0a` 标识了 #icon(name: "nbt-compound") 复合标签类型，`00 0d 62 6c 65 6e 64 69 6e 67 5f 64 61 74 61` 是标签名长度和标签名，为13个字符的 `blending_data`，`03` 是 `blending_data` 第一个子标签的数据类型，是为 #icon(name: "nbt-int") 整型。接下来的 `00 0b 6d 61 78 5f 73 65 63 74 69 6f 6e` 是第一个子标签的标签名 `max_section`，`00 00 00 04` 是这个标签的值 `20`。随后的 `03` 是 `blending_data` 第二个子标签的数据类型，是为 #icon(name: "nbt-int") 整型。第二个子标签的标签名可解读为 `max_section`，值为 `-4`。末尾的字节 `00` 是结束类型。故该标签为
+#codebox("blending_data: {max_section: 20, min_section: -4}")
 == 测试NBT<sec:testing_nbt>
+
 = 文本组件<chap:text_component>
 == 文本组件内容
 === 翻译文本<subsec:translate>
