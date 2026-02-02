@@ -4035,7 +4035,14 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
 #codebox(text(blue)[0a ] + text(purple)[00 0d ] + text(red)[62 6c 65 6e 64 69 6e 67 5f 64 61 74 61 ] + text(blue)[03 ] + text(purple)[00 0b ] + text(red)[6d 61 78 5f 73 65 63 74 69 6f 6e ] + text(olive)[00 00 00 20 ] + text(blue)[03 ] + text(purple)[00 0b ] + text(red)[6d 69 6e 5f 73 65 63 74 69 6f 6e ] + text(olive)[ff ff ff fc ] + text(orange)[00])
 其中 `0a` 标识了 #icon(name: "nbt-compound") 复合标签类型，`00 0d 62 6c 65 6e 64 69 6e 67 5f 64 61 74 61` 是标签名长度和标签名，为13个字符的 `blending_data`，`03` 是 `blending_data` 第一个子标签的数据类型，是为 #icon(name: "nbt-int") 整型。接下来的 `00 0b 6d 61 78 5f 73 65 63 74 69 6f 6e` 是第一个子标签的标签名 `max_section`，`00 00 00 04` 是这个标签的值 `20`。随后的 `03` 是 `blending_data` 第二个子标签的数据类型，是为 #icon(name: "nbt-int") 整型。第二个子标签的标签名可解读为 `max_section`，值为 `-4`。末尾的字节 `00` 是结束类型。故该标签为
 #codebox("blending_data: {max_section: 20, min_section: -4}")
-== 测试NBT<sec:testing_nbt>
+== 测试NBT标签<sec:testing_nbt>
+对于一段已有的NBT数据，有时会需要检测它是否满足一定要求，检测方法是提供一段SNBT用于对比，这样的SNBT被称为#proper-noun(display: "测试NBT标签（Tseting NBT Tags）", "ce4 shi4 NBT biao1 qian1")。测试NBT标签主要在目标选择器的NBT参数和 `custom_data` 数据组件谓词中使用。本节将以目标选择器NBT参数为主描述测试NBT标签的匹配方法。
+==== 对普通标签的匹配
+满足这一类匹配要求的标签类型为*除了 #icon(name: "nbt-compound") 复合标签和 #icon(name: "nbt-list") 列表外的其他所有类型*，#icon(name: "nbt-byte_array") 字节型数组、#icon(name: "nbt-int_array") 整型数组和 #icon(name: "nbt-long_array") 长整型数组均位于此列。对于这些标签，提供的测试NBT标签和接受对比的目标NBT必须在名称、标签类型和值上完全一致。
+
+比如，对于一个目标NBT：
+#codebox("bold: true")
+能够与之匹配的测试NBT标签为 `bold: true` 或 `bold: 1b`，添加符号后缀也未尝不可，如 `bold: 1ub`。
 
 = 文本组件<chap:text_component>
 == 文本组件内容
