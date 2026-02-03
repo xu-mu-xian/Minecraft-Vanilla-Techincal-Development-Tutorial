@@ -951,17 +951,17 @@
   show heading.where(level: 5): it => {
     set align(left)
     set text(font: ((name: "Source Han Serif", covers: regex("[·“”‘’…|/\[\]\{\}<>—]")), "TeX Gyre Termes", "Source Han Serif"), weight: "regular")
-    block(v(-0.7em) + it)
+    block(v(-0.6em) + it + v(0.1em))
   }
   show heading.where(level: 6): it => {
     set align(left)
     set text(font: ((name: "Source Han Serif", covers: regex("[·“”‘’…|/\[\]\{\}<>—]")), "TeX Gyre Termes", "Source Han Serif"), weight: "regular")
-    block(v(-0.7em) + it)
+    block(v(-0.6em) + it)
   }
   show heading.where(level: 7): it => {
     set align(left)
     set text(font: ((name: "Source Han Serif", covers: regex("[·“”‘’…|/\[\]\{\}<>—]")), "TeX Gyre Termes", "Source Han Serif"), weight: "regular")
-    block(v(-0.7em) + it)
+    block(v(-0.6em) + it)
   }
   // 引用
   show ref: it => {

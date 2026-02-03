@@ -3716,8 +3716,10 @@ UUID有以下几种表示方式：
 ==== NBT参数
 NBT参数用于选择有指定NBT的实体，有关NBT的内容参考@chap:nbt\及@chap:level_format，语法为：
 #codebox("[nbt=<NBT>]")
-在填写NBT时，需要加上花括号，括号内严格按照NBT的格式与层级关系填写。此处的NBT是一个测试NBT，用于对比实体的NBT数据，具体的对比规则见节@sec:testing_nbt。举例，选择所有手持石头的玩家：
+在填写NBT时，需要加上花括号，括号内严格按照NBT的格式与层级关系填写。此处的NBT是一个测试NBT标签，用于对比实体的NBT数据，具体的对比规则见节@sec:testing_nbt。举例，选择所有手持石头的玩家：
 #codebox("@a[nbt={SelectedItem:{id:\"minecraft:stone\"}}]")
+此参数也可以使用反选以选择NBT不匹配的实体：
+#codebox("[nbt=!<NBT>]")
 然而，由于实体NBT的计算本身是耗费较大的项目，加上目标选择器本身的高消耗，因此不建议在目标选择器中定义NBT参数，应尽量改用@chap:command_execute\讲述的 `if data` 或 `if items` 子命令。或将实体数据存储于其他低消耗的媒介再进行测试比对。
 ==== 谓词参数
 选择匹配指定战利品表谓词的目标，有关谓词的内容参考《数据包》教程，语法为：
@@ -3972,6 +3974,26 @@ NBT本身并没有#proper-noun(display: "布尔值（Bool）", "bu4 er3 zhi2")�
 可以看到标签 #icon(name: "nbt-compound") `Player` 的一个子标签 #icon(name: "nbt-list") `Inventory` 为一个列表，列表中的数据类型为 #icon(name: "nbt-compound") 复合标签，可以称它为复合标签的列表。#icon(name: "nbt-list") 列表和 #icon(name: "nbt-compound") 复合标签能相互嵌套形成非常复杂的数据树结构，但嵌套深度不能超过512。
 ===== 结束（End）
 这种数据类型仅用于标记复合标签的结束，无存储容量。SNBT不使用这种数据类型。
+=== SNBT转换为NBT \*<subsec:snbt_to_nbt>
+对于一个输入的SNBT，游戏需要将其转换为NBT格式以使用。在转换的时候，游戏会对输入的SNBT做一定处理以适应目标程序对象的数据格式。转换行为可总结为以下四点：
+===== 不能被程序对象使用的直接丢弃
+若属性在程序对象中不存在（未被使用）或不可写，则输入的SNBT会被直接丢弃。此过程不会产生错误，但也不会保留数据。“不存在”的情况有如：实体的数据有一个字段 #icon(name: "nbt-bool") `Invulnerable`，如果错误地把这个字段写为了 #icon(name: "nbt-bool") `invulnerable`，此字段实体未使用，所以输入的 #icon(name: "nbt-bool") `invulnerable` 会被丢弃。“不可写”的情况有如：方块实体的 #icon(name: "nbt-string") `id` 不可被修改，传入的 #icon(name: "nbt-string") `id` 也会被忽略。
+===== 编码层级的错误会发生报错
+如果一个字段本身存在，但其编码格式违反硬性约束，则会产生报错，并使命令执行失败。例如，一些字段需要使用文本组件作为其值，如果输入的文本组件有错误，则整个输入都会产生错误。以下命令会产生报错，即使传入的数据在SNBT的层面上是一个空复合标签：
+#codebox("give @s ladder[minecraft:custom_name={}]")
+===== 数据能转换就转换
+如果输入的SNBT与期望的数据不符，若存在明确的转换规则，则会按照转换规则纠正输入数据：
+====== *若期望的值是一个命名空间ID，而输入的值是一个省略命名空间前缀的字符串，则会为其添加默认的命名空间 `minecraft`。*如：
+输入 `id: "stone"` $arrow.r$ 转换为 `id: "minecraft:stone"`
+====== 若期望的值是 #icon(name: "nbt-bool")  布尔值，而输入的值是 #icon(name: "nbt-byte") 字节型、#icon(name: "nbt-short") 短整型、#icon(name: "nbt-int") 整型、#icon(name: "nbt-long") 长整型、#icon(name: "nbt-float") 单精度浮点数或 #icon(name: "nbt-double") 双精度浮点数，则向下取整转换为字节型，非 `0b` 的值被视为 `1b`。
+====== 若期望的值是 #icon(name: "nbt-byte") 字节型、#icon(name: "nbt-short") 短整型、#icon(name: "nbt-int") 整型、#icon(name: "nbt-long") 长整型、#icon(name: "nbt-float") 单精度浮点数或 #icon(name: "nbt-double") 双精度浮点数，而输入的值与目标类型不符，则自动转换为目标类型。若目标的类型是 #icon(name: "nbt-byte") 字节型、#icon(name: "nbt-short") 短整型、#icon(name: "nbt-int") 整型或 #icon(name: "nbt-long") 长整型，而输入的值是 #icon(name: "nbt-float") 单精度浮点数或 #icon(name: "nbt-double") 双精度浮点数，则会先向下取整再进行转换。
+===== 不能转换的数据就归零或置空
+如果输入的SNBT与期望的数据不符且无法转换，则：
+====== 若期望的值是一个 #icon(name: "nbt-bool")  布尔值，而输入的值是 #icon(name: "nbt-list") 列表、#icon(name: "nbt-byte_array") 字节型数组、#icon(name: "nbt-int_array") 整型数组、#icon(name: "nbt-long_array") 长整型数组、#icon(name: "nbt-string") 字符串或 #icon(name: "nbt-compound") 复合标签，则强制使用 `0b`。
+====== 若期望的值是 #icon(name: "nbt-byte") 字节型、#icon(name: "nbt-short") 短整型、#icon(name: "nbt-int") 整型、#icon(name: "nbt-long") 长整型、#icon(name: "nbt-float") 单精度浮点数或 #icon(name: "nbt-double") 双精度浮点数，而输入的值是 #icon(name: "nbt-list") 列表、#icon(name: "nbt-byte_array") 字节型数组、#icon(name: "nbt-int_array") 整型数组、#icon(name: "nbt-long_array") 长整型数组、#icon(name: "nbt-string") 字符串或 #icon(name: "nbt-compound") 复合标签，则强制赋值为 `0`，具体数据类型取决于期望的类型。
+====== 若期望的值是 #icon(name: "nbt-string") 字符串，而输入的值不是字符串，则强制使用空字符串 `""`。
+====== 若期望的值是 #icon(name: "nbt-list") 列表、#icon(name: "nbt-byte_array") 字节型数组、#icon(name: "nbt-int_array") 整型数组或 #icon(name: "nbt-long_array") 长整型数组，而输入的值不是对应的类型，则强制使用空列表 `[]` 或空数组。
+====== 若期望的值是 #icon(name: "nbt-compound") 复合标签，而输入的值不是复合标签，则强制使用空复合标签 `{}`。
 === 二进制格式 \*
 NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始标准，是GZip格式的压缩文件，但仍有小部分未被压缩。在被压缩的NBT文件中，一定使用一个复合标签用于文件的封装，也就是说，这个未命名的复合标签便是根标签。
 
@@ -4036,7 +4058,7 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
 其中 `0a` 标识了 #icon(name: "nbt-compound") 复合标签类型，`00 0d 62 6c 65 6e 64 69 6e 67 5f 64 61 74 61` 是标签名长度和标签名，为13个字符的 `blending_data`，`03` 是 `blending_data` 第一个子标签的数据类型，是为 #icon(name: "nbt-int") 整型。接下来的 `00 0b 6d 61 78 5f 73 65 63 74 69 6f 6e` 是第一个子标签的标签名 `max_section`，`00 00 00 04` 是这个标签的值 `20`。随后的 `03` 是 `blending_data` 第二个子标签的数据类型，是为 #icon(name: "nbt-int") 整型。第二个子标签的标签名可解读为 `max_section`，值为 `-4`。末尾的字节 `00` 是结束类型。故该标签为
 #codebox("blending_data: {max_section: 20, min_section: -4}")
 == 测试NBT标签<sec:testing_nbt>
-对于一段已有的NBT数据，有时会需要检测它是否满足一定要求，检测方法是提供一段SNBT用于对比，这样的SNBT被称为#proper-noun(display: "测试NBT标签（Tseting NBT Tags）", "ce4 shi4 NBT biao1 qian1")。测试NBT标签主要在目标选择器的NBT参数和 `custom_data` 数据组件谓词中使用。本节将以目标选择器NBT参数为主描述测试NBT标签的匹配方法。
+对于一段已有的NBT数据，有时会需要检测它是否满足一定要求，检测方法是提供一段SNBT用于对比，这样的SNBT被称为#proper-noun(display: "测试NBT标签（Tseting NBT Tags）", "ce4 shi4 NBT biao1 qian1")。测试NBT标签主要在目标选择器的NBT参数和 `custom_data` 数据组件谓词中使用。本节将以目标选择器NBT参数为主描述测试NBT标签的匹配方法。#cite(<testing_nbt>, form: none)
 ==== 对普通标签的匹配
 满足这一类匹配要求的标签类型为*除了 #icon(name: "nbt-compound") 复合标签和 #icon(name: "nbt-list") 列表外的其他所有类型*，#icon(name: "nbt-byte_array") 字节型数组、#icon(name: "nbt-int_array") 整型数组和 #icon(name: "nbt-long_array") 长整型数组均位于此列。对于这些标签，提供的测试NBT标签和接受对比的目标NBT必须在名称、标签类型和值上完全一致。
 
@@ -4044,6 +4066,98 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
 #codebox("bold: true")
 能够与之匹配的测试NBT标签为 `bold: true` 或 `bold: 1b`，添加符号后缀也未尝不可，如 `bold: 1ub`。
 
+如果一个目标NBT的值是命名空间ID：
+#codebox("id: \"minecraft:stone\"")
+#wrap-content(
+  tips([写入NBT和检查NBT是两个完全不同的操作。由节@subsec:snbt_to_nbt，写入NBT时游戏会自动添加默认的命名空间前缀；检查NBT的时候则不会，所以需要写成完整的命名空间ID。], width: 19em),
+  [
+
+    能够与之匹配的测试NBT标签必须为完整的 `id: "minecraft:stone"`，省略命名空间前缀的写法 `id: "stone"` 无法匹配。*这是因为测试NBT标签不会像SNBT转换为NBT那样自动添加命名空间前缀，它只会检查标签本身是否匹配，`"stone"` 和 `"minecraft:stone"` 对它而言是不一样的值。*
+  ],
+  align: right
+)
+如果一个目标NBT的值是 #icon(name: "nbt-byte_array") 字节型数组、#icon(name: "nbt-int_array") 整型数组或 #icon(name: "nbt-long_array") 长整型数组，则数组内容必须完全一致才能匹配。比如：
+#codebox("UUID: [I; 1, 2, 3, 4]")
+能匹配的测试NBT标签：`UUID: [I; 1, 2, 3, 4]` #text(green)[✅]
+
+不能匹配的测试NBT标签：
+
+缺失元素 `UUID: [I; 1, 2, 3]` #text(red)[❎]
+
+元素顺序调换 `UUID: [I; 4, 3, 2, 1]` #text(red)[❎]
+
+更改数据类型 `UUID: [B; 1, 2, 3, 4]` #text(red)[❎]
+
+写成 #icon(name: "nbt-list") 列表 `UUID: [1, 2, 3, 4]` #text(red)[❎]
+==== 对复合标签的匹配
+复合标签的匹配规则是：只要目标NBT存在测试NBT标签指定的标签，就匹配成功，无论复合标签内是否存在其他的标签。如果测试NBT标签是一个空标签 `{}`，则只要目标NBT是一个复合标签，就匹配成功。
+
+例如，一个标记拥有如下的数据：
+#codebox([{Motion: [0.0d, 0.0d, 0.0d], data: {test: {a: 1b, b: 0b}}, Pos: [-5.0d, 56.0d, -7.0d], Fire: 0s, Invulnerable: 0b, fall_distance: 0.0d, Air: 300s, OnGround: 0b, PortalCooldown: 0, UUID: [I; -1711511327, -910079775, -1565324410, 1666279971], Rotation: [0.0f, 0.0f]}]) <code:testing_nbt_example>
+结构化表示为
+#tree(
+  (0, [#icon(name: "nbt-compound") 根标签]),
+  (1, [#icon(name: "nbt-short") *Air*: `300`]),
+  (1, [#icon(name: "nbt-compound") *data*]),
+  (2, [#icon(name: "nbt-compound") *test*]),
+  (3, [#icon(name: "nbt-bool") *a*: `true`]),
+  (3, [#icon(name: "nbt-bool") *b*: `false`]),
+  (1, [#icon(name: "nbt-double") *fall_distance*: `0.0`]),
+  (1, [#icon(name: "nbt-short") *Fire*: `0`]),
+  (1, [#icon(name: "nbt-bool") *Invulnerable*: `false`]),
+  (1, [#icon(name: "nbt-list") *Motion*]),
+  (2, [#icon(name: "nbt-double") `0.0`]),
+  (2, [#icon(name: "nbt-double") `0.0`]),
+  (2, [#icon(name: "nbt-double") `0.0`]),
+  (1, [#icon(name: "nbt-bool") *OnGround*: `false`]),
+  (1, [#icon(name: "nbt-int") *PortalCooldown*: `0`]),
+  (1, [#icon(name: "nbt-list") *Pos*]),
+  (2, [#icon(name: "nbt-double") `-5.0`]),
+  (2, [#icon(name: "nbt-double") `56.0`]),
+  (2, [#icon(name: "nbt-double") `-7.0`]),
+  (1, [#icon(name: "nbt-list") *Rotation*]),
+  (2, [#icon(name: "nbt-float") `0.0`]),
+  (2, [#icon(name: "nbt-float") `0.0`]),
+  (1, [#icon(name: "nbt-int_array") *UUID*: `[I; -1711511327, -910079775, -1565324410, 1666279971]`])
+)
+则能匹配的测试NBT标签（以下全部写成目标选择器）有：
+
+空复合标签，因为根标签也是一个复合标签 `@e[nbt={}]` #text(green)[✅]
+
+任意匹配的子标签 `@e[nbt={Air:300s}]` #text(green)[✅]
+
+任意匹配的子标签的子标签 `@e[nbt={data:{test:{a:true}}}]` #text(green)[✅]
+
+如果子标签为复合标签，空复合标签也可以匹配 `@e[nbt={data:{}}]` #text(green)[✅]
+
+对于目标选择器，也可以用反选 `@e[nbt=!{Air:100s}]` #text(green)[✅]
+
+不能匹配的情况：
+
+子标签的值不匹配 `@e[nbt={Air:100s}]` #text(red)[❎]
+
+子标签是数组，但数组不匹配 `@e[nbt={UUID:[I;-1711511327]}]` #text(red)[❎]
+
+不存在的字段 `@e[nbt={SelectedItem:{}}]` #text(red)[❎]
+==== 对列表的匹配
+列表的匹配规则是：只要目标列表中存在测试NBT标签指定的元素，就匹配成功，且列表匹配不考虑元素顺序。但是*空列表只能匹配空列表，无法匹配有元素的列表*。
+
+依旧以数据@code:testing_nbt_example 为例，其中有一个标签 `Pos: [-5.0d, 56.0d, -7.0d]`，则匹配的目标选择器有：
+
+完全一致 `@e[nbt={Pos:[-5.0d,56.0d,-7.0d]}]` #text(green)[✅]
+
+只匹配部分元素 `@e[nbt={Pos:[-5.0d]}]` #text(green)[✅]
+
+调换元素顺序 `@e[nbt={Pos:[-7.0d,56.0d,-5.0d]}]` #text(green)[✅]
+
+调换元素顺序并省略部分元素 `@e[nbt={Pos:[-7.0d,-5.0d]}]` #text(green)[✅]
+
+不能匹配的情况：
+
+空列表 `@e[nbt={Pos:[]}]` #text(red)[❎]
+
+不存在的元素 `@e[nbt={Pos:[80.0d]}]` #text(red)[❎]
+== NBT路径
 = 文本组件<chap:text_component>
 == 文本组件内容
 === 翻译文本<subsec:translate>
