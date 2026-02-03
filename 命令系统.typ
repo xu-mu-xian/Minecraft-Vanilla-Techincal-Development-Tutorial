@@ -4078,17 +4078,12 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
 )
 如果一个目标NBT的值是 #icon(name: "nbt-byte_array") 字节型数组、#icon(name: "nbt-int_array") 整型数组或 #icon(name: "nbt-long_array") 长整型数组，则数组内容必须完全一致才能匹配。比如：
 #codebox("UUID: [I; 1, 2, 3, 4]")
-能匹配的测试NBT标签：`UUID: [I; 1, 2, 3, 4]` #text(green)[✅]
-
-不能匹配的测试NBT标签：
-
-缺失元素 `UUID: [I; 1, 2, 3]` #text(red)[❎]
-
-元素顺序调换 `UUID: [I; 4, 3, 2, 1]` #text(red)[❎]
-
-更改数据类型 `UUID: [B; 1, 2, 3, 4]` #text(red)[❎]
-
-写成 #icon(name: "nbt-list") 列表 `UUID: [1, 2, 3, 4]` #text(red)[❎]
++ 能匹配的测试NBT标签：`UUID: [I; 1, 2, 3, 4]` #text(green)[☑]
++ 不能匹配的测试NBT标签：
+  + 缺失元素 `UUID: [I; 1, 2, 3]` #text(red)[☒]
+  + 元素顺序调换 `UUID: [I; 4, 3, 2, 1]` #text(red)[☒]
+  + 更改数据类型 `UUID: [B; 1, 2, 3, 4]` #text(red)[☒]
+  + 写成 #icon(name: "nbt-list") 列表 `UUID: [1, 2, 3, 4]` #text(red)[☒]
 ==== 对复合标签的匹配
 复合标签的匹配规则是：只要目标NBT存在测试NBT标签指定的标签，就匹配成功，无论复合标签内是否存在其他的标签。如果测试NBT标签是一个空标签 `{}`，则只要目标NBT是一个复合标签，就匹配成功。
 
@@ -4120,44 +4115,53 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
   (2, [#icon(name: "nbt-float") `0.0`]),
   (1, [#icon(name: "nbt-int_array") *UUID*: `[I; -1711511327, -910079775, -1565324410, 1666279971]`])
 )
-则能匹配的测试NBT标签（以下全部写成目标选择器）有：
-
-空复合标签，因为根标签也是一个复合标签 `@e[nbt={}]` #text(green)[✅]
-
-任意匹配的子标签 `@e[nbt={Air:300s}]` #text(green)[✅]
-
-任意匹配的子标签的子标签 `@e[nbt={data:{test:{a:true}}}]` #text(green)[✅]
-
-如果子标签为复合标签，空复合标签也可以匹配 `@e[nbt={data:{}}]` #text(green)[✅]
-
-对于目标选择器，也可以用反选 `@e[nbt=!{Air:100s}]` #text(green)[✅]
-
-不能匹配的情况：
-
-子标签的值不匹配 `@e[nbt={Air:100s}]` #text(red)[❎]
-
-子标签是数组，但数组不匹配 `@e[nbt={UUID:[I;-1711511327]}]` #text(red)[❎]
-
-不存在的字段 `@e[nbt={SelectedItem:{}}]` #text(red)[❎]
++ 能匹配的测试NBT标签（以下全部写成目标选择器）有：
+  + 空复合标签，因为根标签也是一个复合标签 `@e[nbt={}]` #text(green)[☑]
+  + 任意匹配的子标签 `@e[nbt={Air:300s}]` #text(green)[☑]
+  + 任意匹配的子标签的子标签 `@e[nbt={data:{test:{a:true}}}]` #text(green)[☑]
+  + 如果子标签为复合标签，空复合标签也可以匹配 `@e[nbt={data:{}}]` #text(green)[☑]
+  + 对于目标选择器，也可以用反选 `@e[nbt=!{Air:100s}]` #text(green)[☑]
++ 不能匹配的情况：
+  + 子标签的值不匹配 `@e[nbt={Air:100s}]` #text(red)[☒]
+  + 子标签是数组，但数组不匹配 `@e[nbt={UUID:[I;-1711511327]}]` #text(red)[☒]
+  + 不存在的字段 `@e[nbt={SelectedItem:{}}]` #text(red)[☒]
 ==== 对列表的匹配
 列表的匹配规则是：只要目标列表中存在测试NBT标签指定的元素，就匹配成功，且列表匹配不考虑元素顺序。但是*空列表只能匹配空列表，无法匹配有元素的列表*。
 
-依旧以数据@code:testing_nbt_example 为例，其中有一个标签 `Pos: [-5.0d, 56.0d, -7.0d]`，则匹配的目标选择器有：
-
-完全一致 `@e[nbt={Pos:[-5.0d,56.0d,-7.0d]}]` #text(green)[✅]
-
-只匹配部分元素 `@e[nbt={Pos:[-5.0d]}]` #text(green)[✅]
-
-调换元素顺序 `@e[nbt={Pos:[-7.0d,56.0d,-5.0d]}]` #text(green)[✅]
-
-调换元素顺序并省略部分元素 `@e[nbt={Pos:[-7.0d,-5.0d]}]` #text(green)[✅]
-
-不能匹配的情况：
-
-空列表 `@e[nbt={Pos:[]}]` #text(red)[❎]
-
-不存在的元素 `@e[nbt={Pos:[80.0d]}]` #text(red)[❎]
+依旧以数据@code:testing_nbt_example 为例，其中有一个标签 `Pos: [-5.0d, 56.0d, -7.0d]`。
++ 匹配的目标选择器有：
+  + 完全一致 `@e[nbt={Pos:[-5.0d,56.0d,-7.0d]}]` #text(green)[☑]
+  + 只匹配部分元素 `@e[nbt={Pos:[-5.0d]}]` #text(green)[☑]
+  + 调换元素顺序 `@e[nbt={Pos:[-7.0d,56.0d,-5.0d]}]` #text(green)[☑]
+  + 调换元素顺序并省略部分元素 `@e[nbt={Pos:[-7.0d,-5.0d]}]` #text(green)[☑]
++ 不能匹配的情况：
+  + 空列表 `@e[nbt={Pos:[]}]` #text(red)[☒]
+  + 不存在的元素 `@e[nbt={Pos:[80.0d]}]` #text(red)[☒]
 == NBT路径
+有时，为了访问所要寻找的NBT数据，需要在数据树上确定该数据的地址，即形成该数据的路径。这个概念为#proper-noun(display: "NBT路径（NBT path）", "nbt lu4 jing4")，它用于通过特定的有序遍历路径指向指定的标签。基本思路为：在数据树中，从根标签起通过层层标签最终索引得到指定的标签。数据树中每一层级的标签为一个#proper-noun(display: "节点（Node）", "jie2 dian3")。NBT路径的基本语法为：
+#codebox("<节点>.<节点>.….<节点>")
+例如，路径
+#codebox("a.b.c")
+就指向标签 `b` 的子标签 `c`，其中标签 `b` 又为 `a` 的子标签。其中，`a`、`b`、`c` 为三个不同的节点，分别位于三级不同的子标签，由节点拼凑得到最终的地址。
+=== 节点
+由于标签有不同的数据类型，相应地，节点也有几种不同的类型。具体划分后，节点一共有六种基本类型；按照指向的内容分类，则一共可以将节点分为两大类。
+==== 指向标签的节点类型
+这类节点指向*一个完整的标签*。在命令 `/data get` 中使用这些节点时，返回的是标签的值。
+===== #proper-noun(display: "根复合标签（Root compound tag）", "gen1 fu4 he2 biao1 qian1")
+语法：
+#codebox("标签")
+#figure(
+  caption: "",
+  grid(
+    align: center + horizon,
+    column-gutter: 2pt,
+    columns: 3,
+    row-gutter: 4pt,
+    [], [#set text(size: 0.8em)
+    语法中指定的子标签\ ↓], [],
+    [根标签: {], box(baseline: 25%, fill: rgb("#ff6565"), inset: 0.4em, text(white)[子标签: 值]), [, 子标签: 值}]
+  )
+)
 = 文本组件<chap:text_component>
 == 文本组件内容
 === 翻译文本<subsec:translate>
