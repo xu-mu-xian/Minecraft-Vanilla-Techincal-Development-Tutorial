@@ -475,14 +475,19 @@
   }
 }
 
-// 5级序号重置
+// 序号重置
 #let reset-h5 = context {
   if counter(heading).get().len() >= 5 {
     counter(heading).update(counter(heading).get().slice(0, 4))
   }
 }
+#let reset-h6 = context {
+  if counter(heading).get().len() >= 6 {
+    counter(heading).update(counter(heading).get().slice(0, 5))
+  }
+}
 
-// 5级序号接续
+// 序号接续
 #let fake_h4 = counter("fake_heading_4")
 #let continue-h5(title) = {
   set text(fill: rgb("#d71d1d"), weight: "bold", font: "Source Han Sans SC", size: 1.1em)

@@ -961,7 +961,7 @@ Minecraft还使用其他一些文件格式，如 `.jfr` 文件、`.log` 文件�
   \"hash\": \"4674523c91196e0898c24a06531f94154111f2a3\",
   \"size\": 459788
 }")
-    这时获取到哈希值 `4674523c91196e0898c24a06531f94154111f2a3`，其前两位是 `46`。然后打开文件夹 #icon(name: "folder") `objects\46`，在其中找到名为 #icon(name: "file") `4674523c91196e0898c24a06531f94154111f2a3` 的文件，此即为简体中文的语言文件。打开后会发现文件中的汉字均是用Unicode码表示的。
+    这时获取到哈希值 `4674523c91196e0898c24a06531f94154111f2a3`，其前两位是 `46`。然后打开文件夹 #icon(name: "folder") `objects\46`，在其中找到名为 #icon(name: "file") `4674523c91196e0898c24a06531f94154111f2a3` 的文件，此即为简体中文的语言文件。
   ])], false, true),
   (1, [#icon(name: "folder") *backups*: 存放备份存档的文件夹。]),
   (2, [#icon(name: "zip") *\<日期>\_\<时间>\_\<存档名称>.zip*: 一个备份存档。]),
@@ -3512,12 +3512,14 @@ UUID有以下几种表示方式：
 ==== 体积参数
 体积参数用于在长方体区域内选择实体，具体方法为：在原点的基础上沿三个坐标轴延伸一定的距离，组成的区域为一个长方体。体积参数共分为三个参数：`dx`、`dy` 和 `dz`，三个参数均可以为负数。当参数为正数时，选择的区域会在其对应的坐标轴正方向上延伸特定的长度；若为负数则往负方向延伸。语法为：
 #codebox("[dx=<值>,dy=<值>,dz=<值>]")
-设原点坐标$(x,y,z)$，三个体积参数值分别为$"d"x$、$"d"y$、$"d"z$，理论上该原点对应的体对角坐标为$(x+"d"x,y+"d"y,z+"d"z)$；但根据#link("https://bugs.mojang.com/browse/MC/issues/MC-123441")[MC-123441]，实际上三条边长分别为$abs("d"x+1)$、$abs("d"y+1)$、$abs("d"z+1)$，该特性至今仍存在于游戏中。
+设三个体积参数值分别为$"d"x$、$"d"y$、$"d"z$，理论上长方体区域的三条边长分别为$abs("d"x)$、$abs("d"y)$、$abs("d"z)$；但根据#link("https://bugs.mojang.com/browse/MC/issues/MC-123441")[MC-123441]，实际上三条边长分别为$abs("d"x)+1$、$abs("d"y)+1$、$abs("d"z)+1$，该特性至今仍存在于游戏中。这意味着若三个参数都设为0，目标选择器依旧会创建一个$1 times 1 times 1$大小的选区。
+
+由于 `dx`、`dy` 和 `dz` 可以为负数，不能认为选区是以原点为基础往正方向延伸$abs("d"x)+1$、$abs("d"y)+1$和$abs("d"z)+1$长度，而是取以$(x,y,z)$和$(x+"d"x,y+"d"y,z+"d"z)$为顶点的长方体区域的西北下角顶点（坐标值最小点）为基础，往正方向延伸$abs("d"x)+1$、$abs("d"y)+1$和$abs("d"z)+1$长度。因此，选区的坐标值最小点为$(min{x,x+"d"x},min{y,y+"d"y},min{z,z+"d"z})$，坐标值最大点为$(max{x,x+"d"x}+1,max{y,y+"d"y}+1,max{z,z+"d"z}+1)$。
 #figure(
-  caption: "体积参数均为正时的长方体区域",
-  image("图片/体积参数均为正时的长方体区域.png", width: 20em)
+  caption: "体积参数的选区",
+  image("图片/体积参数的选区.png", width: 38em)
 )
-不同于其他的位置参数，当实体的碰撞箱与长方体区域有重叠时，该实体就会被选择。若$"d"x$、$"d"y$和$"d"z$参数定义值为 `0` 时，只要锚点位于实体的碰撞箱内，该实体就会被选择。
+不同于其他的位置参数，当实体的碰撞箱与选取有重叠时，该实体就会被选择。
 #example(
   [
     写出符合下列要求的目标选择器。
@@ -3529,7 +3531,7 @@ UUID有以下几种表示方式：
     @enu:dx_dy_dz_1 至@enu:dx_dy_dz_3 题所需的选择器如下所示，其中第@enu:dx_dy_dz_3 小题答案不唯一：
     #codebox("@e[distance=..10]")
     #codebox("@a[x=72,y=76,z=155,distance=15..32]")
-    #codebox("@r[x=-13,y=40,z=32,dx=23,dy=15,dz=35]")
+    #codebox("@r[x=-13,y=40,z=32,dx=22,dy=14,dz=34]")
   ]
 )
 ==== 水平旋转参数
@@ -4149,19 +4151,170 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
 这类节点指向*一个完整的标签*。在命令 `/data get` 中使用这些节点时，返回的是标签的值。
 ===== #proper-noun(display: "根复合标签（Root compound tag）", "gen1 fu4 he2 biao1 qian1")
 语法：
-#codebox("标签")
-#figure(
-  caption: "",
-  grid(
+#codebox("{标签}")
+#[
+  #set align(center)
+  #grid(
     align: center + horizon,
     column-gutter: 2pt,
-    columns: 3,
+    columns: (auto, 6em, auto),
     row-gutter: 4pt,
-    [], [#set text(size: 0.8em)
-    语法中指定的子标签\ ↓], [],
-    [根标签: {], box(baseline: 25%, fill: rgb("#ff6565"), inset: 0.4em, text(white)[子标签: 值]), [, 子标签: 值}]
+    [], [#place(dx: -2em, box(width: 10em, text(fill: rgb("#ff6565"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", align(center)[语法中指定的标签\ ▼])))\ \ ], [],
+    [{], box(baseline: 25%, fill: rgb("#ff6565"), inset: 0.4em, text(white)[子标签: 值 #place(dx: -2.8em, dy: -1.4em, box(height: 2em, radius: 5pt, stroke: 1pt + rgb("#d71d1d"), width: 15em))]), [, 子标签: 值 }]
   )
+  #text(fill: rgb("#d71d1d"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", [指向的根标签])
+]
+`{标签}` 处应为一个完整的标签，且该标签必须为根标签的子标签，也可以为空。若标签处为空或指定的数据与标签的实际数据匹配时，则指向根标签；若不匹配则不指向任何标签。例如，标签处为一只绵羊的某一个标签 #icon(name: "nbt-compound") `Brain`，这个标签为绵羊标签的子标签，则指向的是绵羊这个根标签。
+
+用法示例：
+====== 该节点指向该复合标签本身：
+#codebox("{}")
+====== 该节点会先判断根标签的子标签 #icon(name: "nbt-bool") `main` 的值是否为 `true`，若是则指向根标签；若否则不指向任何内容：
+#codebox("{main:true}")
+===== #proper-noun(display: "某名称的标签（Named tag）", "mou3 ming2 cheng1 de biao1 qian1")
+语法：
+#codebox("标签名")
+#[
+  #set align(center)
+  #grid(
+    align: center + horizon,
+    column-gutter: 2pt,
+    columns: (3em, auto),
+    row-gutter: 4pt,
+    [#place(dx: -3.5em, box(width: 10em, text(fill: rgb("#ff6565"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", align(center)[语法中指定的标签名\ ▼])))\ \ ], [],
+    box(baseline: 25%, fill: rgb("#ff6565"), inset: 0.4em, text(white)[标签#place(dx: -1em, dy: -1.4em, box(height: 2em, radius: 5pt, stroke: 1pt + rgb("#d71d1d"), width: 6em))]), [: 值]
+  )
+  #text(fill: rgb("#d71d1d"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", [指向的标签])
+]
+这种节点会直接指向拥有该标签名的标签，无论该标签的数据类型。
+
+用法举例：若有一个根标签的子标签名为 `a`，则下面的节点指向该标签：
+#codebox("a")
+===== #proper-noun(display: "某名称的复合标签（Named compound tag）", "mou3 ming2 cheng1 de fu4 he2 biao1 qian1")
+语法：
+#codebox("标签名{子标签}")
+#[
+  #set align(center)
+  #grid(
+    align: center + horizon,
+    column-gutter: 2pt,
+    columns: (auto, 6em, auto),
+    row-gutter: 4pt,
+    [], [#place(dx: -2em, box(width: 10em, text(fill: rgb("#ff6565"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", align(center)[语法中指定的标签\ ▼])))\ \ ], [],
+    [标签: {], box(baseline: 25%, fill: rgb("#ff6565"), inset: 0.4em, text(white)[子标签: 值 #place(dx: -4.8em, dy: -1.4em, box(height: 2em, radius: 5pt, stroke: 1pt + rgb("#d71d1d"), width: 17em))]), [, 子标签: 值 }]
+  )
+  #text(fill: rgb("#d71d1d"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", [指向的标签])
+]
+用法与根复合标签类似，子标签可选填，指向不必为根标签的标签，且指向的标签必须为复合标签。注意，`标签名` 和 `{子标签}` 之间不能添加冒号。
+用法举例：
+====== 已知有一个标签 `main:{a:true,b:false}`，则：
+======= 该节点指向 #icon(name: "nbt-compound") `main` 标签：
+#codebox("main{}")
+======= 该节点会先判断子标签 #icon(name: "nbt-bool") `a` 的值是否为 `true`，显然结果为是，因此也指向标签 #icon(name: "nbt-compound") `main`：
+#codebox("main{a:true}")
+====== 已知有一个标签 `NoAI:true`，则该节点无法指向任何标签，因为 #icon(name: "nbt-bool") `NoAI` 不是复合标签：
+#codebox("NoAI{}")
+==== 指向列表或数组中元素的节点类型
+这类节点指向*一个列表或数组中的一个或多个元素*。由于一个列表或数组中的元素实际上是上一级标签的值，则这类节点实际指向标签的值而不是一个完整的标签。
+===== #proper-noun(display: "当前列表或数组中的某个元素（Element of named list or array tag）", "dang1 qian2 lie4 biao3 huo4 shu4 zu3 zhong1 de mou3 ge4 yuan2 su4")
+语法：
+#codebox("标签名[索引]")
+#h(-2em)或
+#codebox("标签名.[索引]")
+#[
+  #set align(center)
+  #grid(
+    align: center + horizon,
+    column-gutter: 2pt,
+    columns: (auto, auto, auto),
+    row-gutter: 4pt,
+    [], [#place(dx: -3.5em, box(width: 10em, text(fill: rgb("#d71d1d"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", align(center)[`标签名[索引]` 指向的元素\ ▼])))\ \ ], [],
+    [标签: \[], box(baseline: 25%, inset: 0.4em, radius: 5pt, stroke: 1pt + rgb("#d71d1d"), [元素]), [, 元素, 元素 \]]
+  )
+]
+用于指向数组类标签中某个元素，`索引` 指名为 `标签名` 的列表或数组中的第几个元素，需要是一个整数值。
+
+设索引的值为$i$，若$i$为非负数，则指向该列表或数组的第$i+1$个元素：所以 `0` 指向列表或数组的第一个元素、`1` 指向第二个元素，以此类推。若$i$为负数，假设列表或数组的长度（即其包含的元素个数）为$n$，则指向该列表或数组的第$i+n$个元素：所以 `-1` 表示该列表或数组的倒数第一个元素、`-2` 表示倒数第二个元素，以此类推。
+
+索引指向的地址不能超出列表或数组的长度，否则节点就不指向任何标签。
+
+用法举例：假设有一个标签 #icon(name: "nbt-byte_array") `a:[B;1,0,0,1]`，则
+====== `a[0]` 指向第一个元素，值为 `1b`；
+====== `a[3]` 指向第四个元素，值为 `1b`；
+====== `a[-2]` 指向倒数第二个（即第三个）元素，值为 `0b`；
+====== `a[4]` 指向的地址超出了数组的长度，故无效。
+===== #proper-noun(display: "当前列表或数组中的所有元素（All elements of named list or array tag）", "dang1 qian2 lie4 biao3 huo4 shu4 zu3 zhong1 de suo3 you3 yuan2 su4")
+语法：
+#codebox("标签名[]")
+#h(-2em)或
+#codebox("标签名.[]")
+#[
+  #set align(center)
+  #grid(
+    align: center + horizon,
+    column-gutter: 2pt,
+    columns: (auto, auto, auto),
+    row-gutter: 4pt,
+    [], [#place(dx: -1em, box(width: 10em, text(fill: rgb("#d71d1d"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", align(center)[`标签名[]` 指向的元素\ ▼])))\ \ ], [],
+    [标签: \[], box(baseline: 25%, inset: 0.4em, radius: 5pt, stroke: 1pt + rgb("#d71d1d"), [元素, 元素, 元素]), [\]]
+  )
+]
+指向具有该标签名的列表或数组中的所有元素，此标签必须为数组类标签。如果该列表或数组有多个元素，则指向的是多个元素。
+
+用法举例：假设有一个字节型数组 `a:[B;1,0,0,1]`，则节点 `a[]` 指向 `1b`、`0b`、`0b`、`1b` 这四个元素。
+===== #proper-noun(display: "当前列表或数组中的复合标签元素（Compound elements of named list tag）", "dang1 qian2 lie4 biao3 huo4 shu4 zu3 zhong1 de fu4 he2 biao1 qian1 yuan2 su4")
+语法：
+#codebox("标签名[{标签}]")
+#h(-2em)或
+#codebox("标签名.[{标签}]")
+#[
+  #set align(center)
+  #grid(
+    align: center + horizon,
+    column-gutter: 2pt,
+    columns: (auto, auto, auto),
+    row-gutter: 4pt,
+    [], [#place(dx: -2.5em, box(width: 10em, text(fill: rgb("#d71d1d"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", align(center)[`标签名[{标签}]` 指向的元素\ ▼])))\ \ ], [],
+    [标签: \[], box(baseline: 25%, inset: 0.4em, radius: 5pt, stroke: 1pt + rgb("#d71d1d"), [{ 标签: 值 }]), [, { 标签: 值 } \]]
+  )
+]
+`{标签}` 处为选填内容，可以为空。为空时，则会指向具有该标签名的列表或数组中所有为 `{}` 的复合标签；不为空时，会先检查标签的数据是否匹配，若匹配则指向具有该标签名的列表或数组中所有与之匹配的复合标签，若不匹配则不指向任何内容。
+
+注意，具有该标签名的标签必须为一个复合标签的列表，也就是列表中的元素必须为复合标签，否则不指向任何内容。
+
+用法举例：
+====== 假设有一个复合标签列表 `a:[{b:1},{c:2}]`，则：
+======= `a[{}]` 不指向任何元素。
+======= `a[{b:1}]` 与列表中的 `{b:1}` 匹配，故指向 `{b:1}` 这个复合标签。
+======= `a[{b:2}]` 与列表中的元素都不匹配，故不指向任何内容。
+====== 假设有一个字节型数组 `a:[B;1,0,0,1]`，则 `a[{}]` 不指向任何内容，因为标签 #icon(name: "nbt-byte_array") `a` 不是复合标签的列表。
+\
+
+特别地、当列表内的元素均为子列表时，依旧可以使用这种节点的变形，形如
+#codebox("标签名[索引或为空][索引或为空]…[索引或为一个标签]")
+#h(-2em)或
+#codebox("标签名.[索引或为空].[索引或为空].….[索引或为一个标签]")
+其中不同层级列表之间的点 `.` 可以任意省略。如此该节点指向列表的子列表的所有元素，可以嵌套多层，由外向内分别为第1层、第2层……设指向元素的列表位于$n$层，则节点语法中的方括号就有$n$个。
+#wrap-content(
+  tips(
+    width: 16em,
+    [
+      总结：在基本节点类型中，花括号中的内容一般为限定条件（检查数据是否匹配），方括号中的内容一般为数组的索引。
+    ]
+  ),
+  [
+
+    除最后一个方括号中的内容外，中间这些方括号中可以为一个索引值，指向规则与命名列表或数组标签的元素相同，若为空则指向所有元素。最后一个方括号中的内容可以为一个索引值或标签，其中标签的用法与命名列表标签的复合元素相同，不作赘述。
+
+    用法举例：
+  ],
+  align: right
 )
+#reset-h6
+====== `a[0][0]` 指向列表 #icon(name: "list") `a` 的第一个子列表的第一个元素。
+====== `a[0][{b:1}]` 指向列表 #icon(name: "list") `a` 的第一个子列表的元素 `{b:1}`，当且仅当该子列表中存在复合标签 `{b:1}`。
+=== 路径
+路径是由若干个节点组成的，在编写路径时，一定要注意*从根标签开始编写*。
 = 文本组件<chap:text_component>
 == 文本组件内容
 === 翻译文本<subsec:translate>
