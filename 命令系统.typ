@@ -4160,11 +4160,11 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
     columns: (auto, 6em, auto),
     row-gutter: 4pt,
     [], [#place(dx: -2em, box(width: 10em, text(fill: rgb("#ff6565"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", align(center)[语法中指定的标签\ ▼])))\ \ ], [],
-    [{], box(baseline: 25%, fill: rgb("#ff6565"), inset: 0.4em, text(white)[子标签: 值 #place(dx: -2.8em, dy: -1.4em, box(height: 2em, radius: 5pt, stroke: 1pt + rgb("#d71d1d"), width: 15em))]), [, 子标签: 值 }]
+    [根标签: {], box(baseline: 25%, fill: rgb("#ff6565"), inset: 0.4em, text(white)[子标签: 值 #place(dx: -5.8em, dy: -1.4em, box(height: 2em, radius: 5pt, stroke: 1pt + rgb("#d71d1d"), width: 18em))]), [, 子标签: 值 }]
   )
   #text(fill: rgb("#d71d1d"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", [指向的根标签])
 ]
-`{标签}` 处应为一个完整的标签，且该标签必须为根标签的子标签，也可以为空。若标签处为空或指定的数据与标签的实际数据匹配时，则指向根标签；若不匹配则不指向任何标签。例如，标签处为一只绵羊的某一个标签 #icon(name: "nbt-compound") `Brain`，这个标签为绵羊标签的子标签，则指向的是绵羊这个根标签。
+`标签` 处应为一个测试NBT标签，它的写法在节@sec:testing_nbt 中已讲过，需要匹配的标签必须为根标签的子标签，也可以为空。若标签处为空或指定的数据与标签的实际数据匹配时，则指向根标签；若不匹配则不指向任何标签。例如，标签处为一只绵羊的某一个标签 #icon(name: "nbt-compound") `Brain`，这个标签为绵羊标签的子标签，则指向的是绵羊这个根标签。
 
 用法示例：
 ====== 该节点指向该复合标签本身：
@@ -4205,7 +4205,7 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
   )
   #text(fill: rgb("#d71d1d"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", [指向的标签])
 ]
-用法与根复合标签类似，子标签可选填，指向不必为根标签的标签，且指向的标签必须为复合标签。注意，`标签名` 和 `{子标签}` 之间不能添加冒号。
+用法与根复合标签类似，`子标签` 是一个测试NBT标签，可选填，指向不必为根标签的标签，且指向的标签必须为复合标签。注意，`标签名` 和 `{子标签}` 之间不能添加冒号。
 用法举例：
 ====== 已知有一个标签 `main:{a:true,b:false}`，则：
 ======= 该节点指向 #icon(name: "nbt-compound") `main` 标签：
@@ -4278,7 +4278,7 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
     [标签: \[], box(baseline: 25%, inset: 0.4em, radius: 5pt, stroke: 1pt + rgb("#d71d1d"), [{ 标签: 值 }]), [, { 标签: 值 } \]]
   )
 ]
-`{标签}` 处为选填内容，可以为空。为空时，则会指向具有该标签名的列表或数组中所有为 `{}` 的复合标签；不为空时，会先检查标签的数据是否匹配，若匹配则指向具有该标签名的列表或数组中所有与之匹配的复合标签，若不匹配则不指向任何内容。
+`{标签}` 处为选填内容，使用测试NBT标签，可以为空。为空时，则会指向具有该标签名的列表或数组中所有为 `{}` 的复合标签；不为空时，会先检查标签的数据是否匹配，若匹配则指向具有该标签名的列表或数组中所有与之匹配的复合标签，若不匹配则不指向任何内容。
 
 注意，具有该标签名的标签必须为一个复合标签的列表，也就是列表中的元素必须为复合标签，否则不指向任何内容。
 
@@ -4315,6 +4315,287 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
 ====== `a[0][{b:1}]` 指向列表 #icon(name: "list") `a` 的第一个子列表的元素 `{b:1}`，当且仅当该子列表中存在复合标签 `{b:1}`。
 === 路径
 路径是由若干个节点组成的，在编写路径时，一定要注意*从根标签开始编写*。
+#example(
+  [
+    有一棵数据树如下所示，其中 #icon(name: "nbt-compound") `Root` 为根标签。
+    #tree(
+      (0, [#icon(name: "nbt-compound") *Root*]),
+      (1, [#icon(name: "nbt-byte") *TagA*: `1`]),
+      (1, [#icon(name: "nbt-int") *TagB*: `30`]),
+      (1, [#icon(name: "nbt-compound") *ComA*]),
+      (2, [#icon(name: "nbt-float") *TagC*: `0.6`]),
+      (2, [#icon(name: "nbt-list") *List*]),
+      (3, [#icon(name: "nbt-compound")]),
+      (4, [#icon(name: "nbt-string") *Str*: `OK`]),
+      (4, [#icon(name: "nbt-byte") *TagD*: `0`]),
+      (3, [#icon(name: "nbt-compound")]),
+      (4, [#icon(name: "nbt-string") *Str*: `yes`]),
+      (4, [#icon(name: "nbt-byte") *TagD*: `0`]),
+      (2, [#icon(name: "nbt-compound") *ComB*]),
+      (1, [#icon(name: "nbt-byte_array") *Array*: `[B; 0, 1, 0, 0, 1]`])
+    )
+    + 写出标签 `Root` 的值。
+    + 分别表示下列地址：
+      + #icon(name: "nbt-byte_array") `Array` 的第四个元素；
+      + #icon(name: "nbt-compound") `ComB`；
+      + #icon(name: "nbt-list") `List` 中的所有元素；
+      + 所有名为 #icon(name: "nbt-string") `Str` 的标签；
+      + 名为 `Str` 且值为 `yes` 的标签。
+  ],
+  [
+    + 根标签 #icon(name: "nbt-compound") `Root` 为一个复合标签，里面有 #icon(name: "nbt-byte") `TagA`、#icon(name: "nbt-int") `TagB`、#icon(name: "nbt-compound") `ComA` 和 #icon(name: "nbt-byte_array") `Array` 四个子标签，其中 #icon(name: "nbt-compound") `ComA` 又为一个复合标签，含有二级子标签#icon(name: "nbt-float") `TagC`、#icon(name: "nbt-list") `List` 和 #icon(name: "nbt-compound") `ComB`。#icon(name: "nbt-list") `List` 是一个复合标签的列表，内部含有两个复合标签。因此 #icon(name: "nbt-compound") `Root` 标签的值如下所示。
+      #codebox("{
+  TagA:1b,
+  TagB:30,
+  ComA:{
+    TagC:0.6f,
+    List:[
+      {
+        Str:\"OK\",
+        TagD:0b
+      },
+      {
+        Str:\"yes\",
+        TagD:1b
+      }
+    ],
+    ComB:{}
+  },
+  Array:[B;0,1,0,0,1]
+}")
+    + + #icon(name: "nbt-byte_array") `Array` 是根标签 #icon(name: "nbt-compound") `Root` 的子标签，对于根标签的子标签，其首先占据一个节点。其次，#icon(name: "nbt-byte_array") `Array` 是一个长度为5的字节型数组，对于其第四个元素，可以写成 `Array[3]`，也可以认为它是倒数第二个元素，因此也可以写成 `Array[-2]`。
+      + #icon(name: "nbt-compound") `ComB` 是一个复合标签，它是 #icon(name: "nbt-compound") `ComA` 的子标签，但不是根标签的子标签，#icon(name: "nbt-compound") `ComA` 才是根标签的子标签，因此 #icon(name: "nbt-compound") `ComA` 占据一个节点，#icon(name: "nbt-compound") `ComB` 占据第二个节点。这里有两种基本的写法：一种是 `ComA.ComB`；另一种是 `ComA{}.ComB`。后者的第一个节点指向 #icon(name: "nbt-compound") `ComA` 这个标签，由于 #icon(name: "nbt-compound") `ComA` 是个复合标签，因此命名标签和命名复合标签两种基本节点类型都可以使用。当然，给花括号中添加限定条件也是可以的，本题中，`ComA{ComB:{}}.ComB` 路径也是正确的，同样正确的写法还有 `ComA{TagC:0.6f}.ComB}`。
+      + #icon(name: "nbt-list") `List` 为一个列表，要指向列表中的所有元素，则使用命名列表或数组标签的所有元素这种节点类型，于是该节点写为 `List[]`，而 #icon(name: "nbt-list") `List` 是 #icon(name: "nbt-compound") `ComA` 的子标签，因此路径为 `ComA.List[]`。
+      +  #icon(name: "nbt-string") `Str` 是复合标签列表 #icon(name: "nbt-list") `List` 中的子标签，从数据树上看，它似乎比 #icon(name: "nbt-list") `List` 低了两个等级。实际上它是包含它本身的复合列表的子标签，而列表中的所有复合标签都是同等级的，列表的存在不增加嵌套等级，列表只负责将这些复合标签统整到一起。因此这个路径只需要三个节点，即 `ComA.List[].Str`。
+      + 名为 `Str` 且值为 `yes` 的标签存在于复合标签中，该复合标签是是列表 #icon(name: "nbt-list") `List` 的第二个元素。因此对于第二个节点，可以使用命名列表或数组标签的元素类型，将节点写作 `List[1]`；或者使用命名列表标签的复合元素类型，这时候添加限定条件以指向列表的第二个元素，如 `List[{Str:"yes"}]`。所以最终路径为 `ComA.List[1].Str` 或 `ConA.List[{Str:"yes"}].Str`。
+  ]
+) <exa:nbt_path>
+== 命令/data的语法
+一些NBT数据是可以通过命令修改的。在进行修改之前，需要先了解NBT路径以明确需要修改的数据所处的位置，这便是上一节所讲述的内容。能够对NBT数据进行操作的命令有若干条，其中命令 `/data` 是其中应用范围最广的、操作性最强的，也是最基础的一条命令，本节将主要介绍命令 `/data` 的用法。
+
+命令 `/data` 只能用于获取或修改*方块实体*、*实体*和*命令存储*的NBT数据，但是*无法修改玩家的任何数据*。`/data` 一共有四条子命令，它们分别是 `get`、`merge`、`modify` 和 `remove`，这四条子命令组成了最基本的 `/data` 语法结构。`/data` 所需的权限等级为2。#index(index: "command", "data")
+=== get子命令
+`/data get` 用于获取方块实体、实体或命令存储的NBT数据，语法为：
+#codebox("data get (block <targetPos>|entity <target>|storage <target>) [<path>] [<scale>]") <code:command_data_get>
+#param-desc(
+  [`block <targetPos>` ], [需要修改数据的方块实体，首先需要明确的就是该方块实体所在方块的方块坐标，其中 `<targetPos>` 的参数类型为方块坐标 `minecraft:block_pos`。],
+  [`entity <target>` ], [一共有三种选择实体的方法：即目标选择器、玩家名称或UUID，只能指定一个实体。`<target>` 的参数类型为实体 `minecraft:entity`。],
+  [`storage <target>)` ], [以命令存储的命名空间ID指定需要修改的命令存储内容，`<target>` 的参数类型为命名空间ID `minecraft:resource_location`。],
+  [`[<path>]`（NBT路径 `minecraft:nbt_path`）], [可选，需要获取的数据的NBT路径，若不指定则使用根标签。],
+  [`[<scale>]`（双精度浮点数 `brigadier:double`）], [可选，将返回的值进行缩放的倍率。缩放操作为：先将NBT值向下取整，再乘以指定的缩放倍率。]
+)
+*若路径指向的是一个完整的标签，则返回的该标签的值；若路径指向的是列表或数组中的元素，则返回指向的元素。*如不符合下列要求，则 `/data get` 命令将无法执行：
++ 获取的NBT路径必须存在。
++ 返回的标签或数值必须少于两个，注意，不是指复合标签或数组中的标签必须少于两个，一个复合标签或一个数组被视为上一级标签的值。因此必须谨慎使用诸如命名列表或数组标签的所有元素这样的节点，因为这类节点通常指向的标签或数值大于一个。假设有一个字节型数组 `a:[B;1,0,0,1]`，由于路径 `a[]` 指向 `1b`、`0b`、`0b`、`1b` 这四个数值，因此不能在 `/data get` 中设置路径 `a[]`，但是路径 `a` 指向整个标签 #icon(name: "nbt-byte_array") `a`，则返回的内容为标签 `a` 的值，即 `[B;1,0,0,1]`。
++ 若指定了倍率参数，则返回的内容必须为一个数值。
+#example(
+  [
+    对于@exa:nbt_path 所示的数据树，假设该数据树是位于坐标$(0,56,0)$的方块的方块实体数据。写出命令 `/data get block 0 56 0 ComA.List[1].TagD 2` 返回的内容。
+  ],
+  [
+    路径 `ComA.List[1].TagD` 指向标签 #icon(name: "nbt-compound") `ComA` 的子标签 #icon(name: "nbt-list") `List` 中第二个复合标签内名为 `TagD` 的标签，即指向标签 `TagD:1b`，于是返回该标签的值，即 `1b`。而命令的结尾又添加了一个倍率参数 `2`，即将 `1b` 乘以2，因此返回的内容为数值 `2`。
+
+  ]
+) <exa:command_data_1>
+=== remove子命令
+`/data remove` 用于移除指定方块实体、实体或命令存储的NBT数据，语法为：
+#codebox("data remove (block <targetPos>|entity <target>|storage <target>) <path>	")
+#param-desc(
+  [`<targetPos>`、`<target>` ], [与语法@code:command_data_get 一致。],
+  [`<path>`（NBT路径 `minecraft:nbt_path`）], [必填，需要移除的数据的NBT路径，不能指向根标签。]
+)
+=== merge子命令
+`/data merge` 使方块实体、实体或命令存储的NBT数据与指定NBT发生合并，语法为：
+#codebox("data merge (block <targetPos>|entity <target>|storage <target>) <nbt>")
+#param-desc(
+  [`<nbt>`（NBT复合标签 `minecraft:nbt_compound_tag`）], [需要指定的复合标签。与原本的根标签值进行合并，若合并后的值与原本的值相同则命令执行失败。]
+)
+在填写 `<nbt>` 时，需要用花括号将标签括起以表示它是根标签的值。一般来说根标签为复合标签，其子标签不止一个。现在令 `A`、`B`、`C` 为一个根标签的子标签，则该根标签的值为：
+#codebox("{A,B,C}")
+现在使用命令
+#codebox("data merge … {B'}")
+其中标签 `B'` 与 `B` 标签名相同，值不同。子命令 `merge` 使 `{B'}` 与 `{A,B,C}` 发生合并，覆盖掉原本的标签 `B`，而标签 `A` 和 `C` 不发生改变，所以修改后的根标签值为
+#codebox("{A,B',C}")
+=== modify子命令
+`/data modify` 用于在原本方块实体、实体或命令存储的NBT数据基础上以标签为单位进行修改，修改后的值必须与原本的值不同，部分语法为：
+#codebox("data modify (block <targetPos>|entity <target>|storage <target>) <targetPath> (append|insert <index>|merge|pretend|set) …") <code:command_data_modify>
+#param-desc(
+  [`<targetPath>`（NBT路径 `minecraft:nbt_path`）], [需要修改的标签，需要是合法的NBT路径。],
+  [`(append|insert <index>|merge|pretend|set)` ], [规定NBT的修改方式，有五种不同的方式。若使用 `insert`，则需要指定一个 `<index>`（整型 `brigadier:integer`）值。]
+)
+下表为这五种修改方式的作用形式：
+#general-table(
+  caption: [`/data` 子命令 `modify` 的可用修改方式],
+  colspan: 4,
+  columns: (auto, auto, auto, auto),
+  header: ([修改方式], [作用标签类型], [效果], [示例]),
+  [`append`], [列表或数组], [在列表或数组的末尾插入一个元素。], [将一个值 `E` 以 `append` 的形式插入列表 `[A,B,C,D]`，则结果为 `[A,B,C,D,E]`。],
+  [`insert <索引>`], [列表或数组], [在列表或数组的指定位置插入一个元素。设索引值为$i$，则元素会被插入到列表或数组的第$i$个位置。列表或数组中原先第$i$个位置及之后的元素均向后移一位。], [对于列表 `[A,B,C,D]`，若以 `insert 1` 的语法将E插入其中，则结果为 `[A,E,B,C,D]`。],
+  [`merge`], [复合标签], [将语法中的NBT与指定的复合标签进行合并。与 `merge` 子命令不同的是，`merge` 子命令作用于整个根标签，这里的 `merge` 修改方式作用于根标签下的子复合标签或多级子复合标签。], [-],
+  [`pretend`], [列表或数组], [在列表或数组的首位插入一个元素。], [将一个值 `E` 以 `pretend` 的形式插入列表 `[A,B,C,D]`，则结果为 `[E,A,B,C,D]`。],
+  [`set`], [任意类型的标签], [将指定的标签替换为新的值。在该修改方式中，NBT路径不能指向根标签。], [将标签 `A:1b` 的值以 `set` 的方式替换为 `0b`，则结果为 `A:0b`。]
+)
+命令 `/data modify` 还需要确定值的来源。来源可以是其他标签的值，也可以自己指定的一个值。
+===== 若来源为其他标签的值，则语法@code:command_data_modify 省略号部分的语法为：
+#codebox("from (block <sourcePos>|entity <source>|storage <source>) [<sourcePath>]")
+#param-desc(
+  [`<sourcePos>`（方块坐标 `minecraft:block_pos`）], [数据来源方块实体的方块坐标。],
+  [`<source>`（`entity` 模式，实体 `minecraft:entity`）], [数据来源实体，可以为玩家名称、UUID或目标选择器，但只能指定一个实体。],
+  [`<source>`（`storage` 模式，命名空间ID `minecraft:resource_location`], [数据来源命令存储，需要是该命令存储的命名空间ID。],
+  [`[<sourcePath>]`（NBT路径 `minecraft:nbt_path`）], [可选，来源数据的NBT路径，若不指定则为根标签。]
+)
+===== 若来源的值需要为其他方块实体、实体或命令存储中的字符串，则可以使用下面的语法，字符串可以切片处理：
+#codebox("string (block <sourcePos>|entity <source>|storage <source>) [<sourcePath>] [<start>] [<end>]")
+#param-desc(
+  [`[<start>]`（整型 `brigadier:integer`）], [索引值，开始截取的字符位置。],
+  [`[<end>]`（整型 `brigadier:integer`）], [索引值，终止截取的字符位置，终止索引位置的字符不会被截取。若 `[<start>]` 值为$n$，`[<end>]` 值为$m$，则截取第$n$个至第$m-1$个字符会被截取（包括第$n$个和第$m-1$个字符）。]
+)
+===== 若来源的值由玩家自己指定，则语法为：
+#codebox("value <value>")
+#param-desc(
+  [`<value>`（NBT值 `minecraft:nbt_tag`）], [需要为SNBT的格式值，必须符合需要修改的标签所需的数据类型。]
+)
+#example(
+  [在@exa:command_data_1 所述的情景中，编写一条命令使之在列表 #icon(name: "nbt-list") `List` 第1和第2个复合标签之间插入一个新的复合标签，这个新的复合标签与列表 #icon(name: "nbt-list") `List` 第1个复合标签相同。],
+  [
+    首先需要写出需要修改的标签的路径，即指向标签 #icon(name: "nbt-list") `List`，由此写出：
+    #codebox("data modify block 0 56 0 ComA.List")
+    对列表型标签进行修改时，考虑在 `modify` 子命令中使用 `append`、`insert` 或 `pretend` 这三种修改方式。题目要求在第1和第2个复合标签之间插入一个新的复合标签，因此使用 `insert`。根据题意，新的复合标签会成为列表的第2个元素，因此可以写出：
+    #codebox("data modify block 0 56 0 ComA.List insert 2")
+    最后要指明标签的值来源为列表 #icon(name: "nbt-list") `List` 的第1个复合标签。列表 #icon(name: "nbt-list") `List` 的第1个复合标签属于位于$(0,56,0)$的方块实体的数据树。其路径为 `ComA.List[0]`。于是可以写出整条命令：
+    #codebox("data modify block 0 56 0 ComA.List insert 2 from block 0 56 0 ComA.List[0]")
+  ]
+)
+=== 命令/data的语法树
+命令 `/data` 语法成分复杂，嵌套层级较多，为此笔者制作了如@fig:command_data 所示的完整语法树作为参考。其中虚线表示的部分为可选内容。
+#figure(
+  caption: [命令 `/data` 的语法树],
+  image("图片/命令data的语法树.png", width: 100%)
+) <fig:command_data>
+== NBT与JSON
+=== NBT和JSON格式的转换 \*
+NBT和JSON格式结构类似，但还有很多不同之处，在一些情况下，游戏必须对这两种格式进行相互转换以满足计算的需要，即使这两种格式的转换可能会造成数据丢失。
+===== NBT转换为JSON
+#general-table(
+  caption: "NBT转换为JSON",
+  colspan: 2,
+  columns: (auto, auto),
+  header: ([NBT数据类型], [转换后的JSON数据类型]),
+  [#icon(name: "nbt-byte")], table.cell(rowspan: 6)[#icon(name: "json-number") 数值],
+  [#icon(name: "nbt-short")],
+  [#icon(name: "nbt-int")],
+  [#icon(name: "nbt-long")],
+  [#icon(name: "nbt-float")],
+  [#icon(name: "nbt-double")],
+  [#icon(name: "nbt-string")], [#icon(name: "json-string") 字符串],
+  [#icon(name: "nbt-compound")], [#icon(name: "json-object") 对象],
+  [#icon(name: "nbt-list")], table.cell(rowspan: 4)[#icon(name: "json-array") 数组],
+  [#icon(name: "nbt-byte_array")],
+  [#icon(name: "nbt-int_array")],
+  [#icon(name: "nbt-long_array")]
+)
+===== JSON转换为NBT
+#general-table(
+  caption: "JSON转换为NBT",
+  colspan: 2,
+  columns: (auto, auto),
+  header: ([JSON数据类型], [转换后的NBT数据类型]),
+  [#icon(name: "json-bool") 布尔值], [#icon(name: "nbt-byte")], 
+  [#icon(name: "json-number") 数值], [若位于字节型的取值范围内，则转换为 #icon(name: "nbt-byte")；\ 否则，若位于短整型的取值范围内，则转换为 #icon(name: "nbt-short")；\ 否则，若位于整型的取值范围内，则转换为 #icon(name: "nbt-int")；\ 否则，若位于长整型的取值范围内，则转换为 #icon(name: "nbt-long")；\ 否则，若其能精确存储为一个单精度浮点数，则转换为 #icon(name: "nbt-float")；\ 若不为上述任意一者，则转换为 #icon(name: "nbt-double")。],
+  [#icon(name: "json-string") 字符串], [#icon(name: "nbt-string")],
+  [#icon(name: "json-array") 数组], [若JSON数组内元素的数据类型不同，则无法转换为NBT；\ 若JSON数组内元素被转换为 #icon(name: "nbt-byte")，则将数组转换为 #icon(name: "nbt-byte_array")；\ 若JSON数组内元素被转换为 #icon(name: "nbt-int")，则将数组转换为 #icon(name: "nbt-int_array")；\ 若JSON数组内元素被转换为 #icon(name: "nbt-long")，则将数组转换为 #icon(name: "nbt-long_array")；\ 若不为上述任意一者，则转换为 #icon(name: "nbt-list")],
+  [#icon(name: "json-object") 对象], [#icon(name: "nbt-compound")],
+  [Null], [不转换]
+) <tab:json_to_nbt>
+有时候，开发过程中可能需要开发者手动转换格式。例如，数据包的战利品表、谓词和物品修饰器一般使用JSON格式定义，对于一些未在数据包中定义的战利品表、谓词和物品修饰器，可以用内联的方式在直接命令中定义，这时需要将战利品表、谓词和物品修饰器以SNBT的形式写在命令中。以下是内联定义的一个例子：
+#example(
+  [
+    将以下的战利品表 `.json` 文件以内联的形式写入命令。
+    #codefile(
+      lang: "json",
+      title: "data > minecraft > loot_table > blocks > granite.json",
+      "{
+  \"type\": \"minecraft:block\",
+  \"pools\": [
+    {
+      \"bonus_rolls\": 0.0,
+      \"conditions\": [
+        {
+          \"condition\": \"minecraft:survives_explosion\"
+        }
+      ],
+      \"entries\": [
+        {
+          \"type\": \"minecraft:item\",
+          \"name\": \"minecraft:granite\"
+        }
+      ],
+      \"rolls\": 1.0
+    }
+  ],
+  \"random_sequence\": \"minecraft:blocks/granite\"
+}"
+    )
+  ],
+  [
+    先以树状图列出该文件的JSON数据：
+    #tree(
+      (0, [#icon(name: "json-object") 文件封装]),
+      (1, [#icon(name: "json-string") *type*: `minecraft:block`]),
+      (1, [#icon(name: "json-array")]),
+      (2, [#icon(name: "json-object")]),
+      (3, [#icon(name: "json-number") *bonus_rolls*: `0.0`]),
+      (3, [#icon(name: "json-array") *conditions*]),
+      (4, [#icon(name: "json-object")]),
+      (5, [#icon(name: "json-string") *condition*: `minecraft:survives_explosion`]),
+      (3, [#icon(name: "json-array") *entries*]),
+      (4, [#icon(name: "json-object")]),
+      (5, [#icon(name: "json-string") *type*: `minecraft:item`]),
+      (5, [#icon(name: "json-string") *name*: `minecraft:granite`]),
+      (3, [#icon(name: "json-number") *rolls*: `1.0`]),
+      (1, [#icon(name: "json-string") *random_sequence*: `minecraft:blocks/granite`])
+    )
+    内联形式，即将JSON格式手动转换为SNBT格式，此时参考@tab:json_to_nbt 的转换方式，可得到相应的SNBT树形图：
+    #tree(
+      (0, [#icon(name: "nbt-compound") 文件封装]),
+      (1, [#icon(name: "nbt-string") *type*: `minecraft:block`]),
+      (1, [#icon(name: "nbt-list")]),
+      (2, [#icon(name: "nbt-compound")]),
+      (3, [#icon(name: "nbt-float") *bonus_rolls*: `0.0`]),
+      (3, [#icon(name: "nbt-list") *conditions*]),
+      (4, [#icon(name: "nbt-compound")]),
+      (5, [#icon(name: "nbt-string") *condition*: `minecraft:survives_explosion`]),
+      (3, [#icon(name: "nbt-list") *entries*]),
+      (4, [#icon(name: "nbt-compound")]),
+      (5, [#icon(name: "nbt-string") *type*: `minecraft:item`]),
+      (5, [#icon(name: "nbt-string") *name*: `minecraft:granite`]),
+      (3, [#icon(name: "nbt-float") *rolls*: `1.0`]),
+      (1, [#icon(name: "nbt-string") *random_sequence*: `minecraft:blocks/granite`])
+    )
+    因此内联形式为
+    #codebox("{
+  type: \"minecraft:block\",
+  pools: [
+    {
+      bonus_rools: 0.0f,
+      conditions: [
+        {
+          condition: \"minecraft:survives_explosion\"
+        }
+      ],
+      entries: [
+        {
+          type: \"minecraft:item\",
+          name: \"minecraft:granite\"
+        }
+      ],
+      rolls: 1.0f
+    }
+  ],
+  random_sequence: \"minecraft:blocks/granite\"
+}")
+  ]
+)
 = 文本组件<chap:text_component>
 == 文本组件内容
 === 翻译文本<subsec:translate>

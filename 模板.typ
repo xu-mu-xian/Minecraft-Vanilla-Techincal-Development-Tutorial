@@ -5,6 +5,7 @@
 #import "@preview/codly:1.3.0": *
 #import "@preview/codly-languages:0.1.1": *
 #import "@preview/wrap-it:0.1.1": wrap-content
+#import "@preview/tdtr:0.5.0" : *
 #import "自定义包/stringtree.typ": stringtree
 #import table: cell, header
 
@@ -14,44 +15,6 @@
   counter(heading).update(0)
   appendix-part.update(true)
 }
-
-// 例题内的有序列表
-#let c1 = counter("L1")
-#let c2 = counter("L2")
-#let c3 = counter("L3")
-#let item(level, body, new: false) = {
-  if new {
-    c1.update(0)
-    c2.update(0)
-    c3.update(0)
-  }
-  if level == 1 { c2.update(0); c3.update(0) }
-  else if level == 2 { c3.update(0) }
-  if level == 1 { c1.step() }
-  else if level == 2 { c2.step() }
-  else if level == 3 { c3.step() }
-  block(width: 100%, spacing: 0.65em)[
-    #context {
-      let label-text = if level == 1 { c1.display("(1)") }
-      else if level == 2 { c2.display("①") }
-      else { c1.display("a.") }
-      let label-width = 2em
-      let gap = 0em
-      let left-indent = (level - 1) * 2em
-      set par(
-        first-line-indent: 0em, 
-        hanging-indent: label-width + gap,
-      )
-      pad(left: left-indent)[
-        #box(width: label-width)[#label-text]#h(gap)#body
-      ]
-    }
-  ]
-}
-#let e1 = item.with(1)
-#let e2 = item.with(2)
-#let e3 = item.with(3)
-#let e4 = item.with(4)
 
 // 有编号代码行
 #let codebox(body, label: none, supplement: none) = figure(
@@ -297,7 +260,7 @@
                 let level = nums.pos().len()
                 let format-str = formats.at(calc.min(level - 1, formats.len() - 1))
                 let current-number = nums.pos().last()
-                if level == 3 {
+                if level == 2 {
                   numbering(format-str, current-number)
                 } else {
                   text(font: "TeX Gyre Termes", numbering(format-str, current-number))
@@ -370,7 +333,7 @@
               let level = nums.pos().len()
               let format-str = formats.at(calc.min(level - 1, formats.len() - 1))
               let current-number = nums.pos().last()
-              if level == 3 {
+              if level == 2 {
                 numbering(format-str, current-number)
               } else {
                 text(font: "TeX Gyre Termes", numbering(format-str, current-number))
