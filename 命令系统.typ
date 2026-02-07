@@ -3772,7 +3772,11 @@ SNBT的基本格式为键值对。写法为
 #codebox("<标签名>:<值>")
 举例：
 #codebox("tag:123")
-SNBT的标签名允许包含字母A \~ Z、a \~ z、数字0 \~ 9、下划线 `_` 和引号 `"`，对大小写敏感，不允许含有空格、中文字符等其他字符（文件中存储的一些标签可能带有空格）。比如，`tag` 和 `Tag` 是两个不同的标签名。对于由多个单词组成的标签名，其命名方法一般有三种——#proper-noun(display: "大驼峰命名法（Upper camel case）", "da4 tuo2 feng1 ming4 ming2 fa3")，即所有单词首字母均大写，如 `CanDestory`；#proper-noun(display: "小驼峰命名法（Lower camel case）", "xiao3 tuo2 feng1 ming4 ming2 fa3")，即除首个单词外的所有单词首字母均大写，如 `maxUses`；#proper-noun(display: "蛇形命名法（Snake case）", "she2 xing2 ming4 ming2 fa3")，即所有字母均小写、单词之间用下划线隔开，如 `map_scale_direction`。近年来游戏新数据在标签名上一般采用蛇形命名法，且原有的数据标签名也逐步改为了蛇形命名法，为便于统一管理游戏数据，建议读者自己进行开发时，尽量使用蛇形命名法定义标签。
+SNBT的标签名允许包含字母A \~ Z、a \~ z、数字0 \~ 9、下划线 `_` 、引号 `"`、冒号 `:`、空格、反斜杠 `\`、汉字等，对大小写敏感，比如，`tag` 和 `Tag` 是两个不同的标签名。
+
+一般而言，标签名只使用英文字母、数字和下划线的组合，因为这种书写方式直接且无需添加额外的用于标识的字符。对于由多个单词组成的标签名，其命名方法一般有三种——#proper-noun(display: "大驼峰命名法（Upper camel case）", "da4 tuo2 feng1 ming4 ming2 fa3")，即所有单词首字母均大写，如 `CanDestory`；#proper-noun(display: "小驼峰命名法（Lower camel case）", "xiao3 tuo2 feng1 ming4 ming2 fa3")，即除首个单词外的所有单词首字母均大写，如 `maxUses`；#proper-noun(display: "蛇形命名法（Snake case）", "she2 xing2 ming4 ming2 fa3")，即所有字母均小写、单词之间用下划线隔开，如 `map_scale_direction`。近年来游戏新数据在标签名上一般采用蛇形命名法，且原有的数据标签名也逐步改为了蛇形命名法，为便于统一管理游戏数据，建议读者自己进行开发时，尽量使用蛇形命名法定义标签。
+
+若标签名带有引号、冒号、空格、汉字等字符，则标签名需要被一对引号包裹，如 `"minecraft:item_model"`。可以使用单引号 `'` 或双引号 `"`。在必要的时候，标签名中的字符还需被转义。当标签名中只有双引号 `"` 时，可用单引号包裹标签名，如 `'tag"'`；当标签名中只有单引号 `'` 时，可用双引号包裹标签名，如 `"tag'"`；当标签名同时含有单引号和双引号时，可任意使用单引号或双引号包裹标签名，但标签名中对应种类的引号需要被转义，如 `"'Tag\""`。空格在标签名中也是可以接受的：`"a b"`，汉字同样如此：`"标签名"`。反斜杠不需要被引号包裹：`tag\`。
 === 数据类型与数据树
 在SNBT中，对于每一个诸如 `<标签名>:<值>` 这样形式的内容，称其为一个单独的#proper-noun(display: "标签（Tag）", "biao1 qian1")。一个标签由三部分组成：一是*标签类型*，它用于决定该标签需要使用什么类型的数据；二是*标签名*，它用于区分不同的标签；三是*该标签存储的数据*，对于不同类型的标签，其需要的数据也不尽相同。NBT本身一共存在13种数据类型，在SNBT中一共可以使用13种标签类型，其中包含一种较为特殊的标签类型。本教程在介绍SNBT的语法时，采用与Minecraft Wiki一致的结构化树状图。下面分类介绍所有的数据类型：
 #continue-h5([整型类数据])
@@ -3976,6 +3980,24 @@ NBT本身并没有#proper-noun(display: "布尔值（Bool）", "bu4 er3 zhi2")�
 可以看到标签 #icon(name: "nbt-compound") `Player` 的一个子标签 #icon(name: "nbt-list") `Inventory` 为一个列表，列表中的数据类型为 #icon(name: "nbt-compound") 复合标签，可以称它为复合标签的列表。#icon(name: "nbt-list") 列表和 #icon(name: "nbt-compound") 复合标签能相互嵌套形成非常复杂的数据树结构，但嵌套深度不能超过512。
 ===== 结束（End）
 这种数据类型仅用于标记复合标签的结束，无存储容量。SNBT不使用这种数据类型。
+=== SNBT操作
+特别地、SNBT可以接受一些未经处理的数据，从而讲它们转换为NBT可以接受的值，这就是SNBT的语法糖——#proper-noun(display: "SNBT操作（SNBT Operations）", "SNBT cao1 zuo4")，大小写均可，格式为：
+#codebox("<操作名>(<参数>)")
+将其写在SNBT的值中：
+#codebox("<标签名>:<操作名>(<参数>)")
+现在一共有两种可用的SNBT操作：
+===== 将参数转换为 #icon(name: "nbt-bool") 布尔值，格式为
+#codebox("bool(<arg>)")
+其中 `<arg>` 必须为布尔值或数字。若输入布尔值，则直接使用该值；若输入数字，则将非 `0` 的数据转换为 `true`，`0` 转换为 `false`；若输入的不是布尔值或数字，则转换失败。例如：
+====== `bold:bool(true)` → `bold:true`
+====== `NoAI:bool(0)` → `NoAI:false`
+====== `Invulnerable:bool(5)` → `Invulnerable:true`
+====== `italic:bool("italic")` → 转换失败
+===== 将有连字符的十六进制形式的UUID转换为 #icon(name: "nbt-int_array") 整型数组，格式为
+#codebox("uuid(<str>)")
+其中 `<str>` 必须是有连字符的十六进制形式的UUID。例如：
+
+`UUID:uuid("8890812a-c393-41e0-a9aa-4b93aa46927f")` → `UUID:[I;-2003795670,-1013759520,-1448457325,-1438215553]")`
 === SNBT转换为NBT \*<subsec:snbt_to_nbt>
 对于一个输入的SNBT，游戏需要将其转换为NBT格式以使用。在转换的时候，游戏会对输入的SNBT做一定处理以适应目标程序对象的数据格式。转换行为可总结为以下四点：
 ===== 不能被程序对象使用的直接丢弃
@@ -3987,7 +4009,7 @@ NBT本身并没有#proper-noun(display: "布尔值（Bool）", "bu4 er3 zhi2")�
 如果输入的SNBT与期望的数据不符，若存在明确的转换规则，则会按照转换规则纠正输入数据：
 ====== *若期望的值是一个命名空间ID，而输入的值是一个省略命名空间前缀的字符串，则会为其添加默认的命名空间 `minecraft`。*如：
 输入 `id: "stone"` $arrow.r$ 转换为 `id: "minecraft:stone"`
-====== 若期望的值是 #icon(name: "nbt-bool")  布尔值，而输入的值是 #icon(name: "nbt-byte") 字节型、#icon(name: "nbt-short") 短整型、#icon(name: "nbt-int") 整型、#icon(name: "nbt-long") 长整型、#icon(name: "nbt-float") 单精度浮点数或 #icon(name: "nbt-double") 双精度浮点数，则向下取整转换为字节型，非 `0b` 的值被视为 `1b`。
+====== 若期望的值是 #icon(name: "nbt-bool") 布尔值，而输入的值是 #icon(name: "nbt-byte") 字节型、#icon(name: "nbt-short") 短整型、#icon(name: "nbt-int") 整型、#icon(name: "nbt-long") 长整型、#icon(name: "nbt-float") 单精度浮点数或 #icon(name: "nbt-double") 双精度浮点数，则向下取整转换为字节型，非 `0b` 的值被视为 `1b`。
 ====== 若期望的值是 #icon(name: "nbt-byte") 字节型、#icon(name: "nbt-short") 短整型、#icon(name: "nbt-int") 整型、#icon(name: "nbt-long") 长整型、#icon(name: "nbt-float") 单精度浮点数或 #icon(name: "nbt-double") 双精度浮点数，而输入的值与目标类型不符，则自动转换为目标类型。若目标的类型是 #icon(name: "nbt-byte") 字节型、#icon(name: "nbt-short") 短整型、#icon(name: "nbt-int") 整型或 #icon(name: "nbt-long") 长整型，而输入的值是 #icon(name: "nbt-float") 单精度浮点数或 #icon(name: "nbt-double") 双精度浮点数，则会先向下取整再进行转换。
 ===== 不能转换的数据就归零或置空
 如果输入的SNBT与期望的数据不符且无法转换，则：
@@ -4186,7 +4208,7 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
   )
   #text(fill: rgb("#d71d1d"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", [指向的标签])
 ]
-这种节点会直接指向拥有该标签名的标签，无论该标签的数据类型。
+这种节点会直接指向拥有该标签名的标签，无论该标签的数据类型。如果标签名中带有单引号 `'`、双引号 `"`和空格，则这个节点需要被引号包裹，带有汉字和反斜杠则不需要。
 
 用法举例：若有一个根标签的子标签名为 `a`，则下面的节点指向该标签：
 #codebox("a")
@@ -4473,26 +4495,18 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
   image("图片/命令data的语法树.png", width: 100%)
 ) <fig:command_data>
 == NBT与JSON
-=== NBT和JSON格式的转换 \*
+=== NBT和JSON格式的转换
 NBT和JSON格式结构类似，但还有很多不同之处，在一些情况下，游戏必须对这两种格式进行相互转换以满足计算的需要，即使这两种格式的转换可能会造成数据丢失。
-===== NBT转换为JSON
+===== NBT转换为JSON \*
 #general-table(
   caption: "NBT转换为JSON",
   colspan: 2,
   columns: (auto, auto),
   header: ([NBT数据类型], [转换后的JSON数据类型]),
-  [#icon(name: "nbt-byte")], table.cell(rowspan: 6)[#icon(name: "json-number") 数值],
-  [#icon(name: "nbt-short")],
-  [#icon(name: "nbt-int")],
-  [#icon(name: "nbt-long")],
-  [#icon(name: "nbt-float")],
-  [#icon(name: "nbt-double")],
+  [#icon(name: "nbt-byte") #icon(name: "nbt-short") #icon(name: "nbt-int") #icon(name: "nbt-long") #icon(name: "nbt-float") #icon(name: "nbt-double")], [#icon(name: "json-number") 数值],
   [#icon(name: "nbt-string")], [#icon(name: "json-string") 字符串],
   [#icon(name: "nbt-compound")], [#icon(name: "json-object") 对象],
-  [#icon(name: "nbt-list")], table.cell(rowspan: 4)[#icon(name: "json-array") 数组],
-  [#icon(name: "nbt-byte_array")],
-  [#icon(name: "nbt-int_array")],
-  [#icon(name: "nbt-long_array")]
+  [#icon(name: "nbt-list") #icon(name: "nbt-byte_array") #icon(name: "nbt-int_array") #icon(name: "nbt-long_array")], [#icon(name: "json-array") 数组]
 )
 ===== JSON转换为NBT
 #general-table(
@@ -4596,6 +4610,63 @@ NBT和JSON格式结构类似，但还有很多不同之处，在一些情况下�
 }")
   ]
 )
+=== SNBT和JSON的嵌套
+==== 在SNBT中使用的JSON
+部分情况下，SNBT值需要为一段完整的JSON，典型例子就是在25w02a之前的版本中在SNBT中使用的文本组件。SNBT与JSON本身不兼容，在SNBT中使用JSON时，一般值类型为字符串。根据字符串数据类型的定义方法，双引号和单引号均可用于定义字符串。若字符串中有单引号或双引号中的某一种引号，且用于定义字符串的引号与字符串中存在的引号类型相同，则必须为字符串中的引号添加转义字符。而大部分的JSON都是存在双引号的，根据社区规范，需尽量减少转义字符的使用，*定义SNBT值类型时一般使用单引号*，对于以下的JSON片段：
+#tree(
+  (0, [#icon(name: "json-object")]),
+  (1, [#icon(name: "json-string") *text*: `Hello World!`]),
+  (1, [#icon(name: "json-string") *color*: `red`])
+)
+它作为SNBT的值时，写法可以为
+#codebox("Name:'{\"text\":\"Hello World!\",\"color\":\"red\"}'")
+使用转义字符的写法虽然符合语法，但不符合社区规范：
+#codebox("Name:\"{\\\"text\\\":\\\"Hello World!\\\",\\\"color\\\":\\\"red\\\"}\"")
+*在SNBT值内部的JSON中所有需要被转义的字符前都需要添加反斜杠*，如 `\` 和SNBT字符串定义使用的引号，无论这些字符在原本的JSON中是否起到实际作用。遇到嵌套层级较深的情况，可以由内向外书写，一层层添加反斜杠，并适当规避转义。例如，对于以下的JSON片段：
+#tree(
+  (0, [#icon(name: "json-object")]),
+  (1, [#icon(name: "json-string") *text*: `"Hello World!"`]),
+  (1, [#icon(name: "json-string") *color*: `red`])
+)
+在JSON中它的写法为
+#codebox("{\"text\":\"\\\"Hello World!\\\"\",\"color\":\"red\"}")
+当这个JSON片段的值作为SNBT的值时，应在每个需要被转义的字符前添加反斜杠。但由于其中只有双引号，因此可以用单引号定义字符串以规避反斜杠：
+#codebox("Name:'{\"text\":\"\\\"Hello World!\\\"\",\"color\":\"red\"}'")
+#example(
+  [
+    将以下的JSON片段完整地写为SNBT字段 #icon(name: "nbt-string") `Name` 的值。
+    #tree(
+      (0, [#icon(name: "json-array")]),
+      (1, [#icon(name: "json-object")]),
+      (2, [#icon(name: "json-string") *text*: `\Hello World!\`]),
+      (1, [#icon(name: "json-object")]),
+      (2, [#icon(name: "json-string") *text*: `\"Hello World!\"`])
+    )
+  ],
+  [
+    先将树状图转换为JSON：
+    #codebox("[
+  {
+    \"text\":\"\\\\Hello World!\\\\\"
+  },
+  {
+    \"text\":\"\\\\\\\"Hello World!\\\\\\\"\"
+  }
+]")
+    注意到其中只有双引号，故用单引号定义SNBT字符串，然后在所有的 `\` 前加反斜杠，因此 #icon(name: "nbt-string") `Name` 为
+    #codebox("Name:'[{\\\"text\\\":\\\"\\\\\\\\Hello World!\\\\\\\\\\\"},{\\\"text\\\":\\\"\\\\\\\\\\\\\\\"Hello World!\\\\\\\\\\\\\\\\\"\\\"}]'") <code:json_in_snbt_field_name>
+  ]
+) <exa:json_in_snbt>
+==== 在JSON中使用的SNBT
+一些JSON需要的值为SNBT，这些JSON的数据类型基本上都是字符串，拥有定义字符串的双引号 `"`。这些SNBT中出现的*每一个* `"`、`\` 均需要被转义。
+#example(
+  [对于由@exa:json_in_snbt 得到的SNBT字段，在其外侧套一层复合标签后写入JSON字段 #icon(name: "json-string") `nbt`。],
+  [
+    只需将代码@code:json_in_snbt_field_name 中每一个 `"` 和 `\` 前添加一个 `\` 即可，结果为
+    #codebox("\"nbt\": \"{Name:'[{\\\\\\\"text\\\\\\\":\\\\\\\"\\\\\\\\\\\\\\\\Hello World!\\\\\\\\\\\\\\\\\\\\\\\"},{\\\\\\\"text\\\\\\\":\\\\\\\"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"Hello World!\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"\\\\\\\"}]'}\"")
+  ]
+)
+#heading(level: 2, numbering: none, [第四章思考题与习题])
 = 文本组件<chap:text_component>
 == 文本组件内容
 === 翻译文本<subsec:translate>
