@@ -707,6 +707,34 @@
   let actual-display = if display == "" { value } else { display }
   [*#actual-display*#index(display: actual-display, value)]
 }
+
+// 文本组件
+#let shadowed-text(shadow-color: rgb("3F3F3F"), offset: (0.1em, 0.1em), it) = box(
+  stack(
+    dir: ltr,
+    spacing: 0pt,
+    place(
+      dx: offset.at(0),
+      dy: offset.at(1),
+      {
+        show text: set text(fill: rgb(shadow-color))
+        it
+      },
+    ),
+    text[#it],
+  ),
+)
+#let text_component(background: rgb("#fde9e9"), baseline: 25%, content: "") = [
+  #box(
+    baseline: baseline,
+    fill: background,
+    inset: 0.5em,
+    radius: 4pt,
+    stroke: 1pt + red,
+    shadowed-text[#text(font: ("Minecraft", "Unifont"), content)]
+  )
+]
+
 // 样式
 #let template-style(main-body) = {
   // 代码块
@@ -932,6 +960,7 @@
     block(sticky: false, v(-0.6em) + it)
   }
   // 引用
+  show: el.config.ref.with(supplement: "")
   show ref: it => {
     if it.element == none {
       return it
@@ -965,11 +994,13 @@
       context {
         link(it.element.location())[#if appendix-part.at(it.element.location()) {[#it.element.supplement #numbering("I", counter(heading).at(it.element.location()).at(0)).#counter(figure.where(kind: it.element.kind)).at(it.element.location()).at(0)]} else {[#it.element.supplement#str(counter(heading).at(it.element.location()).at(0)).#counter(figure.where(kind: it.element.kind)).at(it.element.location()).at(0)]}]
       }
+    } else if it.element.func() == text {
+      show regex("^\d+\."): m => m.text.slice(0, -1)
+      it
     } else {
       it
     }
   }
-  show: el.config.ref.with(supplement: "")
   // 脚注
   set footnote(
     numbering: " ①"

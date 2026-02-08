@@ -103,7 +103,7 @@ Minecraft拥有多种多样的玩法，生存、PVP、PVE、模组、建筑、�
 
 #pagebreak()
 #counter(page).update(1)
-= 绪论
+= 绪论<chap:intro>
 原版技术性开发，Minecraft Wiki称为“Java版可自定义内容”#cite(<minecraft_wiki>, form: none)，是由命令、资源包、数据包及相关的组件附件组合成的一个板块。技术性开发成果丰富，这些成果即是社区玩家常用的Mods、冒险地图、数据包、资源包、服务器等。Minecraft的技术性开发大致分为Mods开发和原版开发，其区别在于是否对游戏的源代码进行了修改。#cite(<minecraft_wiki_en>, form: none)
 
 本系列教程针对的是原版技术性开发，这一部分玩家的工作方向通常为制作冒险地图、开发原版模组、制作资源包或者管理服务器。
@@ -2640,7 +2640,7 @@ Java版原版所有可用的实体可分为若干类别，这些实体的命名�
 #param-desc(
   [`[uuids]` ], [可选，如果加了会让玩家的名称和UUID一起显示。]
 )
-#heading(level: 2, numbering: none, [第一章思考题与习题])
+#heading(level: 2, numbering: none, [第一章思考题与习题])<sec:chapter_1_exercise>
 + 判断下列说法是否正确。
   + 所有的仅适用于多人游戏的命令都需要大于2的权限等级。
   + 在聊天栏中可输入的命令字符数小于命令方块的最大字符数。
@@ -2684,7 +2684,7 @@ Java版原版所有可用的实体可分为若干类别，这些实体的命名�
 + \*尝试列举命令 `/tick` 在解析中出现的所有节点。
 + 已知一个玩家位于区块$[17,39]$，渲染距离为17，模拟距离为15，则区块$[10,20]$的加载等级和计算等级分别为多少？
 + 当渲染距离为16时，以玩家为中心的强加载区块个数为#blank，弱加载区块个数为#blank。
-+ 将以下树状形式的数据写为JSON。
++ 将以下树状形式的数据写为JSON。<t:json_tree>
   #tree(
     (0, [#icon(name: "json-object") 文件封装]),
     (1, [#icon(name: "json-string") *condition*: `minecraft:entity_properties`]),
@@ -2694,7 +2694,7 @@ Java版原版所有可用的实体可分为若干类别，这些实体的命名�
     (2, [#icon(name: "json-object") *flags*]),
     (3, [#icon(name: "json-bool") *is\_{}sprinting*: `true`])
   )
-+ 若一个字符串类型的JSON字段 #icon(name: "json-string") `text` 需要的值分别如下所示，写出各自对应的字段。
++ 若一个字符串类型的JSON字段 #icon(name: "json-string") `text` 需要的值分别如下所示，写出各自对应的字段。<t:json_text>
   + `分节符"\"的作用很大`
   + `\\"Hello World!\\"`
   + `JSON形式的文本组件为{"text":"\\Hello World!\\"}`
@@ -4257,7 +4257,14 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
 用于指向数组类标签中某个元素，`索引` 指名为 `标签名` 的列表或数组中的第几个元素，需要是一个整数值。
 
 设索引的值为$i$，若$i$为非负数，则指向该列表或数组的第$i+1$个元素：所以 `0` 指向列表或数组的第一个元素、`1` 指向第二个元素，以此类推。若$i$为负数，假设列表或数组的长度（即其包含的元素个数）为$n$，则指向该列表或数组的第$i+n$个元素：所以 `-1` 表示该列表或数组的倒数第一个元素、`-2` 表示倒数第二个元素，以此类推。
-
+#general-table(
+  caption: [长度为$n$的列表及数组的索引值],
+  colspan: 7,
+  columns: (auto, auto, auto, auto, auto, auto, auto),
+  header: ([元素的位数], [1], [2], [3], […], [$bold(n-1)$], [$n$]),
+  [非负索引值], [0], [1], [2], […], [$n-2$], [$n-1$],
+  [负数索引值], [$-n$], [$1-n$], [$2-n$], […], [-2], [-1]
+)
 索引指向的地址不能超出列表或数组的长度，否则节点就不指向任何标签。
 
 用法举例：假设有一个标签 #icon(name: "nbt-byte_array") `a:[B;1,0,0,1]`，则
@@ -4452,7 +4459,7 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
   columns: (auto, auto, auto, auto),
   header: ([修改方式], [作用标签类型], [效果], [示例]),
   [`append`], [列表或数组], [在列表或数组的末尾插入一个元素。], [将一个值 `E` 以 `append` 的形式插入列表 `[A,B,C,D]`，则结果为 `[A,B,C,D,E]`。],
-  [`insert <索引>`], [列表或数组], [在列表或数组的指定位置插入一个元素。设索引值为$i$，则元素会被插入到列表或数组的第$i$个位置。列表或数组中原先第$i$个位置及之后的元素均向后移一位。], [对于列表 `[A,B,C,D]`，若以 `insert 1` 的语法将E插入其中，则结果为 `[A,E,B,C,D]`。],
+  [`insert <索引>`], [列表或数组], [在列表或数组的指定位置插入一个元素。设索引值为$i$，则元素会被插入到列表或数组的第$i$个位置。索引值可以为负以表示倒数第$i$个位置。列表或数组中原先第$i$个位置及之后的元素均向后移一位。], [对于列表 `[A,B,C,D]`，若以 `insert 1` 的语法将E插入其中，则结果为 `[A,E,B,C,D]`。],
   [`merge`], [复合标签], [将语法中的NBT与指定的复合标签进行合并。与 `merge` 子命令不同的是，`merge` 子命令作用于整个根标签，这里的 `merge` 修改方式作用于根标签下的子复合标签或多级子复合标签。], [-],
   [`pretend`], [列表或数组], [在列表或数组的首位插入一个元素。], [将一个值 `E` 以 `pretend` 的形式插入列表 `[A,B,C,D]`，则结果为 `[E,A,B,C,D]`。],
   [`set`], [任意类型的标签], [将指定的标签替换为新的值。在该修改方式中，NBT路径不能指向根标签。], [将标签 `A:1b` 的值以 `set` 的方式替换为 `0b`，则结果为 `A:0b`。]
@@ -4469,8 +4476,41 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
 ===== 若来源的值需要为其他方块实体、实体或命令存储中的字符串，则可以使用下面的语法，字符串可以切片处理：
 #codebox("string (block <sourcePos>|entity <source>|storage <source>) [<sourcePath>] [<start>] [<end>]")
 #param-desc(
-  [`[<start>]`（整型 `brigadier:integer`）], [索引值，开始截取的字符位置。],
-  [`[<end>]`（整型 `brigadier:integer`）], [索引值，终止截取的字符位置，终止索引位置的字符不会被截取。若 `[<start>]` 值为$n$，`[<end>]` 值为$m$，则截取第$n$个至第$m-1$个字符会被截取（包括第$n$个和第$m-1$个字符）。]
+  [`[<start>]`（整型 `brigadier:integer`）], [索引值，开始截取的字符位置。从0开始计，可以使用负数索引值。],
+  [`[<end>]`（整型 `brigadier:integer`）], [索引值，终止截取的字符位置。从0开始计，可以使用负数索引值。终止索引位置的字符不会被截取。若 `[<start>]` 值为$n$，`[<end>]` 值为$m$，则截取第$n$个至第$m-1$个字符会被截取（包括第$n$个和第$m-1$个字符）。]
+)
+#[
+  #set align(center)
+  #v(0.5em)
+  #text(fill: rgb("#d71d1d"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", [#h(11em) 字符串切片])
+  #v(0.5em)
+  #grid(
+    align: center,
+    column-gutter: 0.5em,
+    columns: (auto, auto, auto, auto, auto, auto, auto, auto, auto, auto),
+    row-gutter: 1em,
+    [], [字符], […], [字符], [字符], [字符], […], [字符], [字符], […],
+    [字符的位数], [1], […], [$n$], [$n+1$], [$n+2$], […], [$m$], [$m+1$], […],
+    [字符的索引值], [0], […], [$n-1$], [$n$], [$n+1$], […], [$m-1$], [$m$], […]
+  )
+  #place(
+    dx: 19.8em,
+    dy: -6.4em,
+    box(
+      height: 5.5em,
+      radius: 4pt,
+      stroke: 1pt + rgb("#d71d1d"),
+      width: 10.2em
+    )
+  )
+  #v(1em)
+]
+#example(
+  [命令存储 `custom:main` 中 #icon(name: "nbt-string") `id:"minecraft:iron_ingot"` 的值是一个命名空间ID，试去除它的命名空间前缀、只保留ID，将结果存入 #icon(name: "nbt-string") `name` 标签。],
+  [
+    显然需要使用字符串切片，需要去除的部分为 `minecraft:`，其后的 `i` 索引值为 `10`，从此处一直截取到最后一个字符，命令为
+    #codebox("data modify storage custom:main name set string storage custom:main id 10 -1")
+  ]
 )
 ===== 若来源的值由玩家自己指定，则语法为：
 #codebox("value <value>")
@@ -4610,7 +4650,7 @@ NBT和JSON格式结构类似，但还有很多不同之处，在一些情况下�
 }")
   ]
 )
-=== SNBT和JSON的嵌套
+=== SNBT和JSON的嵌套<subsec:snbt_and_json_nesting>
 ==== 在SNBT中使用的JSON
 部分情况下，SNBT值需要为一段完整的JSON，典型例子就是在25w02a之前的版本中在SNBT中使用的文本组件。SNBT与JSON本身不兼容，在SNBT中使用JSON时，一般值类型为字符串。根据字符串数据类型的定义方法，双引号和单引号均可用于定义字符串。若字符串中有单引号或双引号中的某一种引号，且用于定义字符串的引号与字符串中存在的引号类型相同，则必须为字符串中的引号添加转义字符。而大部分的JSON都是存在双引号的，根据社区规范，需尽量减少转义字符的使用，*定义SNBT值类型时一般使用单引号*，对于以下的JSON片段：
 #tree(
@@ -4622,7 +4662,7 @@ NBT和JSON格式结构类似，但还有很多不同之处，在一些情况下�
 #codebox("Name:'{\"text\":\"Hello World!\",\"color\":\"red\"}'")
 使用转义字符的写法虽然符合语法，但不符合社区规范：
 #codebox("Name:\"{\\\"text\\\":\\\"Hello World!\\\",\\\"color\\\":\\\"red\\\"}\"")
-*在SNBT值内部的JSON中所有需要被转义的字符前都需要添加反斜杠*，如 `\` 和SNBT字符串定义使用的引号，无论这些字符在原本的JSON中是否起到实际作用。遇到嵌套层级较深的情况，可以由内向外书写，一层层添加反斜杠，并适当规避转义。例如，对于以下的JSON片段：
+*在SNBT值内部的JSON中所有需要被转义的字符前都需要添加反斜杠*，如 `\` 和SNBT字符串定义使用的引号，无论这些字符在原本的JSON中是否起到实际作用。遇到嵌套层级较深的情况，可以*由内向外书写，一层层添加反斜杠*，并适当规避转义。例如，对于以下的JSON片段：
 #tree(
   (0, [#icon(name: "json-object")]),
   (1, [#icon(name: "json-string") *text*: `"Hello World!"`]),
@@ -4631,7 +4671,17 @@ NBT和JSON格式结构类似，但还有很多不同之处，在一些情况下�
 在JSON中它的写法为
 #codebox("{\"text\":\"\\\"Hello World!\\\"\",\"color\":\"red\"}")
 当这个JSON片段的值作为SNBT的值时，应在每个需要被转义的字符前添加反斜杠。但由于其中只有双引号，因此可以用单引号定义字符串以规避反斜杠：
-#codebox("Name:'{\"text\":\"\\\"Hello World!\\\"\",\"color\":\"red\"}'")
+#codebox("Name:'{\"text\":\"\\\"Hello World!\\\"\",\"color\":\"red\"}'") <code:json_in_snbt>
+#example(
+  [
+    将以下的JSON片段写为SNBT字段 #icon(name: "nbt-string") `raw` 的值：
+    #codebox("{\"text\":\"A\\nB\",\"bold\":true}")
+  ],
+  [
+    JSON中只有双引号，故用单引号定义SNBT字符串，并在 `\` 前加反斜杠，如：
+    #codebox("raw:'{\"text\":\"A\\\\nB\",\"bold\":true}'")
+  ]
+)
 #example(
   [
     将以下的JSON片段完整地写为SNBT字段 #icon(name: "nbt-string") `Name` 的值。
@@ -4653,8 +4703,8 @@ NBT和JSON格式结构类似，但还有很多不同之处，在一些情况下�
     \"text\":\"\\\\\\\"Hello World!\\\\\\\"\"
   }
 ]")
-    注意到其中只有双引号，故用单引号定义SNBT字符串，然后在所有的 `\` 前加反斜杠，因此 #icon(name: "nbt-string") `Name` 为
-    #codebox("Name:'[{\\\"text\\\":\\\"\\\\\\\\Hello World!\\\\\\\\\\\"},{\\\"text\\\":\\\"\\\\\\\\\\\\\\\"Hello World!\\\\\\\\\\\\\\\\\"\\\"}]'") <code:json_in_snbt_field_name>
+    注意到其中只有双引号，所以用单引号定义SNBT字符串，然后在所有的 `\` 前加反斜杠，因此 #icon(name: "nbt-string") `Name` 为
+    #codebox("Name:'[{\"text\":\"\\\\\\\\Hello World!\\\\\\\\\"},{\"text\":\"\\\\\\\\\\\\\"Hello World!\\\\\\\\\\\\\"\"}]'") <code:json_in_snbt_field_name>
   ]
 ) <exa:json_in_snbt>
 ==== 在JSON中使用的SNBT
@@ -4663,11 +4713,87 @@ NBT和JSON格式结构类似，但还有很多不同之处，在一些情况下�
   [对于由@exa:json_in_snbt 得到的SNBT字段，在其外侧套一层复合标签后写入JSON字段 #icon(name: "json-string") `nbt`。],
   [
     只需将代码@code:json_in_snbt_field_name 中每一个 `"` 和 `\` 前添加一个 `\` 即可，结果为
-    #codebox("\"nbt\": \"{Name:'[{\\\\\\\"text\\\\\\\":\\\\\\\"\\\\\\\\\\\\\\\\Hello World!\\\\\\\\\\\\\\\\\\\\\\\"},{\\\\\\\"text\\\\\\\":\\\\\\\"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"Hello World!\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"\\\\\\\"}]'}\"")
+    #codebox("\"nbt\": \"{Name:'[{\\\"text\\\":\\\"\\\\\\\\\\\\\\\\Hello World!\\\\\\\\\\\\\\\\\\\"},{\\\"text\\\":\\\"\\\\\\\\\\\\\\\\\\\\\\\\\\\"Hello World!\\\\\\\\\\\\\\\\\\\\\\\\\\\"\\\"}]'}\"")
   ]
 )
 #heading(level: 2, numbering: none, [第四章思考题与习题])
++ 判断下列NBT数据值的写法是否正确。
+  + `13us`
+  + `128b`
+  + `0.e+03`
+  + `.2d`
+  + `[I;000000001,000000001,0000000001,0000000001]`
++ 根据如下所示的SNBT，回答下列问题：
+  #codebox("Player:{
+  Inventory:[
+    {count:1,Slot:0b,id:\"minecraft:diamond_sword\"},
+    {count:45,Slot:1b,id:\"minecraft:bread\"}
+  ]
+}")
+  + 标签 `count:1` 是否是标签 `Player` 的子标签？为什么？
+  + 指出标签 `Inventory` 的数据类型。
++ 解释下列名词：节点、根复合标签、某名称的复合标签、索引、NBT路径。
++ 假设一个根标签 #icon(name: "nbt-compound") `orange_banner` 的值如下所示：
+  #codebox("{x:5,y:56,z:4,id:\"minecraft:banner\",patterns:[{pattern:\"diagonal_left\",color:\"magenta\"}]}")
+  + 画出标签 #icon(name: "nbt-compound") `orange_banner` 的树状图；
+  + 写出下列路径指向的内容：
+    + `x`;
+    + `patterns[0]`；
+    + `id`；
+    + `patterns[0][0]`
++ 有一个数据的树状图如下所示，将它写成SNBT的形式。<t:snbt_tree>
+  #tree(
+    (0, [#icon(name: "nbt-compound") *Chunk $bold([31,24])$ in world at $bold((-1,-6))$*]),
+    (1, [#icon(name: "nbt-int") *DataVersion*: `2865`]),
+    (1, [#icon(name: "nbt-compound") *Sections*]),
+    (2, [#icon(name: "nbt-compound") *3*]),
+    (3, [#icon(name: "nbt-list") *Records*]),
+    (4, [#icon(name: "nbt-compound") 内容未知]),
+    (4, [#icon(name: "nbt-compound") 内容未知]),
+    (4, [#icon(name: "nbt-compound")]),
+    (5, [#icon(name: "nbt-int") *free_tickets*: `1`]),
+    (5, [#icon(name: "nbt-compound") *type*: `minecraft:toolsmith`]),
+    (5, [#icon(name: "nbt-int_array") *pos*: 含有3个元素，内容未知]),
+    (4, [#icon(name: "nbt-compound") 内容未知]),
+    (4, [#icon(name: "nbt-compound") 内容未知]),
+    (4, [#icon(name: "nbt-bool") *Valid*: `true`]),
+  )
+
++ 根据第@t:snbt_tree 题的树状图，试写出指向下列内容的路径：
+  + 整个根标签；
+  + #icon(name: "nbt-list") `Records` 的第二个元素；
+  + #icon(name: "nbt-int_array") `pos`。
++ 对于@exa:nbt_path 所示的数据树，假设该数据树是位于坐标$(0,56,0)$的方块实体的数据。使用命令以进行如下的操作：
+  + 获取标签 #icon(name: "nbt-int") `TagB` 的数据；
+  + 删除 #icon(name: "nbt-list") `List` 的第二个元素；
+  + 将标签 #icon(name: "nbt-float") `TagC` 的值改为 `1.2f`；
+  + 将列表 #icon(name: "nbt-list") `List` 第一个复合标签的值复制到标签 #icon(name: "nbt-compound") `ComB`；
+  + 在数组 #icon(name: "nbt-byte_array") `Array` 的第2个和第3个元素之间插入一个新的元素，要求来源为列表 #icon(name: "nbt-list") `List` 第一个复合标签中标签 #icon(name: "nbt-byte") `TagD` 的值。
++ 编写命令使@exa:nbt_path 所示的整棵数据树写入命令存储 `test:root`。
++ 将@chap:intro\思考题与习题第@t:json_tree 题的JSON改写为内联SNBT形式。
++ 将@chap:intro\思考题与习题第@t:json_text 题得到的各JSON字段分别完整地写作SNBT字段 #icon(name: "nbt-string") `json` 的值。
++ 将代码@code:json_in_snbt 所示的SNBT作为一个字符串类型的JSON字段 #icon(name: "json-string") `nbt` 需要的值，写出对应的JSON字段。
 = 文本组件<chap:text_component>
+Minecraft中有各式各样的文本，它们有不同的内容、不同的样式，有些文本甚至能够与玩家产生交互。本章将介绍这些文本使用的格式——文本组件。
+#pagebreak()
+== 概述
+#proper-noun(display: "文本组件（Text component）", "wen2 ben3 zu3 jian4")，旧称#proper-noun(display: "原始JSON文本（Raw JSON text）", "yuan2 shi3 JSON wen2 ben3")，是用于向玩家发送、显示富文本的一种格式。文本组件可以使用SNBT和JSON两种格式书写：在命令及SNBT中使用的文本组件应写为SNBT格式，在 `.json` 文件中使用的文本组件应写为JSON格式。
+
+在25w02a以前的版本中，文本组件统一使用严格的JSON格式。对于一些接受文本组件作为值的SNBT字段，文本组件必须作为整个字符串 #icon(name: "nbt-string") 写入SNBT字段，在SNBT内嵌套JSON的写法在小节@subsec:snbt_and_json_nesting 中已有说明，这样的嵌套需要注意引号的配对和转义字符的使用，在书写和维护的过程中很容易有疏忽。自25w02a起，文本组件可以从相应字段的节点开始直接存储为数据树的一部分，不再需要考虑两种格式的兼容性问题，此举更利于文本组件的编辑。
+
+文本组件一共由以下三部分组成：
+===== #proper-noun(display: "文本组件内容（Text component content）", "wen2 ben3 zu3 jian4 nei4 rong2")
+定义文本类型、来源和解析规则，内容可以为空。
+===== #proper-noun(display: "文本组件样式（Text component style）", "wen2 ben3 zu3 jian4 yang4 shi4")
+定义文本的样式、字体、交互事件等信息，若不定义，则文本使用其载体的默认样式，不同载体的默认样式不同。交互事件默认不存在。
+===== #proper-noun(display: "子组件（Text component children）", "zi3 zu3 jian4")
+定义依附于当前文本的文本组件，子组件会继承父组件的样式。
+
+文本组件可以接受的 #icon(name: "nbt") SNBT数据类型为 #icon(name: "nbt-string") *字符串*、#icon(name: "nbt-list") *列表*和 #icon(name: "nbt-compound") *复合标签*，对应的 #icon(name: "json") JSON数据类型则为 #icon(name: "json-string") *字符串*、#icon(name: "json-array") *数组*和 #icon(name: "json-object") *对象*，*其他的数据类型一概不接受*。
+
+当文本组件使用 #icon(name: "nbt-string")#icon(name: "json-string") 字符串形式时，该组件被当作纯文本处理，不能添加任何样式。例如，组件@code:text_component_string_format\是一个 #icon(name: "nbt-string")#icon(name: "json-string") 字符串形式的文本组件，输入后返回的文本为#text_component(content:text(white)[Hello World!])（字符串的引号不会被返回）：
+#codebox("\"Hello World!\"") <code:text_component_string_format>
+
 == 文本组件内容
 === 翻译文本<subsec:translate>
 = 存档格式<chap:level_format>
