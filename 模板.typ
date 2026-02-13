@@ -653,6 +653,9 @@
   if name == "sprite-heart_full" {
     box(image("图标/sprite/full.png", height:auto), baseline: 0.2em, height:1em)
   }
+  if name == "sprite-Mu_xian" {
+    box(image("图标/sprite/Mu_xian.png", height:auto), baseline: 0.2em, height:1em)
+  }
 }
 
 // 文件

@@ -686,7 +686,7 @@ Minecraft的命令有很多，可用 `/help` 命令查询任何可用命令的�
   [`/execute`], [-], [修饰后的执行者], [修饰后的执行位置], [修饰后的执行朝向], [修饰后的执行锚点], [修饰后的执行维度],
   [自定义进度], [2], [获得进度的玩家], [玩家的位置], [玩家的朝向], [脚部], [玩家所在的维度],
   [自定义魔咒], [2], [魔咒作用的实体], [魔咒作用的位置], [魔咒作用实体的朝向], [脚部], [魔咒作用的维度]
-)
+) <tab:command_context>
 #tips(
   [
     玩家的权限等级与其游戏模式无关，需要分情况讨论：
@@ -1499,7 +1499,6 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   [原版存在一个名为 `#air` 的方块标签，有三种方块属于这个标签：空气、洞穴空气和虚空空气，试编写这个标签。],
   [
     这个标签没有使用命名空间，默认命名空间为 `minecraft`。首先确定这个标签的文件路径：
-    #v(-1em)
     #tree(
       (0, [#icon(name: "folder") *data*]),
       (1, [#icon(name: "folder") *minecraft*]),
@@ -1524,7 +1523,6 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 #example(
   [
     有一个生物群系标签如下所示：
-    #v(-1em)
     #tree(
       (0, [#icon(name: "folder") *data*]),
       (1, [#icon(name: "folder") *the_backrooms*]),
@@ -1535,8 +1533,6 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
     )
     + 写出该标签的引用方式。
     + 同个数据包内已有如下的生物群系，尝试在该标签中引用这些生物群系。
-
-      #v(-1em)
       #tree(
         (0, [#icon(name: "folder") *data*]),
         (1, [#icon(name: "folder") *the_backrooms*]),
@@ -5264,6 +5260,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
   (0, [#icon(name: "nbt-compound")#icon(name: "json-object") 文本组件]),
   (1, [#icon(name: "nbt-string")#icon(name: "json-string") *type*: `object`]),
   (1, [#icon(name: "nbt-string")#icon(name: "json-string") *object*: `player`]),
+  (1, [#icon(name: "nbt-bool")#icon(name: "json-bool") *hat*: 是否渲染皮肤的帽子，默认为 `true`。]),
   (1, [#icon(name: "nbt-string")#icon(name: "json-string")#icon(name: "nbt-compound")#icon(name: "json-object") *#underline[player]*: 要显示的玩家皮肤。有 #icon(name: "nbt-string")#icon(name: "json-string") 字符串和 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象两种格式。]),
   (2, [*当使用 #icon(name: "nbt-string")#icon(name: "json-string") 字符串形式时，需要为玩家名称，格式要求与 #icon(name: "nbt-compound")#icon(name: "json-object") 形式中的 #icon(name: "nbt-string")#icon(name: "json-string") `name` 一致。*], false),
   (2, [*当使用 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象形式时，具有以下字段：*], false),
@@ -5277,8 +5274,56 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
   (4, [#icon(name: "nbt-string")#icon(name: "json-string") *Signature*: 该属性的签名。]),
   (3, [*若使用 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象形式，则具有以下字段：*], false),
   (3, [#icon(name: "nbt-list")#icon(name: "json-array") *\<游戏档案属性名称>*: 一个游戏档案属性。]),
-  (4, [#icon(name: "nbt-string")#icon(name: "json-string") 该属性的值，是Base64编码的JSON数据。])
+  (4, [#icon(name: "nbt-string")#icon(name: "json-string") 该属性的值，是Base64编码的JSON数据。]),
+  (2, [*以下字段均可选，若填写了则会在上述玩家档案数据的基础上进行修改，用于定制玩家皮肤。其中的纹理均可用资源包指定，对客户端有效。*], false),
+  (2, [#icon(name: "nbt-string")#icon(name: "json-string") *cape*: 披风的纹理，使用命名空间ID，地址从 #icon(name: "folder") `assets\<命名空间>\textures` 开始计。]),
+  (2, [#icon(name: "nbt-string")#icon(name: "json-string") *elytra*: 鞘翅的纹理，使用命名空间ID，地址从 #icon(name: "folder") `assets\<命名空间>\textures` 开始计。]),
+  (2, [#icon(name: "nbt-string")#icon(name: "json-string") *model*: 玩家模型的类型，有效值 `wide`（普通）和 `slim`（纤细）。]),
+  (2, [#icon(name: "nbt-string")#icon(name: "json-string") *texture*: 皮肤的纹理，使用命名空间ID，地址从 #icon(name: "folder") `assets\<命名空间>\textures` 开始计。])
 )
+#example(
+  [用文本组件显示玩家 `Mu_xian` 的头 #icon(name: "sprite-Mu_xian") 。],
+  [
+    组件为
+    #codebox("{object:\"player\",player:\"Mu_xian\"}")
+  ]
+)
+=== 组件解析
+*记分板分数组件*、*实体名称组件*和*NBT组件*这三种组件类型并不是在任何情况下都有效的，它们需要从游戏中索取数据，将数据渲染成静态的文本，这一过程被称为#proper-noun(display: "组件解析（Component resolution）", "zu3 jian4 jie3 xi1")，解析后游戏才会将组件内容发送至各自的客户端。*这些经过解析产生的文本是一种非动态的文本，简单地说，这些文本不会随着游戏内容的改变而产生更新，它们只反映游戏在组件解析发生那一刻的结果。*
+
+组件解析依赖于一个“触发实体”，这个实体会提供上下文，文本组件中使用的 `@s`、`*` 指代的实体即为这些触发实体。例如，文本展示实体中的文本组件触发实体为这个文本组件本身，故其中所有的 `@s` 都是这个文本展示实体：
+#codebox("summon text_display ~ ~ ~ {text:{selector:\"@s\"}}")
+#h(-2em)无论这个命令在书写的时候是否被修改了执行者，文本组件中的 `@s` 依旧是这个文本展示实体：
+#codebox("execute as @a run summon text_display ~ ~ ~ {text:{selector:\"@s\"}}")
+#h(-2em)此时文本展示实体的内容会被解析为文本展示实体本身的自定义名称。
+
+对于一些没有触发实体的情况，部分组件会行为异常或受限。
+
+所有能够发生组件解析的情况列于@tab:component_resolution_context，同时该表也提供了相应的上下文，作为对@tab:command_context\的补充。
+#page(flipped: true)[
+  #set align(horizon)
+  #general-table(
+    caption: "组件解析上下文",
+    colspan: 9,
+    columns: (auto, auto, auto, auto, auto, auto, auto, auto, auto),
+    header: ([情况], [触发实体], [权限等级], [执行者实体], [执行者名称], [执行位置], [执行朝向], [执行锚点], [执行维度]),
+    [`/tellraw`\ `/title`], [接收文本的各客户端的玩家], table.cell(rowspan: 2)[命令执行时的权限等级], table.cell(rowspan: 2)[命令执行时的执行者实体], table.cell(rowspan: 2)[命令执行时的执行者名称], table.cell(rowspan: 2)[命令执行时的执行位置], table.cell(rowspan: 2)[命令执行时的执行朝向], table.cell(rowspan: 2)[命令执行时的执行锚点], table.cell(rowspan: 2)[命令执行时的执行维度],
+    [`/bossbar`\ `/scoreboard`\ `/team`], [此命令的执行者],
+    [告示牌], [*无*], [2], [无], [`Sign`], [告示牌所在方块正中心], [水平向南], [脚部], [告示牌所在维度],
+    [玩家打开成书], [该玩家], [玩家的权限等级], [玩家], [玩家的名称], [家所在位置], [玩家的朝向], [脚部], [玩家所在维度],
+    [讲台上放入成书], [*无*], [2], [无], [`Lectern`], [讲台所在方块正中心], [水平向南], [脚部], [讲台所在维度],
+    [文本展示实体], [该文本展示实体], [2], [该文本展示实体], [该文本展示实体的名称], [该文本展示实体所在位置], [该文本展示实体的朝向], [脚部], [该文本展示实体所在维度],
+    [物品修饰器的\ `set_lore` 和\ `set_name`], [#icon(name: "json-string") `entity` 指定的实体], [2], [#icon(name: "json-string") `entity` 指定的实体], [#icon(name: "json-string") `entity` 指定实体的名称], [#icon(name: "json-string") `entity` 指定实体所在的位置], [#icon(name: "json-string") `entity` 指定实体的朝向], [脚部], [#icon(name: "json-string") `entity` 指定实体所在的维度]
+  ) <tab:component_resolution_context>
+]
+以下情况无法进行组件解析：
+===== 自定义物品的名称
+例如，执行以下命令以给予一个苹果：
+#codebox("give @s minecraft:apple[minecraft:custom_name={selector:\"@s\"}]")
+#h(-2em)此时苹果的名称显示为 #text_component(text(white)[_\@s_])，它并没有发生解析。
+===== 对话框
+对话框中的所有记分板分数组件、实体名称组件和NBT组件都不能解析，要想显示这些数据，只能用宏函数将数据传递进去。
+== 文本组件样式
 = 存档格式<chap:level_format>
 == 存档文件夹的结构<sec:saves>
 == 方块实体<sec:block_entity>
