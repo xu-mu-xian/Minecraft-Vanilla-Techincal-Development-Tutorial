@@ -820,7 +820,7 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
   ],
   width: 100%
 )
-=== JSON的转义序列
+=== JSON的转义序列<subsec:json_esacpe>
 使用JSON字符串时，如果字符串本身的内容中含有英文引号 `"`，如一个JSON字段 `text` 的值需要为 `"Hello World!"`，那该如何编写JSON呢？若使用如下的JSON：
 #codebox("\"text\":\"\"Hello World!\"\"") <code:json_escape_error>
 这样通常会产生报错，这是由于用于定义字符串的引号和值中的英文引号发生了配对从而导致了错误，因此需要使用#proper-noun(display: "转义字符（Escape character）", "zhuan3 yi4 zi4 fu2")`\` 对文本引号进行转义。转义的作用为：将被转义的字符转换成字符，被转换的引号便不再与用于定义字符串的引号发生配对。除用于转义英文引号外，反斜杠还可以用于转义反斜杠以及创造一些特定的转义序列。JSON中可用的转义序列如下：
@@ -3712,9 +3712,9 @@ UUID有以下几种表示方式：
 #codebox("[advancements={story/mine_stone=true}]")
 若 `<值>` 的位置填充了用花括号包括的键值对，则语法又为：
 #codebox("[advancements={<键>={<键>=<值>}}]")
-在键值对中嵌套键值对的意义为：*根据进度JSON的格式，玩家取得一定进度一定是通过满足这个进度的某些判据达成的。*比如进度#icon(name: "obtain_armor")整装上阵 `story/obtain_armor` 的判据之一为装备过铁头盔 `iron_helmet`，可以选择通过装备铁头盔以取得进度整装上阵的玩家：
+在键值对中嵌套键值对的意义为：*根据进度JSON的格式，玩家取得一定进度一定是通过满足这个进度的某些准则达成的。*比如进度#icon(name: "obtain_armor")整装上阵 `story/obtain_armor` 的准则之一为装备过铁头盔 `iron_helmet`，可以选择通过装备铁头盔以取得进度整装上阵的玩家：
 #codebox("[advancements={story/obtain_armor={iron_helmet=true}}]")
-*其中被选择的玩家当前不必正在装备铁头盔。*这些判据的具体情况可以查阅数据包内的进度定义文件，读者也可以使用自定义的进度及其判据。
+*其中被选择的玩家当前不必正在装备铁头盔。*这些准则的具体情况可以查阅数据包内的进度定义文件，读者也可以使用自定义的进度及其准则。
 ==== NBT参数
 NBT参数用于选择有指定NBT的实体，有关NBT的内容参考@chap:nbt\及@chap:level_format，语法为：
 #codebox("[nbt=<NBT>]")
@@ -3777,7 +3777,7 @@ SNBT的标签名允许包含字母A \~ Z、a \~ z、数字0 \~ 9、下划线 `_`
 一般而言，标签名只使用英文字母、数字和下划线的组合，因为这种书写方式直接且无需添加额外的用于标识的字符。对于由多个单词组成的标签名，其命名方法一般有三种——#proper-noun(display: "大驼峰命名法（Upper camel case）", "da4 tuo2 feng1 ming4 ming2 fa3")，即所有单词首字母均大写，如 `CanDestory`；#proper-noun(display: "小驼峰命名法（Lower camel case）", "xiao3 tuo2 feng1 ming4 ming2 fa3")，即除首个单词外的所有单词首字母均大写，如 `maxUses`；#proper-noun(display: "蛇形命名法（Snake case）", "she2 xing2 ming4 ming2 fa3")，即所有字母均小写、单词之间用下划线隔开，如 `map_scale_direction`。近年来游戏新数据在标签名上一般采用蛇形命名法，且原有的数据标签名也逐步改为了蛇形命名法，为便于统一管理游戏数据，建议读者自己进行开发时，尽量使用蛇形命名法定义标签。
 
 若标签名带有引号、冒号、空格、汉字等字符，则标签名需要被一对引号包裹，如 `"minecraft:item_model"`。可以使用单引号 `'` 或双引号 `"`。在必要的时候，标签名中的字符还需被转义。当标签名中只有双引号 `"` 时，可用单引号包裹标签名，如 `'tag"'`；当标签名中只有单引号 `'` 时，可用双引号包裹标签名，如 `"tag'"`；当标签名同时含有单引号和双引号时，可任意使用单引号或双引号包裹标签名，但标签名中对应种类的引号需要被转义，如 `"'Tag\""`。空格在标签名中也是可以接受的：`"a b"`，汉字同样如此：`"标签名"`。反斜杠不需要被引号包裹：`tag\`。
-=== 数据类型与数据树
+=== 数据类型与数据树<subsec:nbt_data_type>
 在SNBT中，对于每一个诸如 `<标签名>:<值>` 这样形式的内容，称其为一个单独的#proper-noun(display: "标签（Tag）", "biao1 qian1")。一个标签由三部分组成：一是*标签类型*，它用于决定该标签需要使用什么类型的数据；二是*标签名*，它用于区分不同的标签；三是*该标签存储的数据*，对于不同类型的标签，其需要的数据也不尽相同。NBT本身一共存在13种数据类型，在SNBT中一共可以使用13种标签类型，其中包含一种较为特殊的标签类型。本教程在介绍SNBT的语法时，采用与Minecraft Wiki一致的结构化树状图。下面分类介绍所有的数据类型：
 #continue-h5([整型类数据])
 ===== #icon(name: "nbt-byte")#footnote[本教程使用这些图标表示各SNBT数据类型。] 字节型
@@ -4776,13 +4776,13 @@ NBT和JSON格式结构类似，但还有很多不同之处，在一些情况下�
 = 文本组件<chap:text_component>
 Minecraft中有各式各样的文本，它们有不同的内容、不同的样式，有些文本甚至能够与玩家产生交互。本章将介绍这些文本使用的格式——文本组件。
 #pagebreak()
-== 概述
+== 概述<sec:text_component_overview>
 #proper-noun(display: "文本组件（Text component）", "wen2 ben3 zu3 jian4")，旧称#proper-noun(display: "原始JSON文本（Raw JSON text）", "yuan2 shi3 JSON wen2 ben3")，是用于向玩家发送、显示富文本的一种格式。文本组件可以使用SNBT和JSON两种格式书写：在命令及SNBT中使用的文本组件应写为SNBT格式，在 `.json` 文件中使用的文本组件应写为JSON格式。
 
 在25w02a以前的版本中，文本组件统一使用严格的JSON格式。对于一些接受文本组件作为值的SNBT字段，文本组件必须作为整个字符串 #icon(name: "nbt-string") 写入SNBT字段，在SNBT内嵌套JSON的写法在小节@subsec:snbt_and_json_nesting 中已有说明，这样的嵌套需要注意引号的配对和转义字符的使用，在书写和维护的过程中很容易有疏忽。自25w02a起，文本组件可以从相应字段的节点开始直接存储为数据树的一部分，不再需要考虑两种格式的兼容性问题，此举更利于文本组件的编辑。
 
 文本组件一共由以下三部分组成：
-===== #proper-noun(display: "文本组件内容（Text component content）", "wen2 ben3 zu3 jian4 nei4 rong2")
+===== #proper-noun(display: "文本组件类型（Text component content）", "wen2 ben3 zu3 jian4 lei4 xing2")
 定义文本类型、来源和解析规则，内容可以为空。
 ===== #proper-noun(display: "文本组件样式（Text component style）", "wen2 ben3 zu3 jian4 yang4 shi4")
 定义文本的样式、字体、交互事件等信息，若不定义，则文本使用其载体的默认样式，不同载体的默认样式不同。交互事件默认不存在。
@@ -4791,11 +4791,494 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 
 文本组件可以接受的 #icon(name: "nbt") SNBT数据类型为 #icon(name: "nbt-string") *字符串*、#icon(name: "nbt-list") *列表*和 #icon(name: "nbt-compound") *复合标签*，对应的 #icon(name: "json") JSON数据类型则为 #icon(name: "json-string") *字符串*、#icon(name: "json-array") *数组*和 #icon(name: "json-object") *对象*，*其他的数据类型一概不接受*。
 
-当文本组件使用 #icon(name: "nbt-string")#icon(name: "json-string") 字符串形式时，该组件被当作纯文本处理，不能添加任何样式。例如，组件@code:text_component_string_format\是一个 #icon(name: "nbt-string")#icon(name: "json-string") 字符串形式的文本组件，输入后返回的文本为#text_component(content:text(white)[Hello World!])（字符串的引号不会被返回）：
+当文本组件使用 #icon(name: "nbt-string")#icon(name: "json-string") 字符串形式时，该组件被当作纯文本处理，不能添加任何样式。例如，组件@code:text_component_string_format\是一个 #icon(name: "nbt-string")#icon(name: "json-string") 字符串形式的文本组件，输入后返回的文本为#text_component(text(white)[Hello World!])（字符串的引号不会被返回）：
 #codebox("\"Hello World!\"") <code:text_component_string_format>
+当使用 #icon(name: "nbt-list") 列表/ #icon(name: "json-array") 数组时，其中的元素可以是任意形式的文本组件，包括 #icon(name: "nbt-string")#icon(name: "json-string") 字符串、#icon(name: "nbt-list") 列表/ #icon(name: "json-array") 数组和 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象，同一 #icon(name: "nbt-list") 列表/ #icon(name: "json-array") 数组内元素的类型可以不同。例如，组件@code:text_component_list_format 返回的内容是#text_component(text(white)[ABC])：
+#codebox("[\"A\",\"B\",\"C\"]") <code:text_component_list_format>
+#icon(name: "nbt-list") 列表/ #icon(name: "json-array") 数组内的任一元素不能为文本组件不接受的数据形式。例如，组件@code:text_component_list_format_wrong_1 无法被解析，因为 #icon(name: "nbt-list") 列表/ #icon(name: "json-array") 数组内的所有元素均为 #icon(name: "nbt-int") 整型/ #icon(name: "json-number") 数值：
+#codebox("[1,2,3]") <code:text_component_list_format_wrong_1>
+组件@code:text_component_list_format_wrong_2 也无法被解析，因为 #icon(name: "nbt-list") 列表/ #icon(name: "json-array") 数组有元素为 #icon(name: "nbt-int") 整型/ #icon(name: "json-number") 数值，即使数组内已有能被解析的 #icon(name: "nbt-string")#icon(name: "json-string") 字符串类型的数据：
+#codebox("[1,\"2\",3]") <code:text_component_list_format_wrong_2>
+当使用 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象时，允许在其中指定文本组件类型和文本组件样式，数据格式为#footnote[这里同时提供了SNBT和JSON的格式，后续教程皆如此。]：
+#tree(
+  (0, [#icon(name: "nbt-compound")#icon(name: "json-object") 文本组件]),
+  (1, [文本组件类型]),
+  (1, [文本组件样式])
+)
+其中文本组件类型是必填项目，文本组件样式可选。如果不需要使用特别的组件类型和定义特别的样式，为了节省命令长度，一般使用字符串形式的文本组件而不使用 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象。在游戏解析过程中，*无样式和子组件的纯文本内容会被序列化成 #icon(name: "nbt-string")#icon(name: "json-string") 字符串形式的文本组件。*例如，输入的文本组件为：
+#codebox("{text:\"Hello World!\"}")
+#h(-2em)再次提取这个数据，就会发现它已被序列化成：
+#codebox("\"Hello World!\"")
+使用文本组件编写的文本在样式上会很丰富。使用文本组件的物件主要有命令 `/tellraw`、命令 `/title`、告示牌和成书这几种，由于告示牌和成书是存档格式的一部分，因此将在后面@chap:level_format\中详细介绍。下面先介绍两条命令的语法。
+#reset-h5
+===== 命令 `/tellraw`#index(index: "command", "tellraw")
+该命令用于在聊天栏中对指定的目标显示文本，所需的参数等级为2，语法为：
+#codebox("tellraw <targets> <messages>")
+#param-desc(
+  [`<targets>`（实体 `minecraft:entity`）], [指定文本接受者，可以为玩家名称、UUID或目标选择器，但必须指定玩家。],
+  [`<messages>`（文本组件 `minecraft:component`）], [要显示的富文本，使用文本组件，可以在其中使用换行符 `\n`。]
+)
+#example(
+  [向所有玩家的聊天栏显示文本#text_component(text(white)[Hello World!])。],
+  [
+    命令为
+    #codebox("tellraw @a \"Hello World!\"")
+  ]
+)
+===== 命令 `/title`#index(index: "command", "title")
+该命令用于在玩家的屏幕上显示一行大号的字体，共有三个位置可共显示。标题文本的大小取决于页面大小设置，过长的标题*不会*自动换行，只会溢出屏幕。它需要的权限等级为2，以下是所有用法：
+====== 对指定的玩家在特定的位置文本，语法为：
+#codebox("title <targets> (title|subtitle|actionbar) <title>")
+#param-desc(
+  [`(title|subtitle|actionbar)`], [显示位置，分别为 `title`（#proper-noun(display: "主标题（Screen title）", "zhu3 biao1 ti2")）、`subtitle`（#proper-noun(display: "副标题（Subtitle）", "fu4 biao1 ti2")）和 `actionbar`（#proper-noun(display: "动作栏（Action bar）", "dong4 zuo4 lan2")），这三个显示位置如@fig:title_position 所示。其中*副标题只有当主标题存在时才会显示*。动作栏是显示玩家一些操作的位置，如使用音乐唱片、睡觉、骑乘实体等，这些操作信息会覆盖用命令 `/title` 设置的文本。],
+  [`<title>`（文本组件 `minecraft:component`）], [要显示的富文本，使用文本组件，*不可以在其中使用换行符 `\n`*。]
+)
+#figure(
+  caption: "各标题显示的位置",
+  image("图片/各标题显示的位置.png", width: 28em)
+) <fig:title_position>
+====== 对指定的玩家设置主标题和副标题渐入、保持和渐出的时间，语法为：
+#codebox("title <targets> times <fadeIn> <stay> <fadeOut>") <code:command_title_times>
+#param-desc(
+  [`<fadeIn>`、`<stay>`、`<fadeOut>`（时间 `minecraft:time`）], [分别为标题的渐入、保持和渐出的时间，均使用带单位的时间参数，不写单位则默认为游戏刻，其默认时长分别为10gt、70gt和20gt。注意，*该命令不能用于设置动作栏的渐入、保持和渐出的时间，动作栏默认在其显示后3秒左右淡出。*]
+)
+====== 对指定的玩家，将其标题的渐入、保持、渐出时间参数恢复为默认值，语法为：
+#codebox("title <targets> reset")
+====== 对指定的玩家移除其正在显示的所有标题，语法为：
+#codebox("title <targets> clear")
+#example(
+  [对所有玩家显示主标题#text_component(text(white)[Level 0])，副标题#text_component(text(white)[前厅])。],
+  [
+    命令为
+    #codebox("title @a title \"Level 0\"")
+    #codebox("title @a subtitle \"前厅\"")
+  ]
+)
+#example(
+  [对所有玩家而言，标题渐入、保持和渐出的时间已被修改，若需要将其改回默认值，则需要的命令为何？],
+  [
+    由于不存在直接重置标题显示时间的命令，因此需要使用语法@code:command_title_times 手动修改，命令可以为
+    #codebox("title @a times 10 70 20")
+  ]
+)
+== 文本组件类型
+文本组件一共有七种可用的组件类型：*纯文本*、*翻译文本*、*记分板分数*、*实体名称*、*按键绑定*、*NBT值*和*精灵图*，这部分数据的结构为
+#tree(
+  (0, [#icon(name: "nbt-compound")#icon(name: "json-object") 文本组件]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *type*: 可选，标识此对象使用的组件类型，它使用组件类型的ID作为它需要的值，因此有效值有 `text`（纯文本）、`translatable`（翻译文本）、`score`（记分板分数）、`selector`（实体名称）、`keybind`（按键绑定）和 `nbt`（NBT值）。]),
+  (1, [对于指定的 #icon(name: "nbt-string")#icon(name: "json-string") `type` 使用的相应额外字段。])
+)
+对于一个指定的 #icon(name: "nbt-string")#icon(name: "json-string") `type`，同一个 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象内必须存在相应额外字段，如@tab:text_component_content 所示。
+#general-table(
+  caption: "组件类型",
+  colspan: 4,
+  columns: (auto, auto, auto, auto),
+  header: ([优先级], [#icon(name: "nbt-string")#icon(name: "json-string") #text(black)[`type`] 的值], [相应的额外字段], [组件类型]),
+  [1], [`text`], [#icon(name: "nbt-string")#icon(name: "json-string") `text`], [纯文本],
+  [2], [`translatable`], [#icon(name: "nbt-string")#icon(name: "json-string") `translate`], [翻译文本],
+  [3], [`keybind`], [#icon(name: "nbt-string")#icon(name: "json-string") `keybind`], [按键绑定],
+  [4], [`score`], [#icon(name: "nbt-compound")#icon(name: "json-object") `score`], [记分板分数],
+  [5], [`selector`], [#icon(name: "nbt-string")#icon(name: "json-string") `selector`], [实体名称],
+  [6], [`nbt`], [#icon(name: "nbt-string")#icon(name: "json-string") `nbt`], [NBT值],
+  [7], [`object`], [#icon(name: "nbt-string")#icon(name: "json-string") `object`], [精灵图]
+) <tab:text_component_content>
+例如，若指定
+#codebox("type:\"text\"")
+#h(-2em)这说明组件标识了纯文本，那么在同一个 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象内就需要使用字段 #icon(name: "nbt-string")#icon(name: "json-string") `text` 以说明纯文本的具体内容，如：
+#codebox("{type:\"text\",text:\"Alpha\"}")
+然而，字段 #icon(name: "nbt-string")#icon(name: "json-string") `type` 在文本组件中并不是必须的，使用 #icon(name: "nbt-string")#icon(name: "json-string") `type` 只是为了提高组件解析、检查错误的速度。如果 #icon(name: "nbt-string")#icon(name: "json-string") `type` 不指定值、或是 #icon(name: "nbt-string")#icon(name: "json-string") `type` 的值不属于上述有效值中的任何一者、亦或是 #icon(name: "nbt-string")#icon(name: "json-string") `type` 标识的组件类型在同一个 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象内不存在相应的额外字段，则组件类型会依次检查对象内的如下键：#icon(name: "nbt-string")#icon(name: "json-string") `text`、#icon(name: "nbt-string")#icon(name: "json-string") `translate`、#icon(name: "nbt-compound")#icon(name: "json-object") `score`、#icon(name: "nbt-string")#icon(name: "json-string") `selector`、#icon(name: "nbt-string")#icon(name: "json-string") `keybind`、#icon(name: "nbt-string")#icon(name: "json-string") `nbt`，最终使用第一个检查得到的有效键作为该组件使用的组件类型。
 
-== 文本组件内容
-=== 翻译文本<subsec:translate>
+例如，对于以下的文本组件：
+#codebox("{text:\"A\"}")
+#h(-2em)它没有使用 #icon(name: "nbt-string")#icon(name: "json-string") `type` 而是直接指定了 #icon(name: "nbt-string")#icon(name: "json-string") `text`，那么这个组件识别的组件类型为纯文本。而对于下面的文本组件：
+#codebox("{type:\"score\",translate:\"addServer.add\"}")
+#h(-2em)指定的 #icon(name: "nbt-string")#icon(name: "json-string") `type` 为 `score`，而使用的键却为 #icon(name: "nbt-string")#icon(name: "json-string") `translate`，此时识别的结果为翻译文本而不是记分板分数。
+
+如果 #icon(name: "nbt-string")#icon(name: "json-string") `type` 不指定值且 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象内存在多种组件类型，则按照@tab:text_component_content 所示的优先级，选择表中最靠上的一种组件类型。组件类型所属键出现在 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象中的先后顺序不会影响组件类型的优先级。例如，下面的文本组件
+#codebox("{
+  keybind:\"key.left\",
+  score:{objective:\"A\",name:\"*\"},
+  selector:\"@p\"
+}")
+#h(-2em)出现了三种组件类型：按键、记分板分数、实体名称，根据@tab:text_component_content，记分板分数的优先级最高，故返回记分板分数。
+此外，如果一个 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象中出现了多个同种类型的文本时，则会优先使用 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象中最靠后的文本类型字段。例如，
+#codebox("{text:\"1\",text:\"2\",text:\"3\"}")
+#h(-2em)返回的文本为#text_component(text(white)[3])
+=== 纯文本组件
+显而易见，#proper-noun(display: "纯文本组件（Plain text）", "chun2 wen2 ben3 zu3 jian4")用于直接输出一段固定的文本。格式为：
+#tree(
+  (0, [#icon(name: "nbt-compound")#icon(name: "json-object") 文本组件]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *type*: `text`]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *#underline[text]*: 具体的文本内容。])
+)
+#example(
+  [在所有玩家的主标题显示纯文本#text_component(text(white)[Hello World!])。],
+  [
+    如果使用 #icon(name: "nbt-string")#icon(name: "json-string") `text`，则命令为
+    #codebox("title @a title {type:\"text\",text:\"Hello world!\"}")
+    然而，节@sec:text_component_overview 指出，对于命令中没有任何样式的纯文本 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象，游戏总是会将它序列化成 #icon(name: "nbt-string")#icon(name: "json-string") 字符串，即
+    #codebox("title @a title \"Hello world!\"") <code:text_component_string_recommended>
+    这样的写法也是有效的，并且因为它输入的字符少，通常更推荐如@code:text_component_string_recommended 这样的写法。
+  ]
+)
+纯文本内允许包含各种转义序列，如Unicode、换行符 `\n`。例如下面的命令：
+#codebox("tellraw @a {text:\"\\u2605\\nCiallo~\"}")
+#h(-2em)它会在聊天栏中返回#text_component(text(white)[★\ Ciallo\~])。
+
+如果还需在其中使用引号和转义字符，则参考节@subsec:json_esacpe 和@subsec:nbt_data_type 说明的转义方式。
+=== 翻译文本组件<subsec:translate>
+*翻译文本组件（Translated text，或译本地化文本组件）*#index(display: "翻译文本组件（Translated text，本地化文本组件）", "fan1 yi4 wen2 ben3 zu3 jian4")通过翻译标识符返回一段已翻译的文本，文本显示的语言为客户端当前的语言。这种组件类型的作用在于，可以让一段文本转换为不同玩家所需要的语言。例如，翻译标识符 `commands.forceload.added.failure` 的简体中文 `zh_cn` 显示为“没有被标记为强制加载的区块”，而在使用美式英语 `en_us` 的客户端中，这段文本就被显示为“No chunks were marked for force loading”。
+
+#proper-noun(display: "翻译标识符（Translation identifier，本地化键名）", "fan1 yi4 biao1 shi2 fu2")存在于资源包语言文件中，用于表示一段已翻译的文本，一个翻译标识符大致按照以下的格式书写：
+#codebox("<内容>.<内容>.<内容>.…")
+它们被存储在 #icon(name: "folder") `assets\minecraft\lang\xx_xx.json` 中，每一个翻译标识符后面都有一个值，这些值便是在当前语言中的翻译文本。在 #icon(name: "json") `en_us.json` 中，部分翻译标识符如下所示：
+#codefile(
+  lang: "json",
+  title: "assets > minecraft > lang > en_us.json",
+  "{
+  \"commands.clone.success\": \"Successfully cloned %s blocks\",
+  \"commands.debug.started\": \"Started tick profiling\"
+}"
+)
+简体中文语言文件 #icon(name: "json") `zh_cn.json` 相应的部分如下所示：
+#codefile(
+  lang: "json",
+  title: "assets > minecraft > lang > zh_cn.json",
+  "{
+  \"commands.clone.success\": \"已成功复制%s个方块\",
+  \"commands.debug.started\": \"已开始刻分析\"
+}"
+)
+如果自制的资源包需要支持多语言，应该在资源包 #icon(name: "folder") `lang` 路径下添加语言文件，所有命名空间均可用，不仅限于 `minecraft`。一般而言至少应支持简体中文和美式英语：#cite(<vanilla_mod>, form: none)
+#tree(
+  (0, [#icon(name: "folder") *assets*]),
+  (1, [#icon(name: "folder") *\<命名空间>*]),
+  (2, [#icon(name: "folder") *lang*]),
+  (3, [#icon(name: "json") *en_us.json*]),
+  (3, [#icon(name: "json") *zh_cn.json*])
+)
+翻译标识符及其翻译的内容可完全自定义。翻译内容允许各种转义序列，如Unicode码、换行符 `\n` 等。
+
+在翻译文本文本组件中，决定组件类型的键为 #icon(name: "nbt-string")#icon(name: "json-string") `translate`，数据格式如下：
+#tree(
+  (0, [#icon(name: "nbt-compound")#icon(name: "json-object") 文本组件]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *type*: `translatable`]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *#underline[translate]*: 翻译标识符。若输入正确，则会返回和客户端当前语言一致的已翻译文本，即返回在相应语言 `.json` 文件中该翻译标识符的值。]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *fallback*: 若相应的语言文件中没有需要的翻译标识符，则显示 `en_us.json` 中的内容，即美式英语的文本。若在 `en_us.json` 中也没有找到该翻译标识符，则可以使用这个字段以输出替代的文本，它需要的值为字符串，因此不能添加格式，但可以使用格式化代码。]),
+  (1, [#icon(name: "nbt-list")#icon(name: "json-array") *with*: 一些翻译标识符的值中含有 `%s` 的字样，这些被称为标识符中的*译文变量（英文原文为Slots，槽位）*#index(display: "译文变量（Slots）", "yi4 wen2 bian4 liang4")。若不定义此字段，则这些译文变量的位置会显示为无文本。可以使用这个字段对这些译文遍历进行自定义。]),
+  (2, [一个文本组件，允许使用字符串、数组、对象等组件。])
+)
+对于翻译标识符值中的译文变量，参数列表 #icon(name: "nbt-list")#icon(name: "json-array") `with` 给它们分配参数的规则如下：
++ 对于出现的第$n$个 `%s`，其会被分配参数列表中的第$n$个参数。
++ 对于 `%n$s`，其会被分配参数列表中的第$n$个参数。
+下面的例子解释了这种分配规则：
+#example(
+  [
+    已知翻译标识符 `translation.test.complex` 对应字段在 #icon(name: "json") `zh_cn.json` 为
+    #codebox("\"translation.test.complex\":\"前缀，%s%2$s 然后是 %s 和 %1$s 最后是 %s 还有 %1$s！\"")
+    写出文本组件
+    #codebox("{translate:\"translation.test.complex\",with:[\"1\",\"2\",{text:\"3\",bold:true},\"4\"]}")
+    #h(-2em)返回的文本。
+  ],
+  [
+    参数列表中一共有4个参数，它们分别是：
+    #general-table(
+      caption: "参数列表",
+      colspan: 4,
+      columns: (auto, auto, auto, auto),
+      header: ([第1个参数], [第2个参数], [第3个参数], [第4个参数]),
+      text_component(shadow-offset: (0.1em, -0.25em), text(white)[1]), text_component(shadow-offset: (0.1em, -0.25em), text(white)[2]), text_component(shadow-offset: (0.1em, -0.25em), text(white)[#set text(weight: "bold")
+      3]), text_component(shadow-offset: (0.1em, -0.25em), text(white)[4])
+    )
+    对于所有的 `%s`，给它们按顺序分别分配参数列表中的参数：
+    #[
+      #set align(center)
+      #grid(
+        align: center + horizon,
+        column-gutter: 2pt,
+        columns: (auto, 2em, auto, 2em, auto, 2em, auto),
+        row-gutter: 4pt,
+        [], text(0.9em)[#place(dx: -1.5em, box(width: 5em, [第1个参数]))\ ▼], [], text(0.9em)[#place(dx: -1.5em, box(width: 5em, [第2个参数]))\ ▼], [], text(0.9em)[#place(dx: -1.5em, box(width: 5em, [第3个参数]))\ ▼], [],
+        [前缀，], box(inset: 0.4em, radius: 4pt, stroke: 1pt + rgb("#d71d1d"), [%s]), [%2\$s 然后是 ], box(inset: 0.4em, radius: 4pt, stroke: 1pt + rgb("#d71d1d"), [%s]), [ 和 %1\$s 最后是 ], box(inset: 0.4em, radius: 4pt, stroke: 1pt + rgb("#d71d1d"), [%s]), [ 还有 %1\$s！]
+      )
+    ]
+    对于 `%n$s`，给它们强制分配参数列表中第$n$个参数：
+    #[
+      #set align(center)
+      #grid(
+        align: center + horizon,
+        column-gutter: 2pt,
+        columns: (auto, 3em, auto, 3em, auto, 3em, auto),
+        row-gutter: 4pt,
+        [], text(0.9em)[#place(dx: -1em, box(width: 5em, [第2个参数]))\ ▼], [], text(0.9em)[#place(dx: -1em, box(width: 5em, [第1个参数]))\ ▼], [], text(0.9em)[#place(dx: -1em, box(width: 5em, [第1个参数]))\ ▼], [],
+        [前缀，%s], box(inset: 0.4em, radius: 4pt, stroke: 1pt + rgb("#d71d1d"), [%2\$s]), [ 然后是 %s 和 ], box(inset: 0.4em, radius: 4pt, stroke: 1pt + rgb("#d71d1d"), [%1\$s]), [ 最后是 %s 还有 ], box(inset: 0.4em, radius: 4pt, stroke: 1pt + rgb("#d71d1d"), [%1\$s]), [！]
+      )
+    ]
+    于是返回的内容为#text_component(text(white)[前缀，12 然后是 2 和 1 最后是 #[#set text(weight: "bold")
+    3] 还有 1！])。第4个参数虽然存在于列表中，但并没有使用。
+  ]
+)
+若 #icon(name: "nbt-string")#icon(name: "json-string") `fallback` 也没有指定值，则返回翻译标识符本身。例如，`custom.1` 是原版资源包中任何一个语言文件中都没有的翻译标识符，那么在不定义 #icon(name: "nbt-string")#icon(name: "json-string") `fallback` 时，文本组件
+#codebox("{translate:\"custom.1\"}")
+返回的内容为#text_component(text(white)[custom.1])。读者可以通过在资源包中添加这些自定义的翻译标识符，并为这些翻译标识符编写相应的值。
+#index(display: "检测资源包是否安装并显示不同的文本", index: "method", "jian3 ce4 zi1 yuan2 bao1 shi4 fou3 an1 zhuang1 bing4 xian3 shi4 bu4 tong2 de wen2 ben3")
+#example(
+  [一张冒险地图需要配合资源包使用，玩家进入游戏时地图会向玩家展示主标题，若玩家启用了正确的资源包，则主标题文本为#text_component(text(white)[资源包已启用])；若玩家未使用资源包，则主标题文本为#text_component(text(white)[请安装正确的资源包！])。试实现这个效果。],
+  [
+    要使客户端在装载资源包前后显示不同的文本，不妨使用翻译文本组件。当资源包启用的时候，按照翻译标识符显示对应的文本；当资源包未启用的时候，翻译标识符不存在，从而显示 #icon(name: "nbt-string")#icon(name: "json-string") `fallback` 中的内容。
+
+    首先在资源包中定义一个 #icon(name: "folder") `zh_cn.json` 语言文件，在其中任意定义一个翻译标识符：
+    #codefile(
+      lang: "json",
+      title: "assets > tutorial > lang > zh_cn.json",
+      "{
+  \"resourcePack.loaded\": \"资源包已启用\"
+}"
+    )
+    其次在文本组件中写：
+    #codebox("{translate:\"resourcePack.loaded\",fallback:\"请安装正确的资源包！\"}")
+    接下来只需要在主标题中显示：
+    #codebox("title @a title {translate:\"resourcePack.loaded\",fallback:\"请安装正确的资源包！\"}")
+  ]
+)
+=== 按键绑定组件
+#proper-noun(display: "按键绑定组件（Keybind）", "an4 jian4 bang3 ding4 zu3 jian4")用于返回可设置键位的动作当前设置的键位，返回的内容会随着玩家的键位设置而改变，数据结构为
+#tree(
+  (0, [#icon(name: "nbt-compound")#icon(name: "json-object") 文本组件]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *type*: `keybind`]),
+  (1, [#icon(name: "nbt-compound")#icon(name: "json-object") *#underline[keybind]*: 需要返回的键位，值为#proper-noun(display: "键位标识符（Keybind identifier）", "jian4 wei4 biao1 shi2 fu2")。所有可用的键位标识符如@tab:keybind_identifier 所示：])
+)
+#general-table(
+  caption: "可用键位标识符",
+  colspan: 3,
+  columns: (auto, auto, auto),
+  header: ([键位标识符], [控制], [默认键位]),
+  [`key.advancements`], [进度], [`L`],
+  [`key.attack`], [攻击/摧毁], [`鼠标左键`],
+  [`key.back`], [向后移动], [`S`],
+  [`key.chat`], [打开聊天栏], [`T`],
+  [`key.command`], [输入命令], [`/`],
+  [`key.debug.clearChat`], [清除聊天信息], [`F3` + `H`],
+  [`key.debug.copyLocation`], [按维度复制当前坐标], [`F3` + `C`],
+  [`key.debug.copyRecreateCommand`], [复制指向的方块数据], [`F3` + `I`],
+  [`key.debug.crash`], [按住10秒强制触发崩溃], [`F3` + `C`],
+  [`key.debug.debugOptions`], [调试选项], [`F3` + `F6`],
+  [`key.debug.dumpDynamicTextures`], [保存动态纹理], [`F3` + `S`],
+  [`key.debug.dumpVersion`], [显示版本信息], [`F3` + `V`],
+  [`key.debug.focusPause`], [控制失去焦点时游戏暂停], [`F3` + `P`],
+  [`key.debug.fpsCharts`], [FPS图表], [`F3` + `2`],
+  [`key.debug.modifier`], [调试功能组合用键], [`F3`],
+  [`key.debug.networkCharts`], [网络图表], [`F3` + `3`],
+  [`key.debug.overlay`], [显示调试屏幕], [`F3`],
+  [`key.debug.profiling`], [开始/停止性能分析], [`F3` + `L`],
+  [`key.debug.profilingChart`], [分析图表], [`F3` + `1`],
+  [`key.debug.reloadChunk`], [重新加载区块], [`F3` + `A`],
+  [`key.debug.reloadResourcePacks`], [重新加载资源包], [`F3` + `T`],
+  [`key.debug.showAdvancedTooltips`], [显示物品高级提示框], [`F3` + `H`],
+  [`key.debug.showChunkBorders`], [显示区块边界], [`F3` + `G`],
+  [`key.debug.showHitboxes`], [显示判定箱], [`F3` + `B`],
+  [`key.debug.spectate`], [在上一个游戏模式和旁观模式之间切换], [`F3` + `N`],
+  [`key.debug.switchGameMode`], [使用游戏模式切换器], [`F3` + `F4`],
+  [`key.drop`], [丢弃所选物品], [`Q`],
+  [`key.forward`], [向前移动], [`W`],
+  [`key.fullscreen`], [全屏显示切换], [`F11`],
+  [`key.hotbar.1`\ `key.hotbar.2`\ `key.hotbar.3`\ `key.hotbar.4`\ `key.hotbar.5`\ `key.hotbar.6`\ `key.hotbar.7`\ `key.hotbar.8`\ `key.hotbar.9`], [快捷栏1 \~ 9], [`1`\ `2`\ `3`\ `4`\ `5`\ `6`\ `7`\ `8`\ `9`],
+  [`key.inventory`], [开启/关闭物品栏], [`E`],
+  [`key.jump`], [跳跃], [`Space`],
+  [`key.left`], [向左移动], [`A`],
+  [`key.loadToolbarActivator`], [创造模式加载物品工具栏], [`X`],
+  [`key.pickItem`], [选取方块], [`鼠标中键`],
+  [`key.playerlist`], [玩家列表], [`Tab`],
+  [`key.quickActions`], [对话框快捷操作], [`G`],
+  [`key.right`], [向右移动], [`D`],
+  [`key.saveToolbarActivator`], [创造模式保存物品工具栏], [`C`],
+  [`key.screenshot`], [截图], [`F2`],
+  [`key.smoothCamera`], [切换电影视角], [无],
+  [`key.sneak`], [潜行], [左 `Shift`],
+  [`key.socialInteractions`], [打开社交屏幕], [`P`],
+  [`key.spectatorHotbar`], [旁观模式呼出快捷栏], [`鼠标中键`],
+  [`key.spectatorOutlines`], [旁观模式高亮玩家], [无],
+  [`key.sprint`], [疾跑], [左 `Ctrl`],
+  [`key.swapOffhand`], [交换手中的物品], [`F`],
+  [`key.toggleGui`], [隐藏/显示HUD], [`F1`],
+  [`key.togglePerspective`], [切换视角], [`F5`],
+  [`key.toggleSpectatorShaderEffects`], [切换旁观者着色器效果], [`F4`],
+  [`key.use`], [使用物品/放置方块], [`鼠标右键`]
+) <tab:keybind_identifier>
+#example(
+  [试编写一段翻译文本组件，大意为按使用键（默认为 `鼠标右键`）使用物品。],
+  [
+    首先配置语言文件，此处配置了简体中文和美式英文：
+    #codefile(
+      lang: "json",
+      title: "assets > tutorial > lang > zh_cn.json",
+      "{
+  \"item.use\": \"按下以%s使用\"
+}"
+    )
+    #codefile(
+      lang: "json",
+      title: "assets > tutorial > lang > en_us.json",
+      "{
+  \"item.use\": \"Press %s to use\"
+}"
+    )
+    然后在翻译文本组件的 #icon(name: "nbt-list")#icon(name: "json-array") `with` 中定义传入的参数，显然需要传入按键绑定组件：
+    #codebox("{keybind:\"key.use\"}")
+    组合起来得到完整的文本组件：
+    #codebox("{translate:\"item.use\",with:[{keybind:\"key.use\"}]}")
+  ]
+)
+=== 记分板分数组件
+#proper-noun(display: "记分板分数组件（Scoreboard value）", "ji4 fen1 ban3 fen1 shu4 zu3 jian4")这种组件类型用于返回指定分数持有者在指定记分项上的分数。若该分数持有者在指定记分项上没有分数，则不会返回任何内容。这种组件类型需要被解析。数据格式为：
+#tree(
+  (0, [#icon(name: "nbt-compound")#icon(name: "json-object") 文本组件]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *type*: `score`]),
+  (1, [#icon(name: "nbt-compound")#icon(name: "json-object") *#underline[score]*: 需要显示的记分板分数。]),
+  (2, [#icon(name: "nbt-string")#icon(name: "json-string") *#underline[name]*: 可以是一个实体名称，也可以是一个目标选择器。但是一个记分板分数文本组件只能解析一个分数持有者在一个指定记分项上的分数，因此目标选择器必须将选择的目标数量限定为一个，仅使用 `@a`、`@e` 这样的目标选择器变量是不可接受的。除了实体名称和目标选择器外，`name` 还可以接受 `*` 作为它的值。若值为 `*`，则会返回观察者（这里指观察这段文本的实体）自己在指定变量上的分数，这样可以让不同的玩家分别观察到他们自己的分数。]),
+  (2, [#icon(name: "nbt-string")#icon(name: "json-string") *#underline[objective]*: 指定的记分项。])
+)
+#example(
+  [已知玩家 `Mu_xian` 在记分项 `[test]` 上的分数为1，`IIIIfrit` 在记分项 `[test]` 上的分数为2。编写命令在这些玩家各自的客户端内返回各自的分数。],
+  [
+    命令为
+    #codebox("tellraw @a {score:{name:\"*\",objective:\"test\"}}")
+    在 `Mu_xian` 的客户端中返回的文本为#text_component(text(white)[1])，在 `IIIIfrit` 的客户端中返回的文本为#text_component(text(white)[2])。
+  ]
+)
+=== 实体名称组件
+#proper-noun(display: "实体名称组件（Entity names）", "shi2 ti3 ming2 cheng1 zu3 jian4")用于返回所有被选中实体的名称，需要被解析，可返回多个实体。数据格式为：
+#tree(
+  (0, [#icon(name: "nbt-compound")#icon(name: "json-object") 文本组件]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *type*: `selector`]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *#underline[selector]*: 返回的实体，需要的值为目标选择器。]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string")#icon(name: "nbt-list")#icon(name: "json-array")#icon(name: "nbt-compound")#icon(name: "json-object") *separator*: 可选，表示显示时分割各实体名称的文本，值可以是文本组件可接受的任意数据类型。默认值为 `{"text":", ","color":"gray"}`，显示的是灰色的分隔符#text_component(shadow-offset: (0.1em, -0.25em),text(gray)[,])。])
+)
+#example(
+  [在聊天栏中显示所有玩家的名字，名字之间用#text_component(text(white)[|])分隔。],
+  [
+    命令为
+    #codebox("tellraw @a {selector:\"@a\",separator:\"|\"}")
+  ]
+)
+=== NBT组件
+#proper-noun(display: "NBT组件（NBT values）", "NBT zu3 jian4")这种组件类型用于返回*方块实体*、*实体*或*命令存储*的指定NBT值，需要被解析，数据格式为
+#tree(
+  (0, [#icon(name: "nbt-compound")#icon(name: "json-object") 文本组件]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *type*: `nbt`]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *source*: NBT值的来源，可用值 `block`（方块实体）、`entity`（实体）和 `storage`（命令存储）。若该字段不存在，则会根据 #icon(name: "nbt-string")#icon(name: "json-string") `nbt` 自动确定来源。]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *block*: 获取方块实体数据的方块坐标，可以为绝对坐标、相对坐标或局部坐标，坐标值之间用空格分隔。]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *entity*: 获取实体数据的实体，需要为目标选择器，可以选择多个实体。]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *storage*: 获取命令存储数据的命令存储的命名空间ID。]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *#underline[nbt]*: 所返回NBT值的路径。]),
+  (1, [#icon(name: "nbt-bool")#icon(name: "json-bool") *interpret*: 是否将从NBT获取的值当作文本组件解析，若解析失败则什么内容都不会返回。默认值为 `false`]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string")#icon(name: "nbt-list")#icon(name: "json-array")#icon(name: "nbt-compound")#icon(name: "json-object") *separator*: 可选，表示显示时分割各NBT值的文本，值可以是文本组件可接受的任意数据类型。默认值为 `", "`，显示的是白色的分隔符#text_component(shadow-offset: (0.1em, -0.25em),text(white)[,])。])
+)
+在一个同级文本组件 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象中，NBT数据值组件类型只能从 #icon(name: "nbt-string")#icon(name: "json-string") `block`、#icon(name: "nbt-string")#icon(name: "json-string") `entity` 和 #icon(name: "nbt-string")#icon(name: "json-string") `storage` 中选择一个，且这三个字段必须存在任何一者。若在同一个对象中出现多个，则它们按照如下顺序的优先级决定最终选择的键：#icon(name: "nbt-string")#icon(name: "json-string") `block`、#icon(name: "nbt-string")#icon(name: "json-string") `entity`、#icon(name: "nbt-string")#icon(name: "json-string") `storage`。
+#example(
+  [获取方块坐标为$(0,0,0)$之方块实体 #icon(name: "nbt-list") `Items` 标签的值。],
+  [
+    文本组件为
+    #codebox("{source:\"block\",nbt:\"Items\",block:\"0 0 0\"}")
+  ]
+)
+#example(
+  [返回所有实体 #icon(name: "nbt-list") `Rotation` 标签的值。],
+  [
+    文本组件为
+    #codebox("{source:\"entity\",nbt:\"Rotation\",entity:\"@e\"}")
+  ]
+)
+#example(
+  [返回存储 `test:a` 中 #icon(name: "nbt-int") `test` 标签的值。],
+  [
+    文本组件为
+    #codebox("{source:\"storage\",nbt:\"test\",storage:\"test:a\"}")
+  ]
+)
+=== 精灵图组件
+#proper-noun(display: "精灵图组件（Object）", "jing1 ling2 tu2 zu3 jian4")用于显示当前客户端的精灵图，可显示纹理图集精灵图和玩家皮肤精灵图。显示的精灵图会被转换为字体基准的$8 times 8$像素大小。
+==== 纹理图集精灵图
+格式为
+#tree(
+  (0, [#icon(name: "nbt-compound")#icon(name: "json-object") 文本组件]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *type*: `object`]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *object*: `atlas`]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *atlas*: 使用的纹理图集，默认为 `blocks`。]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *#underline[sprite]*: 精灵图在纹理图集中的命名空间ID。])
+)
+纹理图集的概念将在《资源包》教程中给出，以下直接以例题说明此组件的用法。
+#example(
+  [用文本组件显示苹果的精灵图 #icon(name: "sprite-apple")。],
+  [
+    苹果是物品，使用 `items` 这个纹理图集，相应片段如下：
+    #codefile(
+      lang: "json",
+      title: "assets > minecraft > atlases > items.json",
+      "{
+  \"sources\": [
+    {
+      \"type\": \"minecraft:directory\",
+      \"prefix\": \"item/\",
+      \"source\": \"item\"
+    }
+  ]
+}"
+    )
+    资源包内苹果纹理的地址为 #icon(name: "png") `assets\minecraft\textures\item\apple.png`，它在纹理图集内的命名空间ID为 `minecraft:apple`。故文本组件应写为
+    #codebox("{object:\"atlas\",atlas:\"items\",sprite:\"minecraft:apple\"}")
+  ]
+)
+#example(
+  [尝试显示 #icon(name: "sprite-heart_full")。],
+  [
+    #icon(name: "sprite-heart_full") 是GUI图集所属的精灵图，此纹理在资源包内的位置为
+
+    #icon(name: "png") `assets\minecraft\textures\gui\sprites\hud\heart\full.png`
+
+    GUI纹理图集的内容如下所示：
+    #codefile(
+      lang: "json",
+      title: "assets > minecraft > atlases > gui.json",
+      "{
+  \"sources\": [
+    {
+      \"type\": \"minecraft:directory\",
+      \"prefix\": \"\",
+      \"source\": \"gui/sprites\"
+    },
+    {
+      \"type\": \"minecraft:directory\",
+      \"prefix\": \"mob_effect/\",
+      \"source\": \"mob_effect\"
+    }
+  ]
+}")
+    故这个精灵图在纹理图集内的命名空间ID为 `minecraft:hud/heart/full`，完整的文本组件为
+    #codebox("{object:\"atlas\",atlas:\"gui\",sprite:\"minecraft:hud/heart/full\"}")
+  ]
+)
+==== 玩家皮肤精灵图
+实际上，这种精灵图显示的是玩家的头而非完整的玩家模型或玩家皮肤，格式为
+#tree(
+  (0, [#icon(name: "nbt-compound")#icon(name: "json-object") 文本组件]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *type*: `object`]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *object*: `player`]),
+  (1, [#icon(name: "nbt-string")#icon(name: "json-string")#icon(name: "nbt-compound")#icon(name: "json-object") *#underline[player]*: 要显示的玩家皮肤。有 #icon(name: "nbt-string")#icon(name: "json-string") 字符串和 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象两种格式。]),
+  (2, [*当使用 #icon(name: "nbt-string")#icon(name: "json-string") 字符串形式时，需要为玩家名称，格式要求与 #icon(name: "nbt-compound")#icon(name: "json-object") 形式中的 #icon(name: "nbt-string")#icon(name: "json-string") `name` 一致。*], false),
+  (2, [*当使用 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象形式时，具有以下字段：*], false),
+  (2, [#icon(name: "nbt-int_array")#icon(name: "json-array") *id*: 玩家的UUID。]),
+  (2, [#icon(name: "nbt-string")#icon(name: "json-string") *name*: 玩家名称，不能超过16个字符。若此项不使用，则按 #icon(name: "nbt-int_array")#icon(name: "json-array") `id` 字段确定玩家。]),
+  (2, [#icon(name: "nbt-list")#icon(name: "json-array")#icon(name: "nbt-compound")#icon(name: "json-object") *properties*: 玩家游戏档案。]),
+  (3, [*若使用 #icon(name: "nbt-list") 列表/ #icon(name: "json-array") 数组形式，则可用带签名的游戏档案，并具有以下字段：*], false),
+  (3, [#icon(name: "nbt-compound")#icon(name: "json-object") 一项游戏档案属性。]),
+  (4, [#icon(name: "nbt-string")#icon(name: "json-string") *#underline[name]*: 该属性的名称。]),
+  (4, [#icon(name: "nbt-string")#icon(name: "json-string") *#underline[value]*: 该属性的值，是Base64编码的JSON数据。]),
+  (4, [#icon(name: "nbt-string")#icon(name: "json-string") *Signature*: 该属性的签名。]),
+  (3, [*若使用 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象形式，则具有以下字段：*], false),
+  (3, [#icon(name: "nbt-list")#icon(name: "json-array") *\<游戏档案属性名称>*: 一个游戏档案属性。]),
+  (4, [#icon(name: "nbt-string")#icon(name: "json-string") 该属性的值，是Base64编码的JSON数据。])
+)
 = 存档格式<chap:level_format>
 == 存档文件夹的结构<sec:saves>
 == 方块实体<sec:block_entity>
@@ -5596,6 +6079,9 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 ]
 #pagebreak()
 == 重要方法
+#columns(1)[
+  #make-index(entry-casing: k => k, indexes: ("method",), use-page-counter: true)
+]
 #bibliography(
   "参考文献.bib",
   title: "参考文献",

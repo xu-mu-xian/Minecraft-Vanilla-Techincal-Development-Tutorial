@@ -9,6 +9,22 @@
 #import "自定义包/stringtree.typ": stringtree
 #import table: cell, header
 
+// 颜色
+#let dark_blue = rgb("0000aa")
+#let dark_green = rgb("00aa00")
+#let dark_aqua = rgb("00aaaa")
+#let dark_red = rgb("aa0000")
+#let dark_purple = rgb("aa00aa")
+#let gold = rgb("ffaa00")
+#let gray = rgb("aaaaaa")
+#let dark_gray = rgb("555555")
+#let blue = rgb("5555ff")
+#let green = rgb("55ff55")
+#let aqua = rgb("55ffff")
+#let red = rgb("ff5555")
+#let light_purple = rgb("ff55ff")
+#let yellow = rgb("ffff55")
+
 // 附录
 #let appendix-part = state("appendix-part", false)
 #let appendix = {
@@ -631,6 +647,12 @@
   if name == "obtain_armor" {
     box(image("图标/advancement/整装上阵.png", height:auto), baseline: 1em, height:3em)
   }
+  if name == "sprite-apple" {
+    box(image("图标/sprite/apple.png", height:auto), baseline: 1em, height:3em)
+  }
+  if name == "sprite-heart_full" {
+    box(image("图标/sprite/full.png", height:auto), baseline: 0.2em, height:1em)
+  }
 }
 
 // 文件
@@ -708,30 +730,49 @@
   [*#actual-display*#index(display: actual-display, value)]
 }
 
-// 文本组件
-#let shadowed-text(shadow-color: rgb("3F3F3F"), offset: (0.1em, 0.1em), it) = box(
+// 文字阴影
+#let shadowed_text(content, shadow-offset: (0.1em, 0.1em), shadow-color: rgb("3F3F3F")) = box(
   stack(
     dir: ltr,
     spacing: 0pt,
     place(
-      dx: offset.at(0),
-      dy: offset.at(1),
+      dx: shadow-offset.at(0),
+      dy: shadow-offset.at(1),
       {
         show text: set text(fill: rgb(shadow-color))
-        it
+        content
       },
     ),
-    text[#it],
+    text[#content],
   ),
 )
-#let text_component(background: rgb("#fde9e9"), baseline: 25%, content: "") = [
-  #box(
-    baseline: baseline,
-    fill: background,
-    inset: 0.5em,
-    radius: 4pt,
-    stroke: 1pt + red,
-    shadowed-text[#text(font: ("Minecraft", "Unifont"), content)]
+
+// 文本组件
+#let text_component(background: rgb("#ffcece"), baseline: 25%, content, font: ("Minecraft", "Unifont"), shadow-offset: (0.1em, 0.1em), shadow-color: rgb("3F3F3F")) = [
+  #text(
+    font: font,
+    box(
+      baseline: baseline,
+      fill: background,
+      inset: 0.5em,
+      radius: 4pt,
+      stroke: 1pt + red,
+      box(
+        stack(
+          dir: ltr,
+          spacing: 0pt,
+          place(
+            dx: shadow-offset.at(0),
+            dy: shadow-offset.at(1),
+            {
+              show text: set text(fill: rgb(shadow-color))
+              content
+            },
+          ),
+          text[#content],
+        ),
+      )
+    )
   )
 ]
 
