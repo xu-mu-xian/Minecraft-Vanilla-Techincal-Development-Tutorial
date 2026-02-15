@@ -690,11 +690,11 @@ Minecraft的命令有很多，可用 `/help` 命令查询任何可用命令的�
 #tips(
   [
     玩家的权限等级与其游戏模式无关，需要分情况讨论：
-    + 若该玩家是服务器管理员，则他的权限等级由 #icon(name: "json")  `ops.json` 中的值决定，默认为4级；
+    + 若该玩家是服务器管理员，则他的权限等级由 #icon("json")  `ops.json` 中的值决定，默认为4级；
     + 若该玩家处于启用命令的单人世界中或为启用命令的局域网世界所有者，则他的权限等级为4级；
     + 若该玩家处于启用命令的局域网世界中，则他的权限等级为4级；
     + 非上述情况者权限等级一律为0级。
-    函数的权限等级默认为2级，可在 #icon(name: "file") `server.properties` 中修改。
+    函数的权限等级默认为2级，可在 #icon("file") `server.properties` 中修改。
   ],
   width: 100%
 )
@@ -731,7 +731,7 @@ JSON格式键值对的基本语法为：
 在一个`.json`文件中，须使用花括号 `{}` 将所有的键值对封装包裹在一起，如：
 #codebox("{\"<键>\":<值>,\"<键>\":<值>}")
 对于值而言，每一个不同的键都需的值的类型不尽相同，比如键 `color` 可能需要的是颜色值，`bold` 可能需要的是布尔值，`text` 可能需要的是字符串，等等。JSON一共使用六种不同的数据类型：
-===== #icon(name: "json-string") #proper-noun(display: "字符串（String）", "zi4 fu2 chuan4")
+===== #icon("json-string") #proper-noun(display: "字符串（String）", "zi4 fu2 chuan4")
 常见的数据类型，可以包含任意字符（如空格），字符串由一对*（英文）双引号*定义，*不接受单引号*，用法举例：
 #codebox("\"description\": \"The default data for Minecraft\"")
 也可以使用中文：
@@ -739,22 +739,22 @@ JSON格式键值对的基本语法为：
 JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都为一个十六进制数字。例如，符号★的Unicode为 `U2605`，则在字符串中输入★的方式可以为：
 #codebox("\"text\": \"\u2605\"")
 这样便可以在字符串中输入一些生僻字或是在键盘上无法直接打出来的字符。但是Minecraft的字库是有限的，并非所有的字符都可以在Minecraft中显示。
-===== #icon(name: "json-bool") #proper-noun(display: "布尔值（Bool）", "bu4 er3 zhi2")
+===== #icon("json-bool") #proper-noun(display: "布尔值（Bool）", "bu4 er3 zhi2")
 由 `true`（真）或 `false`（假）定义，这两者是JSON中的字面量符号，不需要使用双引号引起，举例：
 #codebox("\"bold\": true")
 #codebox("\"italic\": false")
-===== #icon(name: "json-number") #proper-noun(display: "数值（Number）", "shu4 zhi2")
+===== #icon("json-number") #proper-noun(display: "数值（Number）", "shu4 zhi2")
 由数字定义，允许使用整数、浮点数或是科学计数法表示的数，举例：
 #codebox("\"min\": 1.0")
 在JSON中使用的数值不需要注明它们的数据类型。
-===== #icon(name: "json-array") *数组（Array，或称为列表）*#index(display: "数组（Array）", "shu4 zu3")
+===== #icon("json-array") *数组（Array，或称为列表）*#index(display: "数组（Array）", "shu4 zu3")
 由一对方括号定义，数组中元素与元素之间使用逗号隔开，*最后一个元素后不能有逗号*。这些元素可以是其他的数据类型，如字符串、布尔值、数值和对象，数组中甚至能嵌套数组。在定义其他的数据类型时，需注意这些数据类型的定义方法。以下为包含了数值的数组：
 #codebox("\"frames\": [1, 2, 3, 4, 5]")
 下面为包含了字符串的数组，字符串均由一对双引号定义：
 #codebox("\"text\": [\"A\", \"B\", \"C\"]")
 对于数组内的元素，其数据类型不必完全一致，例如：
 #codebox("\"extra\": [1, {\"text\": \"2\"}, \"3\"]")
-===== #icon(name: "json-object") #proper-noun(display: "对象（Object）", "dui4 xiang4")
+===== #icon("json-object") #proper-noun(display: "对象（Object）", "dui4 xiang4")
 由一对花括号定义，对象内字段与字段之间使用逗号隔开，*最后一个字段后不能有逗号*。对象中可以包含其他数据类型，也可以在对象中嵌套对象。整个 `.json` 文件就可以看作是一个大的对象。在编写JSON的时候，通常需要用到对象嵌套对象，因此花括号一定要检查是否匹配。用法举例：
 #codebox("{
   \"rolls\": {
@@ -768,16 +768,16 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
 
 由于JSON为多层级结构，为了方便说明，本系列教程会使用和Minecraft Wiki一样的树状图来表示。例如：
 #tree(
-  (0, [#icon(name: "json-object")]),
-  (1, [#icon(name: "json-string") *string*: `这是一个字符串`]),
-  (1, [#icon(name: "json-bool") *boolean*: `true`]),
-  (1, [#icon(name: "json-number") *number*: `5`]),
-  (1, [#icon(name: "json-array") *array*]),
-  (2, [#icon(name: "json-string") `这是数组的第一个元素，是一个字符串`]),
-  (2, [#icon(name: "json-object") ]),
-  (3, [#icon(name: "json-string") *string*: `这是对象内的一个字符串`]),
-  (1, [#icon(name: "json-object") ]),
-  (2, [#icon(name: "json-string") *string*: `这是对象内的一个字符串`])
+  (0, [#icon("json-object")]),
+  (1, [#icon("json-string") *string*: `这是一个字符串`]),
+  (1, [#icon("json-bool") *boolean*: `true`]),
+  (1, [#icon("json-number") *number*: `5`]),
+  (1, [#icon("json-array") *array*]),
+  (2, [#icon("json-string") `这是数组的第一个元素，是一个字符串`]),
+  (2, [#icon("json-object") ]),
+  (3, [#icon("json-string") *string*: `这是对象内的一个字符串`]),
+  (1, [#icon("json-object") ]),
+  (2, [#icon("json-string") *string*: `这是对象内的一个字符串`])
 )
 
 对应的JSON为：
@@ -808,15 +808,15 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
       相同层级的节点会表示为相同的缩进。
     + 对于一个字段：
 
-      #icon(name: "json-string") *field*: `这是一个字段`
-      + 字段开头的 #icon(name: "json-string")#icon(name: "json-bool")#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") 表示这个字段使用的数据类型。如果出现了多种数据类型，则表示这些数据类型均可使用。
+      #icon("json-string") *field*: `这是一个字段`
+      + 字段开头的 #icon("json-string")#icon("json-bool")#icon("json-number")#icon("json-array")#icon("json-object") 表示这个字段使用的数据类型。如果出现了多种数据类型，则表示这些数据类型均可使用。
       + 加粗红色的字表示这个字段的键名。
       + 冒号后面如果只有 `代码块`，表示此 `代码块` 是该字段使用的真实值。如果冒号后面是一段文字，则这是对于该字段的解释。如：
 
-        #icon(name: "json-string") *field*: 这是对于这个字段的解释。
+        #icon("json-string") *field*: 这是对于这个字段的解释。
       + 如果键名有下划线，则表示这个字段是必填项：
 
-        #icon(name: "json-string") *#underline[string]*: 此项为必选项。
+        #icon("json-string") *#underline[string]*: 此项为必选项。
   ],
   width: 100%
 )
@@ -862,72 +862,72 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
 )
 特殊情况下，JSON字段可能会以字符串类型包含另一个需要被解析的JSON数据而非直接嵌套为相应类型的值，例如：
 #tree(
-  (0, [#icon(name: "json-string") *content*: `{"text":"Hello World!"}`])
+  (0, [#icon("json-string") *content*: `{"text":"Hello World!"}`])
 )
-字段 #icon(name: "json-string") `content` 的值类型为字符串，两端一定需要一对引号。为了防止决定字符串的引号与值中的引号发生匹配混乱，会将值中的引号进行转义：
+字段 #icon("json-string") `content` 的值类型为字符串，两端一定需要一对引号。为了防止决定字符串的引号与值中的引号发生匹配混乱，会将值中的引号进行转义：
 #codebox("\"content\": \"{\\\"text\\\":\\\"Hello World!\\\"}\"")
-如果 #icon(name: "json-string") `text` 字段的值也带有引号，如 `"Hello World!"`，则需要相应地添加反斜杠：
+如果 #icon("json-string") `text` 字段的值也带有引号，如 `"Hello World!"`，则需要相应地添加反斜杠：
 #tree(
-  (0, [#icon(name: "json-string") *content*: `{"text":"\"Hello World!\""}`])
+  (0, [#icon("json-string") *content*: `{"text":"\"Hello World!\""}`])
 )
-这时如果把字段 #icon(name: "json-string") `content` 写成如下的形式：
+这时如果把字段 #icon("json-string") `content` 写成如下的形式：
 #codebox("\"content\": \"{\\\"text\\\":\\\"\\\"Hello World!\\\"\\\"}\"")
-现在来手动分析这个字段。把 #icon(name: "json-string") `content` 的值拆出来，对所有的转义序列都去掉反斜杠。首先，键 #icon(name: "json-string") `text` 两端的引号被转义，因此能够正常匹配。其次，冒号 `:` 之后、字符 `H` 之前有两个已被转义的引号；而字符感叹号 `!` 后又有两个已被转义的引号，一共有四个被转义的引号：
+现在来手动分析这个字段。把 #icon("json-string") `content` 的值拆出来，对所有的转义序列都去掉反斜杠。首先，键 #icon("json-string") `text` 两端的引号被转义，因此能够正常匹配。其次，冒号 `:` 之后、字符 `H` 之前有两个已被转义的引号；而字符感叹号 `!` 后又有两个已被转义的引号，一共有四个被转义的引号：
 #codebox("{\"text\":\"\"Hello World!\"\"}")
 所以不可避免地又发生了引号匹配混乱的情况。现在要解决的问题就是如何让这些引号不发生匹配混乱。最有效的写法就是*从里层向外层书写，每嵌套一层，就在上一层所有需要被转义的字符（如 `"` 和 `\`）前添加反斜杠*。因此，对于里层的 `{"text":"\"Hello World!\""}`，需要在所有的 `"` 和 `\` 之前都添加一个反斜杠：
 #codebox("\"content\": \"{\\\"text\\\":\\\"\\\\\\\"Hello World!\\\\\\\"\\\"}\"")<code:multilevel_escaping>
-@code:multilevel_escaping 才是正确的写法。如果更进一步，将@code:multilevel_escaping 封装在对象中，让它作为另一个 #icon(name: "json-string") `content` 的值，这样就又增加了一层嵌套，于是应在@code:multilevel_escaping 的每一个 `"` 和 `\` 之前都添加一个反斜杠：
+@code:multilevel_escaping 才是正确的写法。如果更进一步，将@code:multilevel_escaping 封装在对象中，让它作为另一个 #icon("json-string") `content` 的值，这样就又增加了一层嵌套，于是应在@code:multilevel_escaping 的每一个 `"` 和 `\` 之前都添加一个反斜杠：
 #codebox("\"content\": \"{\\\"content\\\": \\\"{\\\\\\\"text\\\\\\\":\\\\\\\"\\\\\\\\\\\\\\\"Hello World!\\\\\\\\\\\\\\\"\\\\\\\"}\\\"}\"")
 == 游戏文件
 游戏的各项数据被零零散散地存放在各个游戏文件里，部分数据对于做技术性开发而言非常重要，因此有必要适当掌握游戏文件的结构。
 === 常用文件格式
 存储Minecraft数据的文件格式有很多种，下面介绍一些常见的文件格式。
-===== #icon(name: "text") `.txt` 文件
+===== #icon("text") `.txt` 文件
 `.txt` 文件是非常常见的文本文件，用Windows自带的记事本即可打开。这种文件通常被用于存储一些简易的文本，如游戏标题画面上的闪烁标语，有时也被用于存储游戏中的设置，在这些 `.txt` 文件中更改的内容会在游戏本体上有相应的改动。有时候 `.txt` 文件也可用于记录一些自定义的、不作为游戏数据的文本。有效的 `.txt` 文件必须为无BOM的UTF-8格式。
-===== #icon(name: "mcfunction") `.mcfunction` 文件
-`.mcfunction` 文件，即函数文件，同样必须为无BOM的UTF-8格式。函数文件可以用Windows10自带的记事本打开并编辑，默认的Windows 10记事本已经为无BOM的UTF-8格式，这点从记事本页面下方的状态栏就可以看到。记事本无法指出函数中的语法错误，必须得手动检查，笔者更推荐在编译软件中打开函数文件。本教程推荐的辅助工具是 #icon(name: "dhp") Data-pack Helper Plus（DHP），这是编译软件 #icon(name: "vscode") Visual Studio Code（VS Code）的一个扩展，可在 #icon(name: "vscode") VS Code的应用商店中找到。#icon(name: "dhp") DHP是专门用于制作Minecraft数据包或资源包部分文件的辅助工具，在编写数据包或资源包的过程中，#icon(name: "dhp") 提供了高亮显示，并为部分错误的语法提供解决方案。
+===== #icon("mcfunction") `.mcfunction` 文件
+`.mcfunction` 文件，即函数文件，同样必须为无BOM的UTF-8格式。函数文件可以用Windows10自带的记事本打开并编辑，默认的Windows 10记事本已经为无BOM的UTF-8格式，这点从记事本页面下方的状态栏就可以看到。记事本无法指出函数中的语法错误，必须得手动检查，笔者更推荐在编译软件中打开函数文件。本教程推荐的辅助工具是 #icon("dhp") Data-pack Helper Plus（DHP），这是编译软件 #icon("vscode") Visual Studio Code（VS Code）的一个扩展，可在 #icon("vscode") VS Code的应用商店中找到。#icon("dhp") DHP是专门用于制作Minecraft数据包或资源包部分文件的辅助工具，在编写数据包或资源包的过程中，#icon("dhp") 提供了高亮显示，并为部分错误的语法提供解决方案。
 
 《数据包》教程提供了该文件格式的具体编写规范。
-===== #icon(name: "json") `.json` 和 `.mcmeta` 文件
+===== #icon("json") `.json` 和 `.mcmeta` 文件
 `.json` 和 `.mcmeta` 文件都是使用JSON格式的文件。这些文件中的JSON格式是允许换行的，且为了美观、可读性，编写者在习惯上会在所有的 `.json` 和 `.mcmeta` 文件中使用换行，并使得同一层级的字段在行前缩进上保持一致。`.json` 和 `.mcmeta` 文件没有专门用于注释的语法，若需要注释，则使用游戏不需要、不会被游戏识别的键，如 `_comment1`、`_comment2`。
-===== #icon(name: "nbt") `.mca`、`.dat`、`.dat_old` 和 `.nbt` 文件
-`.mca`、`.dat`、`.dat_old` 和 `.nbt` 文件均是使用NBT格式的文件，通常用于存储世界的全局信息和结构信息。同样地，这两类文件不能用 #icon(name: "dhp") DHP在编译软件内进行编辑，但可以在NBT编辑器内编辑，本教程推荐的编辑器为 #icon(name: "nbtstudio") NbtStudio。一些无法由命令进行编辑的信息可以通过 #icon(name: "nbtstudio") NbtStudio修改。
-===== #icon(name: "png") `.png` 文件
-`.png` 文件是图片文件，被用于存储游戏中的绝大部分图像，包括但不限于图标、游戏截图、资源包纹理。可以使用Windows自带的 #icon(name: "paint") 画图、#icon(name: "ps") PS或 #icon(name: "gimp") GIMP处理，但需要注意 #icon(name: "paint") 画图不支持透明背景。
-===== #icon(name: "ogg") `.ogg` 文件
+===== #icon("nbt") `.mca`、`.dat`、`.dat_old` 和 `.nbt` 文件
+`.mca`、`.dat`、`.dat_old` 和 `.nbt` 文件均是使用NBT格式的文件，通常用于存储世界的全局信息和结构信息。同样地，这两类文件不能用 #icon("dhp") DHP在编译软件内进行编辑，但可以在NBT编辑器内编辑，本教程推荐的编辑器为 #icon("nbtstudio") NbtStudio。一些无法由命令进行编辑的信息可以通过 #icon("nbtstudio") NbtStudio修改。
+===== #icon("png") `.png` 文件
+`.png` 文件是图片文件，被用于存储游戏中的绝大部分图像，包括但不限于图标、游戏截图、资源包纹理。可以使用Windows自带的 #icon("paint") 画图、#icon("ps") PS或 #icon("gimp") GIMP处理，但需要注意 #icon("paint") 画图不支持透明背景。
+===== #icon("ogg") `.ogg` 文件
 游戏中所有的声音文件都为 `.ogg` 格式，从外部导入声音时应注意格式转换。直接修改文件名后缀是无效的，可以使用
-===== #icon(name: "zip") `.zip` 文件
+===== #icon("zip") `.zip` 文件
 压缩文件，即 `.zip` 文件，也是常用的文件格式，通常被用于数据包和资源包的压缩。读者可自行选择合适的压缩软件对数据包或资源包进行压缩。
 ===== 其他的文件格式
 Minecraft还使用其他一些文件格式，如 `.jfr` 文件、`.log` 文件等。具体见下文的说明。
 === .minecraft文件夹 \*
-`.minecraft` 文件夹，macOS上为 #icon(name: "folder") `minecraft`，是存储Java版所有游戏数据的文件夹。
+`.minecraft` 文件夹，macOS上为 #icon("folder") `minecraft`，是存储Java版所有游戏数据的文件夹。
 
-对于Windows系统，这个文件夹默认位于 #icon(name: "folder") `C: Users\Admin\AppData\Roaming\.minecraft`，其中 #icon(name: "folder") `AppData` 文件夹一般是隐藏的，可以在文件资源管理器 `查看` 工具栏，在 `显示/隐藏` 一项勾选 `隐藏的项目` 以显示这个文件夹。
+对于Windows系统，这个文件夹默认位于 #icon("folder") `C: Users\Admin\AppData\Roaming\.minecraft`，其中 #icon("folder") `AppData` 文件夹一般是隐藏的，可以在文件资源管理器 `查看` 工具栏，在 `显示/隐藏` 一项勾选 `隐藏的项目` 以显示这个文件夹。
 
-对于Mac系统，这个文件夹默认位于 #icon(name: "folder") `home\用户名\Library\Application Support\minecraft`。对于Linux系统，这个文件夹默认位于 #icon(name: "folder") `home\用户名\.minecraft`，其中以 `.` 开头的文件夹默认是隐藏的，需要使用 `Ctrl` + `H` 切换是否可见。
+对于Mac系统，这个文件夹默认位于 #icon("folder") `home\用户名\Library\Application Support\minecraft`。对于Linux系统，这个文件夹默认位于 #icon("folder") `home\用户名\.minecraft`，其中以 `.` 开头的文件夹默认是隐藏的，需要使用 `Ctrl` + `H` 切换是否可见。
 
 第三方启动器会有其特殊的文件夹路径，具体见各启动器的设置。由官方启动器运行的游戏可以在启动器内手动修改存储路径，或者在默认存储路径处使用快捷方式重定向至自定义路径下。
 
-随着游戏内容的增多、各种其他资源（如光影、模组）不断被下载到游戏中， #icon(name: "folder") `.minecraft`中的子文件（夹）可能会持续增多。鉴于无法讲到所有可能出现的文件（夹），本节仅列举原版游戏使用文件（夹）。文件结构如下所示：
+随着游戏内容的增多、各种其他资源（如光影、模组）不断被下载到游戏中， #icon("folder") `.minecraft`中的子文件（夹）可能会持续增多。鉴于无法讲到所有可能出现的文件（夹），本节仅列举原版游戏使用文件（夹）。文件结构如下所示：
 #tree(
-  (0, [#icon(name: "folder") *.minecraft*]),
-  (1, [#icon(name: "folder") *assets*: 存放原版资源包部分游戏资源的文件夹，如简体中文的语言文件、声音 `.ogg` 文件等，其中这些文件被称为*散列资源文件*。]),
-  (2, [#icon(name: "folder") *indexes*]),
-  (3, [#icon(name: "json") *\<版本号>.json*: 该版本号用于映射散列资源的哈希表。]),
-  (2, [#icon(name: "folder") *log_configs*]),
-  (3, [#icon(name: "file") *client-<版本号>.xml*]),
-  (2, [#icon(name: "folder") *objects*: 此文件夹专门用于存储声音、语言文件。]),
-  (3, [#icon(name: "folder") *\<哈希值前两位>*]),
-  (4, [#icon(name: "file") *\<哈希值>*: 散列资源文件。]),
-  (2, [#icon(name: "folder") *skins*]),
-  (3, [#icon(name: "folder") *\<哈希值前两位>*]),
-  (4, [#icon(name: "file") *\<哈希值>*: 散列资源文件。]),
-  (2, [#icon(name: "folder") *virtual*]),
+  (0, [#icon("folder") *.minecraft*]),
+  (1, [#icon("folder") *assets*: 存放原版资源包部分游戏资源的文件夹，如简体中文的语言文件、声音 `.ogg` 文件等，其中这些文件被称为*散列资源文件*。]),
+  (2, [#icon("folder") *indexes*]),
+  (3, [#icon("json") *\<版本号>.json*: 该版本号用于映射散列资源的哈希表。]),
+  (2, [#icon("folder") *log_configs*]),
+  (3, [#icon("file") *client-<版本号>.xml*]),
+  (2, [#icon("folder") *objects*: 此文件夹专门用于存储声音、语言文件。]),
+  (3, [#icon("folder") *\<哈希值前两位>*]),
+  (4, [#icon("file") *\<哈希值>*: 散列资源文件。]),
+  (2, [#icon("folder") *skins*]),
+  (3, [#icon("folder") *\<哈希值前两位>*]),
+  (4, [#icon("file") *\<哈希值>*: 散列资源文件。]),
+  (2, [#icon("folder") *virtual*]),
   (1, [#tips(
   [
-    #icon(name: "folder") `assets` 文件夹内的资源文件都是用#proper-noun(display: "哈希值（Hash value，散列值）", "ha1 xi1 zhi2")加密的，以哈希表的方式映射资源位置。要查询 #icon(name: "folder") `assets` 内的任意一个资源文件，需按照以下步骤：
-    + 打开 #icon(name: "folder") `indexes` 文件夹，找到需要提取资源的 #icon(name: "json") `<版本号>.json` 文件。其中的内容大致如下所示：
+    #icon("folder") `assets` 文件夹内的资源文件都是用#proper-noun(display: "哈希值（Hash value，散列值）", "ha1 xi1 zhi2")加密的，以哈希表的方式映射资源位置。要查询 #icon("folder") `assets` 内的任意一个资源文件，需按照以下步骤：
+    + 打开 #icon("folder") `indexes` 文件夹，找到需要提取资源的 #icon("json") `<版本号>.json` 文件。其中的内容大致如下所示：
     
       #codefile(
       lang: "json",
@@ -949,27 +949,27 @@ Minecraft还使用其他一些文件格式，如 `.jfr` 文件、`.log` 文件�
     \"_comment\": \"后续还有很多其他资源\"
   }
 }")
-    + 用编译软件的查询功能在 #icon(name: "json") `<版本号>.json` 文件中查找所需资源，记录对应 #icon(name: "json-string") `hash` 字段的值，此即为映射该资源的哈希值。
-    + 打开 #icon(name: "folder") `objects` 文件夹，找到匹配的 #icon(name: "folder") `<哈希值前两位>` 文件夹，在此文件夹内找寻对应哈希值命名的文件，此即为需要找寻的资源。
+    + 用编译软件的查询功能在 #icon("json") `<版本号>.json` 文件中查找所需资源，记录对应 #icon("json-string") `hash` 字段的值，此即为映射该资源的哈希值。
+    + 打开 #icon("folder") `objects` 文件夹，找到匹配的 #icon("folder") `<哈希值前两位>` 文件夹，在此文件夹内找寻对应哈希值命名的文件，此即为需要找寻的资源。
   ]
 )
 #example(
-  [在 #icon(name: "folder") `assets` 文件夹内找到1.21.4版本（哈希表版本号显示为 `19`）简体中文语言的资源文件。],
+  [在 #icon("folder") `assets` 文件夹内找到1.21.4版本（哈希表版本号显示为 `19`）简体中文语言的资源文件。],
   [
-    在 #icon(name: "json") `<19>.json` 文件中查询 `zh_cn`，可以找到一个键名为 `minecraft/lang/zh_cn.json` 的键值对：
+    在 #icon("json") `<19>.json` 文件中查询 `zh_cn`，可以找到一个键名为 `minecraft/lang/zh_cn.json` 的键值对：
     #codebox("\"minecraft/lang/zh_cn.json\": {
   \"hash\": \"4674523c91196e0898c24a06531f94154111f2a3\",
   \"size\": 459788
 }")
-    这时获取到哈希值 `4674523c91196e0898c24a06531f94154111f2a3`，其前两位是 `46`。然后打开文件夹 #icon(name: "folder") `objects\46`，在其中找到名为 #icon(name: "file") `4674523c91196e0898c24a06531f94154111f2a3` 的文件，此即为简体中文的语言文件。
+    这时获取到哈希值 `4674523c91196e0898c24a06531f94154111f2a3`，其前两位是 `46`。然后打开文件夹 #icon("folder") `objects\46`，在其中找到名为 #icon("file") `4674523c91196e0898c24a06531f94154111f2a3` 的文件，此即为简体中文的语言文件。
   ])], false, true),
-  (1, [#icon(name: "folder") *backups*: 存放备份存档的文件夹。]),
-  (2, [#icon(name: "zip") *\<日期>\_\<时间>\_\<存档名称>.zip*: 一个备份存档。]),
-  (1, [#icon(name: "folder") *bin*]),
-  (2, [#icon(name: "folder") *\<随机ID>*]),
-  (3, [#icon(name: "file") `.dll` 或 `.so` 文件]),
-  (1, [#icon(name: "folder") *crash-reports*: 存储游戏崩溃报告的文件夹。]),
-  (2, [#icon(name: "text") *crash-\<日期>\_\<时间>-\<逻辑端类型>.txt*: 一份#proper-noun(display: "崩溃报告（Crash Report）", "bengkuibaogao")文件。]),
+  (1, [#icon("folder") *backups*: 存放备份存档的文件夹。]),
+  (2, [#icon("zip") *\<日期>\_\<时间>\_\<存档名称>.zip*: 一个备份存档。]),
+  (1, [#icon("folder") *bin*]),
+  (2, [#icon("folder") *\<随机ID>*]),
+  (3, [#icon("file") `.dll` 或 `.so` 文件]),
+  (1, [#icon("folder") *crash-reports*: 存储游戏崩溃报告的文件夹。]),
+  (2, [#icon("text") *crash-\<日期>\_\<时间>-\<逻辑端类型>.txt*: 一份#proper-noun(display: "崩溃报告（Crash Report）", "bengkuibaogao")文件。]),
   (1, [#tips(
   [游戏可能会以各种原因而发生#proper-noun(display: "崩溃（Crash）", "beng1 kui4")，读者可以从崩溃报告中查询崩溃原因。例如，以下是一份崩溃报告的开头部分内容：
   #codefile(
@@ -984,9 +984,9 @@ Description: Ticking entity"
   其中第二行是“诙谐的评论”，对崩溃报告的分析没有作用。`Description` 行是崩溃原因，此处的崩溃原因是 `Ticking entity`，这种崩溃通常意味着有实体发生了错误。后文通常是崩溃的具体原因。
   
   鉴于崩溃原因多种多样，本教程无法介绍每一种崩溃原因及其解决办法，读者可以从社区获取各种崩溃原因的解决办法或者使用AI分析。])], false, true),
-  (1, [#icon(name: "folder") *debug*: 存储函数调试结果的文件夹。]),
-  (2, [#icon(name: "text") *debug-trace-\<日期>\_\<时间>.txt*: 一份调试结果。]),
-  (1, [#tips([命令 `/debug` 可用于函数的调试，并将调试的结果以 `.txt` 的文件格式存入 #icon(name: "folder") `debug` 中。文件中的内容极为详细，可以以此观察函数的整个运行过程，并从中找到错误的地方。调试结果的具体内容如：
+  (1, [#icon("folder") *debug*: 存储函数调试结果的文件夹。]),
+  (2, [#icon("text") *debug-trace-\<日期>\_\<时间>.txt*: 一份调试结果。]),
+  (1, [#tips([命令 `/debug` 可用于函数的调试，并将调试的结果以 `.txt` 的文件格式存入 #icon("folder") `debug` 中。文件中的内容极为详细，可以以此观察函数的整个运行过程，并从中找到错误的地方。调试结果的具体内容如：
     #codefile(
       lang: "txt",
       title: ".minecraft > debug > debug-trace-2022-10-10_19.16.40.txt",
@@ -1007,12 +1007,12 @@ Description: Ticking entity"
     )
     其中首行是函数的命名空间ID。以 `[C]` 开头的内容为函数中的命令行；以 `[E]` 开头的内容指明了上一条命令行出现错误的地方；以 `[M]` 开头的内容说明上一条命令执行成功，并有 `[R=<值>]` 输出执行的结果。`[F]` 说明上一条命令引用了其他函数，并指出被引用的函数的大小。
   ])], false, true),
-  (1, [#icon(name: "folder") *libraries*: 按Maven仓库的标准目录结构组织和存储的第三方库。]),
-  (2, [#icon(name: "folder") 一个第三方库。]),
-  (1, [#icon(name: "folder") *logs*: 存储日志文件的文件夹。]),
-  (2, [#icon(name: "zip") *\<日期>-\<日志编号>.log.gz*: 压缩文件，可使用解压软件打开。]),
-  (3, [#icon(name: "file") *\<日期>-\<日志编号>.log*: 日志文件。]),
-  (2, [#icon(name: "file") *latest.log*: 最新一次游戏或当前正在进行的游戏所生成的日志文件。]),
+  (1, [#icon("folder") *libraries*: 按Maven仓库的标准目录结构组织和存储的第三方库。]),
+  (2, [#icon("folder") 一个第三方库。]),
+  (1, [#icon("folder") *logs*: 存储日志文件的文件夹。]),
+  (2, [#icon("zip") *\<日期>-\<日志编号>.log.gz*: 压缩文件，可使用解压软件打开。]),
+  (3, [#icon("file") *\<日期>-\<日志编号>.log*: 日志文件。]),
+  (2, [#icon("file") *latest.log*: 最新一次游戏或当前正在进行的游戏所生成的日志文件。]),
   (1, [#tips(
   [日志文件会存储游戏运行全过程的各种反馈，包括加载错误时的反馈，这些文件对游戏调试很重要。文件内容大致如下所示：
   #codefile(
@@ -1040,18 +1040,18 @@ Description: Ticking entity"
 [19:25:06] [Server thread/INFO]: [XVExodus: 已将XVExodus传送至Mu_xian]"
   )
   ])], false, true),
-  (1, [#icon(name: "folder") *resourcepacks*: 存储所有资源包的文件夹，其基本结构见@sec:resourcepack，具体的制作方式将在《资源包》教程中给出。]),
-  (1, [#icon(name: "folder") *saves*: 存储游戏中所有存档的文件夹，具体结构见@sec:saves 。]),
-  (2, [#icon(name: "folder") *\<存档名称>*: 一个存档。]),
-  (1, [#icon(name: "folder") *screenshots*: 存储 `F2` 截屏图片的文件夹。]),
-  (2, [#icon(name: "png") *\<日期>\_\<时间>.png*: 一张截屏，名称可手动修改。]),
-  (1, [#icon(name: "folder") *versions*: 存储游戏不同版本游戏资源的文件夹。]),
-  (2, [#icon(name: "folder") *\<版本号>*: 一个游戏版本，可以是正式版，也可以是快照。]),
-  (3, [#icon(name: "jar") *\<版本号>.jar*: 物理客户端文件，是存放该版本号游戏源代码的地方。可以用压缩软件打开这个文件。]),
-  (4, [#icon(name: "folder") *assets*: 存放该版本号原版资源包内容的文件夹，它决定了客户端游戏内容的外观。在制作资源包时可以参考这个文件夹的结构。不含在 #icon(name: "folder") `.minecraft\assets` 中存放的语言和声音文件。]),
-  (4, [#icon(name: "folder") *com*]),
-  (4, [#icon(name: "folder") *data*: 存放该版本号原版数据包内容的文件夹，它决定了可写注册表的内容，如进度、战利品表、配方、结构等。在制作数据包时可以参考这个文件夹的结构。]),
-  (4, [#h(-2em)#icon(name: "file") *flightrecorder-config.jfc*: Java Flight Recorder配置文件，可用于JFR分析。JFR分析，即使用Java Flight Recorder分析数据和某些自定义事件。自定义事件包括：
+  (1, [#icon("folder") *resourcepacks*: 存储所有资源包的文件夹，其基本结构见@sec:resourcepack，具体的制作方式将在《资源包》教程中给出。]),
+  (1, [#icon("folder") *saves*: 存储游戏中所有存档的文件夹，具体结构见@sec:saves 。]),
+  (2, [#icon("folder") *\<存档名称>*: 一个存档。]),
+  (1, [#icon("folder") *screenshots*: 存储 `F2` 截屏图片的文件夹。]),
+  (2, [#icon("png") *\<日期>\_\<时间>.png*: 一张截屏，名称可手动修改。]),
+  (1, [#icon("folder") *versions*: 存储游戏不同版本游戏资源的文件夹。]),
+  (2, [#icon("folder") *\<版本号>*: 一个游戏版本，可以是正式版，也可以是快照。]),
+  (3, [#icon("jar") *\<版本号>.jar*: 物理客户端文件，是存放该版本号游戏源代码的地方。可以用压缩软件打开这个文件。]),
+  (4, [#icon("folder") *assets*: 存放该版本号原版资源包内容的文件夹，它决定了客户端游戏内容的外观。在制作资源包时可以参考这个文件夹的结构。不含在 #icon("folder") `.minecraft\assets` 中存放的语言和声音文件。]),
+  (4, [#icon("folder") *com*]),
+  (4, [#icon("folder") *data*: 存放该版本号原版数据包内容的文件夹，它决定了可写注册表的内容，如进度、战利品表、配方、结构等。在制作数据包时可以参考这个文件夹的结构。]),
+  (4, [#h(-2em)#icon("file") *flightrecorder-config.jfc*: Java Flight Recorder配置文件，可用于JFR分析。JFR分析，即使用Java Flight Recorder分析数据和某些自定义事件。自定义事件包括：
   #param-desc(
     prefix: "",
     [`minecraft.ServerTickTime` ], [采样事件。],
@@ -1061,53 +1061,53 @@ Description: Ticking entity"
   )
   #h(-2em)在游戏中可使用命令 `/jfr` 进行JFR分析，此命令用于开始或结束JFR分析，分析结果以JSON的格式写入日志或 `debug` 文件夹。该命令所需权限等级为4，语法为：#index(index: "command", "jfr")
   #codebox("jfr (start|stop)")]),
-  (4, [#icon(name: "folder") *META-INF*: `.jar` 文件的元数据。]),
-  (5, [#icon(name: "file") *LICENSE*: 游戏许可协议。]),
-  (5, [#icon(name: "file") *MANIFEST.MF*: 清单文件。]),
-  (5, [#icon(name: "file") *MOJANGCS.RSA*: 用于验证JAR的文件。]),
-  (5, [#icon(name: "file") *MOJANGCS.SF*: JAR签名。]),
-  (4, [#icon(name: "folder") *net*: 自25w45a起，Mojang发布的未经混淆的客户端其源代码均存储于该文件夹内。其中的类文件均未被混淆，可查看，是制作Mods的重要依据。]),
-  (5, [#icon(name: "folder") *minecraft*]),
-  (6, [#icon(name: "file") *\<名称>.class*: 一个未混淆的Java类文件。]),
-  (4, [#h(-2em)#icon(name: "png") *pack.png*: 原版资源包的图标。#figure(caption: [原版资源包的图标（pack.png）],image("图片/原版资源包的图标（pack.png）.png", width: 4em))]),
-  (4, [#icon(name: "json") *versions.json*: 版本信息文件，存储该版本的信息。]),
-  (3, [#icon(name: "json") *\<版本号>.json*: 客户端清单文件。]),
-  (1, [#icon(name: "folder") *webcache2*]),
-  (1, [#icon(name: "text") *allowed_symlinks.txt*: 信任符号链接列表文件。]),
-  (1, [#icon(name: "text") *command\_history.txt*: 命令历史文件，最多只能保留50条记录。]),
-  (1, [#icon(name: "png") *debug.stitched\_items.png*]),
-  (1, [#icon(name: "png") *debug.stitched\_terrain.png*]),
-  (1, [#icon(name: "nbt") *hotbar.nbt*: 存储在创造模式中保存的快捷栏信息的文件，在创造模式中的快捷栏以 `C` + `<数字>` 存储，然后以 `X` + `<数字>` 调用。可以用NBT编辑器打开这个文件。]),
-  (1, [#icon(name: "text") *launcher\_cef\_log.txt*]),
-  (1, [#icon(name: "json") *launcher\_entitlements.json*]),
-  (1, [#icon(name: "json") *launcher\_gamer\_pics.json*]),
-  (1, [#icon(name: "json") *launcher\_msa\_credentials.json*]),
-  (1, [#icon(name: "json") *launcher\_profiles.json*: 启动器档案文件。]),
-  (1, [#icon(name: "json") *launcher\_quick\_play.json*: 启动器快速进入游戏存档信息文件。]),
-  (1, [#icon(name: "json") *launcher\_settings.json*: 启动器配置文件。]),
-  (1, [#icon(name: "json") *launcher\_skins.json*]),
-  (1, [#icon(name: "json") *launcher\_ui\_state.json*]),
-  (1, [#h(-2em)#icon(name: "text") *options.txt*: 该文件存储了游戏中设定的选项，可以通过更改该文件中的内容以更改在游戏中的设置。此外一些在选项界面中不存在的设置也可以通过该文件更改。文件中内容如下所示：#codefile(lang:"txt",title:".minecraft > options.txt","version:4189
+  (4, [#icon("folder") *META-INF*: `.jar` 文件的元数据。]),
+  (5, [#icon("file") *LICENSE*: 游戏许可协议。]),
+  (5, [#icon("file") *MANIFEST.MF*: 清单文件。]),
+  (5, [#icon("file") *MOJANGCS.RSA*: 用于验证JAR的文件。]),
+  (5, [#icon("file") *MOJANGCS.SF*: JAR签名。]),
+  (4, [#icon("folder") *net*: 自25w45a起，Mojang发布的未经混淆的客户端其源代码均存储于该文件夹内。其中的类文件均未被混淆，可查看，是制作Mods的重要依据。]),
+  (5, [#icon("folder") *minecraft*]),
+  (6, [#icon("file") *\<名称>.class*: 一个未混淆的Java类文件。]),
+  (4, [#h(-2em)#icon("png") *pack.png*: 原版资源包的图标。#figure(caption: [原版资源包的图标（pack.png）],image("图片/原版资源包的图标（pack.png）.png", width: 4em))]),
+  (4, [#icon("json") *versions.json*: 版本信息文件，存储该版本的信息。]),
+  (3, [#icon("json") *\<版本号>.json*: 客户端清单文件。]),
+  (1, [#icon("folder") *webcache2*]),
+  (1, [#icon("text") *allowed_symlinks.txt*: 信任符号链接列表文件。]),
+  (1, [#icon("text") *command\_history.txt*: 命令历史文件，最多只能保留50条记录。]),
+  (1, [#icon("png") *debug.stitched\_items.png*]),
+  (1, [#icon("png") *debug.stitched\_terrain.png*]),
+  (1, [#icon("nbt") *hotbar.nbt*: 存储在创造模式中保存的快捷栏信息的文件，在创造模式中的快捷栏以 `C` + `<数字>` 存储，然后以 `X` + `<数字>` 调用。可以用NBT编辑器打开这个文件。]),
+  (1, [#icon("text") *launcher\_cef\_log.txt*]),
+  (1, [#icon("json") *launcher\_entitlements.json*]),
+  (1, [#icon("json") *launcher\_gamer\_pics.json*]),
+  (1, [#icon("json") *launcher\_msa\_credentials.json*]),
+  (1, [#icon("json") *launcher\_profiles.json*: 启动器档案文件。]),
+  (1, [#icon("json") *launcher\_quick\_play.json*: 启动器快速进入游戏存档信息文件。]),
+  (1, [#icon("json") *launcher\_settings.json*: 启动器配置文件。]),
+  (1, [#icon("json") *launcher\_skins.json*]),
+  (1, [#icon("json") *launcher\_ui\_state.json*]),
+  (1, [#h(-2em)#icon("text") *options.txt*: 该文件存储了游戏中设定的选项，可以通过更改该文件中的内容以更改在游戏中的设置。此外一些在选项界面中不存在的设置也可以通过该文件更改。文件中内容如下所示：#codefile(lang:"txt",title:".minecraft > options.txt","version:4189
 ao:true
 biomeBlendRadius:2
 enableVsync:false
 entityDistanceScaling:1.0
 entityShadows:true")], true, true),
-  (1, [#icon(name: "file") *output-client.log*]),
-  (1, [#icon(name: "file") *output-server.log*]),
-  (1, [#icon(name: "json") *realms\_persistence.json*: 存储Realms数据的文件。]),
-  (1, [#icon(name: "nbt") *servers.dat*: 存储玩家添加到服务器列表的多人游戏服务器的数据。]),
-  (1, [#icon(name: "png") *textures\_0.png*]),
-  (1, [#icon(name: "png") *textures\_1.png*]),
-  (1, [#icon(name: "png") *textures\_2.png*]),
-  (1, [#icon(name: "png") *textures\_3.png*]),
-  (1, [#icon(name: "png") *textures\_4.png*]),
-  (1, [#icon(name: "json") *usercache.json*: 游戏为减少重复获取玩家档案信息所使用的缓存文件。])
+  (1, [#icon("file") *output-client.log*]),
+  (1, [#icon("file") *output-server.log*]),
+  (1, [#icon("json") *realms\_persistence.json*: 存储Realms数据的文件。]),
+  (1, [#icon("nbt") *servers.dat*: 存储玩家添加到服务器列表的多人游戏服务器的数据。]),
+  (1, [#icon("png") *textures\_0.png*]),
+  (1, [#icon("png") *textures\_1.png*]),
+  (1, [#icon("png") *textures\_2.png*]),
+  (1, [#icon("png") *textures\_3.png*]),
+  (1, [#icon("png") *textures\_4.png*]),
+  (1, [#icon("json") *usercache.json*: 游戏为减少重复获取玩家档案信息所使用的缓存文件。])
 )
 == 数据包
 Minecraft的命令系统虽然完善，但其功能十分有限。例如，命令没有办法直接指导游戏世界的生成；直接用命令模拟一些游戏机制也不够灵活。数据包可以看作是命令系统功能的延伸：它不仅为命令提供了程序化执行的环境，更开放了部分API以允许数据驱动内容。
 
-#proper-noun(display: "数据包（Data pack）", "shu4 ju4 bao1")*允许玩家在不修改游戏代码的前提下覆盖既有的或添加自定义的游戏内容。*因此，*原版技术性开发从不添加任何不在可写注册表内的游戏内容，只会用各种手段模拟这些游戏内容*。数据包本质上是一个文件夹或压缩文件。一个数据包仅对特定的游戏世界有效，它被储存在 `.minecraft\saves\<存档名称>\datapacks` 中。数据包可以是文件夹，也可以是 `.zip` 类型的压缩文件。同一个 #icon(name:"folder") `datapacks` 文件夹内能存放多个数据包。
+#proper-noun(display: "数据包（Data pack）", "shu4 ju4 bao1")*允许玩家在不修改游戏代码的前提下覆盖既有的或添加自定义的游戏内容。*因此，*原版技术性开发从不添加任何不在可写注册表内的游戏内容，只会用各种手段模拟这些游戏内容*。数据包本质上是一个文件夹或压缩文件。一个数据包仅对特定的游戏世界有效，它被储存在 `.minecraft\saves\<存档名称>\datapacks` 中。数据包可以是文件夹，也可以是 `.zip` 类型的压缩文件。同一个 #icon("folder") `datapacks` 文件夹内能存放多个数据包。
 
 数据包有两种添加方式——
 ===== 手动添加
@@ -1118,7 +1118,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   caption: [选择数据包窗口],
   image("图片/选择数据包窗口.png", width: 28em)
 )
-当一个存档中存在多个有效的已启用数据包时，游戏会根据数据包的顺序加载其内容，这里的“有效”是指数据包有合法的元数据且数据包内无任何语法错误。已启用数据包的加载顺序存储于 #icon(name:"nbt") `level.dat` 中。在选择数据包窗口“已选”一栏的加载顺序表现为从下到上。
+当一个存档中存在多个有效的已启用数据包时，游戏会根据数据包的顺序加载其内容，这里的“有效”是指数据包有合法的元数据且数据包内无任何语法错误。已启用数据包的加载顺序存储于 #icon("nbt") `level.dat` 中。在选择数据包窗口“已选”一栏的加载顺序表现为从下到上。
 
 若这些数据包对同种资源进行定义，则*后加载的数据包会对先加载的数据包进行覆盖*，表明*越靠后加载的数据包其优先级越高*。可使用命令  `/datapack` 查询、修改、控制这些数据包的启用或禁用，`/datapack` 所需的权限等级为2，以下是所有用法：#index(index: "command", "datapack")
 #reset-h5
@@ -1158,7 +1158,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 #codebox("datapack create <id> <description>")
 #param-desc(
   [`<id>`（字符串 `brigadier:string`）], [新建数据包的名称，可用字符与上述 `<name>` 参数一致。],
-  [`<description>`（文本组件 `minecraft:component`）], [该数据包的描述，是为元数据 `pack.mcmeta` 内 #icon(name: "json-string")#icon(name: "json-array")#icon(name: "json-object") `description` 的值。需要是文本组件，具体写法可参照@chap:text_component。]
+  [`<description>`（文本组件 `minecraft:component`）], [该数据包的描述，是为元数据 `pack.mcmeta` 内 #icon("json-string")#icon("json-array")#icon("json-object") `description` 的值。需要是文本组件，具体写法可参照@chap:text_component。]
 )
 编写数据包是一个“修改——调试——再修改——再调试”的重复过程，在既有内容的基础上对数据包做出修改并保存后，游戏不会立即识别这些修改的内容，而是依旧在修改前数据包的基础上运行原先的内容。此时需要重新加载数据包。
 
@@ -1180,57 +1180,57 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 
 数据包的编写是一个极为繁琐的过程，需要不断地调试、纠错，有时甚至要对其底层逻辑进行重构。在编写数据包之前，读者应提前做好规划，对其可行性进行初步的研究，还要考虑数据包运行过程中的流畅性、玩家游玩过程中的平衡性。编写过程合理使用文件层级，对文件适当分类，以免内容混乱，降低文件可读性。
 
-原版数据包位于 #icon(name: "folder") `.minecraft\versions\<版本号>\<版本号>.jar\data`，是编写自定义数据包的重要依据，读者可参考之。
+原版数据包位于 #icon("folder") `.minecraft\versions\<版本号>\<版本号>.jar\data`，是编写自定义数据包的重要依据，读者可参考之。
 === 数据包的基本结构
 一个数据包拥有以下的基本结构：
 #tree(
-  (0, [#icon(name: "folder") *\<数据包名称>*或 #icon(name: "zip") *\<数据包名称>.zip*]),
-  (1, [#icon(name: "folder") *\<子数据包>*]),
+  (0, [#icon("folder") *\<数据包名称>*或 #icon("zip") *\<数据包名称>.zip*]),
+  (1, [#icon("folder") *\<子数据包>*]),
   (2, [递归此文件夹结构]),
-  (1, [#icon(name: "folder") *data*: 数据包的主体内容。]),
-  (1, [#icon(name: "json") *#underline[pack.mcmeta]*: 数据包的元数据。]),
-  (1, [#icon(name: "png") *pack.png*: 可选，作为数据包的图标使用。])
+  (1, [#icon("folder") *data*: 数据包的主体内容。]),
+  (1, [#icon("json") *#underline[pack.mcmeta]*: 数据包的元数据。]),
+  (1, [#icon("png") *pack.png*: 可选，作为数据包的图标使用。])
 )
-如果该数据包以压缩文件的形式存在，则 #icon(name: "zip") `<数据包名称>.zip` 和 #icon(name: "folder") `<子数据包>`、#icon(name: "folder") `assets`、#icon(name: "json") `pack.mcmeta`、#icon(name: "png") `pack.png` 这些文件（夹）之间不要插入其他层级的文件夹。
+如果该数据包以压缩文件的形式存在，则 #icon("zip") `<数据包名称>.zip` 和 #icon("folder") `<子数据包>`、#icon("folder") `assets`、#icon("json") `pack.mcmeta`、#icon("png") `pack.png` 这些文件（夹）之间不要插入其他层级的文件夹。
 ==== 元数据
-#icon(name: "json") `pack.mcmeta` 是数据包的#proper-noun(display: "元数据（Metadata）", "yuan2 shu4 ju4")。所谓元数据，就是用于决定 #icon(name: "folder") `<数据包名称>` 或 #icon(name: "zip") `<数据包名称>.zip` 这个文件（夹）是否为一个数据包的基本数据。只有当元数据存在时，游戏才能识别数据包。
+#icon("json") `pack.mcmeta` 是数据包的#proper-noun(display: "元数据（Metadata）", "yuan2 shu4 ju4")。所谓元数据，就是用于决定 #icon("folder") `<数据包名称>` 或 #icon("zip") `<数据包名称>.zip` 这个文件（夹）是否为一个数据包的基本数据。只有当元数据存在时，游戏才能识别数据包。
 
-#icon(name: "json") `pack.mcmeta` 使用JSON格式，其包含的内容如下所示：
+#icon("json") `pack.mcmeta` 使用JSON格式，其包含的内容如下所示：
 #tree(
-  (0, [#icon(name: "json-object") 文件封装]),
-  (1, [#icon(name: "json-object") *#underline[pack]*: 此数据包的基本信息。]),
-  (2, [#icon(name: "json-string")#icon(name: "json-array")#icon(name: "json-object") *#underline[description]*: 任意文本，使用文本组件格式，可用于对数据包的简单介绍。此段文本会出现在选项数据包中。使用 `/datapack list` 列举数据包时，将鼠标悬停于数据包名称上也会显示此文本。]),
-  (2, [#icon(name: "json-number")#icon(name: "json-array") *#underline[max_format]*: 数据包最高兼容的版本号。若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon(name: "json-number") 形式或在 #icon(name: "json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0x7fffffff`。]),
-  (2, [#icon(name: "json-number")#icon(name: "json-array") *#underline[min_format]*: 数据包最低兼容的版本号。若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon(name: "json-number") 形式或在 #icon(name: "json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0`。]),
-  (2, [#icon(name: "json-number") *pack_format*: 25w31a以前用于指定数据包版本号的字段，现已弃用，可用于兼容旧版数据包。]),
-  (2, [#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") *supported_formats*: 25w31a以前用于指定数据包版本号兼容范围的字段，现已弃用，可用于兼容旧版数据包。]),
-  (3, [*若使用 #icon(name: "json-number") 形式，则精确匹配，效果与 #icon(name: "json-number") pack_format一致*], false),
-  (3, [*若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为最低兼容的版本号，第二个为最高兼容的版本号*], false),
-  (3, [*若使用 #icon(name: "json-object") 形式，则有以下字段：*], false),
-  (3, [#icon(name: "json-number") *max_inclusive*: 最高兼容的版本号。]),
-  (3, [#icon(name: "json-number") *min_inclusive*: 最低兼容的版本号。]),
-  (1, [#icon(name: "json-object") *features*: 可选，用于启用实验性内容，若指定该键，则数据包必须在创建世界时添加。]),
-  (2, [#icon(name: "json-array") *#underline[enabled]*: 启用实验性内容数据包的列表。]),
-  (3, [#icon(name: "json-string") 一个实验性内容数据包的命名空间ID，当前版本可用值有 `minecraft:trade_rebalance`（村民交易平衡性调整）、`minecraft:redstone_experiments`（红石实验性内容）和 `minecraft:minecart_improvements`（矿车改进）。]),
-  (1, [#icon(name: "json-object") *filter*: 可选，用于指定在数据包加载列表中优先级低于该包的数据包内要禁用的内容。]),
-  (2, [#icon(name: "json-array") *block*: 禁用内容列表。]),
-  (3, [#icon(name: "json-object") 一项被禁用的内容。]),
-  (4, [#icon(name: "json-string") *namespace*: 要禁用的命名空间，若省略则禁用所有命名空间，可使用#link("https://www.runoob.com/regexp/regexp-syntax.html")[正则表达式]。]),
-  (4, [#icon(name: "json-string") *path*: 要禁用的资源路径，若省略则禁用所有路径，可使用#link("https://www.runoob.com/regexp/regexp-syntax.html")[正则表达式]。]),
-  (1, [#icon(name: "json-object") *overlays*: 可选，用于子数据包的识别。]),
-  (2, [#icon(name: "json-array") *#underline[entries]*: 可用子数据包的列表。]),
-  (3, [#icon(name: "json-object") 一个子数据包。]),
-  (4, [#icon(name: "json-string") *#underline[directory]*: 该子数据包相对于主数据包根目录的路径。允许使用的字符有：小写字母、`0123456789`、`_` 和 `-`。]),
-  (4, [#icon(name: "json-number")#icon(name: "json-array") *max_format*: 该子数据包最高兼容的版本号。若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon(name: "json-number") 形式或在 #icon(name: "json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0x7fffffff`。]),
-  (4, [#icon(name: "json-number")#icon(name: "json-array") *min_format*: 该子数据包最低兼容的版本号。若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon(name: "json-number") 形式或在 #icon(name: "json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0`。]),
-  (4, [#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") *formats*: 25w31a以前用于指定子数据包版本号兼容范围的字段，现已弃用，可用于兼容旧版数据包。]),
-  (5, [*若使用 #icon(name: "json-number") 形式，则精确匹配*], false),
-  (5, [*若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为最低兼容的版本号，第二个为最高兼容的版本号*], false),
-  (5, [*若使用 #icon(name: "json-object") 形式，则有以下字段：*], false),
-  (5, [#icon(name: "json-number") *max_inclusive*: 最高兼容的版本号。]),
-  (5, [#icon(name: "json-number") *min_inclusive*: 最低兼容的版本号。])
+  (0, [#icon("json-object") 文件封装]),
+  (1, [#icon("json-object") *#underline[pack]*: 此数据包的基本信息。]),
+  (2, [#icon("json-string")#icon("json-array")#icon("json-object") *#underline[description]*: 任意文本，使用文本组件格式，可用于对数据包的简单介绍。此段文本会出现在选项数据包中。使用 `/datapack list` 列举数据包时，将鼠标悬停于数据包名称上也会显示此文本。]),
+  (2, [#icon("json-number")#icon("json-array") *#underline[max_format]*: 数据包最高兼容的版本号。若使用 #icon("json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon("json-number") 形式或在 #icon("json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0x7fffffff`。]),
+  (2, [#icon("json-number")#icon("json-array") *#underline[min_format]*: 数据包最低兼容的版本号。若使用 #icon("json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon("json-number") 形式或在 #icon("json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0`。]),
+  (2, [#icon("json-number") *pack_format*: 25w31a以前用于指定数据包版本号的字段，现已弃用，可用于兼容旧版数据包。]),
+  (2, [#icon("json-number")#icon("json-array")#icon("json-object") *supported_formats*: 25w31a以前用于指定数据包版本号兼容范围的字段，现已弃用，可用于兼容旧版数据包。]),
+  (3, [*若使用 #icon("json-number") 形式，则精确匹配，效果与 #icon("json-number") pack_format一致*], false),
+  (3, [*若使用 #icon("json-array") 形式，则内部包含两个整数，第一个为最低兼容的版本号，第二个为最高兼容的版本号*], false),
+  (3, [*若使用 #icon("json-object") 形式，则有以下字段：*], false),
+  (3, [#icon("json-number") *max_inclusive*: 最高兼容的版本号。]),
+  (3, [#icon("json-number") *min_inclusive*: 最低兼容的版本号。]),
+  (1, [#icon("json-object") *features*: 可选，用于启用实验性内容，若指定该键，则数据包必须在创建世界时添加。]),
+  (2, [#icon("json-array") *#underline[enabled]*: 启用实验性内容数据包的列表。]),
+  (3, [#icon("json-string") 一个实验性内容数据包的命名空间ID，当前版本可用值有 `minecraft:trade_rebalance`（村民交易平衡性调整）、`minecraft:redstone_experiments`（红石实验性内容）和 `minecraft:minecart_improvements`（矿车改进）。]),
+  (1, [#icon("json-object") *filter*: 可选，用于指定在数据包加载列表中优先级低于该包的数据包内要禁用的内容。]),
+  (2, [#icon("json-array") *block*: 禁用内容列表。]),
+  (3, [#icon("json-object") 一项被禁用的内容。]),
+  (4, [#icon("json-string") *namespace*: 要禁用的命名空间，若省略则禁用所有命名空间，可使用#link("https://www.runoob.com/regexp/regexp-syntax.html")[正则表达式]。]),
+  (4, [#icon("json-string") *path*: 要禁用的资源路径，若省略则禁用所有路径，可使用#link("https://www.runoob.com/regexp/regexp-syntax.html")[正则表达式]。]),
+  (1, [#icon("json-object") *overlays*: 可选，用于子数据包的识别。]),
+  (2, [#icon("json-array") *#underline[entries]*: 可用子数据包的列表。]),
+  (3, [#icon("json-object") 一个子数据包。]),
+  (4, [#icon("json-string") *#underline[directory]*: 该子数据包相对于主数据包根目录的路径。允许使用的字符有：小写字母、`0123456789`、`_` 和 `-`。]),
+  (4, [#icon("json-number")#icon("json-array") *max_format*: 该子数据包最高兼容的版本号。若使用 #icon("json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon("json-number") 形式或在 #icon("json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0x7fffffff`。]),
+  (4, [#icon("json-number")#icon("json-array") *min_format*: 该子数据包最低兼容的版本号。若使用 #icon("json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon("json-number") 形式或在 #icon("json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0`。]),
+  (4, [#icon("json-number")#icon("json-array")#icon("json-object") *formats*: 25w31a以前用于指定子数据包版本号兼容范围的字段，现已弃用，可用于兼容旧版数据包。]),
+  (5, [*若使用 #icon("json-number") 形式，则精确匹配*], false),
+  (5, [*若使用 #icon("json-array") 形式，则内部包含两个整数，第一个为最低兼容的版本号，第二个为最高兼容的版本号*], false),
+  (5, [*若使用 #icon("json-object") 形式，则有以下字段：*], false),
+  (5, [#icon("json-number") *max_inclusive*: 最高兼容的版本号。]),
+  (5, [#icon("json-number") *min_inclusive*: 最低兼容的版本号。])
 )#cite(<datapack_merge>, form: none)
-例如，下面是1.21.11版本的一个标准 #icon(name: "json") `pack.mcmeta` 文件：
+例如，下面是1.21.11版本的一个标准 #icon("json") `pack.mcmeta` 文件：
 #codefile(
   lang: "json",
   title: "pack.mcmeta",
@@ -1276,27 +1276,31 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
     [1.21.11], [94.1]
   )
 ) <tab:datapack_format>
-游戏允许编写者在元数据内指定数据包版本号的区间以使数据包兼容多个版本。但由于在不同版本中 #icon(name: "json") `pack.mcmeta` 本身的格式也会发生变化，数据包版本号需要进行校验。不过，这个校验仅仅作为“门槛”，数据包能否运行取决于其实际内容，而非元数据声明。在26.1以前，校验失败会现实“已损坏或不兼容”；而在26.1以后，校验失败会直接认为元数据无效，从而不识别此数据包。
+游戏允许编写者在元数据内指定数据包版本号的区间以使数据包兼容多个版本。但由于在不同版本中 #icon("json") `pack.mcmeta` 本身的格式也会发生变化，数据包版本号需要进行校验。不过，*这个校验仅仅作为“门槛”，数据包能否运行取决于其实际内容，而非元数据声明。*在26.1以前，校验失败会现实“已损坏或不兼容”；而在26.1以后，校验失败会直接认为元数据无效，从而不识别此数据包。
 
-校验规则以25w31a（1.21.9）为分水岭实行“新旧双轨制”，如下表所示：
-#general-table(
-  caption: "数据包版本号校验规则",
-  colspan: 4,
-  columns: (2fr, 5fr, 4fr, 4fr),
-  header: ([配置要求], [元数据中必须使用的字段], [元数据中可以使用的字段], [元数据中不能使用的字段]),
-  [仅适用于25w31a之前], [#icon(name: "json-number") `pack_format`], [#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats`\ 若使用，则此区间必须包含 #icon(name: "json-number") `pack_format` 的值，且最大值不能低于16，因为此字段是在23w31a引入的], [#icon(name: "json-number") `max_format` 和\ #icon(name: "json-number") `min_format`],
-  [仅适用于25w31a及之后], [#icon(name: "json-number") `max_format` 和\ #icon(name: "json-number") `min_format`], [-], [#icon(name: "json-number") `pack_format` 和\ #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats`],
-  [同时适用于25w31a之前及之后], [#set align(left)
-  #h(-2em)同时指定 #icon(name: "json-number") `pack_format`、#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats`、#icon(name: "json-number") `max_format` 和 #icon(name: "json-number") `min_format`，且必须满足以下要求：\ *区间验证：\ *#icon(name: "json-number") `pack_format` 必须落在兼容区间内。\ *对最低版本号的验证：*\ #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的下限必须与 #icon(name: "json-number") `min_format` 相等。\ *对最高版本号的验证，以下两种方案二选一：*\ 
-  + #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的上限与 #icon(name: "json-number") `max_format` 相等。
-  + #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的上限固定为81，此时最高版本号由#icon(name: "json-number") `max_format` 决定。], [-], [-]
-) <tab:datapack_format_verify>
+校验规则以25w31a（1.21.9）为分水岭实行“新旧双轨制”，以下分类讨论：
+===== 如果数据包仅适用于25w31a之前，则元数据中：
+*必须使用的字段*：#icon("json-number") `pack_format`
+
+*可以使用的字段*：#icon("json-number")#icon("json-array")#icon("json-object") `supported_formats`。若使用，则此区间必须包含 #icon("json-number") `pack_format` 的值，且最大值不能低于16，因为此字段是在23w31a引入的。
+
+*不能使用的字段*：#icon("json-number") `max_format` 和 #icon("json-number") `min_format`
+===== 如果数据包仅适用于25w31a及之后，则元数据中：
+*必须使用的字段*：#icon("json-number") `max_format` 和 #icon("json-number") `min_format`
+
+*不能使用的字段*：#icon("json-number") `pack_format` 和 #icon("json-number")#icon("json-array")#icon("json-object") `supported_formats`
+===== 如果数据包同时适用于25w31a之前及之后，则必须同时指定 #icon("json-number") `pack_format`、#icon("json-number")#icon("json-array")#icon("json-object") `supported_formats`、#icon("json-number") `max_format` 和 #icon("json-number") `min_format`，且必须满足以下要求：
+====== *区间验证：\ *#icon("json-number") `pack_format` 必须落在兼容区间内。
+====== *对最低版本号的验证：*\ #icon("json-number")#icon("json-array")#icon("json-object") `supported_formats` 的下限必须与 #icon("json-number") `min_format` 相等。
+====== *对最高版本号的验证，以下两种方案二选一：*\ 
+======= #icon("json-number")#icon("json-array")#icon("json-object") `supported_formats` 的上限与 #icon("json-number") `max_format` 相等。
+======= #icon("json-number")#icon("json-array")#icon("json-object") `supported_formats` 的上限固定为81，此时最高版本号由#icon("json-number") `max_format` 决定。
 #example(
   [现需要编写一个适用于1.20.5至1.21.11的数据包，尝试编写其元数据。],
   [
-    查@tab:datapack_format，1.20.5的版本号为41，1.21.11的版本号为94.1。因为此数据包同时适用于25w31a之前及之后的版本，根据@tab:datapack_format_verify，需要同时指定 #icon(name: "json-number") `pack_format`、#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats`、#icon(name: "json-number") `max_format` 和 #icon(name: "json-number") `min_format`。
+    查@tab:datapack_format，1.20.5的版本号为41，1.21.11的版本号为94.1。因为此数据包同时适用于25w31a之前及之后的版本，需要同时指定 #icon("json-number") `pack_format`、#icon("json-number")#icon("json-array")#icon("json-object") `supported_formats`、#icon("json-number") `max_format` 和 #icon("json-number") `min_format`。
 
-    首先，#icon(name: "json-number") `pack_format` 的值需要在41和94.1之间，此处直接写41。其次，可将 #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的下限调整为与 #icon(name: "json-number") `min_format` 一致，上限设为81，#icon(name: "json-number") `max_format` 设为94.1。故元数据可写为：
+    首先，#icon("json-number") `pack_format` 的值需要在41和94.1之间，此处直接写41。其次，可将 #icon("json-number")#icon("json-array")#icon("json-object") `supported_formats` 的下限调整为与 #icon("json-number") `min_format` 一致，上限设为81，#icon("json-number") `max_format` 设为94.1。故元数据可写为：
     #codefile(
       lang: "json",
       title: "pack.mcmeta",
@@ -1313,18 +1317,20 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   ]
 )
 ==== 子数据包
-子数据包会在当前主数据包的基础上添加内容，同时也会覆盖主数据包相同路径的文件。不过，仅在主数据包文件夹的子层级添加一个数据包并不会让主数据包识别到这个子数据包，应当在元数据的 #icon(name: "json-object") `overlays` 中配置。配置方式见上文的数据格式。注意，由于 #icon(name: "json-string") `directory` 字段允许包含的字符仅有小写字母、`0123456789`、`_` 和 `-`，那么子数据包的名称及相对路径也只能包含这些字符。
+数据包的基础功能有限，为了搭建一套复杂的体系，有时候会使用#proper-noun(display: "前置数据包（Library Datapack）", "qian2 zhi4 shu4 ju4 bao1")。这就像是在写程序时引用“第三方库”，可以极大地降低开发难度，还避免了“重复造轮子”。这些前置数据包也是数据包，可用子数据包的形式将它们添加到开发的数据包中。
+
+子数据包会在当前主数据包的基础上添加内容，同时也会*覆盖*主数据包相同路径的文件。不过，仅在主数据包文件夹的子层级添加一个数据包并不会让主数据包识别到这个子数据包，应当在元数据的 #icon("json-object") `overlays` 中配置。配置方式见上文的数据格式。注意，由于 #icon("json-string") `directory` 字段允许包含的字符仅有小写字母、`0123456789`、`_` 和 `-`，那么有效子数据包的名称及相对路径也只能包含这些字符。
 #example(
-  [一个版本号为88.0的数据包需要使用 #icon(name: "folder") `jigsaw_marker_v1.0` 这个数据包作为其子包，尝试配置子数据包。],
+  [一个版本号为88.0的数据包需要使用 #icon("folder") `jigsaw_marker_v1.0` 这个前置数据包作为其子包，此前置数据包使用的数据包版本号也为88.0，尝试配置子数据包。],
   [
-    首先，将数据包 #icon(name: "folder") `jigsaw_marker_v1.0` 移入主数据包，文件夹结构如下：
+    首先，将数据包 #icon("folder") `jigsaw_marker_v1.0` 移入主数据包，文件夹结构如下：
     #tree(
-      (0, [#icon(name: "folder") *主数据包*]),
-      (1, [#icon(name: "folder") *jigsaw_marker_v1.0*]),
-      (1, [#icon(name: "folder") *data*]),
-      (1, [#icon(name: "json") *pack.mcmeta*])
+      (0, [#icon("folder") *主数据包*]),
+      (1, [#icon("folder") *jigsaw_marker_v1.0*]),
+      (1, [#icon("folder") *data*]),
+      (1, [#icon("json") *pack.mcmeta*])
     )
-    其次，在 #icon(name: "json") `pack.mcmeta` 中做如下配置：
+    其次，在 #icon("json") `pack.mcmeta` 中做如下配置：
     #codefile(
       lang: "json",
       title: "pack.mcmeta",
@@ -1346,79 +1352,153 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 }")
   ]
 ) <exa:datapack_overlays>
-子数据包的版本号也需要进行校验，校验规则与主数据包的校验规则类似，如下表所示：
-#general-table(
-  caption: "子数据包版本号校验规则",
-  colspan: 3,
-  columns: (auto, auto, auto),
-  header: ([子数据包的配置要求], [#icon(name: "json-object") overlays 必须使用的字段], [#icon(name: "json-object") overlays 不能使用的字段]),
-  [仅适用于25w31a之前], [#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats`], [#icon(name: "json-number") `max_format` 和\ #icon(name: "json-number") `min_format`],
-  [仅适用于25w31a及之后], [#icon(name: "json-number") `max_format` 和\ #icon(name: "json-number") `min_format`\ *注意：如果主数据包适用于25w31a之前，则必须保留 #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats`*], [-],
-  [同时适用于25w31a之前及之后], [#set align(left)
-  #h(-2em)同时指定 #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats`、#icon(name: "json-number") `max_format` 和 #icon(name: "json-number") `min_format`，且必须满足以下要求：\ *对最低版本号的验证：*\ #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats` 的下限必须与 #icon(name: "json-number") `min_format` 相等。\ *对最高版本号的验证，以下两种方案二选一：*\ 
-  + #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats` 的上限与 #icon(name: "json-number") `max_format` 相等。
-  + #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats` 的上限固定为81，此时最高版本号由#icon(name: "json-number") `max_format` 决定。], [-]
+子数据包的版本号也需要进行校验，校验规则为：
+===== 如果一个子数据包仅适用于25w31a之前，则子数据包所在的 #icon("json-object") `overlays` 项：
+*必须使用的字段*：#icon("json-number")#icon("json-array")#icon("json-object") `formats`
+
+*不能使用的字段*：#icon("json-number") `max_format` 和 #icon("json-number") `min_format`
+===== 如果一个子数据包仅适用于25w31a及之后，则子数据包所在的 #icon("json-object") `overlays` 项：
+*必须使用的字段*：#icon("json-number") `max_format` 和 #icon("json-number") `min_format`
+
+*关于 #icon("json-number")#icon("json-array")#icon("json-object") `formats`*：若存在其他适用于25w31a之前的子数据包，则此字段必须指定；若其他子数据包均仅适用于25w31a及之后，则此字段不能使用。
+===== 如果一个子数据包同时适用于25w31a之前及之后，则子数据包所在的 #icon("json-object") `overlays` 项必须同时指定 #icon("json-number")#icon("json-array")#icon("json-object") `formats`、#icon("json-number") `max_format` 和 #icon("json-number") `min_format`，且必须满足以下要求：
+====== *对最低版本号的验证：* #icon("json-number")#icon("json-array")#icon("json-object") `formats` 的下限必须与 #icon("json-number") `min_format` 相等。
+====== *对最高版本号的验证，以下两种方案二选一：*
+======= #icon("json-number")#icon("json-array")#icon("json-object") `formats` 的上限与 #icon("json-number") `max_format` 相等。
+======= #icon("json-number")#icon("json-array")#icon("json-object") `formats` 的上限固定为81，此时最高版本号由#icon("json-number") `max_format` 决定。
+
+除了添加前置数据包外，子数据包的机制也允许数据包作者在不同的版本之间做兼容。当游戏版本在元数据内某一个子数据包声明的适用版本之内时，该子数据包会起效，并按照列表 #icon("json-object") `overlays` 内子包从下到上的顺序覆盖主数据包的相应路径，从而将主数据包在当前游戏版本不可用的内容替换为子数据包适配此游戏版本的内容。
+
+这是一种精细化配置，作者可以在主数据包内放通用逻辑，在子数据包内放随游戏版本变动的内容。通过元数据内的 #icon("json-object") `overlays` 信息配置多个版本的兼容内容，并在恰当的版本启用子数据包以覆盖主数据包。如此作者可以只发布一个总的数据包，而不必为每个游戏版本分别发布数据包。
+#index(display: "数据包多版本兼容", index: "method", "shu4 ju4 bao1 duo1 ban3 ben3 jian1 rong2")
+#example(
+  [
+    一个从24w44a适配到26.1-Snapshot-6（含）的数据包需要包含以下的文件（夹），尝试为此数据包配置元数据。
+    #tree(
+      (0, [#icon("folder") *主数据包*]),
+      (1, [#icon("folder") *dime-25w42a-bef*: 该子包适用于24w44a到25w41a之间（含）的版本。]),
+      (1, [#icon("folder") *dime-25w42a-aft*: 该子包适用于25w42a到26.1-Snapshot-6之间（含）的版本。]),
+      (1, [#icon("folder") *left_click_listener-25w41a-aft*: 该子包适用于25w41a到26.1-Snapshot-6之间（含）的版本。]),
+      (1, [#icon("folder") *data*]),
+      (1, [#icon("json") *pack.mcmeta*]),
+      (1, [#icon("png") *pack.png*])
+    )
+  ],
+  [
+    首先整理主数据包和各子数据包的数据包版本号，各游戏版本的快照也计入在内：
+    #general-table(
+      caption: "",
+      colspan: 3,
+      columns: (auto, auto, auto),
+      header: ([数据包], [适用版本], [版本号区间]),
+      [#icon("folder") `dime-25w42a-bef`], [24w44a \~ 25w41a], [58 \~ 89.0],
+      [#icon("folder") `dime-25w42a-aft`], [25w42a \~ 26.1-Snapshot-6], [90.0 \~ 99.0],
+      [#icon("folder") `left_click_listener-25w41a-aft`], [25w41a \~ 26.1-Snapshot-6], [89.0 \~ 99.0],
+      [主数据包], [24w44a \~ 26.1-Snapshot-6], [58 \~ 99.0]
+    )
+    存在其他适用于25w31a之前的子数据包，故这些子数据包都需要 #icon("json-number")#icon("json-array")#icon("json-object") `formats` 字段。完整的元数据为：
+    #codefile(
+      lang: "json",
+      title: "pack.mcmeta",
+      "{
+  \"pack\": {
+    \"description\": \"例题数据包\",
+    \"pack_format\": 95,
+    \"supported_formats\": [58, 99],
+    \"min_format\": 58,
+    \"max_format\": 99
+  },
+  \"overlays\": {
+    \"entries\": [
+      {
+        \"directory\": \"dime-25w42a-bef\",
+        \"formats\": [58, 89],
+        \"min_format\": 58,
+        \"max_format\": [89, 0]
+      },
+      {
+        \"directory\": \"dime-25w42a-aft\",
+        \"formats\": [90, 99],
+        \"min_format\": [90, 0],
+        \"max_format\": [99, 0]
+      },
+      {
+        \"directory\": \"left_click_listener-25w41a-aft\",
+        \"formats\": [89, 99],
+        \"min_format\": [89, 0],
+        \"max_format\": [99, 0]
+      }
+    ]
+  }
+}"
+    )
+  ]
 )
 ==== data文件夹
-#icon(name: "folder") `data` 文件夹是存储数据包主要内容的文件夹，下面展示了#icon(name: "folder") `data` 文件夹的基本结构，这些文件（夹）就是@tab:writable_registry 所展示的可写注册表以及其他一些配置项的路径，它们不一定必须全部存在，游戏会根据指定的资源路径读取可写注册表中的内容，若相应的可写注册表需要存在，则必须有正确的资源路径和文件（夹）名称。
+#icon("folder") `data` 文件夹是存储数据包主要内容的文件夹，下面展示了#icon("folder") `data` 文件夹的基本结构，这些文件（夹）就是@tab:writable_registry 所展示的可写注册表以及其他一些配置项的路径，它们不一定必须全部存在，游戏会根据指定的资源路径读取可写注册表中的内容，若相应的可写注册表需要存在，则必须有正确的资源路径和文件（夹）名称。
 
-一个 #icon(name: "folder") `data` 文件夹中可以存在多个不同的命名空间，而命名空间 `minecraft` 下的内容会覆盖原版游戏内容。
+一个 #icon("folder") `data` 文件夹中可以存在多个不同的命名空间，而命名空间 `minecraft` 下的内容会覆盖原版游戏内容。
 
-在命名空间下的这些文件夹中， #icon(name: "folder") `function` 内的文件使用 `.mcfunction` 格式，#icon(name: "folder") `structure` 内的文件使用 `.nbt` 格式，除 #icon(name: "folder") `datapacks` 外其余文件夹内的文件一律使用 `.json` 格式，编写时务必使用正确的编译软件打开它们。此外，除了 #icon(name: "folder") `datapacks` 的文件夹内部都是可以自由指定资源路径的，那么在各游戏资源的命名空间ID中就可以使用这些资源路径。可参考@exa:namespaced_id_in_datapack。
+在命名空间下的这些文件夹中， #icon("folder") `function` 内的文件使用 `.mcfunction` 格式，#icon("folder") `structure` 内的文件使用 `.nbt` 格式，除 #icon("folder") `datapacks` 外其余文件夹内的文件一律使用 `.json` 格式，编写时务必使用正确的编译软件打开它们。此外，除了 #icon("folder") `datapacks` 的文件夹内部都是可以自由指定资源路径的，那么在各游戏资源的命名空间ID中就可以使用这些资源路径。可参考@exa:namespaced_id_in_datapack。
 #tree(
-  (0, [#icon(name: "folder") *data*]),
-  (1, [#icon(name: "folder") *\<命名空间>*]),
-  (2, [#icon(name: "folder") *advancement*: 进度注册表]),
-  (2, [#icon(name: "folder") *banner_pattern*: 旗帜图案注册表]),
-  (2, [#icon(name: "folder") *cat_variant*: 猫的变种注册表]),
-  (2, [#icon(name: "folder") *chat_type*: 聊天类型注册表]),
-  (2, [#icon(name: "folder") *chicken_variant*: 鸡的变种注册表]),
-  (2, [#icon(name: "folder") *cow_variant*: 牛的变种注册表]),
-  (2, [#icon(name: "folder") *damage_type*: 伤害类型注册表]),
-  (2, [#icon(name: "folder") *datapacks*: 内置数据包，均为功能数据包]),
-  (2, [#icon(name: "folder") *dialog*: 对话框注册表]),
-  (2, [#icon(name: "folder") *dimension*: 维度注册表]),
-  (2, [#icon(name: "folder") *dimension_type*: 维度类型注册表]),
-  (2, [#icon(name: "folder") *enchantment*: 魔咒注册表]),
-  (2, [#icon(name: "folder") *enchantment_provider*: 魔咒提供器注册表]),
-  (2, [#icon(name: "folder") *frog_variant*: 青蛙的变种注册表]),
-  (2, [#icon(name: "folder") *function*: 函数]),
-  (2, [#icon(name: "folder") *instrument*: 山羊角乐器注册表]),
-  (2, [#icon(name: "folder") *item_modifier*: 物品修饰器注册表]),
-  (2, [#icon(name: "folder") *jukebox_song*: 唱片机曲目注册表]),
-  (2, [#icon(name: "folder") *loot_table*: 战利品表注册表]),
-  (2, [#icon(name: "folder") *painting_variant*: 画的变种注册表]),
-  (2, [#icon(name: "folder") *pig_variant*: 猪的变种注册表]),
-  (2, [#icon(name: "folder") *predicate*: 谓词注册表]),
-  (2, [#icon(name: "folder") *recipe*: 配方注册表]),
-  (2, [#icon(name: "folder") *structure*: 结构]),
-  (2, [#icon(name: "folder") *tags*: 数据包标签]),
-  (2, [#icon(name: "folder") *test_environment*: 测试环境注册表]),
-  (2, [#icon(name: "folder") *test_instance*: 测试实例注册表]),
-  (2, [#icon(name: "folder") *timeline*: 时间线注册表]),
-  (2, [#icon(name: "folder") *trade_set*: 交易集注册表]),
-  (2, [#icon(name: "folder") *trial_spawner*: 试炼刷怪笼配置注册表]),
-  (2, [#icon(name: "folder") *trim_material*: 盔甲纹饰材料注册表]),
-  (2, [#icon(name: "folder") *trim_pattern*: 盔甲纹饰图案注册表]),
-  (2, [#icon(name: "folder") *villager_trade*: 村民交易注册表]),
-  (2, [#icon(name: "folder") *wolf_variant*: 狼的变种注册表]),
-  (2, [#icon(name: "folder") *world_clock*: 世界时钟注册表]),
-  (2, [#icon(name: "folder") *worldgen*: 世界生成模块]),
-  (3, [#icon(name: "folder") *biome*: 生物群系注册表]),
-  (3, [#icon(name: "folder") *configured_carver*: 已配置的雕刻器注册表]),
-  (3, [#icon(name: "folder") *configured_feature*: 已配置的地物注册表]),
-  (3, [#icon(name: "folder") *density_function*: 密度函数注册表]),
-  (3, [#icon(name: "folder") *flat_level_generator_preset*: 超平坦世界生成预设注册表]),
-  (3, [#icon(name: "folder") *multi_noise_biome_source_parameter_list*: 多噪声参数列表注册表]),
-  (3, [#icon(name: "folder") *noise*: 噪声注册表]),
-  (3, [#icon(name: "folder") *noise_settings*: 噪声设置注册表]),
-  (3, [#icon(name: "folder") *placed_feature*: 已放置的地物注册表]),
-  (3, [#icon(name: "folder") *processor_list*: 处理器列表注册表]),
-  (3, [#icon(name: "folder") *structure*: 已配置的结构地物注册表]),
-  (3, [#icon(name: "folder") *structure_set*: 结构集注册表]),
-  (3, [#icon(name: "folder") *template_pool*: 结构池注册表]),
-  (3, [#icon(name: "folder") *world_preset*: 世界预设注册表]),
-  (2, [#icon(name: "folder") *zombie_nautilus_variant*: 僵尸鹦鹉螺变种注册表])
+  (0, [#icon("folder") *data*]),
+  (1, [#icon("folder") *\<命名空间>*]),
+  (2, [#icon("folder") *advancement*: 进度注册表]),
+  (2, [#icon("folder") *banner_pattern*: 旗帜图案注册表]),
+  (2, [#icon("folder") *cat_sound_variant*: 猫音效变种注册表]),
+  (2, [#icon("folder") *cat_variant*: 猫的变种注册表]),
+  (2, [#icon("folder") *chat_type*: 聊天类型注册表]),
+  (2, [#icon("folder") *chicken_sound_variant*: 鸡音效变种注册表]),
+  (2, [#icon("folder") *chicken_variant*: 鸡的变种注册表]),
+  (2, [#icon("folder") *cow_sound_variant*: 牛音效变种注册表]),
+  (2, [#icon("folder") *cow_variant*: 牛的变种注册表]),
+  (2, [#icon("folder") *damage_type*: 伤害类型注册表]),
+  (2, [#icon("folder") *datapacks*: 内置数据包，均为功能数据包]),
+  (2, [#icon("folder") *dialog*: 对话框注册表]),
+  (2, [#icon("folder") *dimension*: 维度注册表]),
+  (2, [#icon("folder") *dimension_type*: 维度类型注册表]),
+  (2, [#icon("folder") *enchantment*: 魔咒注册表]),
+  (2, [#icon("folder") *enchantment_provider*: 魔咒提供器注册表]),
+  (2, [#icon("folder") *frog_variant*: 青蛙的变种注册表]),
+  (2, [#icon("folder") *function*: 函数]),
+  (2, [#icon("folder") *instrument*: 山羊角乐器注册表]),
+  (2, [#icon("folder") *item_modifier*: 物品修饰器注册表]),
+  (2, [#icon("folder") *jukebox_song*: 唱片机曲目注册表]),
+  (2, [#icon("folder") *loot_table*: 战利品表注册表]),
+  (2, [#icon("folder") *painting_variant*: 画的变种注册表]),
+  (2, [#icon("folder") *pig_sound_variant*: 猪音效变种注册表]),
+  (2, [#icon("folder") *pig_variant*: 猪的变种注册表]),
+  (2, [#icon("folder") *predicate*: 谓词注册表]),
+  (2, [#icon("folder") *recipe*: 配方注册表]),
+  (2, [#icon("folder") *structure*: 结构]),
+  (2, [#icon("folder") *tags*: 数据包标签]),
+  (2, [#icon("folder") *test_environment*: 测试环境注册表]),
+  (2, [#icon("folder") *test_instance*: 测试实例注册表]),
+  (2, [#icon("folder") *timeline*: 时间线注册表]),
+  (2, [#icon("folder") *trade_set*: 交易集注册表]),
+  (2, [#icon("folder") *trial_spawner*: 试炼刷怪笼配置注册表]),
+  (2, [#icon("folder") *trim_material*: 盔甲纹饰材料注册表]),
+  (2, [#icon("folder") *trim_pattern*: 盔甲纹饰图案注册表]),
+  (2, [#icon("folder") *villager_trade*: 村民交易注册表]),
+  (2, [#icon("folder") *wolf_sound_variant*: 狼音效变种注册表]),
+  (2, [#icon("folder") *wolf_variant*: 狼的变种注册表]),
+  (2, [#icon("folder") *world_clock*: 世界时钟注册表]),
+  (2, [#icon("folder") *worldgen*: 世界生成模块]),
+  (3, [#icon("folder") *biome*: 生物群系注册表]),
+  (3, [#icon("folder") *configured_carver*: 已配置的雕刻器注册表]),
+  (3, [#icon("folder") *configured_feature*: 已配置的地物注册表]),
+  (3, [#icon("folder") *density_function*: 密度函数注册表]),
+  (3, [#icon("folder") *flat_level_generator_preset*: 超平坦世界生成预设注册表]),
+  (3, [#icon("folder") *multi_noise_biome_source_parameter_list*: 多噪声参数列表注册表]),
+  (3, [#icon("folder") *noise*: 噪声注册表]),
+  (3, [#icon("folder") *noise_settings*: 噪声设置注册表]),
+  (3, [#icon("folder") *placed_feature*: 已放置的地物注册表]),
+  (3, [#icon("folder") *processor_list*: 处理器列表注册表]),
+  (3, [#icon("folder") *structure*: 已配置的结构地物注册表]),
+  (3, [#icon("folder") *structure_set*: 结构集注册表]),
+  (3, [#icon("folder") *template_pool*: 结构池注册表]),
+  (3, [#icon("folder") *world_preset*: 世界预设注册表]),
+  (2, [#icon("folder") *zombie_nautilus_variant*: 僵尸鹦鹉螺变种注册表])
 )
 === 实验性内容 \*
 自22w42a起，Minecraft部分更新内容会以内置数据包的形式加入游戏，使玩家可以提前体验这些内容。这些内容被称为#proper-noun(display: "实验性内容（Experiments）", "shi2 yan4 xing4 nei4 rong2")。在当前版本（26.1），可用的实验性内容有三项：村民交易平衡性调整、红石实验性内容和矿车改进。
@@ -1430,27 +1510,27 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 )
 数据包无法直接修改游戏代码，但功能数据包似乎“注册”了新的游戏内容，功能数据包是否有其独特的行为？其实，实验性内容分为硬编码内容和数据驱动内容，其中的硬编码内容被称为特定组别的#proper-noun(display: "功能元素（Feature Element）", "gong1 neng2 yuan2 su4")。#proper-noun(display: "功能开关（Feature Flag）", "gong1 neng2 kai1 guan1")则用于启用或禁用这些功能元素。当一个功能数据包被启用时，元数据中 `enabled` 字段启用，相应的功能开关被打开，其中的功能元素就能在游戏中正常运行。若一个功能数据包被关闭，则相应的功能元素被过滤。
 
-实验性内容除了可在新创建存档时启用或禁用外，也可以通过修改 #icon(name: "nbt") `level.dat` 中的 #icon(name: "nbt-list") `enabled_features` 字段以在已创建的存档中启用或禁用。相应格式见@sec:saves 节的描述。
+实验性内容除了可在新创建存档时启用或禁用外，也可以通过修改 #icon("nbt") `level.dat` 中的 #icon("nbt-list") `enabled_features` 字段以在已创建的存档中启用或禁用。相应格式见@sec:saves 节的描述。
 
-实验性内容中的数据驱动部分则交由数据包完成，这些功能数据包作为子数据包存在，存储于 #icon(name: "folder") `datapacks` 文件夹，相应文件结构如下：
+实验性内容中的数据驱动部分则交由数据包完成，这些功能数据包作为子数据包存在，存储于 #icon("folder") `datapacks` 文件夹，相应文件结构如下：
 #tree(
-  (0, [#icon(name: "folder") *data*]),
-  (1, [#icon(name: "folder") *\<命名空间>*]),
-  (2, [#icon(name: "folder") *datapacks*]),
-  (3, [#icon(name: "folder") *\<数据包名称>*]),
-  (4, [#icon(name: "folder") *data*]),
-  (4, [#icon(name: "json") *pack.mcmeta*]),
-  (4, [#icon(name: "png") *pack.png*])
+  (0, [#icon("folder") *data*]),
+  (1, [#icon("folder") *\<命名空间>*]),
+  (2, [#icon("folder") *datapacks*]),
+  (3, [#icon("folder") *\<数据包名称>*]),
+  (4, [#icon("folder") *data*]),
+  (4, [#icon("json") *pack.mcmeta*]),
+  (4, [#icon("png") *pack.png*])
 )
-其中的 #icon(name: "folder") `<数据包名称>` 即为一个功能数据包，其结构与正常数据包无异，也需要有元数据。但这些数据包无法由自定义的数据包添加，仅由游戏内部提供，仅作了解。
+其中的 #icon("folder") `<数据包名称>` 即为一个功能数据包，其结构与正常数据包无异，也需要有元数据。但这些数据包无法由自定义的数据包添加，仅由游戏内部提供，仅作了解。
 === 数据包标签定义格式 <subsec:tag_definition>
 小节@subsec:tag_in_datapack 已提出了#proper-noun(display: "数据包标签（Tags in data packs）", "shu4 ju4 bao1 biao1 qian1")的概念，它是将游戏资源分类的一种办法。玩家不仅可以使用原版数据包既有的数据包标签，也可以新增或删改原有的标签。数据包标签模块在数据包内的文件结构如下：
 #tree(
-  (0, [#icon(name: "folder") *data*]),
-  (1, [#icon(name: "folder") *\<命名空间>*]),
-  (2, [#icon(name: "folder") *tags*]),
-  (3, [#icon(name: "folder") *\<注册表>*]),
-  (4, [#icon(name: "json") *\<标签>.json*])
+  (0, [#icon("folder") *data*]),
+  (1, [#icon("folder") *\<命名空间>*]),
+  (2, [#icon("folder") *tags*]),
+  (3, [#icon("folder") *\<注册表>*]),
+  (4, [#icon("json") *\<标签>.json*])
 )
 每个注册表下的数据包标签只允许引用该注册表内的游戏资源。在数据包标签中所有可用的注册表如下表所示：
 #split-table(
@@ -1480,31 +1560,31 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
     [自定义世界生成（世界预设）], [`worldgen\world_preset`]
   )
 )
-对于一个特定的数据包标签 #icon(name: "json") `data\<命名空间>\tags\<注册名>\<标签>.json`，引用它的方式是带 `#` 号的命名空间ID，其中 `<注册表>` 层级不书写：
+对于一个特定的数据包标签 #icon("json") `data\<命名空间>\tags\<注册名>\<标签>.json`，引用它的方式是带 `#` 号的命名空间ID，其中 `<注册表>` 层级不书写：
 #codebox("#<命名空间>:<标签>")
-若命名空间不写，则默认使用 `minecraft` 内的数据包标签。`<注册表>` 层级下可以添加一定的路径。例如，#icon(name: "json") `data\<命名空间>\tags\<注册名>\<路径>\<标签>.json` 的引用格式为
+若命名空间不写，则默认使用 `minecraft` 内的数据包标签。`<注册表>` 层级下可以添加一定的路径。例如，#icon("json") `data\<命名空间>\tags\<注册名>\<路径>\<标签>.json` 的引用格式为
 #codebox("#<命名空间>:<路径>/<标签>")
 所有的数据包标签 `.json` 文件，无论其所属的注册表，一律有如下的格式：
 #tree(
-  (0, [#icon(name: "json-object") 文件封装]),
-  (1, [#icon(name: "json-bool") *replace*: 指定此标签的引用是否覆盖较低优先级数据包中同命名空间内的同名标签，若设为 `true`，则忽略较低优先级数据包内的引用；若设为 `false`，则此标签内的引用作为对同名标签内引用内容的补充。默认为 `false`。]),
-  (2, [#icon(name: "json-object") *#underline[values]*: 此标签引用的游戏资源，必须引用同类型的游戏资源。可以引用游戏资源本身，也可以引用其他的同类型数据包标签。]),
-  (3, [#icon(name: "json-string") 一个被引用游戏资源的命名空间ID。]),
-  (3, [#icon(name: "json-string") 一个被引用的同类型数据包标签，需要带 `#` 号。]),
-  (3, [#icon(name: "json-object") 引用游戏资源的完整格式。]),
-  (4, [#icon(name: "json-string") *#underline[id]*: 一个被引用游戏资源的命名空间ID或同类型数据包标签。]),
-  (4, [#icon(name: "json-bool") *required*: 用 `false` 表示该条目是可选的，若该条目 #icon(name: "json-string") `id` 所述内容不存在，则不会使标签加载失败。默认为 `true`。])
+  (0, [#icon("json-object") 文件封装]),
+  (1, [#icon("json-bool") *replace*: 指定此标签的引用是否覆盖较低优先级数据包中同命名空间内的同名标签，若设为 `true`，则忽略较低优先级数据包内的引用；若设为 `false`，则此标签内的引用作为对同名标签内引用内容的补充。默认为 `false`。]),
+  (2, [#icon("json-object") *#underline[values]*: 此标签引用的游戏资源，必须引用同类型的游戏资源。可以引用游戏资源本身，也可以引用其他的同类型数据包标签。]),
+  (3, [#icon("json-string") 一个被引用游戏资源的命名空间ID。]),
+  (3, [#icon("json-string") 一个被引用的同类型数据包标签，需要带 `#` 号。]),
+  (3, [#icon("json-object") 引用游戏资源的完整格式。]),
+  (4, [#icon("json-string") *#underline[id]*: 一个被引用游戏资源的命名空间ID或同类型数据包标签。]),
+  (4, [#icon("json-bool") *required*: 用 `false` 表示该条目是可选的，若该条目 #icon("json-string") `id` 所述内容不存在，则不会使标签加载失败。默认为 `true`。])
 )
 #example(
   [原版存在一个名为 `#air` 的方块标签，有三种方块属于这个标签：空气、洞穴空气和虚空空气，试编写这个标签。],
   [
     这个标签没有使用命名空间，默认命名空间为 `minecraft`。首先确定这个标签的文件路径：
     #tree(
-      (0, [#icon(name: "folder") *data*]),
-      (1, [#icon(name: "folder") *minecraft*]),
-      (2, [#icon(name: "folder") *tags*]),
-      (3, [#icon(name: "folder") *block*]),
-      (4, [#icon(name: "json") *air.json*])
+      (0, [#icon("folder") *data*]),
+      (1, [#icon("folder") *minecraft*]),
+      (2, [#icon("folder") *tags*]),
+      (3, [#icon("folder") *block*]),
+      (4, [#icon("json") *air.json*])
     )
     标签内容如下所示：
     #codefile(
@@ -1524,29 +1604,29 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   [
     有一个生物群系标签如下所示：
     #tree(
-      (0, [#icon(name: "folder") *data*]),
-      (1, [#icon(name: "folder") *the_backrooms*]),
-      (2, [#icon(name: "folder") *tags*]),
-      (3, [#icon(name: "folder") *worldgen*]),
-      (4, [#icon(name: "folder") *biome*]),
-      (5, [#icon(name: "json") *level_37.json*])
+      (0, [#icon("folder") *data*]),
+      (1, [#icon("folder") *the_backrooms*]),
+      (2, [#icon("folder") *tags*]),
+      (3, [#icon("folder") *worldgen*]),
+      (4, [#icon("folder") *biome*]),
+      (5, [#icon("json") *level_37.json*])
     )
     + 写出该标签的引用方式。
     + 同个数据包内已有如下的生物群系，尝试在该标签中引用这些生物群系。
       #tree(
-        (0, [#icon(name: "folder") *data*]),
-        (1, [#icon(name: "folder") *the_backrooms*]),
-        (2, [#icon(name: "folder") *worldgen*]),
-        (3, [#icon(name: "folder") *biome*]),
-        (4, [#icon(name: "folder") *level_37*]),
-        (5, [#icon(name: "json") *normal.json*]),
-        (5, [#icon(name: "json") *deep_water.json*]),
-        (5, [#icon(name: "json") *dark_zone.json*])
+        (0, [#icon("folder") *data*]),
+        (1, [#icon("folder") *the_backrooms*]),
+        (2, [#icon("folder") *worldgen*]),
+        (3, [#icon("folder") *biome*]),
+        (4, [#icon("folder") *level_37*]),
+        (5, [#icon("json") *normal.json*]),
+        (5, [#icon("json") *deep_water.json*]),
+        (5, [#icon("json") *dark_zone.json*])
       )
   ],
   [
-    + #icon(name: "folder") `the_backrooms` 是命名空间，#icon(name: "folder") `tags` 是标签的路径，#icon(name: "folder") `worldgen` 和 #icon(name: "folder") `biome` 是标签内注册表的路径，因此该标签的引用方式为 `#the_backrooms:level_37`。
-    + #icon(name: "folder") `the_backrooms` 是命名空间，#icon(name: "folder") `worldgen` 和 #icon(name: "folder") `biome` 是注册表的路径，因此这些生物群系的命名空间ID分别为 `the_backrooms:level_37/normal`、`the_backrooms:level_37/deep_water` 和 `the_backrooms:level_37/dark_zone`，现在在标签内引用它们：
+    + #icon("folder") `the_backrooms` 是命名空间，#icon("folder") `tags` 是标签的路径，#icon("folder") `worldgen` 和 #icon("folder") `biome` 是标签内注册表的路径，因此该标签的引用方式为 `#the_backrooms:level_37`。
+    + #icon("folder") `the_backrooms` 是命名空间，#icon("folder") `worldgen` 和 #icon("folder") `biome` 是注册表的路径，因此这些生物群系的命名空间ID分别为 `the_backrooms:level_37/normal`、`the_backrooms:level_37/deep_water` 和 `the_backrooms:level_37/dark_zone`，现在在标签内引用它们：
       #codefile(
         lang: "json",
         title: "data > the_backrooms > tags > worldgen > biome > level_37.json",
@@ -1564,70 +1644,70 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 == 资源包<sec:resourcepack>
 为了搭配所制作的小游戏、冒险地图或原版模组，使得游戏的观感和体验感提高，作者通常会系统性地改变游戏的外观，例如方块的纹理、外形等。于是就需要使用资源包。 
 
-#proper-noun(display: "资源包（Resource pack）", "zi1 yuan2 bao1")允许玩家在不修改源代码的情况下自定义纹理、模型、声音、语言等外观性资源，对客户端有效。资源包本质上是一个文件夹或压缩文件，被储存在 #icon(name: "folder") `.minecraft/resourcepacks` 中，同一个 #icon(name: "folder") `resourcepacks` 文件夹内能存放多个资源包。选项资源包窗口“可用”一栏仅罗列 #icon(name: "folder") `resourcepacks` 文件夹内的所有的有效资源包，可在这一栏选用资源包，只有位于“已选”一栏的资源包有效。点击打开包文件夹后可以手动添加资源包。
+#proper-noun(display: "资源包（Resource pack）", "zi1 yuan2 bao1")允许玩家在不修改源代码的情况下自定义纹理、模型、声音、语言等外观性资源，对客户端有效。资源包本质上是一个文件夹或压缩文件，被储存在 #icon("folder") `.minecraft/resourcepacks` 中，同一个 #icon("folder") `resourcepacks` 文件夹内能存放多个资源包。选项资源包窗口“可用”一栏仅罗列 #icon("folder") `resourcepacks` 文件夹内的所有的有效资源包，可在这一栏选用资源包，只有位于“已选”一栏的资源包有效。点击打开包文件夹后可以手动添加资源包。
 #figure(
   caption: "选择资源包窗口",
   image("图片/选择资源包窗口.png", width: 28em)
 )
 在游戏中可以同时使用多个资源包，这些资源包按照“已选”一栏中从下到上的顺序依次加载，资源包的加载顺序可以在该栏中调换。和数据包类似，若这些资源包对同种资源的外观进行定义，则*后加载的资源包会对先加载的资源包进行覆盖*，*表明越靠后加载的资源包其优先级越高*。
 
-资源包也可以以压缩包的形式存放在存档文件夹中，这时资源包作为#proper-noun(display: "世界指定资源包（World specific resources）", "shijiezhidingziyuanbao")使用，仅在当前存档起作用，且会使该资源包的优先级设为最高，并将已定义的资源外观覆盖选项资源包中已启用的资源包。有效的世界指定资源包必须以 #icon(name: "zip") `resources.zip` 为压缩文件名。
+资源包也可以以压缩包的形式存放在存档文件夹中，这时资源包作为#proper-noun(display: "世界指定资源包（World specific resources）", "shijiezhidingziyuanbao")使用，仅在当前存档起作用，且会使该资源包的优先级设为最高，并将已定义的资源外观覆盖选项资源包中已启用的资源包。有效的世界指定资源包必须以 #icon("zip") `resources.zip` 为压缩文件名。
 
-在服务器中，管理员可在 #icon(name: "file") `server.properties` 中的 `resource-pack` 一项指定一个 `.zip` 文件的下载地址，从而将此 `.zip` 文件设为服务器的指定资源包。若启用，则游戏会强制将该资源包设为最顶层资源包且无法更改位置。
+在服务器中，管理员可在 #icon("file") `server.properties` 中的 `resource-pack` 一项指定一个 `.zip` 文件的下载地址，从而将此 `.zip` 文件设为服务器的指定资源包。若启用，则游戏会强制将该资源包设为最顶层资源包且无法更改位置。
 
-原版资源包位于 #icon(name: "folder") `.minecraft\versions\<版本号>\<版本号>.jar\assets`，是制作自定义资源包的重要依据，读者可参考之。
+原版资源包位于 #icon("folder") `.minecraft\versions\<版本号>\<版本号>.jar\assets`，是制作自定义资源包的重要依据，读者可参考之。
 === 资源包的基本结构
 一个资源包拥有以下的基本结构：
 #tree(
-  (0, [#icon(name: "folder") *\<资源包名称>*或 #icon(name: "zip") *\<资源包名称>.zip*]),
-  (1, [#icon(name: "folder") *\<子资源包>*]),
+  (0, [#icon("folder") *\<资源包名称>*或 #icon("zip") *\<资源包名称>.zip*]),
+  (1, [#icon("folder") *\<子资源包>*]),
   (2, [递归此文件夹结构]),
-  (1, [#icon(name: "folder") *assets*: 资源包的主体内容。]),
-  (1, [#icon(name: "json") *#underline[pack.mcmeta]*: 资源包的元数据。]),
-  (1, [#icon(name: "png") *pack.png*: 可选，作为资源包的图标使用。])
+  (1, [#icon("folder") *assets*: 资源包的主体内容。]),
+  (1, [#icon("json") *#underline[pack.mcmeta]*: 资源包的元数据。]),
+  (1, [#icon("png") *pack.png*: 可选，作为资源包的图标使用。])
 )
-如果该资源包以压缩文件的形式存在，则 #icon(name: "zip") `<资源包名称>.zip` 和 #icon(name: "folder") `<子数据包>`、#icon(name: "folder") `assets`、#icon(name: "json") `pack.mcmeta`、#icon(name: "png") `pack.png` 这些文件之间不要插入其他层级的文件夹。若该资源包为世界指定资源包，则名称一定为 #icon(name: "zip") `resources.zip`。
+如果该资源包以压缩文件的形式存在，则 #icon("zip") `<资源包名称>.zip` 和 #icon("folder") `<子数据包>`、#icon("folder") `assets`、#icon("json") `pack.mcmeta`、#icon("png") `pack.png` 这些文件之间不要插入其他层级的文件夹。若该资源包为世界指定资源包，则名称一定为 #icon("zip") `resources.zip`。
 
-资源包中 #icon(name: "folder") `assets` 用于存放各种资源文件，#icon(name: "json") `pack.mcmeta` 作为资源包的#proper-noun(display: "元数据（Metadata）", "yuan2 shu4 ju4")使用。和数据包一样，所谓元数据，就是用于决定 #icon(name: "folder") `<资源包名称>` 或 #icon(name: "zip") `<资源包名称>.zip` 这个文件（夹）是否为一个资源包，只有当元数据存在时，游戏才能识别资源包。
+资源包中 #icon("folder") `assets` 用于存放各种资源文件，#icon("json") `pack.mcmeta` 作为资源包的#proper-noun(display: "元数据（Metadata）", "yuan2 shu4 ju4")使用。和数据包一样，所谓元数据，就是用于决定 #icon("folder") `<资源包名称>` 或 #icon("zip") `<资源包名称>.zip` 这个文件（夹）是否为一个资源包，只有当元数据存在时，游戏才能识别资源包。
 
-#icon(name: "json") `pack.mcmeta` 包含的内容如下所示：
+#icon("json") `pack.mcmeta` 包含的内容如下所示：
 #tree(
-  (0, [#icon(name: "json-object") 文件封装]),
-  (1, [#icon(name: "json-object") *#underline[pack]*: 此资源包的基本信息。]),
-  (2, [#icon(name: "json-string")#icon(name: "json-array")#icon(name: "json-object") *#underline[description]*: 任意文本，使用文本组件格式，可用于对资源包的简单介绍。此段文本会出现在选项资源包中。]),
-  (2, [#icon(name: "json-number")#icon(name: "json-array") *#underline[max_format]*: 资源包最高兼容的版本号。若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon(name: "json-number") 形式或在 #icon(name: "json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0x7fffffff`。]),
-  (2, [#icon(name: "json-number")#icon(name: "json-array") *#underline[min_format]*: 资源包最低兼容的版本号。若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon(name: "json-number") 形式或在 #icon(name: "json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0`。]),
-  (2, [#icon(name: "json-number") *pack_format*: 25w31a以前用于指定资源包版本号的字段，现已弃用，可用于兼容旧版资源包。]),
-  (2, [#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") *supported_formats*: 25w31a以前用于指定资源包版本号兼容范围的字段，现已弃用，可用于兼容旧版资源包。]),
-  (3, [*若使用 #icon(name: "json-number") 形式，则精确匹配，效果与 #icon(name: "json-number") pack_format一致*], false),
-  (3, [*若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为最低兼容的版本号，第二个为最高兼容的版本号*], false),
-  (3, [*若使用 #icon(name: "json-object") 形式，则有以下字段：*], false),
-  (3, [#icon(name: "json-number") *max_inclusive*: 最高兼容的版本号。]),
-  (3, [#icon(name: "json-number") *min_inclusive*: 最低兼容的版本号。]),
-  (1, [#icon(name: "json-object") *language*: 可选，用于添加选项卡中的语言，可以添加多个语言。]),
-  (2, [#icon(name: "json-array") *\<语言代码>*: 一个新建的语言，键名按照 `<语言>_<地区>` 的格式，其与 #icon(name: "folder") `assets\minecraft\lang` 中同名的 `.json` 文件相对应。]),
-  (3, [#icon(name: "json-bool") *bidirectional*: 布尔值，若为 `true`，则按照从右到左的格式显示。默认为 `false`。]),
-  (3, [#icon(name: "json-string") *#underline[name]*: 语言的名称。]),
-  (3, [#icon(name: "json-string") *#underline[reigon]*: 国家或地区的名称。]),
-  (1, [#icon(name: "json-object") *filter*: 可选，用于指定在资源包加载列表中优先级低于该包的资源包内要忽略的内容。]),
-  (2, [#icon(name: "json-array") *block*: 忽略内容列表。]),
-  (3, [#icon(name: "json-object") 一项被忽略的内容。若此项为空则完全忽略所有优先级低的资源包。]),
-  (4, [#icon(name: "json-string") *namespace*: 要忽略的命名空间，若省略则忽略所有命名空间，可使用#link("https://www.runoob.com/regexp/regexp-syntax.html")[正则表达式]。]),
-  (4, [#icon(name: "json-string") *path*: 要忽略的资源路径，若省略则忽略所有路径，可使用#link("https://www.runoob.com/regexp/regexp-syntax.html")[正则表达式]。]),
-  (1, [#icon(name: "json-object") *overlays*: 可选，用于子资源包的识别。]),
-  (2, [#icon(name: "json-array") *#underline[entries]*: 可用子资源包的列表。]),
-  (3, [#icon(name: "json-object") 一个子资源包。]),
-  (4, [#icon(name: "json-string") *#underline[directory]*: 该子资源包相对于主资源包根目录的路径。允许使用的字符有：小写字母、`0123456789`、`_` 和 `-`。]),
-  (4, [#icon(name: "json-number")#icon(name: "json-array") *max_format*: 该子资源包最高兼容的版本号。若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon(name: "json-number") 形式或在 #icon(name: "json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0x7fffffff`。]),
-  (4, [#icon(name: "json-number")#icon(name: "json-array") *min_format*: 该子资源包最低兼容的版本号。若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon(name: "json-number") 形式或在 #icon(name: "json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0`。]),
-  (4, [#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") *formats*: 25w31a以前用于指定子资源包版本号兼容范围的字段，现已弃用，可用于兼容旧版资源包。]),
-  (5, [*若使用 #icon(name: "json-number") 形式，则精确匹配*], false),
-  (5, [*若使用 #icon(name: "json-array") 形式，则内部包含两个整数，第一个为最低兼容的版本号，第二个为最高兼容的版本号*], false),
-  (5, [*若使用 #icon(name: "json-object") 形式，则有以下字段：*], false),
-  (5, [#icon(name: "json-number") *max_inclusive*: 最高兼容的版本号。]),
-  (5, [#icon(name: "json-number") *min_inclusive*: 最低兼容的版本号。])
+  (0, [#icon("json-object") 文件封装]),
+  (1, [#icon("json-object") *#underline[pack]*: 此资源包的基本信息。]),
+  (2, [#icon("json-string")#icon("json-array")#icon("json-object") *#underline[description]*: 任意文本，使用文本组件格式，可用于对资源包的简单介绍。此段文本会出现在选项资源包中。]),
+  (2, [#icon("json-number")#icon("json-array") *#underline[max_format]*: 资源包最高兼容的版本号。若使用 #icon("json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon("json-number") 形式或在 #icon("json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0x7fffffff`。]),
+  (2, [#icon("json-number")#icon("json-array") *#underline[min_format]*: 资源包最低兼容的版本号。若使用 #icon("json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon("json-number") 形式或在 #icon("json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0`。]),
+  (2, [#icon("json-number") *pack_format*: 25w31a以前用于指定资源包版本号的字段，现已弃用，可用于兼容旧版资源包。]),
+  (2, [#icon("json-number")#icon("json-array")#icon("json-object") *supported_formats*: 25w31a以前用于指定资源包版本号兼容范围的字段，现已弃用，可用于兼容旧版资源包。]),
+  (3, [*若使用 #icon("json-number") 形式，则精确匹配，效果与 #icon("json-number") pack_format一致*], false),
+  (3, [*若使用 #icon("json-array") 形式，则内部包含两个整数，第一个为最低兼容的版本号，第二个为最高兼容的版本号*], false),
+  (3, [*若使用 #icon("json-object") 形式，则有以下字段：*], false),
+  (3, [#icon("json-number") *max_inclusive*: 最高兼容的版本号。]),
+  (3, [#icon("json-number") *min_inclusive*: 最低兼容的版本号。]),
+  (1, [#icon("json-object") *language*: 可选，用于添加选项卡中的语言，可以添加多个语言。]),
+  (2, [#icon("json-array") *\<语言代码>*: 一个新建的语言，键名按照 `<语言>_<地区>` 的格式，其与 #icon("folder") `assets\minecraft\lang` 中同名的 `.json` 文件相对应。]),
+  (3, [#icon("json-bool") *bidirectional*: 布尔值，若为 `true`，则按照从右到左的格式显示。默认为 `false`。]),
+  (3, [#icon("json-string") *#underline[name]*: 语言的名称。]),
+  (3, [#icon("json-string") *#underline[reigon]*: 国家或地区的名称。]),
+  (1, [#icon("json-object") *filter*: 可选，用于指定在资源包加载列表中优先级低于该包的资源包内要忽略的内容。]),
+  (2, [#icon("json-array") *block*: 忽略内容列表。]),
+  (3, [#icon("json-object") 一项被忽略的内容。若此项为空则完全忽略所有优先级低的资源包。]),
+  (4, [#icon("json-string") *namespace*: 要忽略的命名空间，若省略则忽略所有命名空间，可使用#link("https://www.runoob.com/regexp/regexp-syntax.html")[正则表达式]。]),
+  (4, [#icon("json-string") *path*: 要忽略的资源路径，若省略则忽略所有路径，可使用#link("https://www.runoob.com/regexp/regexp-syntax.html")[正则表达式]。]),
+  (1, [#icon("json-object") *overlays*: 可选，用于子资源包的识别。]),
+  (2, [#icon("json-array") *#underline[entries]*: 可用子资源包的列表。]),
+  (3, [#icon("json-object") 一个子资源包。]),
+  (4, [#icon("json-string") *#underline[directory]*: 该子资源包相对于主资源包根目录的路径。允许使用的字符有：小写字母、`0123456789`、`_` 和 `-`。]),
+  (4, [#icon("json-number")#icon("json-array") *max_format*: 该子资源包最高兼容的版本号。若使用 #icon("json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon("json-number") 形式或在 #icon("json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0x7fffffff`。]),
+  (4, [#icon("json-number")#icon("json-array") *min_format*: 该子资源包最低兼容的版本号。若使用 #icon("json-array") 形式，则内部包含两个整数，第一个为主要版本号，第二个为次要版本号。若使用 #icon("json-number") 形式或在 #icon("json-array") 形式内只填写一个数值，则视为只写主要版本号，次要版本号默认为次要版本号 `0`。]),
+  (4, [#icon("json-number")#icon("json-array")#icon("json-object") *formats*: 25w31a以前用于指定子资源包版本号兼容范围的字段，现已弃用，可用于兼容旧版资源包。]),
+  (5, [*若使用 #icon("json-number") 形式，则精确匹配*], false),
+  (5, [*若使用 #icon("json-array") 形式，则内部包含两个整数，第一个为最低兼容的版本号，第二个为最高兼容的版本号*], false),
+  (5, [*若使用 #icon("json-object") 形式，则有以下字段：*], false),
+  (5, [#icon("json-number") *max_inclusive*: 最高兼容的版本号。]),
+  (5, [#icon("json-number") *min_inclusive*: 最低兼容的版本号。])
 )
-例如，下面是1.21.11版本的一个标准 #icon(name: "json") `pack.mcmeta` 文件：
+例如，下面是1.21.11版本的一个标准 #icon("json") `pack.mcmeta` 文件：
 #codefile(
   lang: "json",
   title: "pack.mcmeta",
@@ -1673,32 +1753,39 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
     [1.21.11], [75.0]
   )
 )
-资源包的版本号同样具有校验规则，也以25w31a（1.21.9）为分水岭实行“新旧双轨制”，如下表所示：
-#general-table(
-  caption: "资源包版本号校验规则",
-  colspan: 4,
-  columns: (2fr, 5fr, 4fr, 4fr),
-  header: ([配置要求], [元数据中必须使用的字段], [元数据中可以使用的字段], [元数据中不能使用的字段]),
-  [仅适用于25w31a之前], [#icon(name: "json-number") `pack_format`], [#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats`\ 若使用，则此区间必须包含 #icon(name: "json-number") `pack_format` 的值，且最大值不能低于16，因为此字段是在23w31a引入的], [#icon(name: "json-number") `max_format` 和\ #icon(name: "json-number") `min_format`],
-  [仅适用于25w31a及之后], [#icon(name: "json-number") `max_format` 和\ #icon(name: "json-number") `min_format`], [-], [#icon(name: "json-number") `pack_format` 和\ #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats`],
-  [同时适用于25w31a之前及之后], [#set align(left)
-  #h(-2em)同时指定 #icon(name: "json-number") `pack_format`、#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats`、#icon(name: "json-number") `max_format` 和 #icon(name: "json-number") `min_format`，且必须满足以下要求：\ *区间验证：\ *#icon(name: "json-number") `pack_format` 必须落在兼容区间内。\ *对最低版本号的验证：*\ #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的下限必须与 #icon(name: "json-number") `min_format` 相等。\ *对最高版本号的验证，以下两种方案二选一：*\ 
-  + #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的上限与 #icon(name: "json-number") `max_format` 相等。
-  + #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的上限固定为64，此时最高版本号由#icon(name: "json-number") `max_format` 决定。], [-], [-]
-)
-和子数据包一样，子资源包的版本号也需要进行校验，校验规则与主资源包的校验规则类似，如下表所示：
-#general-table(
-  caption: "子资源包版本号校验规则",
-  colspan: 3,
-  columns: (auto, auto, auto),
-  header: ([子资源包的配置要求], [#icon(name: "json-object") overlays 必须使用的字段], [#icon(name: "json-object") overlays 不能使用的字段]),
-  [仅适用于25w31a之前], [#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats`], [#icon(name: "json-number") `max_format` 和\ #icon(name: "json-number") `min_format`],
-  [仅适用于25w31a及之后], [#icon(name: "json-number") `max_format` 和\ #icon(name: "json-number") `min_format`\ *注意：如果主数据包适用于25w31a之前，则必须保留 #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats`*], [-],
-  [同时适用于25w31a之前及之后], [#set align(left)
-  #h(-2em)同时指定 #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats`、#icon(name: "json-number") `max_format` 和 #icon(name: "json-number") `min_format`，且必须满足以下要求：\ *对最低版本号的验证：*\ #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats` 的下限必须与 #icon(name: "json-number") `min_format` 相等。\ *对最高版本号的验证，以下两种方案二选一：*\ 
-  + #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats` 的上限与 #icon(name: "json-number") `max_format` 相等。
-  + #icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `formats` 的上限固定为64，此时最高版本号由#icon(name: "json-number") `max_format` 决定。], [-]
-)
+资源包的版本号同样具有校验规则，也以25w31a（1.21.9）为分水岭实行“新旧双轨制”，以下分类讨论：
+===== 如果资源包仅适用于25w31a之前，则元数据中：
+*必须使用的字段*：#icon("json-number") `pack_format`
+
+*可以使用的字段*：#icon("json-number")#icon("json-array")#icon("json-object") `supported_formats`。若使用，则此区间必须包含 #icon("json-number") `pack_format` 的值，且最大值不能低于16，因为此字段是在23w31a引入的。
+
+*不能使用的字段*：#icon("json-number") `max_format` 和 #icon("json-number") `min_format`
+===== 如果资源包仅适用于25w31a及之后，则元数据中：
+*必须使用的字段*：#icon("json-number") `max_format` 和 #icon("json-number") `min_format`
+
+*不能使用的字段*：#icon("json-number") `pack_format` 和 #icon("json-number")#icon("json-array")#icon("json-object") `supported_formats`
+===== 如果资源包同时适用于25w31a之前及之后，则必须同时指定 #icon("json-number") `pack_format`、#icon("json-number")#icon("json-array")#icon("json-object") `supported_formats`、#icon("json-number") `max_format` 和 #icon("json-number") `min_format`，且必须满足以下要求：
+====== *区间验证：\ *#icon("json-number") `pack_format` 必须落在兼容区间内。
+====== *对最低版本号的验证：*\ #icon("json-number")#icon("json-array")#icon("json-object") `supported_formats` 的下限必须与 #icon("json-number") `min_format` 相等。
+====== *对最高版本号的验证，以下两种方案二选一：*\ 
+======= #icon("json-number")#icon("json-array")#icon("json-object") `supported_formats` 的上限与 #icon("json-number") `max_format` 相等。
+======= #icon("json-number")#icon("json-array")#icon("json-object") `supported_formats` 的上限固定为64，此时最高版本号由#icon("json-number") `max_format` 决定。
+
+和子数据包一样，子资源包的版本号也需要进行校验，校验规则与主资源包的校验规则类似，如下所示：
+#reset-h5
+===== 如果一个子资源包仅适用于25w31a之前，则子资源包所在的 #icon("json-object") `overlays` 项：
+*必须使用的字段*：#icon("json-number")#icon("json-array")#icon("json-object") `formats`
+
+*不能使用的字段*：#icon("json-number") `max_format` 和 #icon("json-number") `min_format`
+===== 如果一个子资源包仅适用于25w31a及之后，则子资源包所在的 #icon("json-object") `overlays` 项：
+*必须使用的字段*：#icon("json-number") `max_format` 和 #icon("json-number") `min_format`
+
+*关于 #icon("json-number")#icon("json-array")#icon("json-object") `formats`*：若存在其他适用于25w31a之前的子资源包，则此字段必须指定；若其他子资源包均仅适用于25w31a及之后，则此字段不能使用。
+===== 如果一个子资源包同时适用于25w31a之前及之后，则子资源包所在的 #icon("json-object") `overlays` 项必须同时指定 #icon("json-number")#icon("json-array")#icon("json-object") `formats`、#icon("json-number") `max_format` 和 #icon("json-number") `min_format`，且必须满足以下要求：
+====== *对最低版本号的验证：* #icon("json-number")#icon("json-array")#icon("json-object") `formats` 的下限必须与 #icon("json-number") `min_format` 相等。
+====== *对最高版本号的验证，以下两种方案二选一：*
+======= #icon("json-number")#icon("json-array")#icon("json-object") `formats` 的上限与 #icon("json-number") `max_format` 相等。
+======= #icon("json-number")#icon("json-array")#icon("json-object") `formats` 的上限固定为64，此时最高版本号由#icon("json-number") `max_format` 决定。
 #example(
   [
     判断以下的资源包元数据是否符合版本号的校验要求。
@@ -1722,51 +1809,51 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
     )
   ],
   [
-    #icon(name: "json-number") `pack_format`、#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats`、#icon(name: "json-number") `max_format` 和 #icon(name: "json-number") `min_format` 四个字段同时存在，说明此资源包同时适用于25w31a之前及之后。
+    #icon("json-number") `pack_format`、#icon("json-number")#icon("json-array")#icon("json-object") `supported_formats`、#icon("json-number") `max_format` 和 #icon("json-number") `min_format` 四个字段同时存在，说明此资源包同时适用于25w31a之前及之后。
 
-    首先进行区间验证：#icon(name: "json-number") `pack_format` 的值在兼容区间内。
+    首先进行区间验证：#icon("json-number") `pack_format` 的值在兼容区间内。
 
-    其次对最低版本号进行验证：#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的下限与 #icon(name: "json-number") `min_format` 相等。
+    其次对最低版本号进行验证：#icon("json-number")#icon("json-array")#icon("json-object") `supported_formats` 的下限与 #icon("json-number") `min_format` 相等。
 
-    最后对最高版本号进行验证，#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的上限与 #icon(name: "json-number") `max_format` 不相等。再检查，#icon(name: "json-number")#icon(name: "json-array")#icon(name: "json-object") `supported_formats` 的上限为64，#icon(name: "json-number") `max_format` 是一个大于64的值。
+    最后对最高版本号进行验证，#icon("json-number")#icon("json-array")#icon("json-object") `supported_formats` 的上限与 #icon("json-number") `max_format` 不相等。再检查，#icon("json-number")#icon("json-array")#icon("json-object") `supported_formats` 的上限为64，#icon("json-number") `max_format` 是一个大于64的值。
 
     故此资源包的版本号编写正确。
   ]
 )
-下面展示了 #icon(name: "folder") `assets` 文件夹的基本结构，这些文件（夹）不一定必须全部存在，游戏会根据指定的资源路径读取资源包中的内容，因此若相应的资源文件（夹）需要存在，则必须有正确的资源路径和文件（夹）名称。
+下面展示了 #icon("folder") `assets` 文件夹的基本结构，这些文件（夹）不一定必须全部存在，游戏会根据指定的资源路径读取资源包中的内容，因此若相应的资源文件（夹）需要存在，则必须有正确的资源路径和文件（夹）名称。
 #tree(
-  (0, [#icon(name: "folder") *assets*]),
-  (1, [#icon(name: "folder") *\<命名空间>*]),
-  (2, [#icon(name: "folder") *atlases*: 纹理图集]),
-  (2, [#icon(name: "folder") *blockstates*: 方块状态映射]),
-  (2, [#icon(name: "folder") *equipment*: 装备模型]),
-  (2, [#icon(name: "folder") *font*: 字体]),
-  (2, [#icon(name: "folder") *items*: 物品模型映射]),
-  (2, [#icon(name: "folder") *lang*: 语言]),
-  (2, [#icon(name: "folder") *models*: 烘焙模型]),
-  (2, [#icon(name: "folder") *particles*: 粒子纹理定义]),
-  (2, [#icon(name: "folder") *post_effect*: 后处理管线]),
-  (2, [#icon(name: "folder") *sounds*: 声音]),
-  (2, [#icon(name: "folder") *shaders*: 着色器]),
-  (2, [#icon(name: "folder") *texts*: 文本]),
-  (2, [#icon(name: "folder") *texture*: 纹理]),
-  (2, [#icon(name: "folder") *waypoint_style*: 路径点样式]),
-  (2, [#icon(name: "json") *gpu_warnlist.json*: GPU警告列表]),
-  (2, [#icon(name: "json") *regional_compliancies.json*: 地区合规性警告]),
-  (2, [#icon(name: "json") *sounds.json*: 声音事件定义文件]),
+  (0, [#icon("folder") *assets*]),
+  (1, [#icon("folder") *\<命名空间>*]),
+  (2, [#icon("folder") *atlases*: 纹理图集]),
+  (2, [#icon("folder") *blockstates*: 方块状态映射]),
+  (2, [#icon("folder") *equipment*: 装备模型]),
+  (2, [#icon("folder") *font*: 字体]),
+  (2, [#icon("folder") *items*: 物品模型映射]),
+  (2, [#icon("folder") *lang*: 语言]),
+  (2, [#icon("folder") *models*: 烘焙模型]),
+  (2, [#icon("folder") *particles*: 粒子纹理定义]),
+  (2, [#icon("folder") *post_effect*: 后处理管线]),
+  (2, [#icon("folder") *sounds*: 声音]),
+  (2, [#icon("folder") *shaders*: 着色器]),
+  (2, [#icon("folder") *texts*: 文本]),
+  (2, [#icon("folder") *texture*: 纹理]),
+  (2, [#icon("folder") *waypoint_style*: 路径点样式]),
+  (2, [#icon("json") *gpu_warnlist.json*: GPU警告列表]),
+  (2, [#icon("json") *regional_compliancies.json*: 地区合规性警告]),
+  (2, [#icon("json") *sounds.json*: 声音事件定义文件]),
 )
 === GPU警告列表 \*
-资源包负责游戏的画面渲染。部分计算机显卡太旧、驱动版本不匹配，或者GPU属于某些已知会造成游戏崩溃的型号，因此资源包内存在 #icon(name: "json") `gpu_warnlist.json` 这个用于自检硬件兼容性的配置文件。其格式如下所示：
+资源包负责游戏的画面渲染。部分计算机显卡太旧、驱动版本不匹配，或者GPU属于某些已知会造成游戏崩溃的型号，因此资源包内存在 #icon("json") `gpu_warnlist.json` 这个用于自检硬件兼容性的配置文件。其格式如下所示：
 #tree(
-  (0, [#icon(name: "json-object") 文件封装]),
-  (1, [#icon(name: "json-array") *#underline[renderer]*: 需要显示渲染器警告的渲染器名称（显卡型号）。]),
-  (2, [#icon(name: "json-string") 一个渲染器名称，使用#link("https://www.runoob.com/regexp/regexp-syntax.html")[正则表达式]。]),
-  (1, [#icon(name: "json-array") *#underline[version]*: 需要显示渲染器版本警告的渲染器版本（通常为显卡驱动的版本号）。]),
-  (2, [#icon(name: "json-string") 一个渲染器版本，使用#link("https://www.runoob.com/regexp/regexp-syntax.html")[正则表达式]。]),
-  (1, [#icon(name: "json-array") *#underline[vendor]*: 需要显示渲染器厂商警告的渲染器生产厂商。]),
-  (2, [#icon(name: "json-string") 一个渲染器厂商，使用#link("https://www.runoob.com/regexp/regexp-syntax.html")[正则表达式]。])
+  (0, [#icon("json-object") 文件封装]),
+  (1, [#icon("json-array") *#underline[renderer]*: 需要显示渲染器警告的渲染器名称（显卡型号）。]),
+  (2, [#icon("json-string") 一个渲染器名称，使用#link("https://www.runoob.com/regexp/regexp-syntax.html")[正则表达式]。]),
+  (1, [#icon("json-array") *#underline[version]*: 需要显示渲染器版本警告的渲染器版本（通常为显卡驱动的版本号）。]),
+  (2, [#icon("json-string") 一个渲染器版本，使用#link("https://www.runoob.com/regexp/regexp-syntax.html")[正则表达式]。]),
+  (1, [#icon("json-array") *#underline[vendor]*: 需要显示渲染器厂商警告的渲染器生产厂商。]),
+  (2, [#icon("json-string") 一个渲染器厂商，使用#link("https://www.runoob.com/regexp/regexp-syntax.html")[正则表达式]。])
 )
-例如，原版资源包的 #icon(name: "json") `gpu_warnlist.json` 文件内容如下：
+例如，原版资源包的 #icon("json") `gpu_warnlist.json` 文件内容如下：
 #codefile(
   lang: "json",
   title: "assets > minecraft > gpu_warnlist.json",
@@ -1796,17 +1883,17 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 }"
 )
 === 地区合规性警告 \*
-部分国家或地区针对游戏颁布了一定的法律法规，资源包内 #icon(name: "json") `regional_compliancies.json` 可以相应地设置游戏在运行一段时间后出现的弹窗警告，其格式如下所示：
+部分国家或地区针对游戏颁布了一定的法律法规，资源包内 #icon("json") `regional_compliancies.json` 可以相应地设置游戏在运行一段时间后出现的弹窗警告，其格式如下所示：
 #tree(
-  (0, [#icon(name: "json-object") 文件封装]),
-  (1, [#icon(name: "json-array") *\<地区代码>*: 键名为#link("https://zh.wikipedia.org/wiki/ISO_3166-1%E4%B8%89%E4%BD%8D%E5%AD%97%E6%AF%8D%E4%BB%A3%E7%A0%81")[ISO 3166-1三位字母地区代码]，游戏会针对该系统地区进行弹窗。]),
-  (2, [#icon(name: "json-object") 一项弹窗。]),
-  (3, [#icon(name: "json-number") *delay*: 第一次弹窗时游戏的运行时间，单位为分钟，默认值为 `0`。]),
-  (3, [#icon(name: "json-number") *period*: 弹窗周期，单位为分钟。]),
-  (3, [#icon(name: "json-string") *title*: 弹窗标题，需要是一个翻译标识符，详见小节@subsec:translate。]),
-  (3, [#icon(name: "json-string") *message*: 弹窗的具体信息，需要是一个翻译标识符，详见小节@subsec:translate。])
+  (0, [#icon("json-object") 文件封装]),
+  (1, [#icon("json-array") *\<地区代码>*: 键名为#link("https://zh.wikipedia.org/wiki/ISO_3166-1%E4%B8%89%E4%BD%8D%E5%AD%97%E6%AF%8D%E4%BB%A3%E7%A0%81")[ISO 3166-1三位字母地区代码]，游戏会针对该系统地区进行弹窗。]),
+  (2, [#icon("json-object") 一项弹窗。]),
+  (3, [#icon("json-number") *delay*: 第一次弹窗时游戏的运行时间，单位为分钟，默认值为 `0`。]),
+  (3, [#icon("json-number") *period*: 弹窗周期，单位为分钟。]),
+  (3, [#icon("json-string") *title*: 弹窗标题，需要是一个翻译标识符，详见小节@subsec:translate。]),
+  (3, [#icon("json-string") *message*: 弹窗的具体信息，需要是一个翻译标识符，详见小节@subsec:translate。])
 )
-原版资源包内的 #icon(name: "json") `regional_compliancies.json` 内容如下：
+原版资源包内的 #icon("json") `regional_compliancies.json` 内容如下：
 #codefile(
   lang: "json",
   title: "assets > minecraft > gpu_warnlist.json",
@@ -1860,7 +1947,7 @@ Minecraft的架构是*客户端-服务端模型*，顾名思义，Minecraft使�
 ==== 物理服务端
 除了使用局域网联机进行多人游戏，Minecraft提供了另一种进行多人游戏的方法，即#proper-noun(display: "物理服务端（Physical server）", "wu4 li3 fu2 wu4 duan1")。物理服务端只包含一个逻辑服务端，并不包含逻辑客户端。这意味着物理服务端只能负责服务端的任务，而不能使用户参与游戏；但同时也意味着若服主不在游戏中，服务器也不会关闭；此外，物理服务端在运行过程中只能加载一个游戏世界，切换其他游戏世界需要重启服务器。
 
-物理服务端内的逻辑服务端又可被称为*专用服务器（Dedicated server，或译为独立服务端）*#index(display: "专用服务器（Dedicated server，独立服务端）", "zhuan1 yong4 fu2 wu4 qi4")，该逻辑服务端包含配置文件 #icon(name: "file") `server.properties`，用于存储服务器的所有设置。专用服务器不会受到连接的逻辑客户端的影响。同局域网联机一样，专用服务器也拥有一个地址，其格式与语法@code:ipv4 所述一致。
+物理服务端内的逻辑服务端又可被称为*专用服务器（Dedicated server，或译为独立服务端）*#index(display: "专用服务器（Dedicated server，独立服务端）", "zhuan1 yong4 fu2 wu4 qi4")，该逻辑服务端包含配置文件 #icon("file") `server.properties`，用于存储服务器的所有设置。专用服务器不会受到连接的逻辑客户端的影响。同局域网联机一样，专用服务器也拥有一个地址，其格式与语法@code:ipv4 所述一致。
 #general-table(
   caption: "各种情况使用的客户端和服务端",
   colspan: 4,
@@ -1932,7 +2019,7 @@ Minecraft的游戏计算内容繁多，在同一个线程中的计算不可能�
   + 更新游戏刻计数器。
   + 若此时正在使用 `/tick step` 步进游戏刻，则计算剩余需步进游戏刻。
   + 关闭与客户端的网络自动发送队列的刷新。
-  + 如果游戏世界被重新加载（如使用 `/reload`），则调用 `#minecraft:load` 中的函数，调用顺序与列表 #icon(name: "json-array") `value` 中的函数顺序一致。一个函数被调用时按 `.mcfunction` 文件内的命令顺序依次执行命令。<enu:gametick_order_reload> 
+  + 如果游戏世界被重新加载（如使用 `/reload`），则调用 `#minecraft:load` 中的函数，调用顺序与列表 #icon("json-array") `value` 中的函数顺序一致。一个函数被调用时按 `.mcfunction` 文件内的命令顺序依次执行命令。<enu:gametick_order_reload> 
   + \*调用一次 `#minecraft:tick` 中的函数，顺序与@enu:gametick_order_reload 中所述一致。
   + 遍历所有维度，遍历顺序为：主世界、下界、末地、有先后顺序的自定义维度。遍历到某个维度时，按以下流程计算：
     + 每隔20 gt对玩家同步一次该维度的时间。
@@ -2013,7 +2100,7 @@ $ a = 2d_"r" + 1 $ <equ:render_distance>
 #param-desc(
   prefix: "式中：",
   [$a$], [渲染区域边长。],
-  [$d_"r"$], [在单人游戏中为渲染距离，原版的渲染距离必须为介于2和32之间（含）的整数。在多人游戏中为 #icon(name: "file") `server.properties` 中 `view-distance` 的值。]
+  [$d_"r"$], [在单人游戏中为渲染距离，原版的渲染距离必须为介于2和32之间（含）的整数。在多人游戏中为 #icon("file") `server.properties` 中 `view-distance` 的值。]
 )
 *对于上述正方形区域内的每一个区块，其加载等级均为31。*
 
@@ -2179,7 +2266,7 @@ $ E(X) = sum_(t-1)^(+∞) X_t P_t = 1 / p_0 = 1 / display(1 - (1 - 1 / 16^3))^m 
 
 方块更新一般依照以下的顺序依次计算：调用被替代方块状态的破坏行为$ arrow.r$调用替代方块状态的放置行为$ arrow.r$进行NC更新$ arrow.r$进行比较器更新$ arrow.r$进行PP更新。
 
-方块更新会向外传播，在执行更新的过程中可能在毗邻方块产生新的更新，一直到所有可用的更新都执行完毕，但是在更新无法完全清除的情况下可能会造成游戏崩溃。例如在只有一层沙子的超平坦世界中破坏任意沙子，则方块更新传播会持续进行，并且计算更新的方块数量越来越多，最终会不可避免地造成游戏崩溃。服务端配置文件 #icon(name: "file") `server.properties` 的 `max-chained-neighbor-updates` 一项可用于设置最大的连锁更新数量，超过此值的新增更新将会被忽略。
+方块更新会向外传播，在执行更新的过程中可能在毗邻方块产生新的更新，一直到所有可用的更新都执行完毕，但是在更新无法完全清除的情况下可能会造成游戏崩溃。例如在只有一层沙子的超平坦世界中破坏任意沙子，则方块更新传播会持续进行，并且计算更新的方块数量越来越多，最终会不可避免地造成游戏崩溃。服务端配置文件 #icon("file") `server.properties` 的 `max-chained-neighbor-updates` 一项可用于设置最大的连锁更新数量，超过此值的新增更新将会被忽略。
 
 当一个方块发生变化时，即产生PP更新。对于一个方块上的六个毗邻方块，依次沿$x$、$z$、$y$轴的方向，各方向上先检查负轴方向上的方块，再检查正轴方向上的方块，即按照西、东、北、南、下、上的顺序传播PP更新。PP更新是广泛存在的一种更新类型，包括但不限于附着性方块的掉落、连接性方块的连接判断、重力方块的掉落检测等。
 
@@ -2462,14 +2549,14 @@ Java版原版所有可用的实体可分为若干类别，这些实体的命名�
 == 服务器管理
 专用服务器是在Minecraft中实现多人游戏的一种手段。玩家们可以连接服务器游玩各种小游戏，体验SMP、PVP或各种自定义多人游戏地图，极大地提高了Minecraft的可玩性。篇幅有限，本教程并不提供服务器的架设方法，仅提供服务器配置以及能够在服务器上使用的命令的解释，供服务器管理人员参考。
 === server.properties \*
-#icon(name: "file") `server.properties`，即*服务端配置文件*，文件中一个配置属性占据一行，每一行的格式为：
+#icon("file") `server.properties`，即*服务端配置文件*，文件中一个配置属性占据一行，每一行的格式为：
 #codebox("<属性>=<值>")
 例如：
 #codebox("gamemode=survival")
 #codebox("enable-command-block=false")
 下表列举了所有可用的属性：
 #general-table(
-  caption: [ #icon(name: "file") `server.properties` 可用属性表],
+  caption: [ #icon("file") `server.properties` 可用属性表],
   colspan: 4,
   columns: (auto, auto, auto, auto),
   header: ([属性], [值类型], [默认值], [描述]),
@@ -2540,7 +2627,7 @@ Java版原版所有可用的实体可分为若干类别，这些实体的命名�
   [`white-list`], [布尔值], [`false`], [是否启用白名单。]
 ) <tab:server_properties>
 === 仅在多人游戏可用命令
-本小节讲述的一系列命令是对服务器管理有用的一类命令，仅能在多人游戏中使用。由于它们的权限等级均大于2，因此在命令方块上无法运行这些命令。如果 #icon(name: "file") `server.properties` 中的 `function-permission-level` 没有设为足够的权限等级，那么数据包函数也是不能执行这些命令的。
+本小节讲述的一系列命令是对服务器管理有用的一类命令，仅能在多人游戏中使用。由于它们的权限等级均大于2，因此在命令方块上无法运行这些命令。如果 #icon("file") `server.properties` 中的 `function-permission-level` 没有设为足够的权限等级，那么数据包函数也是不能执行这些命令的。
 ==== 用于封禁玩家与设置黑名单的命令
 ===== 命令 `/ban` #index(index: "command", "ban")
 #codebox("ban <targets> [reason]") <code:command_ban>
@@ -2586,7 +2673,7 @@ Java版原版所有可用的实体可分为若干类别，这些实体的命名�
 ===== 命令 `/op` #index(index: "command", "op")
 用于给予玩家管理员权限。该命令所需权限等级为3，语法为：
 #codebox("op <targets>")
-此管理员权限等级由 #icon(name: "file") `server.properties` 中的 `op-permission-level` 决定，详见@tab:server_properties。
+此管理员权限等级由 #icon("file") `server.properties` 中的 `op-permission-level` 决定，详见@tab:server_properties。
 ===== 命令 `/deop` #index(index: "command", "deop")
 剥夺玩家的管理员权限。该命令所需权限等级为3，语法为：
 #codebox("deop <targets>")
@@ -2611,7 +2698,7 @@ Java版原版所有可用的实体可分为若干类别，这些实体的命名�
 该命令所需权限等级均为4，语法为：#index(index: "command", "stop")
 #codebox("stop")
 ==== 将玩家从一个服务器转移至另一服务器的命令 `/transfer` #index(index: "command", "transfer")
-此命令仅会发出请求，实际能否转移成功取决于目的服务器 #icon(name: "file") `server.properties` 中的 `accepts-transfers` 配置，详见@tab:server_properties。`/transfer` 的语法为：
+此命令仅会发出请求，实际能否转移成功取决于目的服务器 #icon("file") `server.properties` 中的 `accepts-transfers` 配置，详见@tab:server_properties。`/transfer` 的语法为：
 #codebox("transfer <hostname> [<port>] [<players>]")
 #param-desc(
   [`<hostname>`（字符串 `brigadier:string`）], [目的服务器的主机名。],
@@ -2619,7 +2706,7 @@ Java版原版所有可用的实体可分为若干类别，这些实体的命名�
   [`[<players>]`（实体 `minecraft:entity`）], [可选，被转移的玩家，必须为玩家名、目标选择器或UUID。若不指定则默认为命令执行者。]
 )
 ==== 命令 `/perf`
-它用于记录服务器游戏刻执行时长和占用的堆内存大小等性能指标，并将结果保存于游戏文件 #icon(name: "zip") `.minecraft\debug\profiling\<时间戳>.zip`。命令 `perf start` 即开始长达10秒的性能分析，`perf stop` 可以在10秒之前结束性能分析。此命令需要权限等级4。#index(index: "command", "perf")
+它用于记录服务器游戏刻执行时长和占用的堆内存大小等性能指标，并将结果保存于游戏文件 #icon("zip") `.minecraft\debug\profiling\<时间戳>.zip`。命令 `perf start` 即开始长达10秒的性能分析，`perf stop` 可以在10秒之前结束性能分析。此命令需要权限等级4。#index(index: "command", "perf")
 #codebox("perf (start|stop)")
 由于它仅在专用服务器上使用，在单人游戏中可以用 `F3` + `L` 代替它的性能分析功能。 
 === 其他与服务器相关的命令
@@ -2682,22 +2769,22 @@ Java版原版所有可用的实体可分为若干类别，这些实体的命名�
 + 当渲染距离为16时，以玩家为中心的强加载区块个数为#blank，弱加载区块个数为#blank。
 + 将以下树状形式的数据写为JSON。<t:json_tree>
   #tree(
-    (0, [#icon(name: "json-object") 文件封装]),
-    (1, [#icon(name: "json-string") *condition*: `minecraft:entity_properties`]),
-    (1, [#icon(name: "json-string") *entity*: `this`]),
-    (1, [#icon(name: "json-object") *predicate*]),
-    (2, [#icon(name: "json-string") *type*: `minecraft:player`]),
-    (2, [#icon(name: "json-object") *flags*]),
-    (3, [#icon(name: "json-bool") *is\_{}sprinting*: `true`])
+    (0, [#icon("json-object") 文件封装]),
+    (1, [#icon("json-string") *condition*: `minecraft:entity_properties`]),
+    (1, [#icon("json-string") *entity*: `this`]),
+    (1, [#icon("json-object") *predicate*]),
+    (2, [#icon("json-string") *type*: `minecraft:player`]),
+    (2, [#icon("json-object") *flags*]),
+    (3, [#icon("json-bool") *is\_{}sprinting*: `true`])
   )
-+ 若一个字符串类型的JSON字段 #icon(name: "json-string") `text` 需要的值分别如下所示，写出各自对应的字段。<t:json_text>
++ 若一个字符串类型的JSON字段 #icon("json-string") `text` 需要的值分别如下所示，写出各自对应的字段。<t:json_text>
   + `分节符"\"的作用很大`
   + `\\"Hello World!\\"`
   + `JSON形式的文本组件为{"text":"\\Hello World!\\"}`
   + `在SNBT中，反斜杠\直接使用反斜杠\转义即可，即\\`
-+ \*什么是 `.txt` 文件？#icon(name: "folder") `.minecraft`文件夹中有哪些文件是以 `.txt` 的格式存在的？
++ \*什么是 `.txt` 文件？#icon("folder") `.minecraft`文件夹中有哪些文件是以 `.txt` 的格式存在的？
 + \*任意列举10个需要使用JSON格式的文件。
-+ \*如何在#icon(name: "folder") `assets` 文件夹中寻找村民悠闲时的声音文件？
++ \*如何在#icon("folder") `assets` 文件夹中寻找村民悠闲时的声音文件？
 + \*若一份完整的 `debug` 文件内容如下所示，则该函数中能够成功执行的命令有多少条？
   #codefile(
     lang: "txt",
@@ -3704,11 +3791,11 @@ UUID有以下几种表示方式：
 ==== 进度参数
 进度参数通过玩家的进度来筛选玩家，*仅能够用于选择玩家类型的实体*。参数名为 `advancements`，值为用花括号包括的键值对#footnote[这里指诸如 `<键>=<值>` 形式的字符串，即有对应关系的键值。]，语法为：
 #codebox("[advancements={<键>=<值>}]")
-其中 `<键>` 为所指定进度的ID，`<值>` 必须为布尔值或用花括号包括的键值对，若为布尔值，则目标选择器用于筛选 `true`（是）`false`（否）取得该进度的玩家。例如，选择取得进度 #icon(name: "mine_stone") 石器时代 `story/mine_stone` 的玩家的目标选择器参数可以为
+其中 `<键>` 为所指定进度的ID，`<值>` 必须为布尔值或用花括号包括的键值对，若为布尔值，则目标选择器用于筛选 `true`（是）`false`（否）取得该进度的玩家。例如，选择取得进度 #icon("mine_stone") 石器时代 `story/mine_stone` 的玩家的目标选择器参数可以为
 #codebox("[advancements={story/mine_stone=true}]")
 若 `<值>` 的位置填充了用花括号包括的键值对，则语法又为：
 #codebox("[advancements={<键>={<键>=<值>}}]")
-在键值对中嵌套键值对的意义为：*根据进度JSON的格式，玩家取得一定进度一定是通过满足这个进度的某些准则达成的。*比如进度#icon(name: "obtain_armor")整装上阵 `story/obtain_armor` 的准则之一为装备过铁头盔 `iron_helmet`，可以选择通过装备铁头盔以取得进度整装上阵的玩家：
+在键值对中嵌套键值对的意义为：*根据进度JSON的格式，玩家取得一定进度一定是通过满足这个进度的某些准则达成的。*比如进度#icon("obtain_armor")整装上阵 `story/obtain_armor` 的准则之一为装备过铁头盔 `iron_helmet`，可以选择通过装备铁头盔以取得进度整装上阵的玩家：
 #codebox("[advancements={story/obtain_armor={iron_helmet=true}}]")
 *其中被选择的玩家当前不必正在装备铁头盔。*这些准则的具体情况可以查阅数据包内的进度定义文件，读者也可以使用自定义的进度及其准则。
 ==== NBT参数
@@ -3755,7 +3842,7 @@ NBT参数用于选择有指定NBT的实体，有关NBT的内容参考@chap:nbt\�
 + A、C、E；
 + B；
 + A、D。
-+ 过获取黑石 `blackstone` 以取得进度 #icon(name: "mine_stone") 石器时代 `story/mine_stone` 的所有玩家。
++ 过获取黑石 `blackstone` 以取得进度 #icon("mine_stone") 石器时代 `story/mine_stone` 的所有玩家。
 = NBT格式<chap:nbt>
 一个面包、一块石砖、一只绵羊……这些游戏内容本质上是许多游戏数据构成的集合，Minecraft的游戏数据主要由这种格式存储——NBT。
 #pagebreak()
@@ -3776,41 +3863,41 @@ SNBT的标签名允许包含字母A \~ Z、a \~ z、数字0 \~ 9、下划线 `_`
 === 数据类型与数据树<subsec:nbt_data_type>
 在SNBT中，对于每一个诸如 `<标签名>:<值>` 这样形式的内容，称其为一个单独的#proper-noun(display: "标签（Tag）", "biao1 qian1")。一个标签由三部分组成：一是*标签类型*，它用于决定该标签需要使用什么类型的数据；二是*标签名*，它用于区分不同的标签；三是*该标签存储的数据*，对于不同类型的标签，其需要的数据也不尽相同。NBT本身一共存在13种数据类型，在SNBT中一共可以使用13种标签类型，其中包含一种较为特殊的标签类型。本教程在介绍SNBT的语法时，采用与Minecraft Wiki一致的结构化树状图。下面分类介绍所有的数据类型：
 #continue-h5([整型类数据])
-===== #icon(name: "nbt-byte")#footnote[本教程使用这些图标表示各SNBT数据类型。] 字节型
+===== #icon("nbt-byte")#footnote[本教程使用这些图标表示各SNBT数据类型。] 字节型
 #proper-noun(display: "字节型（Byte）", "zi4 jie2 xing2")占据1个字节，存储容量为$-128$ \~ 127，且数值必须为整数。在填写字节型数据时，可以在数值后面加一个字母 `b`，大小写均可，格式为：
 #codebox("<标签名>:<值>b")
 示例：
 #codebox("Difficulty:2b")
 结构化表示为
 #tree(
-  (0, [#icon(name: "nbt-byte") *Difficulty*: `2`])
+  (0, [#icon("nbt-byte") *Difficulty*: `2`])
 )
 这个字母 `b` 被称为数据的后缀，后缀用于决定该数据为何种类型的数据，同时也有助于将SNBT转换为NBT。字母 `b` 决定了这个数据为字节型数据。不过后缀是可选的，因为NBT的数据类型是自动更正的。然而笔者还是强烈建议不要省略后缀以避免小概率解析不成功的情况。
-===== #icon(name: "nbt-bool") 布尔值
+===== #icon("nbt-bool") 布尔值
 NBT本身并没有#proper-noun(display: "布尔值（Bool）", "bu4 er3 zhi2")这种数据类型，因此使用字节型数据的 `0b` 来表示布尔值中的“假”，用非 `0b` 的数据来表示布尔值中的“真”。但出于习惯，一般用 `1b` 来表示“真”。在SNBT中可以直接使用 `true` 和 `false`，它们分别能转换为NBT格式的\code `1b` 和 `0b`。事实上，在SNBT中直接使用字节形式的 `1b` 和 `0b` 也是可接受的。示例：
 #codebox("NoAI:true")
 或
 #codebox("NoAI:1b")
 结构化表示为
 #tree(
-  (0, [#icon(name: "nbt-bool") *NoAI*: `true`])
+  (0, [#icon("nbt-bool") *NoAI*: `true`])
 )
-===== #icon(name: "nbt-short") 短整型
+===== #icon("nbt-short") 短整型
 #proper-noun(display: "短整型（Short）", "duan3 zheng3 xing2")占据2个字节，存储容量为$-32768$ \~ 32767，且值必须为整数。该数据类型需要的后缀为 `s`，大小写均可。示例：
 #codebox("Fire:10s")
 结构化表示为
 #tree(
-  (0, [#icon(name: "nbt-short") *Fire*: `10`])
+  (0, [#icon("nbt-short") *Fire*: `10`])
 )
-===== #icon(name: "nbt-int") 整型
+===== #icon("nbt-int") 整型
 #proper-noun(display: "整型（Int）", "zheng3 xing2")是非常常见的一种数据类型，被用于存储大量的标签数据。它占据4个字节，存储容量为$-2^31$ \~ $2^31-1$（即$-2147483648$ \~ 2147483647），值必须为整数。该数据类型需要的后缀为 `i`，大小写均可，也可以不写这个后缀。示例：
 #codebox("Age:20")
 结构化表示为
 #tree(
-  (0, [#icon(name: "nbt-int") *Age*: `20`])
+  (0, [#icon("nbt-int") *Age*: `20`])
 )
-若在填写其他数据类型时没有加后缀，则实际上填写的数据类型默认为整型，因此需要经过更正才能被识别。如果数据不在整型可用范围内，则需使用 #icon(name: "nbt-long") 长整型，并添加 #icon(name: "nbt-long") 长整型的类型后缀。
-===== #icon(name: "nbt-long") 长整型
+若在填写其他数据类型时没有加后缀，则实际上填写的数据类型默认为整型，因此需要经过更正才能被识别。如果数据不在整型可用范围内，则需使用 #icon("nbt-long") 长整型，并添加 #icon("nbt-long") 长整型的类型后缀。
+===== #icon("nbt-long") 长整型
 #proper-noun(display: "长整型（Long）", "chang2 zheng3 xing2")可用于存储绝对值很大的数据，其占据8个字节，存储容量为$-2^63$ \~ $2^63-1$（即$-9223372036854775808$ \~ 9223372036854775807），值同样需要为整数。长整型数据的后缀为 `l`（注意不是字母i的大写），大小写均可。示例：
 #codebox("DeathLootTableSeed:7214855795308447l")
 #linebreak()
@@ -3827,9 +3914,9 @@ NBT本身并没有#proper-noun(display: "布尔值（Bool）", "bu4 er3 zhi2")�
 
 此外，数字之间允许有下划线 `_` 分隔，但下划线不能位于数值的开头或结尾。
 #continue-h5([浮点数类数据])
-===== #icon(name: "nbt-float") 单精度浮点数
+===== #icon("nbt-float") 单精度浮点数
 #proper-noun(display: "单精度浮点数（Float）", "dan1 jing1 du4 fu2 dian3 shu4")采用IEEE754标准，占据4个字节，长度为32位。它用于存储一个实型数据，数据可以带符号，如 `1.2`、`-0.5` 等。单精度浮点数使用字母 `f` 作为它的数据后缀。
-===== #icon(name: "nbt-double") 双精度浮点数
+===== #icon("nbt-double") 双精度浮点数
 #proper-noun(display: "双精度浮点数（Double）", "shuang1 jing1 du4 fu2 dian3 shu4")同样采用IEEE754标准。它占据8个字节，长度为64位，能用于存储精度比单精度浮点数更高的实型数据。双精度浮点数使用字母 `d` 作为它的数据后缀。
 
 #linebreak()
@@ -3840,7 +3927,7 @@ NBT本身并没有#proper-noun(display: "布尔值（Bool）", "bu4 er3 zhi2")�
 
 浮点数还可以用科学计数法表示。数学上科学计数法一般写作$m times 10^n$，在浮点数中，科学计数法就可以写作 `<m>e<n>`，例如$1.2 times 10^(-2)$就可以写作 `1.2e-2`。其中，$m$被称为尾数，必须是带符号的浮点数，可以为整数也可以为小数；而$n$被称为指数，它只能是带符号的整数。此外，尾数和指数均必须有数值，不能为空。例如，`4.5e4`、`.2e-3`、`4.e+2`、`03e0`（允许带有前导零、指数可以为0）均为正确的科学计数法表示；而 `e9`（尾数缺失）、`-3e`（指数缺失）、`.2e-.2`（指数不能为浮点数）均为错误的科学计数法表示。
 #continue-h5([字符串类数据])
-===== #icon(name: "nbt-string") 字符串
+===== #icon("nbt-string") 字符串
 #proper-noun(display: "字符串（String）", "zi4 fu2 chuan4")为若干任意字符按特定顺序的排列，允许包含中文、标点符号、特殊字符等。字符串最多允许存储32767个字节的字符。字符串必须被一对双引号或单引号定义。
 
 字符串存在一些特殊字符的转义序列：
@@ -3850,9 +3937,9 @@ NBT本身并没有#proper-noun(display: "布尔值（Bool）", "bu4 er3 zhi2")�
 #codebox("Name:'\" is a quotation mark'") <code:snbt_string_example_2>
 结构化表示为
 #tree(
-  (0, [#icon(name: "nbt-string") *Name*: `" is a quotation mark`])
+  (0, [#icon("nbt-string") *Name*: `" is a quotation mark`])
 )
-出于可读性要求、社区标准及 #icon(name: "vscode") VSCode中 #icon(name: "dhp") DHP扩展要求的书写规范，在字符串中一般需尽量规避转义行为，因此@code:snbt_string_example_1 的写法不符合可读性要求，应采用@code:snbt_string_example_2 的写法。若字符串中既有双引号又有单引号，则转义无法规避，此时正常使用反斜杠即可。
+出于可读性要求、社区标准及 #icon("vscode") VSCode中 #icon("dhp") DHP扩展要求的书写规范，在字符串中一般需尽量规避转义行为，因此@code:snbt_string_example_1 的写法不符合可读性要求，应采用@code:snbt_string_example_2 的写法。若字符串中既有双引号又有单引号，则转义无法规避，此时正常使用反斜杠即可。
 ====== 反斜杠 `\`
 反斜杠 `\` 直接使用反斜杠 `\` 转义即可，即 `\\`。
 ====== Unicode字符
@@ -3868,72 +3955,72 @@ NBT本身并没有#proper-noun(display: "布尔值（Bool）", "bu4 er3 zhi2")�
 ====== 换页符 `\f`
 ====== 回车 `\r`
 #continue-h5([数组类数据])
-===== #icon(name: "nbt-byte_array") 字节型数组
+===== #icon("nbt-byte_array") 字节型数组
 #proper-noun(display: "字节型数组（Byte array）", "zi4 jie2 xing2 shu4 zu3")将若干个*有序*字节型数据整合到一起。数组需要用方括号将所有数据包括起来，并在开头标上 `B;` 以定义该数组为字节型数组。`B;` 后面跟随若干个字节型数据，数据与数据之间用逗号 `,`（一定为英文逗号）隔开。数组末尾的数据后面允许添加且最多只能添加一个 `,`，其他数组类数据相同。格式为：
 #codebox("[B;<字节型数据1>,<字节型数据2>,<字节型数据3>,…]")
 数组内数据的顺序很重要，例如，`[B;1b,2b,3b]` 与 `[B;3b,2b,1b]` 是两个不同的标签数据。其中前者的结构化表示为
 #tree(
-  (0, [#icon(name: "nbt-byte_array")]),
+  (0, [#icon("nbt-byte_array")]),
   (1, [`1`]),
   (1, [`2`]),
   (1, [`3`])
 )
 数组内的数据会假定与使用与定义一致的数据类型，如 `[B;1,2,3]` 会被识别为 `[B;1b,2b,3b]`。
-===== #icon(name: "nbt-int_array") 整型数组
+===== #icon("nbt-int_array") 整型数组
 #proper-noun(display: "整型数组（Int array）", "zheng3 xing2 shu4 zu3")是若干个整型数据构成的*有序列表*。其写法与上面字节型数组的写法类似，但数组开头为 `I;` 以定义该数组为整型数组。格式为：
 #codebox("[I;<整型数据1>,<整型数据2>,<整型数据3>,…]")
-===== #icon(name: "nbt-long_array") 长整型数组
+===== #icon("nbt-long_array") 长整型数组
 #proper-noun(display: "长整型数组（Long array）", "chang2 zheng3 xing2 shu4 zu3")是若干个长整型数据构成的*有序列表*。其写法与上面字节型、整型数组的写法类似，但数组开头为 `L;` 以定义该数组为长整型数组。格式为：
 #codebox("[L;<长整型数据1>,<长整型数据2>,<长整型数据3>,…]")
 数组可以接受可用范围比该数组的定义更小的值，例如 `[L;1b,2,3l]` 会被识别为 `[L;1l,2l,3l]`。短整型数组虽然还未使用，但允许在整型数组和长整型数组中使用短整型的数据，如 `[L;1s,2s,3s]` 会被识别为 `[L;1l,2l,3l]`。
-===== #icon(name: "nbt-list") 列表
+===== #icon("nbt-list") 列表
 #proper-noun(display: "列表（List）", "lie4 biao3")是若干个任意类型的数据构成的*有序列表*，NBT格式的列表内的数据类型需一致，但SNBT可接受类型不一致的异构列表，存储为NBT时会将不同的数据类型转换为相同的数据类型，例如列表内同时存在字节型数据和复合标签时，会将字节型数据按列表内位置套在另一个复合标签内再进行存储；从NBT读取为SNBT时，相同的数据类型并不会逆向转换为不同的数据类型。列表的开头不需要加任何的内容以表明它是哪种类型的数组，格式为：
 #codebox("[<数据1>,<数据2>,<数据3>,…]")
-若列表内的数据类型为字节型、整型或长整型，它们并不能视为 #icon(name: "nbt-byte_array") 字节型数组、#icon(name: "nbt-int_array") 整型数组或 #icon(name: "nbt-long_array") 长整型数组。例如，`[I;1,2,3]` 与 `[1,2,3]` 是两个完全不同的标签数据，前者为 #icon(name: "nbt-int_array") 整型数组，后者为 #icon(name: "nbt-list") 列表。其中前者的结构化表示为
+若列表内的数据类型为字节型、整型或长整型，它们并不能视为 #icon("nbt-byte_array") 字节型数组、#icon("nbt-int_array") 整型数组或 #icon("nbt-long_array") 长整型数组。例如，`[I;1,2,3]` 与 `[1,2,3]` 是两个完全不同的标签数据，前者为 #icon("nbt-int_array") 整型数组，后者为 #icon("nbt-list") 列表。其中前者的结构化表示为
 #tree(
-  (0, [#icon(name: "nbt-int_array")]),
+  (0, [#icon("nbt-int_array")]),
   (1, [`1`]),
   (1, [`2`]),
   (1, [`3`])
 )
 #h(-2em)后者的结构化表示为
 #tree(
-  (0, [#icon(name: "nbt-list")]),
-  (1, [#icon(name: "nbt-int") `1`]),
-  (1, [#icon(name: "nbt-int") `2`]),
-  (1, [#icon(name: "nbt-int") `3`])
+  (0, [#icon("nbt-list")]),
+  (1, [#icon("nbt-int") `1`]),
+  (1, [#icon("nbt-int") `2`]),
+  (1, [#icon("nbt-int") `3`])
 )
 #continue-h5([复合标签与数据树])
-===== #icon(name: "nbt-compound") 复合标签
+===== #icon("nbt-compound") 复合标签
 #proper-noun(display: "复合标签（Compound）", "fu4 he2 biao1 qian1")使得标签和标签的嵌套成为可能，其基本格式为
 #codebox("<标签名>:{子标签}")
 现在对这个格式进行进一步的解释：标签名和冒号为一个标签写法的组成部分，值的部分为一个花括号。一般称这一整个标签为#proper-noun(display: "父标签（Parent tag）", "fu4 biao1 qian1")，花括号内的内容被称为#proper-noun(display: "子标签（Children tag）", "zi3 biao1 qian1")。子标签允许存在多个不同的标签，这些子标签之间使用逗号逗号 `,` 分割，最后一个子标签后面允许添加且最多只能添加一个 `,`。每一个标签都是父标签的子标签，于是复合标签的基本格式又可以写成如下的形式：
 #codebox("<父标签名>:{<子标签名1>:<值>,<子标签名2>:<值>,…}")
 花括号内的子标签也可以成为下一级标签的父标签，于是又可以在子标签内嵌套子标签。将这些子标签分层命名为第一级子标签、第二级子标签……经过层层嵌套，最终可以得到如下所示的树形结构，这便是#proper-noun(display: "数据树（Data tree）", "shu4 ju4 shu4")的基本结构。
 #tree(
-  (0, [#icon(name: "nbt-compound") 父标签]),
-  (1, [#icon(name: "nbt-compound") 第一级子标签]),
-  (2, [#icon(name: "nbt-compound") 第二级子标签]),
+  (0, [#icon("nbt-compound") 父标签]),
+  (1, [#icon("nbt-compound") 第一级子标签]),
+  (2, [#icon("nbt-compound") 第二级子标签]),
   (3, [……]),
-  (2, [#icon(name: "nbt-compound") 第二级子标签]),
+  (2, [#icon("nbt-compound") 第二级子标签]),
   (3, [……]),
-  (1, [#icon(name: "nbt-compound") 第一级子标签]),
-  (2, [#icon(name: "nbt-compound") 第二级子标签]),
+  (1, [#icon("nbt-compound") 第一级子标签]),
+  (2, [#icon("nbt-compound") 第二级子标签]),
   (3, [……]),
-  (2, [#icon(name: "nbt-compound") 第二级子标签]),
+  (2, [#icon("nbt-compound") 第二级子标签]),
   (3, [……]),
 )
 然而，父标签和子标签的界限并不是明确的，它们只有相对的关系：一个父标签可能是上一级标签的子标签，一个子标签也可能是下一级标签的父标签，这就好比一棵树上分叉的树枝。不过，即使一棵树的枝干分叉再复杂、树枝的层级再多，它终究是有树干和根部的，这样的道理在数据树上仍成立。对于一个特定的游戏资源，如一个具有方块实体的方块、一个实体，游戏使用一棵数据树存储它所有的信息，在这棵数据树内存在一个标签，由这个标签衍生出所有的子标签，再经过层层嵌套、衍生，最终形成一棵数据树，这棵数据树就可以用于存储数据。对于这样的标签，可以给予其形象的名称：#proper-noun(display: "根标签（Root tag）", "gen1 biao1 qian1")，以将其比作一棵数据树的“根”。
 
-在了解数据树的基本结构后，现在取数据树上一个小部分（可以不包含根标签）进行分析。假设一个标签 #icon(name: "nbt-compound") `Me` 衍生出来的数据树如下所示：
+在了解数据树的基本结构后，现在取数据树上一个小部分（可以不包含根标签）进行分析。假设一个标签 #icon("nbt-compound") `Me` 衍生出来的数据树如下所示：
 #tree(
-  (0, [#icon(name: "nbt-compound") *Me*]),
-  (1, [#icon(name: "nbt-string") *Name*: `Mu_xian`]),
-  (1, [#icon(name: "nbt-string") *Game*: `Minecraft`]),
-  (1, [#icon(name: "nbt-compound") *Country*]),
-  (2, [#icon(name: "nbt-string") *Name*: `中国`]),
-  (2, [#icon(name: "nbt-string") *Area*: `Asia`]),
-  (2, [#icon(name: "nbt-string") *Language*: `汉语`])
+  (0, [#icon("nbt-compound") *Me*]),
+  (1, [#icon("nbt-string") *Name*: `Mu_xian`]),
+  (1, [#icon("nbt-string") *Game*: `Minecraft`]),
+  (1, [#icon("nbt-compound") *Country*]),
+  (2, [#icon("nbt-string") *Name*: `中国`]),
+  (2, [#icon("nbt-string") *Area*: `Asia`]),
+  (2, [#icon("nbt-string") *Language*: `汉语`])
 )
 相应地、它的SNBT格式为#footnote[为方便阅读，本教程部分SNBT会分行表示，在客户端内编写命令的时候不要使用回车键。]：
 #codebox("Me:{
@@ -3945,25 +4032,25 @@ NBT本身并没有#proper-noun(display: "布尔值（Bool）", "bu4 er3 zhi2")�
     Language:\"汉语\"
   }
 }")
-可以看到，标签 #icon(name: "nbt-compound") `Me` 一共有三个子标签，它们分别是 #icon(name: "nbt-string") `Name`、#icon(name: "nbt-string") `Game` 和 #icon(name: "nbt-compound") `Country`，存储的数据类型分别为字符串、字符串和复合标签。可以理解为，这三个子标签分属父标签 #icon(name: "nbt-compound") `Me` 的三个不同的属性，在查阅这些数据时，首先需要保证每种属性所对应标签的唯一性，不能让数据出现冲突、矛盾的地方。规定：*同一级子标签内不能存在标签名相同的标签。*
+可以看到，标签 #icon("nbt-compound") `Me` 一共有三个子标签，它们分别是 #icon("nbt-string") `Name`、#icon("nbt-string") `Game` 和 #icon("nbt-compound") `Country`，存储的数据类型分别为字符串、字符串和复合标签。可以理解为，这三个子标签分属父标签 #icon("nbt-compound") `Me` 的三个不同的属性，在查阅这些数据时，首先需要保证每种属性所对应标签的唯一性，不能让数据出现冲突、矛盾的地方。规定：*同一级子标签内不能存在标签名相同的标签。*
 
-但是不难发现，标签 #icon(name: "nbt-compound") `Country` 作为一个复合标签，其三个子标签中也有一个名为 #icon(name: "nbt-string") `Name` 的标签，这是不是与上述规定有所冲突呢？答案是否定的。上述规定有一个前提——同一级子标签内，标签 #icon(name: "nbt-compound") `Country` 的子标签 #icon(name: "nbt-string") `Name` 与 #icon(name: "nbt-compound") `Me` 的子标签 #icon(name: "nbt-string") `Name` 不属于同一级子标签，因此标签名可以相同。*对于一个标签而言，其子标签的子标签不是它的子标签。*
+但是不难发现，标签 #icon("nbt-compound") `Country` 作为一个复合标签，其三个子标签中也有一个名为 #icon("nbt-string") `Name` 的标签，这是不是与上述规定有所冲突呢？答案是否定的。上述规定有一个前提——同一级子标签内，标签 #icon("nbt-compound") `Country` 的子标签 #icon("nbt-string") `Name` 与 #icon("nbt-compound") `Me` 的子标签 #icon("nbt-string") `Name` 不属于同一级子标签，因此标签名可以相同。*对于一个标签而言，其子标签的子标签不是它的子标签。*
   
-标签 #icon(name: "nbt-compound") `Me` 的三个子标签，它们的数据类型也不尽相同。这是因为复合标签是对父标签多个不同属性的内容的描述，与同样可以存储多个数据的数组（包括列表）相比，复合标签中允许存在不同数据类型的标签；而对列表而言，即使在SNBT中写为异构列表，存储为NBT时所有数据类型必须一致。复合标签与数组的另一个区别是，复合标签内的所有子标签是不论次序的，标签的先后顺序不会影响到数据的处理或存储。而数组内数据的先后顺序很重要，数据顺序的改动会影响到数据存储的位置。
+标签 #icon("nbt-compound") `Me` 的三个子标签，它们的数据类型也不尽相同。这是因为复合标签是对父标签多个不同属性的内容的描述，与同样可以存储多个数据的数组（包括列表）相比，复合标签中允许存在不同数据类型的标签；而对列表而言，即使在SNBT中写为异构列表，存储为NBT时所有数据类型必须一致。复合标签与数组的另一个区别是，复合标签内的所有子标签是不论次序的，标签的先后顺序不会影响到数据的处理或存储。而数组内数据的先后顺序很重要，数据顺序的改动会影响到数据存储的位置。
 
-在数据树中，复合标签与数组是可以相互嵌套的，这意味着复合标签中可以有数组，而数组内的数据类型也可以是复合标签。下面给出了 #icon(name: "nbt") `<玩家>.dat` 数据树的一部分：
+在数据树中，复合标签与数组是可以相互嵌套的，这意味着复合标签中可以有数组，而数组内的数据类型也可以是复合标签。下面给出了 #icon("nbt") `<玩家>.dat` 数据树的一部分：
 #tree(
-  (0, [#icon(name: "nbt-compound") *Player*]),
-  (1, [#icon(name: "nbt-int") *playerGameType*: `0`]),
-  (1, [#icon(name: "nbt-list") *Inventory*]),
-  (2, [#icon(name: "nbt-compound")]),
-  (3, [#icon(name: "nbt-int") *count*: `1`]),
-  (3, [#icon(name: "nbt-byte") *Slot*: `0`]),
-  (3, [#icon(name: "nbt-string") *id*: `minecraft:diamond_sword`]),
-  (2, [#icon(name: "nbt-compound")]),
-  (3, [#icon(name: "nbt-int") *count*: `45`]),
-  (3, [#icon(name: "nbt-byte") *Slot*: `1`]),
-  (3, [#icon(name: "nbt-string") *id*: `minecraft:bread`])
+  (0, [#icon("nbt-compound") *Player*]),
+  (1, [#icon("nbt-int") *playerGameType*: `0`]),
+  (1, [#icon("nbt-list") *Inventory*]),
+  (2, [#icon("nbt-compound")]),
+  (3, [#icon("nbt-int") *count*: `1`]),
+  (3, [#icon("nbt-byte") *Slot*: `0`]),
+  (3, [#icon("nbt-string") *id*: `minecraft:diamond_sword`]),
+  (2, [#icon("nbt-compound")]),
+  (3, [#icon("nbt-int") *count*: `45`]),
+  (3, [#icon("nbt-byte") *Slot*: `1`]),
+  (3, [#icon("nbt-string") *id*: `minecraft:bread`])
 )
 它的SNBT格式为：
 #codebox("Player:{
@@ -3973,7 +4060,7 @@ NBT本身并没有#proper-noun(display: "布尔值（Bool）", "bu4 er3 zhi2")�
     {count:45,Slot:1b,id:\"minecraft:bread\"}
   ]
 }")
-可以看到标签 #icon(name: "nbt-compound") `Player` 的一个子标签 #icon(name: "nbt-list") `Inventory` 为一个列表，列表中的数据类型为 #icon(name: "nbt-compound") 复合标签，可以称它为复合标签的列表。#icon(name: "nbt-list") 列表和 #icon(name: "nbt-compound") 复合标签能相互嵌套形成非常复杂的数据树结构，但嵌套深度不能超过512。
+可以看到标签 #icon("nbt-compound") `Player` 的一个子标签 #icon("nbt-list") `Inventory` 为一个列表，列表中的数据类型为 #icon("nbt-compound") 复合标签，可以称它为复合标签的列表。#icon("nbt-list") 列表和 #icon("nbt-compound") 复合标签能相互嵌套形成非常复杂的数据树结构，但嵌套深度不能超过512。
 ===== 结束（End）
 这种数据类型仅用于标记复合标签的结束，无存储容量。SNBT不使用这种数据类型。
 === SNBT操作
@@ -3982,14 +4069,14 @@ NBT本身并没有#proper-noun(display: "布尔值（Bool）", "bu4 er3 zhi2")�
 将其写在SNBT的值中：
 #codebox("<标签名>:<操作名>(<参数>)")
 现在一共有两种可用的SNBT操作：
-===== 将参数转换为 #icon(name: "nbt-bool") 布尔值，格式为
+===== 将参数转换为 #icon("nbt-bool") 布尔值，格式为
 #codebox("bool(<arg>)")
 其中 `<arg>` 必须为布尔值或数字。若输入布尔值，则直接使用该值；若输入数字，则将非 `0` 的数据转换为 `true`，`0` 转换为 `false`；若输入的不是布尔值或数字，则转换失败。例如：
 ====== `bold:bool(true)` → `bold:true`
 ====== `NoAI:bool(0)` → `NoAI:false`
 ====== `Invulnerable:bool(5)` → `Invulnerable:true`
 ====== `italic:bool("italic")` → 转换失败
-===== 将有连字符的十六进制形式的UUID转换为 #icon(name: "nbt-int_array") 整型数组，格式为
+===== 将有连字符的十六进制形式的UUID转换为 #icon("nbt-int_array") 整型数组，格式为
 #codebox("uuid(<str>)")
 其中 `<str>` 必须是有连字符的十六进制形式的UUID。例如：
 
@@ -3997,7 +4084,7 @@ NBT本身并没有#proper-noun(display: "布尔值（Bool）", "bu4 er3 zhi2")�
 === SNBT转换为NBT \*<subsec:snbt_to_nbt>
 对于一个输入的SNBT，游戏需要将其转换为NBT格式以使用。在转换的时候，游戏会对输入的SNBT做一定处理以适应目标程序对象的数据格式。转换行为可总结为以下四点：
 ===== 不能被程序对象使用的直接丢弃
-若属性在程序对象中不存在（未被使用）或不可写，则输入的SNBT会被直接丢弃。此过程不会产生错误，但也不会保留数据。“不存在”的情况有如：实体的数据有一个字段 #icon(name: "nbt-bool") `Invulnerable`，如果错误地把这个字段写为了 #icon(name: "nbt-bool") `invulnerable`，此字段实体未使用，所以输入的 #icon(name: "nbt-bool") `invulnerable` 会被丢弃。“不可写”的情况有如：方块实体的 #icon(name: "nbt-string") `id` 不可被修改，传入的 #icon(name: "nbt-string") `id` 也会被忽略。
+若属性在程序对象中不存在（未被使用）或不可写，则输入的SNBT会被直接丢弃。此过程不会产生错误，但也不会保留数据。“不存在”的情况有如：实体的数据有一个字段 #icon("nbt-bool") `Invulnerable`，如果错误地把这个字段写为了 #icon("nbt-bool") `invulnerable`，此字段实体未使用，所以输入的 #icon("nbt-bool") `invulnerable` 会被丢弃。“不可写”的情况有如：方块实体的 #icon("nbt-string") `id` 不可被修改，传入的 #icon("nbt-string") `id` 也会被忽略。
 ===== 编码层级的错误会发生报错
 如果一个字段本身存在，但其编码格式违反硬性约束，则会产生报错，并使命令执行失败。例如，一些字段需要使用文本组件作为其值，如果输入的文本组件有错误，则整个输入都会产生错误。以下命令会产生报错，即使传入的数据在SNBT的层面上是一个空复合标签：
 #codebox("give @s ladder[minecraft:custom_name={}]")
@@ -4005,15 +4092,15 @@ NBT本身并没有#proper-noun(display: "布尔值（Bool）", "bu4 er3 zhi2")�
 如果输入的SNBT与期望的数据不符，若存在明确的转换规则，则会按照转换规则纠正输入数据：
 ====== *若期望的值是一个命名空间ID，而输入的值是一个省略命名空间前缀的字符串，则会为其添加默认的命名空间 `minecraft`。*如：
 输入 `id: "stone"` $arrow.r$ 转换为 `id: "minecraft:stone"`
-====== 若期望的值是 #icon(name: "nbt-bool") 布尔值，而输入的值是 #icon(name: "nbt-byte") 字节型、#icon(name: "nbt-short") 短整型、#icon(name: "nbt-int") 整型、#icon(name: "nbt-long") 长整型、#icon(name: "nbt-float") 单精度浮点数或 #icon(name: "nbt-double") 双精度浮点数，则向下取整转换为字节型，非 `0b` 的值被视为 `1b`。
-====== 若期望的值是 #icon(name: "nbt-byte") 字节型、#icon(name: "nbt-short") 短整型、#icon(name: "nbt-int") 整型、#icon(name: "nbt-long") 长整型、#icon(name: "nbt-float") 单精度浮点数或 #icon(name: "nbt-double") 双精度浮点数，而输入的值与目标类型不符，则自动转换为目标类型。若目标的类型是 #icon(name: "nbt-byte") 字节型、#icon(name: "nbt-short") 短整型、#icon(name: "nbt-int") 整型或 #icon(name: "nbt-long") 长整型，而输入的值是 #icon(name: "nbt-float") 单精度浮点数或 #icon(name: "nbt-double") 双精度浮点数，则会先向下取整再进行转换。
+====== 若期望的值是 #icon("nbt-bool") 布尔值，而输入的值是 #icon("nbt-byte") 字节型、#icon("nbt-short") 短整型、#icon("nbt-int") 整型、#icon("nbt-long") 长整型、#icon("nbt-float") 单精度浮点数或 #icon("nbt-double") 双精度浮点数，则向下取整转换为字节型，非 `0b` 的值被视为 `1b`。
+====== 若期望的值是 #icon("nbt-byte") 字节型、#icon("nbt-short") 短整型、#icon("nbt-int") 整型、#icon("nbt-long") 长整型、#icon("nbt-float") 单精度浮点数或 #icon("nbt-double") 双精度浮点数，而输入的值与目标类型不符，则自动转换为目标类型。若目标的类型是 #icon("nbt-byte") 字节型、#icon("nbt-short") 短整型、#icon("nbt-int") 整型或 #icon("nbt-long") 长整型，而输入的值是 #icon("nbt-float") 单精度浮点数或 #icon("nbt-double") 双精度浮点数，则会先向下取整再进行转换。
 ===== 不能转换的数据就归零或置空
 如果输入的SNBT与期望的数据不符且无法转换，则：
-====== 若期望的值是一个 #icon(name: "nbt-bool")  布尔值，而输入的值是 #icon(name: "nbt-list") 列表、#icon(name: "nbt-byte_array") 字节型数组、#icon(name: "nbt-int_array") 整型数组、#icon(name: "nbt-long_array") 长整型数组、#icon(name: "nbt-string") 字符串或 #icon(name: "nbt-compound") 复合标签，则强制使用 `0b`。
-====== 若期望的值是 #icon(name: "nbt-byte") 字节型、#icon(name: "nbt-short") 短整型、#icon(name: "nbt-int") 整型、#icon(name: "nbt-long") 长整型、#icon(name: "nbt-float") 单精度浮点数或 #icon(name: "nbt-double") 双精度浮点数，而输入的值是 #icon(name: "nbt-list") 列表、#icon(name: "nbt-byte_array") 字节型数组、#icon(name: "nbt-int_array") 整型数组、#icon(name: "nbt-long_array") 长整型数组、#icon(name: "nbt-string") 字符串或 #icon(name: "nbt-compound") 复合标签，则强制赋值为 `0`，具体数据类型取决于期望的类型。
-====== 若期望的值是 #icon(name: "nbt-string") 字符串，而输入的值不是字符串，则强制使用空字符串 `""`。
-====== 若期望的值是 #icon(name: "nbt-list") 列表、#icon(name: "nbt-byte_array") 字节型数组、#icon(name: "nbt-int_array") 整型数组或 #icon(name: "nbt-long_array") 长整型数组，而输入的值不是对应的类型，则强制使用空列表 `[]` 或空数组。
-====== 若期望的值是 #icon(name: "nbt-compound") 复合标签，而输入的值不是复合标签，则强制使用空复合标签 `{}`。
+====== 若期望的值是一个 #icon("nbt-bool")  布尔值，而输入的值是 #icon("nbt-list") 列表、#icon("nbt-byte_array") 字节型数组、#icon("nbt-int_array") 整型数组、#icon("nbt-long_array") 长整型数组、#icon("nbt-string") 字符串或 #icon("nbt-compound") 复合标签，则强制使用 `0b`。
+====== 若期望的值是 #icon("nbt-byte") 字节型、#icon("nbt-short") 短整型、#icon("nbt-int") 整型、#icon("nbt-long") 长整型、#icon("nbt-float") 单精度浮点数或 #icon("nbt-double") 双精度浮点数，而输入的值是 #icon("nbt-list") 列表、#icon("nbt-byte_array") 字节型数组、#icon("nbt-int_array") 整型数组、#icon("nbt-long_array") 长整型数组、#icon("nbt-string") 字符串或 #icon("nbt-compound") 复合标签，则强制赋值为 `0`，具体数据类型取决于期望的类型。
+====== 若期望的值是 #icon("nbt-string") 字符串，而输入的值不是字符串，则强制使用空字符串 `""`。
+====== 若期望的值是 #icon("nbt-list") 列表、#icon("nbt-byte_array") 字节型数组、#icon("nbt-int_array") 整型数组或 #icon("nbt-long_array") 长整型数组，而输入的值不是对应的类型，则强制使用空列表 `[]` 或空数组。
+====== 若期望的值是 #icon("nbt-compound") 复合标签，而输入的值不是复合标签，则强制使用空复合标签 `{}`。
 === 二进制格式 \*
 NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始标准，是GZip格式的压缩文件，但仍有小部分未被压缩。在被压缩的NBT文件中，一定使用一个复合标签用于文件的封装，也就是说，这个未命名的复合标签便是根标签。
 
@@ -4026,61 +4113,61 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
   columns: (auto, auto, auto, auto),
   header: ([ID], [数据类型], [图标], [二进制格式]),
   [0], [结束], [-], [`00`],
-  [1], [字节型], [#icon(name: "nbt-byte")], [`01`],
-  [2], [短整型], [#icon(name: "nbt-short")], [`02`],
-  [3], [整型], [#icon(name: "nbt-int")], [`03`],
-  [4], [长整型], [#icon(name: "nbt-long")], [`04`],
-  [5], [单精度浮点数], [#icon(name: "nbt-float")], [`05`],
-  [6], [双精度浮点数], [#icon(name: "nbt-double")], [`06`],
-  [7], [字节型数组], [#icon(name: "nbt-byte_array")], [`07`],
-  [8], [字符串], [#icon(name: "nbt-string")], [`08`],
-  [9], [列表], [#icon(name: "nbt-list")], [`09`],
-  [10], [复合标签], [#icon(name: "nbt-compound")], [`0a`],
-  [11], [整型数组], [#icon(name: "nbt-int_array")], [`0b`],
-  [12], [长整型数组], [#icon(name: "nbt-long_array")], [`0c`]
+  [1], [字节型], [#icon("nbt-byte")], [`01`],
+  [2], [短整型], [#icon("nbt-short")], [`02`],
+  [3], [整型], [#icon("nbt-int")], [`03`],
+  [4], [长整型], [#icon("nbt-long")], [`04`],
+  [5], [单精度浮点数], [#icon("nbt-float")], [`05`],
+  [6], [双精度浮点数], [#icon("nbt-double")], [`06`],
+  [7], [字节型数组], [#icon("nbt-byte_array")], [`07`],
+  [8], [字符串], [#icon("nbt-string")], [`08`],
+  [9], [列表], [#icon("nbt-list")], [`09`],
+  [10], [复合标签], [#icon("nbt-compound")], [`0a`],
+  [11], [整型数组], [#icon("nbt-int_array")], [`0b`],
+  [12], [长整型数组], [#icon("nbt-long_array")], [`0c`]
 ) <tab:data_type_and_binary_format>
 ===== 结束
 对于结束类型的数据，它只有一个字节的长度，且这个字节固定为 `00`，它一定会出现在复合标签的末尾。
 ===== 字节型、短整型、整型和长整型
-对于这四种类型的数据，每一个标签都由四部分组成：第1个字节标识该标签的类型。第2、3字节标识该标签之标签名长度，必须为无符号整数，两个字节能存储的最大数值为65535，因此一个标签的标签名最多不能超过65535个字符。根据第2、3字节定义的标签名长度，接下来若干字节用于存储该标签的标签名，名称中每个ASCII字符占据一个字节，第2、3字节定义的值有多大，则这部分的字节数量就为多少。最后若干字节是该标签的负载，负载包括了该标签的值。对于 #icon(name: "nbt-byte") 字节型，此部分的字节数为1；对于 #icon(name: "nbt-short") 短整型则为2；对于 #icon(name: "nbt-int") 整型则为4，对于 #icon(name: "nbt-long_array") 长整型则为8。四种数据类型的负载均包含有符号的值。
+对于这四种类型的数据，每一个标签都由四部分组成：第1个字节标识该标签的类型。第2、3字节标识该标签之标签名长度，必须为无符号整数，两个字节能存储的最大数值为65535，因此一个标签的标签名最多不能超过65535个字符。根据第2、3字节定义的标签名长度，接下来若干字节用于存储该标签的标签名，名称中每个ASCII字符占据一个字节，第2、3字节定义的值有多大，则这部分的字节数量就为多少。最后若干字节是该标签的负载，负载包括了该标签的值。对于 #icon("nbt-byte") 字节型，此部分的字节数为1；对于 #icon("nbt-short") 短整型则为2；对于 #icon("nbt-int") 整型则为4，对于 #icon("nbt-long_array") 长整型则为8。四种数据类型的负载均包含有符号的值。
 
-例如，数据@code:binary_format_1 的第1位为 `01`，这一位定义了数据类型，为 #icon(name: "nbt-byte") 字节型，第2、3位为 `00 05`，它定义了标签名的长度，说明该标签名有五个字节。往后数5位，第4 \~ 8位 `63 6f 75 61 74` 是标签名的字符，根据ASCII码，`63` 代表 `c`、`6f` 代表 `o`、`75` 代表 `u`、`61` 代表 `n`、`74` 代表 `t`，因此标签名为 `count`。最后一位 `01` 是负载，定义了该标签的值 `1`。综上所述，该标签为
+例如，数据@code:binary_format_1 的第1位为 `01`，这一位定义了数据类型，为 #icon("nbt-byte") 字节型，第2、3位为 `00 05`，它定义了标签名的长度，说明该标签名有五个字节。往后数5位，第4 \~ 8位 `63 6f 75 61 74` 是标签名的字符，根据ASCII码，`63` 代表 `c`、`6f` 代表 `o`、`75` 代表 `u`、`61` 代表 `n`、`74` 代表 `t`，因此标签名为 `count`。最后一位 `01` 是负载，定义了该标签的值 `1`。综上所述，该标签为
 #codebox("count: 1b")
 ===== 浮点数
-对于单精度浮点数和双精度浮点数，它们的字节构成与上述整型数据类似，唯一不同之处在于浮点数的负载字节遵循IEEE 754-2008标准。对于 #icon(name: "nbt-float") 单精度浮点数，负载字节长4位；对于 #icon(name: "nbt-double") 双精度浮点数，负载字节长8位。
+对于单精度浮点数和双精度浮点数，它们的字节构成与上述整型数据类似，唯一不同之处在于浮点数的负载字节遵循IEEE 754-2008标准。对于 #icon("nbt-float") 单精度浮点数，负载字节长4位；对于 #icon("nbt-double") 双精度浮点数，负载字节长8位。
 
 例如，对于如下的数据：
 #codebox(text(blue)[05 ] + text(purple)[00 06 ] + text(red)[48 65 61 6c 74 68 ] + text(olive)[40 90 00 00])
-由 `05 00 06 48 65 61 6c 74 68` 知该标签类型为 #icon(name: "nbt-float") 单精度浮点数，标签名为 `Health`，`40 90 00 00` 为负载，需将其转化为单精度浮点数。先将 `40 90 00 00` 转化为二进制
+由 `05 00 06 48 65 61 6c 74 68` 知该标签类型为 #icon("nbt-float") 单精度浮点数，标签名为 `Health`，`40 90 00 00` 为负载，需将其转化为单精度浮点数。先将 `40 90 00 00` 转化为二进制
 #codebox("01000000 10010000 00000000 00000000")
 接下来按1位符号位、8位指数位、23位尾数位分割这个数据：
 #codebox("0 10000001 00100000000000000000000")
 最高位 `0` 表示该值为正数，`10000001` 是指数部分，指数可计算得$2^8+2^0-127=129-127=2$，`00100000000000000000000` 是尾数部分，可计算得$1+2^(-3)=1.125$，浮点数为$(-1)^0 times 2^2 times 1.125=4.5$。因此该标签为
 #codebox("Health: 4.5f")
 ===== 字符串
-#icon(name: "nbt-string") 字符串的二进制格式为：1位类型标识、2位标签名长度、若干位标签名字符、2位值长度、若干位负载。例如，对于如下的数据：
+#icon("nbt-string") 字符串的二进制格式为：1位类型标识、2位标签名长度、若干位标签名字符、2位值长度、若干位负载。例如，对于如下的数据：
 #codebox(text(blue)[08 ] + text(purple)[00 02 ] + text(red)[49 64 ] + text(fuchsia)[00 0e ] + text(olive)[6d 69 6e 65 63 72 61 66 74 3a 73 74 6f 6e 65])
-`08` 表示该标签为 #icon(name: "nbt-string") 字符串类型，`00 02 69 64` 表示标签名为 `id`，`00 0e` 表示值有15个字符，后面的 `6d 69 6e 65 63 72 61 66 74 3a 73 74 6f 6e 65` 表示值为 `minecraft:stone`。故该标签为
+`08` 表示该标签为 #icon("nbt-string") 字符串类型，`00 02 69 64` 表示标签名为 `id`，`00 0e` 表示值有15个字符，后面的 `6d 69 6e 65 63 72 61 66 74 3a 73 74 6f 6e 65` 表示值为 `minecraft:stone`。故该标签为
 #codebox("id: \"minecraft:stone\"")
 ===== 字节型数组、整型数组、长整型数组
-对于这三类数组，二进制格式为：1位类型标识、2位标签名长度、若干位标签名字符、4位有符号整数表示数组的长度。若数组的长度为$n$，则最后使用$n times s$字节表示负载，其中$s$的值对于 #icon(name: "nbt-byte_array") 字节型数组而言为1，对于 #icon(name: "nbt-int_array") 整型数组是4，对于 #icon(name: "nbt-long_array") 长整型数组是8。例如：
+对于这三类数组，二进制格式为：1位类型标识、2位标签名长度、若干位标签名字符、4位有符号整数表示数组的长度。若数组的长度为$n$，则最后使用$n times s$字节表示负载，其中$s$的值对于 #icon("nbt-byte_array") 字节型数组而言为1，对于 #icon("nbt-int_array") 整型数组是4，对于 #icon("nbt-long_array") 长整型数组是8。例如：
 #codebox(text(blue)[11 ] + text(purple)[00 04 ] + text(red)[55 55 49 44 ] + text(maroon)[00 00 00 04 ] + text(olive)[4d 90 3b 0b ] + text(teal)[2b 4b 98 b3 ] + text(olive)[0f 8e 7d 8e ] + text(teal)[f2 95 15 c3])
-其中 11 表示该标签为 #icon(name: "nbt-int_array") 整型数组，`00 04` 表示该标签的标签名有4个字符，`55 55 49 44` 表示该标签的标签名为 `UUID`，`00 00 00 04` 表示该数组有4个元素，`4d 90 3b 0b 2b 4b 98 b3 0f 8e 7d 8e f2 95 15 c3` 存储了这4个元素的值，由于每个值均为整型，因此每4个字节为1个有符号整数，换算结果为 `188452941`、`-1281864917`、`-1904374257`、`-1021995534`，综上所述，该标签为
+其中 11 表示该标签为 #icon("nbt-int_array") 整型数组，`00 04` 表示该标签的标签名有4个字符，`55 55 49 44` 表示该标签的标签名为 `UUID`，`00 00 00 04` 表示该数组有4个元素，`4d 90 3b 0b 2b 4b 98 b3 0f 8e 7d 8e f2 95 15 c3` 存储了这4个元素的值，由于每个值均为整型，因此每4个字节为1个有符号整数，换算结果为 `188452941`、`-1281864917`、`-1904374257`、`-1021995534`，综上所述，该标签为
 #codebox("UUID: [I; 188452941, -1281864917, -1904374257, -1021995534]")
 ===== 列表
-#icon(name: "nbt-list") 列表的二进制格式在1位类型标识、2位标签名长度和若干位标签名字符后，又使用了1字节用于标识列表内元素的数据类型，其值仍按表@tab:data_type_and_binary_format 使用。然后是4位有符号整数表示数组的长度以及和长度相符的若干位负载。例如：
+#icon("nbt-list") 列表的二进制格式在1位类型标识、2位标签名长度和若干位标签名字符后，又使用了1字节用于标识列表内元素的数据类型，其值仍按表@tab:data_type_and_binary_format 使用。然后是4位有符号整数表示数组的长度以及和长度相符的若干位负载。例如：
 #codebox(text(blue)[09 ] + text(purple)[00 08 ] + text(red)[52 6f 74 61 74 69 6f 6e ] + text(navy)[05 ] + text(maroon)[00 00 00 02 ] + text(olive)[42 b4 00 00 ] + text(teal)[00 00 00 00])
-`09` 代表该标签为 #icon(name: "nbt-list") 列表，`00 08 52 6f 74 61 74 69 6f 6e` 是该标签的标签名 `Rotation`，`05` 说明该列表内元素均为单精度浮点数，`00 00 00 02` 是列表长度，`42 b4 00 00` 和 `00 00 00 00` 分别为列表内的元素 `90`、`0`，故标签为
+`09` 代表该标签为 #icon("nbt-list") 列表，`00 08 52 6f 74 61 74 69 6f 6e` 是该标签的标签名 `Rotation`，`05` 说明该列表内元素均为单精度浮点数，`00 00 00 02` 是列表长度，`42 b4 00 00` 和 `00 00 00 00` 分别为列表内的元素 `90`、`0`，故标签为
 #codebox("Rotation: [90f, 0f]")
 ===== 复合标签
-一个 #icon(name: "nbt-compound") 复合标签使用1字节标识数据类型，2字节标识标签名长度，若干字节表示标签名。紧随其后使用若干字节表示其子标签，各子标签的格式与上文所述完全一致，但复合标签末尾一定存在一个 `00` 字节。例如：
+一个 #icon("nbt-compound") 复合标签使用1字节标识数据类型，2字节标识标签名长度，若干字节表示标签名。紧随其后使用若干字节表示其子标签，各子标签的格式与上文所述完全一致，但复合标签末尾一定存在一个 `00` 字节。例如：
 #codebox(text(blue)[0a ] + text(purple)[00 0d ] + text(red)[62 6c 65 6e 64 69 6e 67 5f 64 61 74 61 ] + text(blue)[03 ] + text(purple)[00 0b ] + text(red)[6d 61 78 5f 73 65 63 74 69 6f 6e ] + text(olive)[00 00 00 20 ] + text(blue)[03 ] + text(purple)[00 0b ] + text(red)[6d 69 6e 5f 73 65 63 74 69 6f 6e ] + text(olive)[ff ff ff fc ] + text(orange)[00])
-其中 `0a` 标识了 #icon(name: "nbt-compound") 复合标签类型，`00 0d 62 6c 65 6e 64 69 6e 67 5f 64 61 74 61` 是标签名长度和标签名，为13个字符的 `blending_data`，`03` 是 `blending_data` 第一个子标签的数据类型，是为 #icon(name: "nbt-int") 整型。接下来的 `00 0b 6d 61 78 5f 73 65 63 74 69 6f 6e` 是第一个子标签的标签名 `max_section`，`00 00 00 04` 是这个标签的值 `20`。随后的 `03` 是 `blending_data` 第二个子标签的数据类型，是为 #icon(name: "nbt-int") 整型。第二个子标签的标签名可解读为 `max_section`，值为 `-4`。末尾的字节 `00` 是结束类型。故该标签为
+其中 `0a` 标识了 #icon("nbt-compound") 复合标签类型，`00 0d 62 6c 65 6e 64 69 6e 67 5f 64 61 74 61` 是标签名长度和标签名，为13个字符的 `blending_data`，`03` 是 `blending_data` 第一个子标签的数据类型，是为 #icon("nbt-int") 整型。接下来的 `00 0b 6d 61 78 5f 73 65 63 74 69 6f 6e` 是第一个子标签的标签名 `max_section`，`00 00 00 04` 是这个标签的值 `20`。随后的 `03` 是 `blending_data` 第二个子标签的数据类型，是为 #icon("nbt-int") 整型。第二个子标签的标签名可解读为 `max_section`，值为 `-4`。末尾的字节 `00` 是结束类型。故该标签为
 #codebox("blending_data: {max_section: 20, min_section: -4}")
 == 测试NBT标签<sec:testing_nbt>
 对于一段已有的NBT数据，有时会需要检测它是否满足一定要求，检测方法是提供一段SNBT用于对比，这样的SNBT被称为#proper-noun(display: "测试NBT标签（Tseting NBT Tags）", "ce4 shi4 NBT biao1 qian1")。测试NBT标签主要在目标选择器的NBT参数和 `custom_data` 数据组件谓词中使用。本节将以目标选择器NBT参数为主描述测试NBT标签的匹配方法。#cite(<testing_nbt>, form: none)
 ==== 对普通标签的匹配
-满足这一类匹配要求的标签类型为*除了 #icon(name: "nbt-compound") 复合标签和 #icon(name: "nbt-list") 列表外的其他所有类型*，#icon(name: "nbt-byte_array") 字节型数组、#icon(name: "nbt-int_array") 整型数组和 #icon(name: "nbt-long_array") 长整型数组均位于此列。对于这些标签，提供的测试NBT标签和接受对比的目标NBT必须在名称、标签类型和值上完全一致。
+满足这一类匹配要求的标签类型为*除了 #icon("nbt-compound") 复合标签和 #icon("nbt-list") 列表外的其他所有类型*，#icon("nbt-byte_array") 字节型数组、#icon("nbt-int_array") 整型数组和 #icon("nbt-long_array") 长整型数组均位于此列。对于这些标签，提供的测试NBT标签和接受对比的目标NBT必须在名称、标签类型和值上完全一致。
 
 比如，对于一个目标NBT：
 #codebox("bold: true")
@@ -4096,14 +4183,14 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
   ],
   align: right
 )
-如果一个目标NBT的值是 #icon(name: "nbt-byte_array") 字节型数组、#icon(name: "nbt-int_array") 整型数组或 #icon(name: "nbt-long_array") 长整型数组，则数组内容必须完全一致才能匹配。比如：
+如果一个目标NBT的值是 #icon("nbt-byte_array") 字节型数组、#icon("nbt-int_array") 整型数组或 #icon("nbt-long_array") 长整型数组，则数组内容必须完全一致才能匹配。比如：
 #codebox("UUID: [I; 1, 2, 3, 4]")
 + 能匹配的测试NBT标签：`UUID: [I; 1, 2, 3, 4]` #text(green)[☑]
 + 不能匹配的测试NBT标签：
   + 缺失元素 `UUID: [I; 1, 2, 3]` #text(red)[☒]
   + 元素顺序调换 `UUID: [I; 4, 3, 2, 1]` #text(red)[☒]
   + 更改数据类型 `UUID: [B; 1, 2, 3, 4]` #text(red)[☒]
-  + 写成 #icon(name: "nbt-list") 列表 `UUID: [1, 2, 3, 4]` #text(red)[☒]
+  + 写成 #icon("nbt-list") 列表 `UUID: [1, 2, 3, 4]` #text(red)[☒]
 ==== 对复合标签的匹配
 复合标签的匹配规则是：只要目标NBT存在测试NBT标签指定的标签，就匹配成功，无论复合标签内是否存在其他的标签。如果测试NBT标签是一个空标签 `{}`，则只要目标NBT是一个复合标签，就匹配成功。
 
@@ -4111,29 +4198,29 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
 #codebox([{Motion: [0.0d, 0.0d, 0.0d], data: {test: {a: 1b, b: 0b}}, Pos: [-5.0d, 56.0d, -7.0d], Fire: 0s, Invulnerable: 0b, fall_distance: 0.0d, Air: 300s, OnGround: 0b, PortalCooldown: 0, UUID: [I; -1711511327, -910079775, -1565324410, 1666279971], Rotation: [0.0f, 0.0f]}]) <code:testing_nbt_example>
 结构化表示为
 #tree(
-  (0, [#icon(name: "nbt-compound") 根标签]),
-  (1, [#icon(name: "nbt-short") *Air*: `300`]),
-  (1, [#icon(name: "nbt-compound") *data*]),
-  (2, [#icon(name: "nbt-compound") *test*]),
-  (3, [#icon(name: "nbt-bool") *a*: `true`]),
-  (3, [#icon(name: "nbt-bool") *b*: `false`]),
-  (1, [#icon(name: "nbt-double") *fall_distance*: `0.0`]),
-  (1, [#icon(name: "nbt-short") *Fire*: `0`]),
-  (1, [#icon(name: "nbt-bool") *Invulnerable*: `false`]),
-  (1, [#icon(name: "nbt-list") *Motion*]),
-  (2, [#icon(name: "nbt-double") `0.0`]),
-  (2, [#icon(name: "nbt-double") `0.0`]),
-  (2, [#icon(name: "nbt-double") `0.0`]),
-  (1, [#icon(name: "nbt-bool") *OnGround*: `false`]),
-  (1, [#icon(name: "nbt-int") *PortalCooldown*: `0`]),
-  (1, [#icon(name: "nbt-list") *Pos*]),
-  (2, [#icon(name: "nbt-double") `-5.0`]),
-  (2, [#icon(name: "nbt-double") `56.0`]),
-  (2, [#icon(name: "nbt-double") `-7.0`]),
-  (1, [#icon(name: "nbt-list") *Rotation*]),
-  (2, [#icon(name: "nbt-float") `0.0`]),
-  (2, [#icon(name: "nbt-float") `0.0`]),
-  (1, [#icon(name: "nbt-int_array") *UUID*: `[I; -1711511327, -910079775, -1565324410, 1666279971]`])
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-short") *Air*: `300`]),
+  (1, [#icon("nbt-compound") *data*]),
+  (2, [#icon("nbt-compound") *test*]),
+  (3, [#icon("nbt-bool") *a*: `true`]),
+  (3, [#icon("nbt-bool") *b*: `false`]),
+  (1, [#icon("nbt-double") *fall_distance*: `0.0`]),
+  (1, [#icon("nbt-short") *Fire*: `0`]),
+  (1, [#icon("nbt-bool") *Invulnerable*: `false`]),
+  (1, [#icon("nbt-list") *Motion*]),
+  (2, [#icon("nbt-double") `0.0`]),
+  (2, [#icon("nbt-double") `0.0`]),
+  (2, [#icon("nbt-double") `0.0`]),
+  (1, [#icon("nbt-bool") *OnGround*: `false`]),
+  (1, [#icon("nbt-int") *PortalCooldown*: `0`]),
+  (1, [#icon("nbt-list") *Pos*]),
+  (2, [#icon("nbt-double") `-5.0`]),
+  (2, [#icon("nbt-double") `56.0`]),
+  (2, [#icon("nbt-double") `-7.0`]),
+  (1, [#icon("nbt-list") *Rotation*]),
+  (2, [#icon("nbt-float") `0.0`]),
+  (2, [#icon("nbt-float") `0.0`]),
+  (1, [#icon("nbt-int_array") *UUID*: `[I; -1711511327, -910079775, -1565324410, 1666279971]`])
 )
 + 能匹配的测试NBT标签（以下全部写成目标选择器）有：
   + 空复合标签，因为根标签也是一个复合标签 `@e[nbt={}]` #text(green)[☑]
@@ -4182,12 +4269,12 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
   )
   #text(fill: rgb("#d71d1d"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", [指向的根标签])
 ]
-`标签` 处应为一个测试NBT标签，它的写法在节@sec:testing_nbt 中已讲过，需要匹配的标签必须为根标签的子标签，也可以为空。若标签处为空或指定的数据与标签的实际数据匹配时，则指向根标签；若不匹配则不指向任何标签。例如，标签处为一只绵羊的某一个标签 #icon(name: "nbt-compound") `Brain`，这个标签为绵羊标签的子标签，则指向的是绵羊这个根标签。
+`标签` 处应为一个测试NBT标签，它的写法在节@sec:testing_nbt 中已讲过，需要匹配的标签必须为根标签的子标签，也可以为空。若标签处为空或指定的数据与标签的实际数据匹配时，则指向根标签；若不匹配则不指向任何标签。例如，标签处为一只绵羊的某一个标签 #icon("nbt-compound") `Brain`，这个标签为绵羊标签的子标签，则指向的是绵羊这个根标签。
 
 用法示例：
 ====== 该节点指向该复合标签本身：
 #codebox("{}")
-====== 该节点会先判断根标签的子标签 #icon(name: "nbt-bool") `main` 的值是否为 `true`，若是则指向根标签；若否则不指向任何内容：
+====== 该节点会先判断根标签的子标签 #icon("nbt-bool") `main` 的值是否为 `true`，若是则指向根标签；若否则不指向任何内容：
 #codebox("{main:true}")
 ===== #proper-noun(display: "某名称的标签（Named tag）", "mou3 ming2 cheng1 de biao1 qian1")
 语法：
@@ -4226,11 +4313,11 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
 用法与根复合标签类似，`子标签` 是一个测试NBT标签，可选填，指向不必为根标签的标签，且指向的标签必须为复合标签。注意，`标签名` 和 `{子标签}` 之间不能添加冒号。
 用法举例：
 ====== 已知有一个标签 `main:{a:true,b:false}`，则：
-======= 该节点指向 #icon(name: "nbt-compound") `main` 标签：
+======= 该节点指向 #icon("nbt-compound") `main` 标签：
 #codebox("main{}")
-======= 该节点会先判断子标签 #icon(name: "nbt-bool") `a` 的值是否为 `true`，显然结果为是，因此也指向标签 #icon(name: "nbt-compound") `main`：
+======= 该节点会先判断子标签 #icon("nbt-bool") `a` 的值是否为 `true`，显然结果为是，因此也指向标签 #icon("nbt-compound") `main`：
 #codebox("main{a:true}")
-====== 已知有一个标签 `NoAI:true`，则该节点无法指向任何标签，因为 #icon(name: "nbt-bool") `NoAI` 不是复合标签：
+====== 已知有一个标签 `NoAI:true`，则该节点无法指向任何标签，因为 #icon("nbt-bool") `NoAI` 不是复合标签：
 #codebox("NoAI{}")
 ==== 指向列表或数组中元素的节点类型
 这类节点指向*一个列表或数组中的一个或多个元素*。由于一个列表或数组中的元素实际上是上一级标签的值，则这类节点实际指向标签的值而不是一个完整的标签。
@@ -4263,7 +4350,7 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
 )
 索引指向的地址不能超出列表或数组的长度，否则节点就不指向任何标签。
 
-用法举例：假设有一个标签 #icon(name: "nbt-byte_array") `a:[B;1,0,0,1]`，则
+用法举例：假设有一个标签 #icon("nbt-byte_array") `a:[B;1,0,0,1]`，则
 ====== `a[0]` 指向第一个元素，值为 `1b`；
 ====== `a[3]` 指向第四个元素，值为 `1b`；
 ====== `a[-2]` 指向倒数第二个（即第三个）元素，值为 `0b`；
@@ -4312,7 +4399,7 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
 ======= `a[{}]` 不指向任何元素。
 ======= `a[{b:1}]` 与列表中的 `{b:1}` 匹配，故指向 `{b:1}` 这个复合标签。
 ======= `a[{b:2}]` 与列表中的元素都不匹配，故不指向任何内容。
-====== 假设有一个字节型数组 `a:[B;1,0,0,1]`，则 `a[{}]` 不指向任何内容，因为标签 #icon(name: "nbt-byte_array") `a` 不是复合标签的列表。
+====== 假设有一个字节型数组 `a:[B;1,0,0,1]`，则 `a[{}]` 不指向任何内容，因为标签 #icon("nbt-byte_array") `a` 不是复合标签的列表。
 \
 
 特别地、当列表内的元素均为子列表时，依旧可以使用这种节点的变形，形如
@@ -4336,39 +4423,39 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
   align: right
 )
 #reset-h6
-====== `a[0][0]` 指向列表 #icon(name: "list") `a` 的第一个子列表的第一个元素。
-====== `a[0][{b:1}]` 指向列表 #icon(name: "list") `a` 的第一个子列表的元素 `{b:1}`，当且仅当该子列表中存在复合标签 `{b:1}`。
+====== `a[0][0]` 指向列表 #icon("list") `a` 的第一个子列表的第一个元素。
+====== `a[0][{b:1}]` 指向列表 #icon("list") `a` 的第一个子列表的元素 `{b:1}`，当且仅当该子列表中存在复合标签 `{b:1}`。
 === 路径
 路径是由若干个节点组成的，在编写路径时，一定要注意*从根标签开始编写*。
 #example(
   [
-    有一棵数据树如下所示，其中 #icon(name: "nbt-compound") `Root` 为根标签。
+    有一棵数据树如下所示，其中 #icon("nbt-compound") `Root` 为根标签。
     #tree(
-      (0, [#icon(name: "nbt-compound") *Root*]),
-      (1, [#icon(name: "nbt-byte") *TagA*: `1`]),
-      (1, [#icon(name: "nbt-int") *TagB*: `30`]),
-      (1, [#icon(name: "nbt-compound") *ComA*]),
-      (2, [#icon(name: "nbt-float") *TagC*: `0.6`]),
-      (2, [#icon(name: "nbt-list") *List*]),
-      (3, [#icon(name: "nbt-compound")]),
-      (4, [#icon(name: "nbt-string") *Str*: `OK`]),
-      (4, [#icon(name: "nbt-byte") *TagD*: `0`]),
-      (3, [#icon(name: "nbt-compound")]),
-      (4, [#icon(name: "nbt-string") *Str*: `yes`]),
-      (4, [#icon(name: "nbt-byte") *TagD*: `0`]),
-      (2, [#icon(name: "nbt-compound") *ComB*]),
-      (1, [#icon(name: "nbt-byte_array") *Array*: `[B; 0, 1, 0, 0, 1]`])
+      (0, [#icon("nbt-compound") *Root*]),
+      (1, [#icon("nbt-byte") *TagA*: `1`]),
+      (1, [#icon("nbt-int") *TagB*: `30`]),
+      (1, [#icon("nbt-compound") *ComA*]),
+      (2, [#icon("nbt-float") *TagC*: `0.6`]),
+      (2, [#icon("nbt-list") *List*]),
+      (3, [#icon("nbt-compound")]),
+      (4, [#icon("nbt-string") *Str*: `OK`]),
+      (4, [#icon("nbt-byte") *TagD*: `0`]),
+      (3, [#icon("nbt-compound")]),
+      (4, [#icon("nbt-string") *Str*: `yes`]),
+      (4, [#icon("nbt-byte") *TagD*: `0`]),
+      (2, [#icon("nbt-compound") *ComB*]),
+      (1, [#icon("nbt-byte_array") *Array*: `[B; 0, 1, 0, 0, 1]`])
     )
     + 写出标签 `Root` 的值。
     + 分别表示下列地址：
-      + #icon(name: "nbt-byte_array") `Array` 的第四个元素；
-      + #icon(name: "nbt-compound") `ComB`；
-      + #icon(name: "nbt-list") `List` 中的所有元素；
-      + 所有名为 #icon(name: "nbt-string") `Str` 的标签；
+      + #icon("nbt-byte_array") `Array` 的第四个元素；
+      + #icon("nbt-compound") `ComB`；
+      + #icon("nbt-list") `List` 中的所有元素；
+      + 所有名为 #icon("nbt-string") `Str` 的标签；
       + 名为 `Str` 且值为 `yes` 的标签。
   ],
   [
-    + 根标签 #icon(name: "nbt-compound") `Root` 为一个复合标签，里面有 #icon(name: "nbt-byte") `TagA`、#icon(name: "nbt-int") `TagB`、#icon(name: "nbt-compound") `ComA` 和 #icon(name: "nbt-byte_array") `Array` 四个子标签，其中 #icon(name: "nbt-compound") `ComA` 又为一个复合标签，含有二级子标签#icon(name: "nbt-float") `TagC`、#icon(name: "nbt-list") `List` 和 #icon(name: "nbt-compound") `ComB`。#icon(name: "nbt-list") `List` 是一个复合标签的列表，内部含有两个复合标签。因此 #icon(name: "nbt-compound") `Root` 标签的值如下所示。
+    + 根标签 #icon("nbt-compound") `Root` 为一个复合标签，里面有 #icon("nbt-byte") `TagA`、#icon("nbt-int") `TagB`、#icon("nbt-compound") `ComA` 和 #icon("nbt-byte_array") `Array` 四个子标签，其中 #icon("nbt-compound") `ComA` 又为一个复合标签，含有二级子标签#icon("nbt-float") `TagC`、#icon("nbt-list") `List` 和 #icon("nbt-compound") `ComB`。#icon("nbt-list") `List` 是一个复合标签的列表，内部含有两个复合标签。因此 #icon("nbt-compound") `Root` 标签的值如下所示。
       #codebox("{
   TagA:1b,
   TagB:30,
@@ -4388,11 +4475,11 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
   },
   Array:[B;0,1,0,0,1]
 }")
-    + + #icon(name: "nbt-byte_array") `Array` 是根标签 #icon(name: "nbt-compound") `Root` 的子标签，对于根标签的子标签，其首先占据一个节点。其次，#icon(name: "nbt-byte_array") `Array` 是一个长度为5的字节型数组，对于其第四个元素，可以写成 `Array[3]`，也可以认为它是倒数第二个元素，因此也可以写成 `Array[-2]`。
-      + #icon(name: "nbt-compound") `ComB` 是一个复合标签，它是 #icon(name: "nbt-compound") `ComA` 的子标签，但不是根标签的子标签，#icon(name: "nbt-compound") `ComA` 才是根标签的子标签，因此 #icon(name: "nbt-compound") `ComA` 占据一个节点，#icon(name: "nbt-compound") `ComB` 占据第二个节点。这里有两种基本的写法：一种是 `ComA.ComB`；另一种是 `ComA{}.ComB`。后者的第一个节点指向 #icon(name: "nbt-compound") `ComA` 这个标签，由于 #icon(name: "nbt-compound") `ComA` 是个复合标签，因此命名标签和命名复合标签两种基本节点类型都可以使用。当然，给花括号中添加限定条件也是可以的，本题中，`ComA{ComB:{}}.ComB` 路径也是正确的，同样正确的写法还有 `ComA{TagC:0.6f}.ComB}`。
-      + #icon(name: "nbt-list") `List` 为一个列表，要指向列表中的所有元素，则使用命名列表或数组标签的所有元素这种节点类型，于是该节点写为 `List[]`，而 #icon(name: "nbt-list") `List` 是 #icon(name: "nbt-compound") `ComA` 的子标签，因此路径为 `ComA.List[]`。
-      +  #icon(name: "nbt-string") `Str` 是复合标签列表 #icon(name: "nbt-list") `List` 中的子标签，从数据树上看，它似乎比 #icon(name: "nbt-list") `List` 低了两个等级。实际上它是包含它本身的复合列表的子标签，而列表中的所有复合标签都是同等级的，列表的存在不增加嵌套等级，列表只负责将这些复合标签统整到一起。因此这个路径只需要三个节点，即 `ComA.List[].Str`。
-      + 名为 `Str` 且值为 `yes` 的标签存在于复合标签中，该复合标签是是列表 #icon(name: "nbt-list") `List` 的第二个元素。因此对于第二个节点，可以使用命名列表或数组标签的元素类型，将节点写作 `List[1]`；或者使用命名列表标签的复合元素类型，这时候添加限定条件以指向列表的第二个元素，如 `List[{Str:"yes"}]`。所以最终路径为 `ComA.List[1].Str` 或 `ConA.List[{Str:"yes"}].Str`。
+    + + #icon("nbt-byte_array") `Array` 是根标签 #icon("nbt-compound") `Root` 的子标签，对于根标签的子标签，其首先占据一个节点。其次，#icon("nbt-byte_array") `Array` 是一个长度为5的字节型数组，对于其第四个元素，可以写成 `Array[3]`，也可以认为它是倒数第二个元素，因此也可以写成 `Array[-2]`。
+      + #icon("nbt-compound") `ComB` 是一个复合标签，它是 #icon("nbt-compound") `ComA` 的子标签，但不是根标签的子标签，#icon("nbt-compound") `ComA` 才是根标签的子标签，因此 #icon("nbt-compound") `ComA` 占据一个节点，#icon("nbt-compound") `ComB` 占据第二个节点。这里有两种基本的写法：一种是 `ComA.ComB`；另一种是 `ComA{}.ComB`。后者的第一个节点指向 #icon("nbt-compound") `ComA` 这个标签，由于 #icon("nbt-compound") `ComA` 是个复合标签，因此命名标签和命名复合标签两种基本节点类型都可以使用。当然，给花括号中添加限定条件也是可以的，本题中，`ComA{ComB:{}}.ComB` 路径也是正确的，同样正确的写法还有 `ComA{TagC:0.6f}.ComB}`。
+      + #icon("nbt-list") `List` 为一个列表，要指向列表中的所有元素，则使用命名列表或数组标签的所有元素这种节点类型，于是该节点写为 `List[]`，而 #icon("nbt-list") `List` 是 #icon("nbt-compound") `ComA` 的子标签，因此路径为 `ComA.List[]`。
+      +  #icon("nbt-string") `Str` 是复合标签列表 #icon("nbt-list") `List` 中的子标签，从数据树上看，它似乎比 #icon("nbt-list") `List` 低了两个等级。实际上它是包含它本身的复合列表的子标签，而列表中的所有复合标签都是同等级的，列表的存在不增加嵌套等级，列表只负责将这些复合标签统整到一起。因此这个路径只需要三个节点，即 `ComA.List[].Str`。
+      + 名为 `Str` 且值为 `yes` 的标签存在于复合标签中，该复合标签是是列表 #icon("nbt-list") `List` 的第二个元素。因此对于第二个节点，可以使用命名列表或数组标签的元素类型，将节点写作 `List[1]`；或者使用命名列表标签的复合元素类型，这时候添加限定条件以指向列表的第二个元素，如 `List[{Str:"yes"}]`。所以最终路径为 `ComA.List[1].Str` 或 `ConA.List[{Str:"yes"}].Str`。
   ]
 ) <exa:nbt_path>
 == 命令/data的语法
@@ -4411,14 +4498,14 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
 )
 *若路径指向的是一个完整的标签，则返回的该标签的值；若路径指向的是列表或数组中的元素，则返回指向的元素。*如不符合下列要求，则 `/data get` 命令将无法执行：
 + 获取的NBT路径必须存在。
-+ 返回的标签或数值必须少于两个，注意，不是指复合标签或数组中的标签必须少于两个，一个复合标签或一个数组被视为上一级标签的值。因此必须谨慎使用诸如命名列表或数组标签的所有元素这样的节点，因为这类节点通常指向的标签或数值大于一个。假设有一个字节型数组 `a:[B;1,0,0,1]`，由于路径 `a[]` 指向 `1b`、`0b`、`0b`、`1b` 这四个数值，因此不能在 `/data get` 中设置路径 `a[]`，但是路径 `a` 指向整个标签 #icon(name: "nbt-byte_array") `a`，则返回的内容为标签 `a` 的值，即 `[B;1,0,0,1]`。
++ 返回的标签或数值必须少于两个，注意，不是指复合标签或数组中的标签必须少于两个，一个复合标签或一个数组被视为上一级标签的值。因此必须谨慎使用诸如命名列表或数组标签的所有元素这样的节点，因为这类节点通常指向的标签或数值大于一个。假设有一个字节型数组 `a:[B;1,0,0,1]`，由于路径 `a[]` 指向 `1b`、`0b`、`0b`、`1b` 这四个数值，因此不能在 `/data get` 中设置路径 `a[]`，但是路径 `a` 指向整个标签 #icon("nbt-byte_array") `a`，则返回的内容为标签 `a` 的值，即 `[B;1,0,0,1]`。
 + 若指定了倍率参数，则返回的内容必须为一个数值。
 #example(
   [
     对于@exa:nbt_path 所示的数据树，假设该数据树是位于坐标$(0,56,0)$的方块的方块实体数据。写出命令 `/data get block 0 56 0 ComA.List[1].TagD 2` 返回的内容。
   ],
   [
-    路径 `ComA.List[1].TagD` 指向标签 #icon(name: "nbt-compound") `ComA` 的子标签 #icon(name: "nbt-list") `List` 中第二个复合标签内名为 `TagD` 的标签，即指向标签 `TagD:1b`，于是返回该标签的值，即 `1b`。而命令的结尾又添加了一个倍率参数 `2`，即将 `1b` 乘以2，因此返回的内容为数值 `2`。
+    路径 `ComA.List[1].TagD` 指向标签 #icon("nbt-compound") `ComA` 的子标签 #icon("nbt-list") `List` 中第二个复合标签内名为 `TagD` 的标签，即指向标签 `TagD:1b`，于是返回该标签的值，即 `1b`。而命令的结尾又添加了一个倍率参数 `2`，即将 `1b` 乘以2，因此返回的内容为数值 `2`。
 
   ]
 ) <exa:command_data_1>
@@ -4502,7 +4589,7 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
   #v(1em)
 ]
 #example(
-  [命令存储 `custom:main` 中 #icon(name: "nbt-string") `id:"minecraft:iron_ingot"` 的值是一个命名空间ID，试去除它的命名空间前缀、只保留ID，将结果存入 #icon(name: "nbt-string") `name` 标签。],
+  [命令存储 `custom:main` 中 #icon("nbt-string") `id:"minecraft:iron_ingot"` 的值是一个命名空间ID，试去除它的命名空间前缀、只保留ID，将结果存入 #icon("nbt-string") `name` 标签。],
   [
     显然需要使用字符串切片，需要去除的部分为 `minecraft:`，其后的 `i` 索引值为 `10`，从此处一直截取到最后一个字符，命令为
     #codebox("data modify storage custom:main name set string storage custom:main id 10 -1")
@@ -4514,13 +4601,13 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
   [`<value>`（NBT值 `minecraft:nbt_tag`）], [需要为SNBT的格式值，必须符合需要修改的标签所需的数据类型。]
 )
 #example(
-  [在@exa:command_data_1 所述的情景中，编写一条命令使之在列表 #icon(name: "nbt-list") `List` 第1和第2个复合标签之间插入一个新的复合标签，这个新的复合标签与列表 #icon(name: "nbt-list") `List` 第1个复合标签相同。],
+  [在@exa:command_data_1 所述的情景中，编写一条命令使之在列表 #icon("nbt-list") `List` 第1和第2个复合标签之间插入一个新的复合标签，这个新的复合标签与列表 #icon("nbt-list") `List` 第1个复合标签相同。],
   [
-    首先需要写出需要修改的标签的路径，即指向标签 #icon(name: "nbt-list") `List`，由此写出：
+    首先需要写出需要修改的标签的路径，即指向标签 #icon("nbt-list") `List`，由此写出：
     #codebox("data modify block 0 56 0 ComA.List")
     对列表型标签进行修改时，考虑在 `modify` 子命令中使用 `append`、`insert` 或 `pretend` 这三种修改方式。题目要求在第1和第2个复合标签之间插入一个新的复合标签，因此使用 `insert`。根据题意，新的复合标签会成为列表的第2个元素，因此可以写出：
     #codebox("data modify block 0 56 0 ComA.List insert 2")
-    最后要指明标签的值来源为列表 #icon(name: "nbt-list") `List` 的第1个复合标签。列表 #icon(name: "nbt-list") `List` 的第1个复合标签属于位于$(0,56,0)$的方块实体的数据树。其路径为 `ComA.List[0]`。于是可以写出整条命令：
+    最后要指明标签的值来源为列表 #icon("nbt-list") `List` 的第1个复合标签。列表 #icon("nbt-list") `List` 的第1个复合标签属于位于$(0,56,0)$的方块实体的数据树。其路径为 `ComA.List[0]`。于是可以写出整条命令：
     #codebox("data modify block 0 56 0 ComA.List insert 2 from block 0 56 0 ComA.List[0]")
   ]
 )
@@ -4539,10 +4626,10 @@ NBT和JSON格式结构类似，但还有很多不同之处，在一些情况下�
   colspan: 2,
   columns: (auto, auto),
   header: ([NBT数据类型], [转换后的JSON数据类型]),
-  [#icon(name: "nbt-byte") #icon(name: "nbt-short") #icon(name: "nbt-int") #icon(name: "nbt-long") #icon(name: "nbt-float") #icon(name: "nbt-double")], [#icon(name: "json-number") 数值],
-  [#icon(name: "nbt-string")], [#icon(name: "json-string") 字符串],
-  [#icon(name: "nbt-compound")], [#icon(name: "json-object") 对象],
-  [#icon(name: "nbt-list") #icon(name: "nbt-byte_array") #icon(name: "nbt-int_array") #icon(name: "nbt-long_array")], [#icon(name: "json-array") 数组]
+  [#icon("nbt-byte") #icon("nbt-short") #icon("nbt-int") #icon("nbt-long") #icon("nbt-float") #icon("nbt-double")], [#icon("json-number") 数值],
+  [#icon("nbt-string")], [#icon("json-string") 字符串],
+  [#icon("nbt-compound")], [#icon("json-object") 对象],
+  [#icon("nbt-list") #icon("nbt-byte_array") #icon("nbt-int_array") #icon("nbt-long_array")], [#icon("json-array") 数组]
 )
 ===== JSON转换为NBT
 #general-table(
@@ -4550,11 +4637,11 @@ NBT和JSON格式结构类似，但还有很多不同之处，在一些情况下�
   colspan: 2,
   columns: (auto, auto),
   header: ([JSON数据类型], [转换后的NBT数据类型]),
-  [#icon(name: "json-bool") 布尔值], [#icon(name: "nbt-byte")], 
-  [#icon(name: "json-number") 数值], [若位于字节型的取值范围内，则转换为 #icon(name: "nbt-byte")；\ 否则，若位于短整型的取值范围内，则转换为 #icon(name: "nbt-short")；\ 否则，若位于整型的取值范围内，则转换为 #icon(name: "nbt-int")；\ 否则，若位于长整型的取值范围内，则转换为 #icon(name: "nbt-long")；\ 否则，若其能精确存储为一个单精度浮点数，则转换为 #icon(name: "nbt-float")；\ 若不为上述任意一者，则转换为 #icon(name: "nbt-double")。],
-  [#icon(name: "json-string") 字符串], [#icon(name: "nbt-string")],
-  [#icon(name: "json-array") 数组], [若JSON数组内元素的数据类型不同，则无法转换为NBT；\ 若JSON数组内元素被转换为 #icon(name: "nbt-byte")，则将数组转换为 #icon(name: "nbt-byte_array")；\ 若JSON数组内元素被转换为 #icon(name: "nbt-int")，则将数组转换为 #icon(name: "nbt-int_array")；\ 若JSON数组内元素被转换为 #icon(name: "nbt-long")，则将数组转换为 #icon(name: "nbt-long_array")；\ 若不为上述任意一者，则转换为 #icon(name: "nbt-list")],
-  [#icon(name: "json-object") 对象], [#icon(name: "nbt-compound")],
+  [#icon("json-bool") 布尔值], [#icon("nbt-byte")], 
+  [#icon("json-number") 数值], [若位于字节型的取值范围内，则转换为 #icon("nbt-byte")；\ 否则，若位于短整型的取值范围内，则转换为 #icon("nbt-short")；\ 否则，若位于整型的取值范围内，则转换为 #icon("nbt-int")；\ 否则，若位于长整型的取值范围内，则转换为 #icon("nbt-long")；\ 否则，若其能精确存储为一个单精度浮点数，则转换为 #icon("nbt-float")；\ 若不为上述任意一者，则转换为 #icon("nbt-double")。],
+  [#icon("json-string") 字符串], [#icon("nbt-string")],
+  [#icon("json-array") 数组], [若JSON数组内元素的数据类型不同，则无法转换为NBT；\ 若JSON数组内元素被转换为 #icon("nbt-byte")，则将数组转换为 #icon("nbt-byte_array")；\ 若JSON数组内元素被转换为 #icon("nbt-int")，则将数组转换为 #icon("nbt-int_array")；\ 若JSON数组内元素被转换为 #icon("nbt-long")，则将数组转换为 #icon("nbt-long_array")；\ 若不为上述任意一者，则转换为 #icon("nbt-list")],
+  [#icon("json-object") 对象], [#icon("nbt-compound")],
   [Null], [不转换]
 ) <tab:json_to_nbt>
 有时候，开发过程中可能需要开发者手动转换格式。例如，数据包的战利品表、谓词和物品修饰器一般使用JSON格式定义，对于一些未在数据包中定义的战利品表、谓词和物品修饰器，可以用内联的方式在直接命令中定义，这时需要将战利品表、谓词和物品修饰器以SNBT的形式写在命令中。以下是内联定义的一个例子：
@@ -4590,37 +4677,37 @@ NBT和JSON格式结构类似，但还有很多不同之处，在一些情况下�
   [
     先以树状图列出该文件的JSON数据：
     #tree(
-      (0, [#icon(name: "json-object") 文件封装]),
-      (1, [#icon(name: "json-string") *type*: `minecraft:block`]),
-      (1, [#icon(name: "json-array")]),
-      (2, [#icon(name: "json-object")]),
-      (3, [#icon(name: "json-number") *bonus_rolls*: `0.0`]),
-      (3, [#icon(name: "json-array") *conditions*]),
-      (4, [#icon(name: "json-object")]),
-      (5, [#icon(name: "json-string") *condition*: `minecraft:survives_explosion`]),
-      (3, [#icon(name: "json-array") *entries*]),
-      (4, [#icon(name: "json-object")]),
-      (5, [#icon(name: "json-string") *type*: `minecraft:item`]),
-      (5, [#icon(name: "json-string") *name*: `minecraft:granite`]),
-      (3, [#icon(name: "json-number") *rolls*: `1.0`]),
-      (1, [#icon(name: "json-string") *random_sequence*: `minecraft:blocks/granite`])
+      (0, [#icon("json-object") 文件封装]),
+      (1, [#icon("json-string") *type*: `minecraft:block`]),
+      (1, [#icon("json-array")]),
+      (2, [#icon("json-object")]),
+      (3, [#icon("json-number") *bonus_rolls*: `0.0`]),
+      (3, [#icon("json-array") *conditions*]),
+      (4, [#icon("json-object")]),
+      (5, [#icon("json-string") *condition*: `minecraft:survives_explosion`]),
+      (3, [#icon("json-array") *entries*]),
+      (4, [#icon("json-object")]),
+      (5, [#icon("json-string") *type*: `minecraft:item`]),
+      (5, [#icon("json-string") *name*: `minecraft:granite`]),
+      (3, [#icon("json-number") *rolls*: `1.0`]),
+      (1, [#icon("json-string") *random_sequence*: `minecraft:blocks/granite`])
     )
     内联形式，即将JSON格式手动转换为SNBT格式，此时参考@tab:json_to_nbt 的转换方式，可得到相应的SNBT树形图：
     #tree(
-      (0, [#icon(name: "nbt-compound") 文件封装]),
-      (1, [#icon(name: "nbt-string") *type*: `minecraft:block`]),
-      (1, [#icon(name: "nbt-list")]),
-      (2, [#icon(name: "nbt-compound")]),
-      (3, [#icon(name: "nbt-float") *bonus_rolls*: `0.0`]),
-      (3, [#icon(name: "nbt-list") *conditions*]),
-      (4, [#icon(name: "nbt-compound")]),
-      (5, [#icon(name: "nbt-string") *condition*: `minecraft:survives_explosion`]),
-      (3, [#icon(name: "nbt-list") *entries*]),
-      (4, [#icon(name: "nbt-compound")]),
-      (5, [#icon(name: "nbt-string") *type*: `minecraft:item`]),
-      (5, [#icon(name: "nbt-string") *name*: `minecraft:granite`]),
-      (3, [#icon(name: "nbt-float") *rolls*: `1.0`]),
-      (1, [#icon(name: "nbt-string") *random_sequence*: `minecraft:blocks/granite`])
+      (0, [#icon("nbt-compound") 文件封装]),
+      (1, [#icon("nbt-string") *type*: `minecraft:block`]),
+      (1, [#icon("nbt-list")]),
+      (2, [#icon("nbt-compound")]),
+      (3, [#icon("nbt-float") *bonus_rolls*: `0.0`]),
+      (3, [#icon("nbt-list") *conditions*]),
+      (4, [#icon("nbt-compound")]),
+      (5, [#icon("nbt-string") *condition*: `minecraft:survives_explosion`]),
+      (3, [#icon("nbt-list") *entries*]),
+      (4, [#icon("nbt-compound")]),
+      (5, [#icon("nbt-string") *type*: `minecraft:item`]),
+      (5, [#icon("nbt-string") *name*: `minecraft:granite`]),
+      (3, [#icon("nbt-float") *rolls*: `1.0`]),
+      (1, [#icon("nbt-string") *random_sequence*: `minecraft:blocks/granite`])
     )
     因此内联形式为
     #codebox("{
@@ -4650,9 +4737,9 @@ NBT和JSON格式结构类似，但还有很多不同之处，在一些情况下�
 ==== 在SNBT中使用的JSON
 部分情况下，SNBT值需要为一段完整的JSON，典型例子就是在25w02a之前的版本中在SNBT中使用的文本组件。SNBT与JSON本身不兼容，在SNBT中使用JSON时，一般值类型为字符串。根据字符串数据类型的定义方法，双引号和单引号均可用于定义字符串。若字符串中有单引号或双引号中的某一种引号，且用于定义字符串的引号与字符串中存在的引号类型相同，则必须为字符串中的引号添加转义字符。而大部分的JSON都是存在双引号的，根据社区规范，需尽量减少转义字符的使用，*定义SNBT值类型时一般使用单引号*，对于以下的JSON片段：
 #tree(
-  (0, [#icon(name: "json-object")]),
-  (1, [#icon(name: "json-string") *text*: `Hello World!`]),
-  (1, [#icon(name: "json-string") *color*: `red`])
+  (0, [#icon("json-object")]),
+  (1, [#icon("json-string") *text*: `Hello World!`]),
+  (1, [#icon("json-string") *color*: `red`])
 )
 它作为SNBT的值时，写法可以为
 #codebox("Name:'{\"text\":\"Hello World!\",\"color\":\"red\"}'")
@@ -4660,9 +4747,9 @@ NBT和JSON格式结构类似，但还有很多不同之处，在一些情况下�
 #codebox("Name:\"{\\\"text\\\":\\\"Hello World!\\\",\\\"color\\\":\\\"red\\\"}\"")
 *在SNBT值内部的JSON中所有需要被转义的字符前都需要添加反斜杠*，如 `\` 和SNBT字符串定义使用的引号，无论这些字符在原本的JSON中是否起到实际作用。遇到嵌套层级较深的情况，可以*由内向外书写，一层层添加反斜杠*，并适当规避转义。例如，对于以下的JSON片段：
 #tree(
-  (0, [#icon(name: "json-object")]),
-  (1, [#icon(name: "json-string") *text*: `"Hello World!"`]),
-  (1, [#icon(name: "json-string") *color*: `red`])
+  (0, [#icon("json-object")]),
+  (1, [#icon("json-string") *text*: `"Hello World!"`]),
+  (1, [#icon("json-string") *color*: `red`])
 )
 在JSON中它的写法为
 #codebox("{\"text\":\"\\\"Hello World!\\\"\",\"color\":\"red\"}")
@@ -4670,7 +4757,7 @@ NBT和JSON格式结构类似，但还有很多不同之处，在一些情况下�
 #codebox("Name:'{\"text\":\"\\\"Hello World!\\\"\",\"color\":\"red\"}'") <code:json_in_snbt>
 #example(
   [
-    将以下的JSON片段写为SNBT字段 #icon(name: "nbt-string") `raw` 的值：
+    将以下的JSON片段写为SNBT字段 #icon("nbt-string") `raw` 的值：
     #codebox("{\"text\":\"A\\nB\",\"bold\":true}")
   ],
   [
@@ -4680,13 +4767,13 @@ NBT和JSON格式结构类似，但还有很多不同之处，在一些情况下�
 )
 #example(
   [
-    将以下的JSON片段完整地写为SNBT字段 #icon(name: "nbt-string") `Name` 的值。
+    将以下的JSON片段完整地写为SNBT字段 #icon("nbt-string") `Name` 的值。
     #tree(
-      (0, [#icon(name: "json-array")]),
-      (1, [#icon(name: "json-object")]),
-      (2, [#icon(name: "json-string") *text*: `\Hello World!\`]),
-      (1, [#icon(name: "json-object")]),
-      (2, [#icon(name: "json-string") *text*: `\"Hello World!\"`])
+      (0, [#icon("json-array")]),
+      (1, [#icon("json-object")]),
+      (2, [#icon("json-string") *text*: `\Hello World!\`]),
+      (1, [#icon("json-object")]),
+      (2, [#icon("json-string") *text*: `\"Hello World!\"`])
     )
   ],
   [
@@ -4699,14 +4786,14 @@ NBT和JSON格式结构类似，但还有很多不同之处，在一些情况下�
     \"text\":\"\\\\\\\"Hello World!\\\\\\\"\"
   }
 ]")
-    注意到其中只有双引号，所以用单引号定义SNBT字符串，然后在所有的 `\` 前加反斜杠，因此 #icon(name: "nbt-string") `Name` 为
+    注意到其中只有双引号，所以用单引号定义SNBT字符串，然后在所有的 `\` 前加反斜杠，因此 #icon("nbt-string") `Name` 为
     #codebox("Name:'[{\"text\":\"\\\\\\\\Hello World!\\\\\\\\\"},{\"text\":\"\\\\\\\\\\\\\"Hello World!\\\\\\\\\\\\\"\"}]'") <code:json_in_snbt_field_name>
   ]
 ) <exa:json_in_snbt>
 ==== 在JSON中使用的SNBT
 一些JSON需要的值为SNBT，这些JSON的数据类型基本上都是字符串，拥有定义字符串的双引号 `"`。这些SNBT中出现的*每一个* `"`、`\` 均需要被转义。
 #example(
-  [对于由@exa:json_in_snbt 得到的SNBT字段，在其外侧套一层复合标签后写入JSON字段 #icon(name: "json-string") `nbt`。],
+  [对于由@exa:json_in_snbt 得到的SNBT字段，在其外侧套一层复合标签后写入JSON字段 #icon("json-string") `nbt`。],
   [
     只需将代码@code:json_in_snbt_field_name 中每一个 `"` 和 `\` 前添加一个 `\` 即可，结果为
     #codebox("\"nbt\": \"{Name:'[{\\\"text\\\":\\\"\\\\\\\\\\\\\\\\Hello World!\\\\\\\\\\\\\\\\\\\"},{\\\"text\\\":\\\"\\\\\\\\\\\\\\\\\\\\\\\\\\\"Hello World!\\\\\\\\\\\\\\\\\\\\\\\\\\\"\\\"}]'}\"")
@@ -4729,9 +4816,9 @@ NBT和JSON格式结构类似，但还有很多不同之处，在一些情况下�
   + 标签 `count:1` 是否是标签 `Player` 的子标签？为什么？
   + 指出标签 `Inventory` 的数据类型。
 + 解释下列名词：节点、根复合标签、某名称的复合标签、索引、NBT路径。
-+ 假设一个根标签 #icon(name: "nbt-compound") `orange_banner` 的值如下所示：
++ 假设一个根标签 #icon("nbt-compound") `orange_banner` 的值如下所示：
   #codebox("{x:5,y:56,z:4,id:\"minecraft:banner\",patterns:[{pattern:\"diagonal_left\",color:\"magenta\"}]}")
-  + 画出标签 #icon(name: "nbt-compound") `orange_banner` 的树状图；
+  + 画出标签 #icon("nbt-compound") `orange_banner` 的树状图；
   + 写出下列路径指向的内容：
     + `x`;
     + `patterns[0]`；
@@ -4739,43 +4826,43 @@ NBT和JSON格式结构类似，但还有很多不同之处，在一些情况下�
     + `patterns[0][0]`
 + 有一个数据的树状图如下所示，将它写成SNBT的形式。<t:snbt_tree>
   #tree(
-    (0, [#icon(name: "nbt-compound") *Chunk $bold([31,24])$ in world at $bold((-1,-6))$*]),
-    (1, [#icon(name: "nbt-int") *DataVersion*: `2865`]),
-    (1, [#icon(name: "nbt-compound") *Sections*]),
-    (2, [#icon(name: "nbt-compound") *3*]),
-    (3, [#icon(name: "nbt-list") *Records*]),
-    (4, [#icon(name: "nbt-compound") 内容未知]),
-    (4, [#icon(name: "nbt-compound") 内容未知]),
-    (4, [#icon(name: "nbt-compound")]),
-    (5, [#icon(name: "nbt-int") *free_tickets*: `1`]),
-    (5, [#icon(name: "nbt-compound") *type*: `minecraft:toolsmith`]),
-    (5, [#icon(name: "nbt-int_array") *pos*: 含有3个元素，内容未知]),
-    (4, [#icon(name: "nbt-compound") 内容未知]),
-    (4, [#icon(name: "nbt-compound") 内容未知]),
-    (4, [#icon(name: "nbt-bool") *Valid*: `true`]),
+    (0, [#icon("nbt-compound") *Chunk $bold([31,24])$ in world at $bold((-1,-6))$*]),
+    (1, [#icon("nbt-int") *DataVersion*: `2865`]),
+    (1, [#icon("nbt-compound") *Sections*]),
+    (2, [#icon("nbt-compound") *3*]),
+    (3, [#icon("nbt-list") *Records*]),
+    (4, [#icon("nbt-compound") 内容未知]),
+    (4, [#icon("nbt-compound") 内容未知]),
+    (4, [#icon("nbt-compound")]),
+    (5, [#icon("nbt-int") *free_tickets*: `1`]),
+    (5, [#icon("nbt-compound") *type*: `minecraft:toolsmith`]),
+    (5, [#icon("nbt-int_array") *pos*: 含有3个元素，内容未知]),
+    (4, [#icon("nbt-compound") 内容未知]),
+    (4, [#icon("nbt-compound") 内容未知]),
+    (4, [#icon("nbt-bool") *Valid*: `true`]),
   )
 
 + 根据第@t:snbt_tree 题的树状图，试写出指向下列内容的路径：
   + 整个根标签；
-  + #icon(name: "nbt-list") `Records` 的第二个元素；
-  + #icon(name: "nbt-int_array") `pos`。
+  + #icon("nbt-list") `Records` 的第二个元素；
+  + #icon("nbt-int_array") `pos`。
 + 对于@exa:nbt_path 所示的数据树，假设该数据树是位于坐标$(0,56,0)$的方块实体的数据。使用命令以进行如下的操作：
-  + 获取标签 #icon(name: "nbt-int") `TagB` 的数据；
-  + 删除 #icon(name: "nbt-list") `List` 的第二个元素；
-  + 将标签 #icon(name: "nbt-float") `TagC` 的值改为 `1.2f`；
-  + 将列表 #icon(name: "nbt-list") `List` 第一个复合标签的值复制到标签 #icon(name: "nbt-compound") `ComB`；
-  + 在数组 #icon(name: "nbt-byte_array") `Array` 的第2个和第3个元素之间插入一个新的元素，要求来源为列表 #icon(name: "nbt-list") `List` 第一个复合标签中标签 #icon(name: "nbt-byte") `TagD` 的值。
+  + 获取标签 #icon("nbt-int") `TagB` 的数据；
+  + 删除 #icon("nbt-list") `List` 的第二个元素；
+  + 将标签 #icon("nbt-float") `TagC` 的值改为 `1.2f`；
+  + 将列表 #icon("nbt-list") `List` 第一个复合标签的值复制到标签 #icon("nbt-compound") `ComB`；
+  + 在数组 #icon("nbt-byte_array") `Array` 的第2个和第3个元素之间插入一个新的元素，要求来源为列表 #icon("nbt-list") `List` 第一个复合标签中标签 #icon("nbt-byte") `TagD` 的值。
 + 编写命令使@exa:nbt_path 所示的整棵数据树写入命令存储 `test:root`。
 + 将@chap:intro\思考题与习题第@t:json_tree 题的JSON改写为内联SNBT形式。
-+ 将@chap:intro\思考题与习题第@t:json_text 题得到的各JSON字段分别完整地写作SNBT字段 #icon(name: "nbt-string") `json` 的值。
-+ 将代码@code:json_in_snbt 所示的SNBT作为一个字符串类型的JSON字段 #icon(name: "json-string") `nbt` 需要的值，写出对应的JSON字段。
++ 将@chap:intro\思考题与习题第@t:json_text 题得到的各JSON字段分别完整地写作SNBT字段 #icon("nbt-string") `json` 的值。
++ 将代码@code:json_in_snbt 所示的SNBT作为一个字符串类型的JSON字段 #icon("json-string") `nbt` 需要的值，写出对应的JSON字段。
 = 文本组件<chap:text_component>
 Minecraft中有各式各样的文本，它们有不同的内容、不同的样式，有些文本甚至能够与玩家产生交互。本章将介绍这些文本使用的格式——文本组件。
 #pagebreak()
 == 概述<sec:text_component_overview>
 #proper-noun(display: "文本组件（Text component）", "wen2 ben3 zu3 jian4")，旧称#proper-noun(display: "原始JSON文本（Raw JSON text）", "yuan2 shi3 JSON wen2 ben3")，是用于向玩家发送、显示富文本的一种格式。文本组件可以使用SNBT和JSON两种格式书写：在命令及SNBT中使用的文本组件应写为SNBT格式，在 `.json` 文件中使用的文本组件应写为JSON格式。
 
-在25w02a以前的版本中，文本组件统一使用严格的JSON格式。对于一些接受文本组件作为值的SNBT字段，文本组件必须作为整个字符串 #icon(name: "nbt-string") 写入SNBT字段，在SNBT内嵌套JSON的写法在小节@subsec:snbt_and_json_nesting 中已有说明，这样的嵌套需要注意引号的配对和转义字符的使用，在书写和维护的过程中很容易有疏忽。自25w02a起，文本组件可以从相应字段的节点开始直接存储为数据树的一部分，不再需要考虑两种格式的兼容性问题，此举更利于文本组件的编辑。
+在25w02a以前的版本中，文本组件统一使用严格的JSON格式。对于一些接受文本组件作为值的SNBT字段，文本组件必须作为整个字符串 #icon("nbt-string") 写入SNBT字段，在SNBT内嵌套JSON的写法在小节@subsec:snbt_and_json_nesting 中已有说明，这样的嵌套需要注意引号的配对和转义字符的使用，在书写和维护的过程中很容易有疏忽。自25w02a起，文本组件可以从相应字段的节点开始直接存储为数据树的一部分，不再需要考虑两种格式的兼容性问题，此举更利于文本组件的编辑。
 
 文本组件一共由以下三部分组成：
 ===== #proper-noun(display: "文本组件类型（Text component content）", "wen2 ben3 zu3 jian4 lei4 xing2")
@@ -4785,23 +4872,23 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 ===== #proper-noun(display: "子组件（Text component children）", "zi3 zu3 jian4")
 定义依附于当前文本的文本组件，子组件会继承父组件的样式。
 
-文本组件可以接受的 #icon(name: "nbt") SNBT数据类型为 #icon(name: "nbt-string") *字符串*、#icon(name: "nbt-list") *列表*和 #icon(name: "nbt-compound") *复合标签*，对应的 #icon(name: "json") JSON数据类型则为 #icon(name: "json-string") *字符串*、#icon(name: "json-array") *数组*和 #icon(name: "json-object") *对象*，*其他的数据类型一概不接受*。
+文本组件可以接受的 #icon("nbt") SNBT数据类型为 #icon("nbt-string") *字符串*、#icon("nbt-list") *列表*和 #icon("nbt-compound") *复合标签*，对应的 #icon("json") JSON数据类型则为 #icon("json-string") *字符串*、#icon("json-array") *数组*和 #icon("json-object") *对象*，*其他的数据类型一概不接受*。
 
-当文本组件使用 #icon(name: "nbt-string")#icon(name: "json-string") 字符串形式时，该组件被当作纯文本处理，不能添加任何样式。例如，组件@code:text_component_string_format\是一个 #icon(name: "nbt-string")#icon(name: "json-string") 字符串形式的文本组件，输入后返回的文本为#text_component(text(white)[Hello World!])（字符串的引号不会被返回）：
+当文本组件使用 #icon("nbt-string")#icon("json-string") 字符串形式时，该组件被当作纯文本处理，不能添加任何样式。例如，组件@code:text_component_string_format\是一个 #icon("nbt-string")#icon("json-string") 字符串形式的文本组件，输入后返回的文本为#text_component(text(white)[Hello World!])（字符串的引号不会被返回）：
 #codebox("\"Hello World!\"") <code:text_component_string_format>
-当使用 #icon(name: "nbt-list") 列表/ #icon(name: "json-array") 数组时，其中的元素可以是任意形式的文本组件，包括 #icon(name: "nbt-string")#icon(name: "json-string") 字符串、#icon(name: "nbt-list") 列表/ #icon(name: "json-array") 数组和 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象，同一 #icon(name: "nbt-list") 列表/ #icon(name: "json-array") 数组内元素的类型可以不同。例如，组件@code:text_component_list_format 返回的内容是#text_component(text(white)[ABC])：
+当使用 #icon("nbt-list") 列表/ #icon("json-array") 数组时，其中的元素可以是任意形式的文本组件，包括 #icon("nbt-string")#icon("json-string") 字符串、#icon("nbt-list") 列表/ #icon("json-array") 数组和 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象，同一 #icon("nbt-list") 列表/ #icon("json-array") 数组内元素的类型可以不同。例如，组件@code:text_component_list_format 返回的内容是#text_component(text(white)[ABC])：
 #codebox("[\"A\",\"B\",\"C\"]") <code:text_component_list_format>
-#icon(name: "nbt-list") 列表/ #icon(name: "json-array") 数组内的任一元素不能为文本组件不接受的数据形式。例如，组件@code:text_component_list_format_wrong_1 无法被解析，因为 #icon(name: "nbt-list") 列表/ #icon(name: "json-array") 数组内的所有元素均为 #icon(name: "nbt-int") 整型/ #icon(name: "json-number") 数值：
+#icon("nbt-list") 列表/ #icon("json-array") 数组内的任一元素不能为文本组件不接受的数据形式。例如，组件@code:text_component_list_format_wrong_1 无法被解析，因为 #icon("nbt-list") 列表/ #icon("json-array") 数组内的所有元素均为 #icon("nbt-int") 整型/ #icon("json-number") 数值：
 #codebox("[1,2,3]") <code:text_component_list_format_wrong_1>
-组件@code:text_component_list_format_wrong_2 也无法被解析，因为 #icon(name: "nbt-list") 列表/ #icon(name: "json-array") 数组有元素为 #icon(name: "nbt-int") 整型/ #icon(name: "json-number") 数值，即使数组内已有能被解析的 #icon(name: "nbt-string")#icon(name: "json-string") 字符串类型的数据：
+组件@code:text_component_list_format_wrong_2 也无法被解析，因为 #icon("nbt-list") 列表/ #icon("json-array") 数组有元素为 #icon("nbt-int") 整型/ #icon("json-number") 数值，即使数组内已有能被解析的 #icon("nbt-string")#icon("json-string") 字符串类型的数据：
 #codebox("[1,\"2\",3]") <code:text_component_list_format_wrong_2>
-当使用 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象时，允许在其中指定文本组件类型和文本组件样式，数据格式为#footnote[这里同时提供了SNBT和JSON的格式，后续教程皆如此。]：
+当使用 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象时，允许在其中指定文本组件类型和文本组件样式，数据格式为#footnote[这里同时提供了SNBT和JSON的格式，后续教程皆如此。]：
 #tree(
-  (0, [#icon(name: "nbt-compound")#icon(name: "json-object") 文本组件]),
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
   (1, [文本组件类型]),
   (1, [文本组件样式])
 )
-其中文本组件类型是必填项目，文本组件样式可选。如果不需要使用特别的组件类型和定义特别的样式，为了节省命令长度，一般使用字符串形式的文本组件而不使用 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象。在游戏解析过程中，*无样式和子组件的纯文本内容会被序列化成 #icon(name: "nbt-string")#icon(name: "json-string") 字符串形式的文本组件。*例如，输入的文本组件为：
+其中文本组件类型是必填项目，文本组件样式可选。如果不需要使用特别的组件类型和定义特别的样式，为了节省命令长度，一般使用字符串形式的文本组件而不使用 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象。在游戏解析过程中，*无样式和子组件的纯文本内容会被序列化成 #icon("nbt-string")#icon("json-string") 字符串形式的文本组件。*例如，输入的文本组件为：
 #codebox("{text:\"Hello World!\"}")
 #h(-2em)再次提取这个数据，就会发现它已被序列化成：
 #codebox("\"Hello World!\"")
@@ -4860,59 +4947,59 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 == 文本组件类型
 文本组件一共有七种可用的组件类型：*纯文本*、*翻译文本*、*记分板分数*、*实体名称*、*按键绑定*、*NBT值*和*精灵图*，这部分数据的结构为
 #tree(
-  (0, [#icon(name: "nbt-compound")#icon(name: "json-object") 文本组件]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *type*: 可选，标识此对象使用的组件类型，它使用组件类型的ID作为它需要的值，因此有效值有 `text`（纯文本）、`translatable`（翻译文本）、`score`（记分板分数）、`selector`（实体名称）、`keybind`（按键绑定）和 `nbt`（NBT值）。]),
-  (1, [对于指定的 #icon(name: "nbt-string")#icon(name: "json-string") `type` 使用的相应额外字段。])
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-string")#icon("json-string") *type*: 可选，标识此对象使用的组件类型，它使用组件类型的ID作为它需要的值，因此有效值有 `text`（纯文本）、`translatable`（翻译文本）、`score`（记分板分数）、`selector`（实体名称）、`keybind`（按键绑定）和 `nbt`（NBT值）。]),
+  (1, [对于指定的 #icon("nbt-string")#icon("json-string") `type` 使用的相应额外字段。])
 )
-对于一个指定的 #icon(name: "nbt-string")#icon(name: "json-string") `type`，同一个 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象内必须存在相应额外字段，如@tab:text_component_content 所示。
+对于一个指定的 #icon("nbt-string")#icon("json-string") `type`，同一个 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象内必须存在相应额外字段，如@tab:text_component_content 所示。
 #general-table(
   caption: "组件类型",
   colspan: 4,
   columns: (auto, auto, auto, auto),
-  header: ([优先级], [#icon(name: "nbt-string")#icon(name: "json-string") #text(black)[`type`] 的值], [相应的额外字段], [组件类型]),
-  [1], [`text`], [#icon(name: "nbt-string")#icon(name: "json-string") `text`], [纯文本],
-  [2], [`translatable`], [#icon(name: "nbt-string")#icon(name: "json-string") `translate`], [翻译文本],
-  [3], [`keybind`], [#icon(name: "nbt-string")#icon(name: "json-string") `keybind`], [按键绑定],
-  [4], [`score`], [#icon(name: "nbt-compound")#icon(name: "json-object") `score`], [记分板分数],
-  [5], [`selector`], [#icon(name: "nbt-string")#icon(name: "json-string") `selector`], [实体名称],
-  [6], [`nbt`], [#icon(name: "nbt-string")#icon(name: "json-string") `nbt`], [NBT值],
-  [7], [`object`], [#icon(name: "nbt-string")#icon(name: "json-string") `object`], [精灵图]
+  header: ([优先级], [#icon("nbt-string")#icon("json-string") #text(black)[`type`] 的值], [相应的额外字段], [组件类型]),
+  [1], [`text`], [#icon("nbt-string")#icon("json-string") `text`], [纯文本],
+  [2], [`translatable`], [#icon("nbt-string")#icon("json-string") `translate`], [翻译文本],
+  [3], [`keybind`], [#icon("nbt-string")#icon("json-string") `keybind`], [按键绑定],
+  [4], [`score`], [#icon("nbt-compound")#icon("json-object") `score`], [记分板分数],
+  [5], [`selector`], [#icon("nbt-string")#icon("json-string") `selector`], [实体名称],
+  [6], [`nbt`], [#icon("nbt-string")#icon("json-string") `nbt`], [NBT值],
+  [7], [`object`], [#icon("nbt-string")#icon("json-string") `object`], [精灵图]
 ) <tab:text_component_content>
 例如，若指定
 #codebox("type:\"text\"")
-#h(-2em)这说明组件标识了纯文本，那么在同一个 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象内就需要使用字段 #icon(name: "nbt-string")#icon(name: "json-string") `text` 以说明纯文本的具体内容，如：
+#h(-2em)这说明组件标识了纯文本，那么在同一个 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象内就需要使用字段 #icon("nbt-string")#icon("json-string") `text` 以说明纯文本的具体内容，如：
 #codebox("{type:\"text\",text:\"Alpha\"}")
-然而，字段 #icon(name: "nbt-string")#icon(name: "json-string") `type` 在文本组件中并不是必须的，使用 #icon(name: "nbt-string")#icon(name: "json-string") `type` 只是为了提高组件解析、检查错误的速度。如果 #icon(name: "nbt-string")#icon(name: "json-string") `type` 不指定值、或是 #icon(name: "nbt-string")#icon(name: "json-string") `type` 的值不属于上述有效值中的任何一者、亦或是 #icon(name: "nbt-string")#icon(name: "json-string") `type` 标识的组件类型在同一个 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象内不存在相应的额外字段，则组件类型会依次检查对象内的如下键：#icon(name: "nbt-string")#icon(name: "json-string") `text`、#icon(name: "nbt-string")#icon(name: "json-string") `translate`、#icon(name: "nbt-compound")#icon(name: "json-object") `score`、#icon(name: "nbt-string")#icon(name: "json-string") `selector`、#icon(name: "nbt-string")#icon(name: "json-string") `keybind`、#icon(name: "nbt-string")#icon(name: "json-string") `nbt`，最终使用第一个检查得到的有效键作为该组件使用的组件类型。
+然而，字段 #icon("nbt-string")#icon("json-string") `type` 在文本组件中并不是必须的，使用 #icon("nbt-string")#icon("json-string") `type` 只是为了提高组件解析、检查错误的速度。如果 #icon("nbt-string")#icon("json-string") `type` 不指定值、或是 #icon("nbt-string")#icon("json-string") `type` 的值不属于上述有效值中的任何一者、亦或是 #icon("nbt-string")#icon("json-string") `type` 标识的组件类型在同一个 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象内不存在相应的额外字段，则组件类型会依次检查对象内的如下键：#icon("nbt-string")#icon("json-string") `text`、#icon("nbt-string")#icon("json-string") `translate`、#icon("nbt-compound")#icon("json-object") `score`、#icon("nbt-string")#icon("json-string") `selector`、#icon("nbt-string")#icon("json-string") `keybind`、#icon("nbt-string")#icon("json-string") `nbt`，最终使用第一个检查得到的有效键作为该组件使用的组件类型。
 
 例如，对于以下的文本组件：
 #codebox("{text:\"A\"}")
-#h(-2em)它没有使用 #icon(name: "nbt-string")#icon(name: "json-string") `type` 而是直接指定了 #icon(name: "nbt-string")#icon(name: "json-string") `text`，那么这个组件识别的组件类型为纯文本。而对于下面的文本组件：
+#h(-2em)它没有使用 #icon("nbt-string")#icon("json-string") `type` 而是直接指定了 #icon("nbt-string")#icon("json-string") `text`，那么这个组件识别的组件类型为纯文本。而对于下面的文本组件：
 #codebox("{type:\"score\",translate:\"addServer.add\"}")
-#h(-2em)指定的 #icon(name: "nbt-string")#icon(name: "json-string") `type` 为 `score`，而使用的键却为 #icon(name: "nbt-string")#icon(name: "json-string") `translate`，此时识别的结果为翻译文本而不是记分板分数。
+#h(-2em)指定的 #icon("nbt-string")#icon("json-string") `type` 为 `score`，而使用的键却为 #icon("nbt-string")#icon("json-string") `translate`，此时识别的结果为翻译文本而不是记分板分数。
 
-如果 #icon(name: "nbt-string")#icon(name: "json-string") `type` 不指定值且 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象内存在多种组件类型，则按照@tab:text_component_content 所示的优先级，选择表中最靠上的一种组件类型。组件类型所属键出现在 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象中的先后顺序不会影响组件类型的优先级。例如，下面的文本组件
+如果 #icon("nbt-string")#icon("json-string") `type` 不指定值且 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象内存在多种组件类型，则按照@tab:text_component_content 所示的优先级，选择表中最靠上的一种组件类型。组件类型所属键出现在 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象中的先后顺序不会影响组件类型的优先级。例如，下面的文本组件
 #codebox("{
   keybind:\"key.left\",
   score:{objective:\"A\",name:\"*\"},
   selector:\"@p\"
 }")
 #h(-2em)出现了三种组件类型：按键、记分板分数、实体名称，根据@tab:text_component_content，记分板分数的优先级最高，故返回记分板分数。
-此外，如果一个 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象中出现了多个同种类型的文本时，则会优先使用 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象中最靠后的文本类型字段。例如，
+此外，如果一个 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象中出现了多个同种类型的文本时，则会优先使用 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象中最靠后的文本类型字段。例如，
 #codebox("{text:\"1\",text:\"2\",text:\"3\"}")
 #h(-2em)返回的文本为#text_component(text(white)[3])
 === 纯文本组件
 显而易见，#proper-noun(display: "纯文本组件（Plain text）", "chun2 wen2 ben3 zu3 jian4")用于直接输出一段固定的文本。格式为：
 #tree(
-  (0, [#icon(name: "nbt-compound")#icon(name: "json-object") 文本组件]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *type*: `text`]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *#underline[text]*: 具体的文本内容。])
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-string")#icon("json-string") *type*: `text`]),
+  (1, [#icon("nbt-string")#icon("json-string") *#underline[text]*: 具体的文本内容。])
 )
 #example(
   [在所有玩家的主标题显示纯文本#text_component(text(white)[Hello World!])。],
   [
-    如果使用 #icon(name: "nbt-string")#icon(name: "json-string") `text`，则命令为
+    如果使用 #icon("nbt-string")#icon("json-string") `text`，则命令为
     #codebox("title @a title {type:\"text\",text:\"Hello world!\"}")
-    然而，节@sec:text_component_overview 指出，对于命令中没有任何样式的纯文本 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象，游戏总是会将它序列化成 #icon(name: "nbt-string")#icon(name: "json-string") 字符串，即
+    然而，节@sec:text_component_overview 指出，对于命令中没有任何样式的纯文本 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象，游戏总是会将它序列化成 #icon("nbt-string")#icon("json-string") 字符串，即
     #codebox("title @a title \"Hello world!\"") <code:text_component_string_recommended>
     这样的写法也是有效的，并且因为它输入的字符少，通常更推荐如@code:text_component_string_recommended 这样的写法。
   ]
@@ -4927,7 +5014,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 
 #proper-noun(display: "翻译标识符（Translation identifier，本地化键名）", "fan1 yi4 biao1 shi2 fu2")存在于资源包语言文件中，用于表示一段已翻译的文本，一个翻译标识符大致按照以下的格式书写：
 #codebox("<内容>.<内容>.<内容>.…")
-它们被存储在 #icon(name: "folder") `assets\minecraft\lang\xx_xx.json` 中，每一个翻译标识符后面都有一个值，这些值便是在当前语言中的翻译文本。在 #icon(name: "json") `en_us.json` 中，部分翻译标识符如下所示：
+它们被存储在 #icon("folder") `assets\minecraft\lang\xx_xx.json` 中，每一个翻译标识符后面都有一个值，这些值便是在当前语言中的翻译文本。在 #icon("json") `en_us.json` 中，部分翻译标识符如下所示：
 #codefile(
   lang: "json",
   title: "assets > minecraft > lang > en_us.json",
@@ -4936,7 +5023,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
   \"commands.debug.started\": \"Started tick profiling\"
 }"
 )
-简体中文语言文件 #icon(name: "json") `zh_cn.json` 相应的部分如下所示：
+简体中文语言文件 #icon("json") `zh_cn.json` 相应的部分如下所示：
 #codefile(
   lang: "json",
   title: "assets > minecraft > lang > zh_cn.json",
@@ -4945,32 +5032,32 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
   \"commands.debug.started\": \"已开始刻分析\"
 }"
 )
-如果自制的资源包需要支持多语言，应该在资源包 #icon(name: "folder") `lang` 路径下添加语言文件，所有命名空间均可用，不仅限于 `minecraft`。一般而言至少应支持简体中文和美式英语：#cite(<vanilla_mod>, form: none)
+如果自制的资源包需要支持多语言，应该在资源包 #icon("folder") `lang` 路径下添加语言文件，所有命名空间均可用，不仅限于 `minecraft`。一般而言至少应支持简体中文和美式英语：#cite(<vanilla_mod>, form: none)
 #tree(
-  (0, [#icon(name: "folder") *assets*]),
-  (1, [#icon(name: "folder") *\<命名空间>*]),
-  (2, [#icon(name: "folder") *lang*]),
-  (3, [#icon(name: "json") *en_us.json*]),
-  (3, [#icon(name: "json") *zh_cn.json*])
+  (0, [#icon("folder") *assets*]),
+  (1, [#icon("folder") *\<命名空间>*]),
+  (2, [#icon("folder") *lang*]),
+  (3, [#icon("json") *en_us.json*]),
+  (3, [#icon("json") *zh_cn.json*])
 )
 翻译标识符及其翻译的内容可完全自定义。翻译内容允许各种转义序列，如Unicode码、换行符 `\n` 等。
 
-在翻译文本文本组件中，决定组件类型的键为 #icon(name: "nbt-string")#icon(name: "json-string") `translate`，数据格式如下：
+在翻译文本文本组件中，决定组件类型的键为 #icon("nbt-string")#icon("json-string") `translate`，数据格式如下：
 #tree(
-  (0, [#icon(name: "nbt-compound")#icon(name: "json-object") 文本组件]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *type*: `translatable`]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *#underline[translate]*: 翻译标识符。若输入正确，则会返回和客户端当前语言一致的已翻译文本，即返回在相应语言 `.json` 文件中该翻译标识符的值。]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *fallback*: 若相应的语言文件中没有需要的翻译标识符，则显示 `en_us.json` 中的内容，即美式英语的文本。若在 `en_us.json` 中也没有找到该翻译标识符，则可以使用这个字段以输出替代的文本，它需要的值为字符串，因此不能添加格式，但可以使用格式化代码。]),
-  (1, [#icon(name: "nbt-list")#icon(name: "json-array") *with*: 一些翻译标识符的值中含有 `%s` 的字样，这些被称为标识符中的*译文变量（英文原文为Slots，槽位）*#index(display: "译文变量（Slots）", "yi4 wen2 bian4 liang4")。若不定义此字段，则这些译文变量的位置会显示为无文本。可以使用这个字段对这些译文遍历进行自定义。]),
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-string")#icon("json-string") *type*: `translatable`]),
+  (1, [#icon("nbt-string")#icon("json-string") *#underline[translate]*: 翻译标识符。若输入正确，则会返回和客户端当前语言一致的已翻译文本，即返回在相应语言 `.json` 文件中该翻译标识符的值。]),
+  (1, [#icon("nbt-string")#icon("json-string") *fallback*: 若相应的语言文件中没有需要的翻译标识符，则显示 `en_us.json` 中的内容，即美式英语的文本。若在 `en_us.json` 中也没有找到该翻译标识符，则可以使用这个字段以输出替代的文本，它需要的值为字符串，因此不能添加格式，但可以使用格式化代码。]),
+  (1, [#icon("nbt-list")#icon("json-array") *with*: 一些翻译标识符的值中含有 `%s` 的字样，这些被称为标识符中的*译文变量（英文原文为Slots，槽位）*#index(display: "译文变量（Slots）", "yi4 wen2 bian4 liang4")。若不定义此字段，则这些译文变量的位置会显示为无文本。可以使用这个字段对这些译文遍历进行自定义。]),
   (2, [一个文本组件，允许使用字符串、数组、对象等组件。])
 )
-对于翻译标识符值中的译文变量，参数列表 #icon(name: "nbt-list")#icon(name: "json-array") `with` 给它们分配参数的规则如下：
+对于翻译标识符值中的译文变量，参数列表 #icon("nbt-list")#icon("json-array") `with` 给它们分配参数的规则如下：
 + 对于出现的第$n$个 `%s`，其会被分配参数列表中的第$n$个参数。
 + 对于 `%n$s`，其会被分配参数列表中的第$n$个参数。
 下面的例子解释了这种分配规则：
 #example(
   [
-    已知翻译标识符 `translation.test.complex` 对应字段在 #icon(name: "json") `zh_cn.json` 为
+    已知翻译标识符 `translation.test.complex` 对应字段在 #icon("json") `zh_cn.json` 为
     #codebox("\"translation.test.complex\":\"前缀，%s%2$s 然后是 %s 和 %1$s 最后是 %s 还有 %1$s！\"")
     写出文本组件
     #codebox("{translate:\"translation.test.complex\",with:[\"1\",\"2\",{text:\"3\",bold:true},\"4\"]}")
@@ -5014,16 +5101,16 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
     3] 还有 1！])。第4个参数虽然存在于列表中，但并没有使用。
   ]
 )
-若 #icon(name: "nbt-string")#icon(name: "json-string") `fallback` 也没有指定值，则返回翻译标识符本身。例如，`custom.1` 是原版资源包中任何一个语言文件中都没有的翻译标识符，那么在不定义 #icon(name: "nbt-string")#icon(name: "json-string") `fallback` 时，文本组件
+若 #icon("nbt-string")#icon("json-string") `fallback` 也没有指定值，则返回翻译标识符本身。例如，`custom.1` 是原版资源包中任何一个语言文件中都没有的翻译标识符，那么在不定义 #icon("nbt-string")#icon("json-string") `fallback` 时，文本组件
 #codebox("{translate:\"custom.1\"}")
 返回的内容为#text_component(text(white)[custom.1])。读者可以通过在资源包中添加这些自定义的翻译标识符，并为这些翻译标识符编写相应的值。
 #index(display: "检测资源包是否安装并显示不同的文本", index: "method", "jian3 ce4 zi1 yuan2 bao1 shi4 fou3 an1 zhuang1 bing4 xian3 shi4 bu4 tong2 de wen2 ben3")
 #example(
   [一张冒险地图需要配合资源包使用，玩家进入游戏时地图会向玩家展示主标题，若玩家启用了正确的资源包，则主标题文本为#text_component(text(white)[资源包已启用])；若玩家未使用资源包，则主标题文本为#text_component(text(white)[请安装正确的资源包！])。试实现这个效果。],
   [
-    要使客户端在装载资源包前后显示不同的文本，不妨使用翻译文本组件。当资源包启用的时候，按照翻译标识符显示对应的文本；当资源包未启用的时候，翻译标识符不存在，从而显示 #icon(name: "nbt-string")#icon(name: "json-string") `fallback` 中的内容。
+    要使客户端在装载资源包前后显示不同的文本，不妨使用翻译文本组件。当资源包启用的时候，按照翻译标识符显示对应的文本；当资源包未启用的时候，翻译标识符不存在，从而显示 #icon("nbt-string")#icon("json-string") `fallback` 中的内容。
 
-    首先在资源包中定义一个 #icon(name: "folder") `zh_cn.json` 语言文件，在其中任意定义一个翻译标识符：
+    首先在资源包中定义一个 #icon("folder") `zh_cn.json` 语言文件，在其中任意定义一个翻译标识符：
     #codefile(
       lang: "json",
       title: "assets > tutorial > lang > zh_cn.json",
@@ -5040,9 +5127,9 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 === 按键绑定组件
 #proper-noun(display: "按键绑定组件（Keybind）", "an4 jian4 bang3 ding4 zu3 jian4")用于返回可设置键位的动作当前设置的键位，返回的内容会随着玩家的键位设置而改变，数据结构为
 #tree(
-  (0, [#icon(name: "nbt-compound")#icon(name: "json-object") 文本组件]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *type*: `keybind`]),
-  (1, [#icon(name: "nbt-compound")#icon(name: "json-object") *#underline[keybind]*: 需要返回的键位，值为#proper-noun(display: "键位标识符（Keybind identifier）", "jian4 wei4 biao1 shi2 fu2")。所有可用的键位标识符如@tab:keybind_identifier 所示：])
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-string")#icon("json-string") *type*: `keybind`]),
+  (1, [#icon("nbt-compound")#icon("json-object") *#underline[keybind]*: 需要返回的键位，值为#proper-noun(display: "键位标识符（Keybind identifier）", "jian4 wei4 biao1 shi2 fu2")。所有可用的键位标识符如@tab:keybind_identifier 所示：])
 )
 #general-table(
   caption: "可用键位标识符",
@@ -5119,7 +5206,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
   \"item.use\": \"Press %s to use\"
 }"
     )
-    然后在翻译文本组件的 #icon(name: "nbt-list")#icon(name: "json-array") `with` 中定义传入的参数，显然需要传入按键绑定组件：
+    然后在翻译文本组件的 #icon("nbt-list")#icon("json-array") `with` 中定义传入的参数，显然需要传入按键绑定组件：
     #codebox("{keybind:\"key.use\"}")
     组合起来得到完整的文本组件：
     #codebox("{translate:\"item.use\",with:[{keybind:\"key.use\"}]}")
@@ -5128,11 +5215,11 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 === 记分板分数组件
 #proper-noun(display: "记分板分数组件（Scoreboard value）", "ji4 fen1 ban3 fen1 shu4 zu3 jian4")这种组件类型用于返回指定分数持有者在指定记分项上的分数。若该分数持有者在指定记分项上没有分数，则不会返回任何内容。这种组件类型需要被解析。数据格式为：
 #tree(
-  (0, [#icon(name: "nbt-compound")#icon(name: "json-object") 文本组件]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *type*: `score`]),
-  (1, [#icon(name: "nbt-compound")#icon(name: "json-object") *#underline[score]*: 需要显示的记分板分数。]),
-  (2, [#icon(name: "nbt-string")#icon(name: "json-string") *#underline[name]*: 可以是一个实体名称，也可以是一个目标选择器。但是一个记分板分数文本组件只能解析一个分数持有者在一个指定记分项上的分数，因此目标选择器必须将选择的目标数量限定为一个，仅使用 `@a`、`@e` 这样的目标选择器变量是不可接受的。除了实体名称和目标选择器外，`name` 还可以接受 `*` 作为它的值。若值为 `*`，则会返回观察者（这里指观察这段文本的实体）自己在指定变量上的分数，这样可以让不同的玩家分别观察到他们自己的分数。]),
-  (2, [#icon(name: "nbt-string")#icon(name: "json-string") *#underline[objective]*: 指定的记分项。])
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-string")#icon("json-string") *type*: `score`]),
+  (1, [#icon("nbt-compound")#icon("json-object") *#underline[score]*: 需要显示的记分板分数。]),
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[name]*: 可以是一个实体名称，也可以是一个目标选择器。但是一个记分板分数文本组件只能解析一个分数持有者在一个指定记分项上的分数，因此目标选择器必须将选择的目标数量限定为一个，仅使用 `@a`、`@e` 这样的目标选择器变量是不可接受的。除了实体名称和目标选择器外，`name` 还可以接受 `*` 作为它的值。若值为 `*`，则会返回观察者（这里指观察这段文本的实体）自己在指定变量上的分数，这样可以让不同的玩家分别观察到他们自己的分数。]),
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[objective]*: 指定的记分项。])
 )
 #example(
   [已知玩家 `Mu_xian` 在记分项 `[test]` 上的分数为1，`IIIIfrit` 在记分项 `[test]` 上的分数为2。编写命令在这些玩家各自的客户端内返回各自的分数。],
@@ -5145,10 +5232,10 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 === 实体名称组件
 #proper-noun(display: "实体名称组件（Entity names）", "shi2 ti3 ming2 cheng1 zu3 jian4")用于返回所有被选中实体的名称，需要被解析，可返回多个实体。数据格式为：
 #tree(
-  (0, [#icon(name: "nbt-compound")#icon(name: "json-object") 文本组件]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *type*: `selector`]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *#underline[selector]*: 返回的实体，需要的值为目标选择器。]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string")#icon(name: "nbt-list")#icon(name: "json-array")#icon(name: "nbt-compound")#icon(name: "json-object") *separator*: 可选，表示显示时分割各实体名称的文本，值可以是文本组件可接受的任意数据类型。默认值为 `{"text":", ","color":"gray"}`，显示的是灰色的分隔符#text_component(shadow-offset: (0.1em, -0.25em),text(gray)[,])。])
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-string")#icon("json-string") *type*: `selector`]),
+  (1, [#icon("nbt-string")#icon("json-string") *#underline[selector]*: 返回的实体，需要的值为目标选择器。]),
+  (1, [#icon("nbt-string")#icon("json-string")#icon("nbt-list")#icon("json-array")#icon("nbt-compound")#icon("json-object") *separator*: 可选，表示显示时分割各实体名称的文本，值可以是文本组件可接受的任意数据类型。默认值为 `{"text":", ","color":"gray"}`，显示的是灰色的分隔符#text_component(shadow-offset: (0.1em, -0.25em),text(gray)[,])。])
 )
 #example(
   [在聊天栏中显示所有玩家的名字，名字之间用#text_component(text(white)[|])分隔。],
@@ -5160,33 +5247,33 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 === NBT组件
 #proper-noun(display: "NBT组件（NBT values）", "NBT zu3 jian4")这种组件类型用于返回*方块实体*、*实体*或*命令存储*的指定NBT值，需要被解析，数据格式为
 #tree(
-  (0, [#icon(name: "nbt-compound")#icon(name: "json-object") 文本组件]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *type*: `nbt`]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *source*: NBT值的来源，可用值 `block`（方块实体）、`entity`（实体）和 `storage`（命令存储）。若该字段不存在，则会根据 #icon(name: "nbt-string")#icon(name: "json-string") `nbt` 自动确定来源。]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *block*: 获取方块实体数据的方块坐标，可以为绝对坐标、相对坐标或局部坐标，坐标值之间用空格分隔。]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *entity*: 获取实体数据的实体，需要为目标选择器，可以选择多个实体。]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *storage*: 获取命令存储数据的命令存储的命名空间ID。]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *#underline[nbt]*: 所返回NBT值的路径。]),
-  (1, [#icon(name: "nbt-bool")#icon(name: "json-bool") *interpret*: 是否将从NBT获取的值当作文本组件解析，若解析失败则什么内容都不会返回。默认值为 `false`]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string")#icon(name: "nbt-list")#icon(name: "json-array")#icon(name: "nbt-compound")#icon(name: "json-object") *separator*: 可选，表示显示时分割各NBT值的文本，值可以是文本组件可接受的任意数据类型。默认值为 `", "`，显示的是白色的分隔符#text_component(shadow-offset: (0.1em, -0.25em),text(white)[,])。])
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-string")#icon("json-string") *type*: `nbt`]),
+  (1, [#icon("nbt-string")#icon("json-string") *source*: NBT值的来源，可用值 `block`（方块实体）、`entity`（实体）和 `storage`（命令存储）。若该字段不存在，则会根据 #icon("nbt-string")#icon("json-string") `nbt` 自动确定来源。]),
+  (1, [#icon("nbt-string")#icon("json-string") *block*: 获取方块实体数据的方块坐标，可以为绝对坐标、相对坐标或局部坐标，坐标值之间用空格分隔。]),
+  (1, [#icon("nbt-string")#icon("json-string") *entity*: 获取实体数据的实体，需要为目标选择器，可以选择多个实体。]),
+  (1, [#icon("nbt-string")#icon("json-string") *storage*: 获取命令存储数据的命令存储的命名空间ID。]),
+  (1, [#icon("nbt-string")#icon("json-string") *#underline[nbt]*: 所返回NBT值的路径。]),
+  (1, [#icon("nbt-bool")#icon("json-bool") *interpret*: 是否将从NBT获取的值当作文本组件解析，若解析失败则什么内容都不会返回。默认值为 `false`]),
+  (1, [#icon("nbt-string")#icon("json-string")#icon("nbt-list")#icon("json-array")#icon("nbt-compound")#icon("json-object") *separator*: 可选，表示显示时分割各NBT值的文本，值可以是文本组件可接受的任意数据类型。默认值为 `", "`，显示的是白色的分隔符#text_component(shadow-offset: (0.1em, -0.25em),text(white)[,])。])
 )
-在一个同级文本组件 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象中，NBT数据值组件类型只能从 #icon(name: "nbt-string")#icon(name: "json-string") `block`、#icon(name: "nbt-string")#icon(name: "json-string") `entity` 和 #icon(name: "nbt-string")#icon(name: "json-string") `storage` 中选择一个，且这三个字段必须存在任何一者。若在同一个对象中出现多个，则它们按照如下顺序的优先级决定最终选择的键：#icon(name: "nbt-string")#icon(name: "json-string") `block`、#icon(name: "nbt-string")#icon(name: "json-string") `entity`、#icon(name: "nbt-string")#icon(name: "json-string") `storage`。
+在一个同级文本组件 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象中，NBT数据值组件类型只能从 #icon("nbt-string")#icon("json-string") `block`、#icon("nbt-string")#icon("json-string") `entity` 和 #icon("nbt-string")#icon("json-string") `storage` 中选择一个，且这三个字段必须存在任何一者。若在同一个对象中出现多个，则它们按照如下顺序的优先级决定最终选择的键：#icon("nbt-string")#icon("json-string") `block`、#icon("nbt-string")#icon("json-string") `entity`、#icon("nbt-string")#icon("json-string") `storage`。
 #example(
-  [获取方块坐标为$(0,0,0)$之方块实体 #icon(name: "nbt-list") `Items` 标签的值。],
+  [获取方块坐标为$(0,0,0)$之方块实体 #icon("nbt-list") `Items` 标签的值。],
   [
     文本组件为
     #codebox("{source:\"block\",nbt:\"Items\",block:\"0 0 0\"}")
   ]
 )
 #example(
-  [返回所有实体 #icon(name: "nbt-list") `Rotation` 标签的值。],
+  [返回所有实体 #icon("nbt-list") `Rotation` 标签的值。],
   [
     文本组件为
     #codebox("{source:\"entity\",nbt:\"Rotation\",entity:\"@e\"}")
   ]
 )
 #example(
-  [返回存储 `test:a` 中 #icon(name: "nbt-int") `test` 标签的值。],
+  [返回存储 `test:a` 中 #icon("nbt-int") `test` 标签的值。],
   [
     文本组件为
     #codebox("{source:\"storage\",nbt:\"test\",storage:\"test:a\"}")
@@ -5197,15 +5284,15 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 ==== 纹理图集精灵图
 格式为
 #tree(
-  (0, [#icon(name: "nbt-compound")#icon(name: "json-object") 文本组件]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *type*: `object`]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *object*: `atlas`]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *atlas*: 使用的纹理图集，默认为 `blocks`。]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *#underline[sprite]*: 精灵图在纹理图集中的命名空间ID。])
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-string")#icon("json-string") *type*: `object`]),
+  (1, [#icon("nbt-string")#icon("json-string") *object*: `atlas`]),
+  (1, [#icon("nbt-string")#icon("json-string") *atlas*: 使用的纹理图集，默认为 `blocks`。]),
+  (1, [#icon("nbt-string")#icon("json-string") *#underline[sprite]*: 精灵图在纹理图集中的命名空间ID。])
 )
 纹理图集的概念将在《资源包》教程中给出，以下直接以例题说明此组件的用法。
 #example(
-  [用文本组件显示苹果的精灵图 #icon(name: "sprite-apple")。],
+  [用文本组件显示苹果的精灵图 #icon("sprite-apple")。],
   [
     苹果是物品，使用 `items` 这个纹理图集，相应片段如下：
     #codefile(
@@ -5221,16 +5308,16 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
   ]
 }"
     )
-    资源包内苹果纹理的地址为 #icon(name: "png") `assets\minecraft\textures\item\apple.png`，它在纹理图集内的命名空间ID为 `minecraft:apple`。故文本组件应写为
+    资源包内苹果纹理的地址为 #icon("png") `assets\minecraft\textures\item\apple.png`，它在纹理图集内的命名空间ID为 `minecraft:apple`。故文本组件应写为
     #codebox("{object:\"atlas\",atlas:\"items\",sprite:\"minecraft:apple\"}")
   ]
 )
 #example(
-  [尝试显示 #icon(name: "sprite-heart_full")。],
+  [尝试显示 #icon("sprite-heart_full")。],
   [
-    #icon(name: "sprite-heart_full") 是GUI图集所属的精灵图，此纹理在资源包内的位置为
+    #icon("sprite-heart_full") 是GUI图集所属的精灵图，此纹理在资源包内的位置为
 
-    #icon(name: "png") `assets\minecraft\textures\gui\sprites\hud\heart\full.png`
+    #icon("png") `assets\minecraft\textures\gui\sprites\hud\heart\full.png`
 
     GUI纹理图集的内容如下所示：
     #codefile(
@@ -5257,32 +5344,32 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 ==== 玩家皮肤精灵图
 实际上，这种精灵图显示的是玩家的头而非完整的玩家模型或玩家皮肤，格式为
 #tree(
-  (0, [#icon(name: "nbt-compound")#icon(name: "json-object") 文本组件]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *type*: `object`]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string") *object*: `player`]),
-  (1, [#icon(name: "nbt-bool")#icon(name: "json-bool") *hat*: 是否渲染皮肤的帽子，默认为 `true`。]),
-  (1, [#icon(name: "nbt-string")#icon(name: "json-string")#icon(name: "nbt-compound")#icon(name: "json-object") *#underline[player]*: 要显示的玩家皮肤。有 #icon(name: "nbt-string")#icon(name: "json-string") 字符串和 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象两种格式。]),
-  (2, [*当使用 #icon(name: "nbt-string")#icon(name: "json-string") 字符串形式时，需要为玩家名称，格式要求与 #icon(name: "nbt-compound")#icon(name: "json-object") 形式中的 #icon(name: "nbt-string")#icon(name: "json-string") `name` 一致。*], false),
-  (2, [*当使用 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象形式时，具有以下字段：*], false),
-  (2, [#icon(name: "nbt-int_array")#icon(name: "json-array") *id*: 玩家的UUID。]),
-  (2, [#icon(name: "nbt-string")#icon(name: "json-string") *name*: 玩家名称，不能超过16个字符。若此项不使用，则按 #icon(name: "nbt-int_array")#icon(name: "json-array") `id` 字段确定玩家。]),
-  (2, [#icon(name: "nbt-list")#icon(name: "json-array")#icon(name: "nbt-compound")#icon(name: "json-object") *properties*: 玩家游戏档案。]),
-  (3, [*若使用 #icon(name: "nbt-list") 列表/ #icon(name: "json-array") 数组形式，则可用带签名的游戏档案，并具有以下字段：*], false),
-  (3, [#icon(name: "nbt-compound")#icon(name: "json-object") 一项游戏档案属性。]),
-  (4, [#icon(name: "nbt-string")#icon(name: "json-string") *#underline[name]*: 该属性的名称。]),
-  (4, [#icon(name: "nbt-string")#icon(name: "json-string") *#underline[value]*: 该属性的值，是Base64编码的JSON数据。]),
-  (4, [#icon(name: "nbt-string")#icon(name: "json-string") *Signature*: 该属性的签名。]),
-  (3, [*若使用 #icon(name: "nbt-compound") 复合标签/ #icon(name: "json-object") 对象形式，则具有以下字段：*], false),
-  (3, [#icon(name: "nbt-list")#icon(name: "json-array") *\<游戏档案属性名称>*: 一个游戏档案属性。]),
-  (4, [#icon(name: "nbt-string")#icon(name: "json-string") 该属性的值，是Base64编码的JSON数据。]),
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-string")#icon("json-string") *type*: `object`]),
+  (1, [#icon("nbt-string")#icon("json-string") *object*: `player`]),
+  (1, [#icon("nbt-bool")#icon("json-bool") *hat*: 是否渲染皮肤的帽子，默认为 `true`。]),
+  (1, [#icon("nbt-string")#icon("json-string")#icon("nbt-compound")#icon("json-object") *#underline[player]*: 要显示的玩家皮肤。有 #icon("nbt-string")#icon("json-string") 字符串和 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象两种格式。]),
+  (2, [*当使用 #icon("nbt-string")#icon("json-string") 字符串形式时，需要为玩家名称，格式要求与 #icon("nbt-compound")#icon("json-object") 形式中的 #icon("nbt-string")#icon("json-string") `name` 一致。*], false),
+  (2, [*当使用 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象形式时，具有以下字段：*], false),
+  (2, [#icon("nbt-int_array")#icon("json-array") *id*: 玩家的UUID。]),
+  (2, [#icon("nbt-string")#icon("json-string") *name*: 玩家名称，不能超过16个字符。若此项不使用，则按 #icon("nbt-int_array")#icon("json-array") `id` 字段确定玩家。]),
+  (2, [#icon("nbt-list")#icon("json-array")#icon("nbt-compound")#icon("json-object") *properties*: 玩家游戏档案。]),
+  (3, [*若使用 #icon("nbt-list") 列表/ #icon("json-array") 数组形式，则可用带签名的游戏档案，并具有以下字段：*], false),
+  (3, [#icon("nbt-compound")#icon("json-object") 一项游戏档案属性。]),
+  (4, [#icon("nbt-string")#icon("json-string") *#underline[name]*: 该属性的名称。]),
+  (4, [#icon("nbt-string")#icon("json-string") *#underline[value]*: 该属性的值，是Base64编码的JSON数据。]),
+  (4, [#icon("nbt-string")#icon("json-string") *Signature*: 该属性的签名。]),
+  (3, [*若使用 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象形式，则具有以下字段：*], false),
+  (3, [#icon("nbt-list")#icon("json-array") *\<游戏档案属性名称>*: 一个游戏档案属性。]),
+  (4, [#icon("nbt-string")#icon("json-string") 该属性的值，是Base64编码的JSON数据。]),
   (2, [*以下字段均可选，若填写了则会在上述玩家档案数据的基础上进行修改，用于定制玩家皮肤。其中的纹理均可用资源包指定，对客户端有效。*], false),
-  (2, [#icon(name: "nbt-string")#icon(name: "json-string") *cape*: 披风的纹理，使用命名空间ID，地址从 #icon(name: "folder") `assets\<命名空间>\textures` 开始计。]),
-  (2, [#icon(name: "nbt-string")#icon(name: "json-string") *elytra*: 鞘翅的纹理，使用命名空间ID，地址从 #icon(name: "folder") `assets\<命名空间>\textures` 开始计。]),
-  (2, [#icon(name: "nbt-string")#icon(name: "json-string") *model*: 玩家模型的类型，有效值 `wide`（普通）和 `slim`（纤细）。]),
-  (2, [#icon(name: "nbt-string")#icon(name: "json-string") *texture*: 皮肤的纹理，使用命名空间ID，地址从 #icon(name: "folder") `assets\<命名空间>\textures` 开始计。])
+  (2, [#icon("nbt-string")#icon("json-string") *cape*: 披风的纹理，使用命名空间ID，地址从 #icon("folder") `assets\<命名空间>\textures` 开始计。]),
+  (2, [#icon("nbt-string")#icon("json-string") *elytra*: 鞘翅的纹理，使用命名空间ID，地址从 #icon("folder") `assets\<命名空间>\textures` 开始计。]),
+  (2, [#icon("nbt-string")#icon("json-string") *model*: 玩家模型的类型，有效值 `wide`（普通）和 `slim`（纤细）。]),
+  (2, [#icon("nbt-string")#icon("json-string") *texture*: 皮肤的纹理，使用命名空间ID，地址从 #icon("folder") `assets\<命名空间>\textures` 开始计。])
 )
 #example(
-  [用文本组件显示玩家 `Mu_xian` 的头 #icon(name: "sprite-Mu_xian") 。],
+  [用文本组件显示玩家 `Mu_xian` 的头 #icon("sprite-Mu_xian") 。],
   [
     组件为
     #codebox("{object:\"player\",player:\"Mu_xian\"}")
@@ -5313,7 +5400,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
     [玩家打开成书], [该玩家], [玩家的权限等级], [玩家], [玩家的名称], [家所在位置], [玩家的朝向], [脚部], [玩家所在维度],
     [讲台上放入成书], [*无*], [2], [无], [`Lectern`], [讲台所在方块正中心], [水平向南], [脚部], [讲台所在维度],
     [文本展示实体], [该文本展示实体], [2], [该文本展示实体], [该文本展示实体的名称], [该文本展示实体所在位置], [该文本展示实体的朝向], [脚部], [该文本展示实体所在维度],
-    [物品修饰器的\ `set_lore` 和\ `set_name`], [#icon(name: "json-string") `entity` 指定的实体], [2], [#icon(name: "json-string") `entity` 指定的实体], [#icon(name: "json-string") `entity` 指定实体的名称], [#icon(name: "json-string") `entity` 指定实体所在的位置], [#icon(name: "json-string") `entity` 指定实体的朝向], [脚部], [#icon(name: "json-string") `entity` 指定实体所在的维度]
+    [物品修饰器的\ `set_lore` 和\ `set_name`], [#icon("json-string") `entity` 指定的实体], [2], [#icon("json-string") `entity` 指定的实体], [#icon("json-string") `entity` 指定实体的名称], [#icon("json-string") `entity` 指定实体所在的位置], [#icon("json-string") `entity` 指定实体的朝向], [脚部], [#icon("json-string") `entity` 指定实体所在的维度]
   ) <tab:component_resolution_context>
 ]
 以下情况无法进行组件解析：
@@ -5324,6 +5411,83 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 ===== 对话框
 对话框中的所有记分板分数组件、实体名称组件和NBT组件都不能解析，要想显示这些数据，只能用宏函数将数据传递进去。
 == 文本组件样式
+文本组件样式，包括文字的样式、字体和交互事件，主要用于修饰文字。
+=== 样式与字体
+基本的样式可应用于所有内容类型，其数据结构为：
+#tree(
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-bool")#icon("json-bool") *bold*: 是否将文字变为#proper-noun(display: "粗体（Bold）", "cu1 ti3")。]),
+  (1, [#icon("nbt-compound")#icon("json-object") *color*: 文本本身的渲染颜色，可用值见下文的说明。]),
+  (1, [#icon("nbt-compound")#icon("json-object") *font*: 渲染文字使用的字体，可用值见下文的说明。]),
+  (1, [#icon("nbt-bool")#icon("json-bool") *italic*: 是否将文字变为#proper-noun(display: "斜体（Italic）", "xie2 ti3")。]),
+  (1, [#icon("nbt-bool")#icon("json-bool") *obfuscated*: 否将文字#proper-noun(display: "模糊化（Obfuscated）", "mo2 hu2 hua4")处理，使文本渲染为动态的随机字符（乱码）。]),
+  (1, [#icon("nbt-int")#icon("json-number")#icon("nbt-list")#icon("json-array") *shadow_color*: 文本阴影的颜色，可以直接用 #icon("nbt-int") 整型/ #icon("json-number") 数字形式指定ARGB颜色，也可以用 #icon("nbt-list") 列表/ #icon("json-array") 数组内的浮点数作为不同通道的分量以表示颜色。]),
+  (2, [*若使用 #icon("nbt-list")列表/ #icon("json-array") 数组形式，则包含以下字段：*], false),
+  (2, [#icon("nbt-float")#icon("json-number") A通道分量，这个通道表示不透明度，有效值 `0` \~ `1`（含）。]),
+  (2, [#icon("nbt-float")#icon("json-number") R通道分量，这个通道表示红色值，有效值 `0` \~ `1`（含）。]),
+  (2, [#icon("nbt-float")#icon("json-number") G通道分量，这个通道表示绿色值，有效值 `0` \~ `1`（含）。]),
+  (2, [#icon("nbt-float")#icon("json-number") B通道分量，这个通道表示蓝色值，有效值 `0` \~ `1`（含）。]),
+  (1, [#icon("nbt-bool")#icon("json-bool") *strikethrough*: 是否为文字添加#proper-noun(display: "删除线（Strikethrough）", "shan1 chu2 xian4")。]),
+  (1, [#icon("nbt-bool")#icon("json-bool") *underlined*: 是否为文字添加#proper-noun(display: "下划线（Underline）", "xia4 hua2 xian4")。])
+)
+==== 颜色与背景颜色
+#wrap-content(
+  tips(
+    width: 20em,
+    [应用在不同物件上的文本组件默认颜色不同。命令 `/title` 和 `/tellraw` 的默认颜色为白色，成书和告示牌则为黑色。]
+  ),
+  [
+    
+    字段 #icon("nbt-compound")#icon("json-object") `color` 可用的值包括Minecraft预设的16种颜色值、使用 `#<HEX>` 格式的6位十六进制颜色值以及用于重置颜色为默认颜色的 `reset`。预设的16种颜色如下表所示：
+  ],
+  align: right
+)
+#split-table(
+  caption: "颜色值表",
+  original-cols: (auto, auto, auto),
+  seperator: (3,),
+  header: ([颜色], [值], [HEX]),
+  data: (
+    [黑色], [`black`], [\#000000 #color_block(black)],
+    [深蓝], [`dark_blue`], [\#0000AA #color_block(dark_blue)],
+    [深绿], [`dark_green`], [\#00AA00 #color_block(dark_green)],
+    [湖蓝], [`dark_aqua`], [\#00AAAA #color_block(dark_aqua)],
+    [深红], [`dark_red`], [\#AA0000 #color_block(dark_red)],
+    [紫色], [`dark_purple`], [\#AA00AA #color_block(dark_purple)],
+    [金色], [`gold`], [\#FFAA00 #color_block(gold)],
+    [灰色], [`gray`], [\#AAAAAA #color_block(gray)],
+    [深灰], [`dark_gray`], [\#555555 #color_block(dark_gray)],
+    [蓝色], [`blue`], [\#5555FF #color_block(blue)],
+    [绿色], [`green`], [\#55FF55 #color_block(green)],
+    [天蓝], [`aqua`], [\#55FFFF #color_block(aqua)],
+    [红色], [`red`], [\#FF5555 #color_block(red)],
+    [粉红], [`light_purple`], [\#FF55FF #color_block(light_purple)],
+    [黄色], [`yellow`], [\#FFFF55 #color_block(yellow)],
+    [白色], [`white`], [\#FFFFFF #color_block(white)]
+  )
+)
+#example(
+  [使用正红色 `#FF0000` 渲染纯文本#text_component(text(rgb("ff0000"))[Hello World!])。],
+  [
+    文本组件为#footnote[组件中的颜色块仅用于表示文字使用的颜色，实际编写时不存在这个色块。]
+    #codebox([{text:\"Hello World!\",color:\"#color_block(rgb("ff0000"))\#FF0000\"}])
+  ]
+)
+#index(display: "在聊天栏显示虚假的广播信息", index: "method", "zai4 liao2 tian1 lan2 xian3 shi4 xu1 jia3 de guang3 bo1 xin4 xi1")
+#example(
+  [编写一条命令以实现Herobrine进入游戏的假象。],
+  [
+    玩家在进入游戏的时候会在聊天栏中显示黄色的文字#text_component(text(yellow)[\<玩家>加入了游戏])（中文）或#text_component(text(yellow)[\<player> joined the game])（英文）。在使用命令制造“玩家进入游戏”的事件时，实际上不是真的有其他玩家加入了游戏，而是使用命令 `/tellraw` 造成的假信息。可以使用 `/tellraw` 在聊天栏中显示一段黄色的文本，并且运用翻译标识符以支持多种语言。在 #icon("json") `en_us.json` 中，玩家加入游戏的翻译文本由以下字段控制：
+    #codebox("\"multiplayer.player.joined\": \"%s joined the game\"")
+    对其中的 `%s` 定义文本 `Herobrine`，并添加样式，则所需的命令为
+    #codebox([tellraw \@a {translate:\"multiplayer.player.joined\",with:[\"Herobrine\"],color:\"#color_block(yellow)yellow\"}])
+    顺着这条思路还可以制造出其他效果。比如，在游戏中传播假死信息：\ #text_component(text(white)[Mu_xian从高处摔了下来])\ 玩家的死亡信息为白色不加粗字体，在使用文本组件编写时只需使用默认样式即可，命令可以为：
+    #codebox("tellraw @a {translate:\"death.fell.accident.generic\",with:[\"Mu_xian\"]}")
+  ]
+)
+背景颜色使用ARGB格式，由于它有一个A通道，因此可以指定背景颜色的透明度。#icon("nbt-list") 列表/ #icon("json-array") 数组形式可以分别指定各通道，如果是 #icon("nbt-int") 整型/ #icon("json-number") 数字形式，则需要使用十进制的颜色值。
+
+每一个通道都是介于0 \~ 255（含）之间的值
 = 存档格式<chap:level_format>
 == 存档文件夹的结构<sec:saves>
 == 方块实体<sec:block_entity>
@@ -6103,11 +6267,13 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
     [1.21.11 Release Candidate 3 Unobfuscated], [94.1], [75.0],
     [1.21.11], [94.1], [75.0],
     [1.21.11 Unobfuscated], [94.1], [75.0],
-    [26.1 Snapshot 1], [95.0], [76.0],
-    [26.1 Snapshot 2], [96.0], [77.0],
-    [26.1 Snapshot 3], [97.0], [78.0],
-    [26.1 Snapshot 4], [97.1], [78.1],
-    [26.1 Snapshot 5], [98.0], [79.0]
+    [26.1-Snapshot-1], [95.0], [76.0],
+    [26.1-Snapshot-2], [96.0], [77.0],
+    [26.1-Snapshot-3], [97.0], [78.0],
+    [26.1-Snapshot-4], [97.1], [78.1],
+    [26.1-Snapshot-5], [98.0], [79.0],
+    [26.1-Snapshot-6], [99.0], [80.0],
+    [26.1-Snapshot-7], [99.1], [81.0]
   )
 )<tab:pack_format>
 == 方块状态<sec:block_state>

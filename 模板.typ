@@ -25,6 +25,15 @@
 #let light_purple = rgb("ff55ff")
 #let yellow = rgb("ffff55")
 
+// 颜色块
+#let color_block(color, stroke: 0.5pt + black) = box(
+  fill: color,
+  height: 0.8em,
+  radius: 0.2em,
+  stroke: stroke,
+  width: 0.8em
+)
+
 // 附录
 #let appendix-part = state("appendix-part", false)
 #let appendix = {
@@ -38,6 +47,7 @@
   kind: "codebox",
   {
     set align(left)
+    set par(justify: false)
     block(
       clip: true,
       fill: white,
@@ -538,7 +548,7 @@
 }
 
 // 图标
-#let icon(name: none) = {
+#let icon(name) = {
   if name == "folder" {
     box(image("图标/data/文件夹.png", height:1em), baseline: 0pt, height:0.85em)
   }
@@ -683,7 +693,7 @@
         color: rgb("#00000000"),
         icon: [
           #set text(size: 1.2em)
-          #icon(name:"json")#h(0.5em)
+          #icon("json")#h(0.5em)
         ],
         name: "json"
       ),
@@ -691,7 +701,7 @@
         color: rgb("#00000000"),
         icon: [
           #set text(size: 1.2em)
-          #icon(name:"mcfunction")#h(0.5em)
+          #icon("mcfunction")#h(0.5em)
         ],
         name: "mcfunction"
       ),
@@ -699,7 +709,7 @@
         color: rgb("#00000000"),
         icon: [
           #set text(size: 1.2em)
-          #icon(name:"text")#h(0.5em)
+          #icon("text")#h(0.5em)
         ],
         name: "txt"
       ),
@@ -707,7 +717,7 @@
         color: rgb("#00000000"),
         icon: [
           #set text(size: 1.2em)
-          #icon(name:"file")#h(0.5em)
+          #icon("file")#h(0.5em)
         ],
         name: "file"
       )
