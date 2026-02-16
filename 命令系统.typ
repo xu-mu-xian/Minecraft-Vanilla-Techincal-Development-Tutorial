@@ -5647,14 +5647,14 @@ H])需要这么写：
   (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
   (1, [#icon("nbt-compound")#icon("json-object") *click_event*]),
   (2, [#icon("nbt-string")#icon("json-string") *#underline[action]*: `copy_to_clipboard`]),
-  (2, [#icon("nbt-int")#icon("json-number") *#underline[value]*: 指定要复制的文本内容。])
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[value]*: 指定要复制的文本内容。])
 )
 ===== `custom`：向服务端发送封包，*在 `/tellraw`、告示牌和成书中可用*，一般用于自定义的服务端，对原版服务端基本没有实质效果。数据格式为：
 #tree(
   (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
   (1, [#icon("nbt-compound")#icon("json-object") *click_event*]),
   (2, [#icon("nbt-string")#icon("json-string") *#underline[action]*: `custom`]),
-  (2, [#icon("nbt-int")#icon("json-number") *#underline[id]*: 需要发送的封包的命名空间ID。]),
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[id]*: 需要发送的封包的命名空间ID。]),
   (2, [*payload*: 需要发送的自定义网络负载，可以是任意类型的数据。嵌套不超过16层，序列化后长度不超过32768字节。])
 )
 ===== `open_file`：用于打开指定的文件，出于安全原因，这种点击事件禁止玩家使用，仅用于客户端内部，比如截图后在聊天栏中出现的带横线文本，当点击这段文本的时候就会打开截图的图片文件。数据格式为：
@@ -5662,14 +5662,14 @@ H])需要这么写：
   (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
   (1, [#icon("nbt-compound")#icon("json-object") *click_event*]),
   (2, [#icon("nbt-string")#icon("json-string") *#underline[action]*: `open_file`]),
-  (2, [#icon("nbt-int")#icon("json-number") *#underline[path]*: 要打开的文件的路径。])
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[path]*: 要打开的文件的路径。])
 )
-===== `open_url`：用于打开对应的网址，数据格式为：
+===== `open_url`：用于打开对应的网址，*在 `/tellraw` 和成书中可用*，数据格式为：
 #tree(
   (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
   (1, [#icon("nbt-compound")#icon("json-object") *click_event*]),
   (2, [#icon("nbt-string")#icon("json-string") *#underline[action]*: `open_file`]),
-  (2, [#icon("nbt-int")#icon("json-number") *#underline[url]*: 需要打开的网址。])
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[url]*: 需要打开的网址。])
 )
 #example(
   [设计文本#text_component(text(white)[Minecraft])，使玩家在点击该文本的时候打开Minecraft的官网。],
