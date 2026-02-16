@@ -202,6 +202,7 @@ Minecraft有许多不同的游戏资源，如草方块、石头、箭、铁锹�
     [`RULE_BLOCK_ENTITY_MODIFIER`], [方块实体数据修饰器], [`rule_block_entity_modifier`], [],
     [`SENSOR_TYPE`], [感受器类型], [`sensor_type`], [],
     [`SLOT_DISPLAY`], [预览槽位类型], [`slot_display`], [],
+    [`SLOT_SOURCE_TYPE`], [槽位源类型], [`slot_source_type`], [],
     [`SOUND_EVENT`], [声音事件], [`sound_event`], [],
     [`SPAWN_CONDITION_TYPE`], [通用变种选择器类型], [`spawn_condition_type`], [],
     [`STAT_TYPE`], [统计类型], [`stat_type`], [],
@@ -230,11 +231,14 @@ Minecraft有许多不同的游戏资源，如草方块、石头、箭、铁锹�
     [`ADVANCEMENT`], [进度], [`advancement`],
     [`BANNER_PATTERN`], [旗帜图案], [`banner_pattern`],
     [`BIOME`], [生物群系], [`worldgen/biome`],
+    [`CAT_SOUND_VARIANT`], [猫音效变种], [`cat_sound_variant`],
     [`CAT_VARIANT`], [猫的变种], [`cat_variant`],
     [`CHAT_TYPE`], [聊天类型], [`chat_type`],
+    [`CHICKEN_SOUND_VARIANT`], [鸡音效变种], [`chicken_sound_variant`],
     [`CHICKEN_VARIANT`], [鸡的变种], [`chicken_variant`],
     [`CONFIGURED_CARVER`], [已配置的雕刻器], [`worldgen/configured_carver`],
     [`CONFIGURED_FEATURE`], [已配置的地物], [`worldgen/configured_feature`],
+    [`COW_SOUND_VARIANT`], [牛音效变种], [`cow_sound_variant`],
     [`COW_VARIANT`], [牛的变种], [`cow_variant`], 
     [`DAMAGE_TYPE`], [伤害类型], [`damage_type`],
     [`DENSITY_FUNCTION`], [密度函数], [`worldgen/density_function`],
@@ -253,6 +257,7 @@ Minecraft有许多不同的游戏资源，如草方块、石头、箭、铁锹�
     [`NOISE`], [噪声], [`worldgen/noise`],
     [`NOISE_SETTINGS`], [噪声设置], [`worldgen/noise_settings`],
     [`PAINTING_VARIANT`], [画的变种], [`painting_variant`],
+    [`PIG_SOUND_VARIANT`], [猪音效变种], [`pig_sound_variant`],
     [`PIG_VARIANT`], [猪的变种], [`pig_variant`],
     [`PLACED_FEATURE`], [已放置的地物], [`worldgen/placed_feature`],
     [`PREDICATE`], [谓词], [`predicate`],
@@ -269,6 +274,7 @@ Minecraft有许多不同的游戏资源，如草方块、石头、箭、铁锹�
     [`TRIM_MATERIAL`], [盔甲纹饰材料], [`trim_material`],
     [`TRIM_PATTERN`], [盔甲纹饰图案], [`trim_pattern`],
     [`VILLAGER_TRADE`], [村民交易], [`villager_trade`],
+    [`WOLF_SOUND_VARIANT`], [狼音效变种], [`wolf_sound_variant`],
     [`WOLF_VARIANT`], [狼的变种], [`wolf_variant`],
     [`WORLD_CLOCK`], [世界时钟], [`world_clock`],
     [`WORLD_PRESET`], [世界预设], [`worldgen/world_preset`],
@@ -4892,7 +4898,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 #codebox("{text:\"Hello World!\"}")
 #h(-2em)再次提取这个数据，就会发现它已被序列化成：
 #codebox("\"Hello World!\"")
-使用文本组件编写的文本在样式上会很丰富。使用文本组件的物件主要有命令 `/tellraw`、命令 `/title`、告示牌和成书这几种，由于告示牌和成书是存档格式的一部分，因此将在后面@chap:level_format\中详细介绍。下面先介绍两条命令的语法。
+使用文本组件编写的文本在样式上会很丰富。使用文本组件的物件主要有命令 `/tellraw`、命令 `/title`、告示牌、成书、文本展示实体、对话框等，由于告示牌、成书、文本展示实体是存档格式的一部分，因此将在后面@chap:level_format\中详细介绍。下面先介绍两条命令的语法。
 #reset-h5
 ===== 命令 `/tellraw`#index(index: "command", "tellraw")
 该命令用于在聊天栏中对指定的目标显示文本，所需的参数等级为2，语法为：
@@ -5417,8 +5423,8 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 #tree(
   (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
   (1, [#icon("nbt-bool")#icon("json-bool") *bold*: 是否将文字变为#proper-noun(display: "粗体（Bold）", "cu1 ti3")。]),
-  (1, [#icon("nbt-compound")#icon("json-object") *color*: 文本本身的渲染颜色，可用值见下文的说明。]),
-  (1, [#icon("nbt-compound")#icon("json-object") *font*: 渲染文字使用的字体，可用值见下文的说明。]),
+  (1, [#icon("nbt-string")#icon("json-string") *color*: 文本本身的渲染颜色，可用值见下文的说明。]),
+  (1, [#icon("nbt-string")#icon("json-string") *font*: 渲染文字使用的字体，可用值见下文的说明。]),
   (1, [#icon("nbt-bool")#icon("json-bool") *italic*: 是否将文字变为#proper-noun(display: "斜体（Italic）", "xie2 ti3")。]),
   (1, [#icon("nbt-bool")#icon("json-bool") *obfuscated*: 否将文字#proper-noun(display: "模糊化（Obfuscated）", "mo2 hu2 hua4")处理，使文本渲染为动态的随机字符（乱码）。]),
   (1, [#icon("nbt-int")#icon("json-number")#icon("nbt-list")#icon("json-array") *shadow_color*: 文本阴影的颜色，可以直接用 #icon("nbt-int") 整型/ #icon("json-number") 数字形式指定ARGB颜色，也可以用 #icon("nbt-list") 列表/ #icon("json-array") 数组内的浮点数作为不同通道的分量以表示颜色。]),
@@ -5485,9 +5491,193 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
     #codebox("tellraw @a {translate:\"death.fell.accident.generic\",with:[\"Mu_xian\"]}")
   ]
 )
-背景颜色使用ARGB格式，由于它有一个A通道，因此可以指定背景颜色的透明度。#icon("nbt-list") 列表/ #icon("json-array") 数组形式可以分别指定各通道，如果是 #icon("nbt-int") 整型/ #icon("json-number") 数字形式，则需要使用十进制的颜色值。
+背景颜色使用ARGB格式，由于它有一个A通道，因此可以指定背景颜色的透明度。#icon("nbt-list") 列表/ #icon("json-array") 数组形式可以分别指定各通道，如果是 #icon("nbt-int") 整型/ #icon("json-number") 数字形式，这个值可按以下的方式计算：
 
-每一个通道都是介于0 \~ 255（含）之间的值
+每一个通道都是介于0 \~ 255（含）之间的值。若使用十六进制表示，则是一个八位数，每两位数为一个通道，从高到低位依次是A、R、G、B通道。也可以使用二进制表示，如此每个通道都是8位，一共32位。在SNBT格式中可以用二进制和十六进制，但是在JSON格式中必须把这个数据转换为十进制。
+#example(
+  [为文本#text_component(shadow-color: blue, text(white)[Hello World!])添加蓝色背景（FF0000FF #color_block(rgb("0000ff"))）。],
+  [
+    在SNBT中直接用十六进制即可：
+    #codebox([{text:\"Hello World!\",shadow_color:#color_block(rgb("0000ff"))0xff0000ff}])
+    或者使用二进制：
+    #codebox([{text:\"Hello World!\",shadow_color:#color_block(rgb("0000ff"))0b11111111000000000000000011111111}])
+    在JSON中就只能用十进制了：
+    #codebox([{\"text\":\"Hello World!\",\"shadow_color\":#color_block(rgb("0000ff"))4278190335}])
+  ]
+)
+==== 字体
+字段 #icon("nbt-string")#icon("json-string") `font` 用于渲染文字的字体，值需要为所用字体的命名空间ID，若不指定，则使用Minecraft默认的字体，即Mojanglas，对于Mojanglas没有的码位，则使用Unifont字体。
+#figure(
+  caption: "原版使用的Mojanglas字体",
+  image("图片/原版使用的Mojanglas字体.png", width: 12em)
+)
+字体文件夹一般存在于资源包中，地址为 #icon("json") `assets\<命名空间>\font\<字体>.json`。默认渲染的字体为 `minecraft:default`，在原版资源包中还存在其他字体，如Unifont字体、alt字体（附魔台文字）。可以通过在资源包中编写字体 `.json` 文件以添加新的字体。
+
+Minecraft中的字体本质上是图像，如果设计巧妙，则可以将任意字符的字体设计成图像以实现一些视觉效果。具体内容见《资源包》。
+==== 其他文字处理效果
+#example(
+  [
+    将文本#text_component(text(dark_red)[#underline[#set text(font: "Minecraft", weight: "bold")
+    Hello World!]])设置为深红色粗体字，并带有下划线。
+  ],
+  [
+    文本组件为
+    #codebox([{text:\"Hello World!\",color:\"#color_block(dark_red)dark_red\",bold:true,underlined:true}])
+  ]
+)
+#example(
+  [将文本#text_component(text(white)[#strike[Hello World!]])模糊化处理，并设置删除线。],
+  [
+    文本组件为
+    #codebox("{text:\"Hello World!\",strikethrough:true,obfuscated:true}")
+    这段文本的效果可能为#text_component(text(white)[#strike[TBilRoa|\*@\$c|]])，它实际上是动态的。
+  ]
+)
+=== 格式化代码
+在标准的文本组件中，为了给一段文本添加样式，通常的做法是在其后面添加各种样式的字段。其实在Minecraft中可以*直接在文本中添加所需的样式*，不一定需要在文本组件样式中定义，这时需要用到的工具便是#proper-noun(display: "格式化代码（Formatting code）", "ge2 shi4 hua4 dai4 ma3")，其作用是为文本本身添加格式信息。对于一些不支持文本组件的地方，可以使用格式化代码以定义文本的格式。
+
+格式化代码使用分节符 `§` 作为其标识，介于分节符无法直接从键盘上输入，且原版客户端不支持分节符的输入，可以在允许Unicode的地方使用其Unicode码作为替代，即U+00A7。在聊天栏或命令控制台中写成 `\u00a7`，而使用编译软件编写数据包时可以直接写为 `§`。格式化代码大致可分为两类：一类是 `§0` \~ `§9`、`§a` \~ `§f` 的颜色代码，另一类是其余控制文本样式的格式代码。所有的格式化代码及其效果如下表所示：
+#split-table(
+  caption: "格式化代码表",
+  original-cols: (auto, auto, auto),
+  seperator: (3,),
+  header: ([格式化代码], [效果], [HEX]),
+  data: (
+    [`§0`], [黑色], [\#000000 #color_block(black)],
+    [`§1`], [深蓝], [\#0000AA #color_block(dark_blue)],
+    [`§2`], [深绿], [\#00AA00 #color_block(dark_green)],
+    [`§3`], [湖蓝], [\#00AAAA #color_block(dark_aqua)],
+    [`§4`], [深红], [\#AA0000 #color_block(dark_red)],
+    [`§5`], [紫色], [\#AA00AA #color_block(dark_purple)],
+    [`§6`], [金色], [\#FFAA00 #color_block(gold)],
+    [`§7`], [灰色], [\#AAAAAA #color_block(gray)],
+    [`§8`], [深灰], [\#555555 #color_block(dark_gray)],
+    [`§9`], [蓝色], [\#5555FF #color_block(blue)],
+    [`§a`], [绿色], [\#55FF55 #color_block(green)],
+    [`§b`], [天蓝], [\#55FFFF #color_block(aqua)],
+    [`§c`], [红色], [\#FF5555 #color_block(red)],
+    [`§d`], [粉红], [\#FF55FF #color_block(light_purple)],
+    [`§e`], [黄色], [\#FFFF55 #color_block(yellow)],
+    [`§f`], [白色], [\#FFFFFF #color_block(white)],
+    [`§k`], [随机字符], [-],
+    [`§l`], [粗体], [-],
+    [`§m`], [删除线], [-],
+    [`§n`], [下划线], [-],
+    [`§o`], [斜体], [-],
+    [`§r`], [重制文字样式], [-]
+  )
+)
+当想要对一段文本应用样式时，只需在文本前添加相应的格式化代码。例如，下面的命令也可用于输出深红色的#text_component(text(dark_red)[Hello World!])文本，其与应用了文本组件相应键的命令效果相同：
+#codebox("§4Hello World!")
+*在一段文本中间使用的颜色代码会使从此处起至下一个颜色代码之前的文本应用相应的颜色。*例如，在下面的文本中，#text_component(text(dark_red)[World!])为深红色，而前面的文本为默认颜色（聊天栏中为白色）。
+#codebox("Hello §4World!")
+下面的文本使#text_component(text(dark_red)[Wo])为深红色，#text_component(text(blue)[rld!])为蓝色，前面的文本为默认颜色。
+#codebox("Hello §4Wo§9rld!")
+使用 `§r` 能使之后的文本恢复为默认颜色。下面的文本中#text_component(text(dark_red)[Wo])为深红色，而其余文本均为默认颜色。
+#codebox("Hello §4Wo§rrld!")
+一段文本中位于后面的颜色代码会覆盖掉之前的颜色代码，因为一段文本不能同时拥有两种颜色。而其余的文本格式是可以重叠的，因此格式代码不会覆盖。在下面的文本中，#text_component(text(white)[#set text(font: "Minecraft", weight: "bold")
+Hello ])为粗体，而#text_component(text(white)[#set text(font: "Minecraft", weight: "bold")
+_World!_])既为粗体又为斜体：
+#codebox("§lHello §oWorld!")
+若要取消这些文本格式，则须要使用 `§r`。接着上面的这个例子，若想要对#text_component(text(white)[_rld!_])文本取消粗体，则格式化代码需要这样写：
+#codebox("§7lHello §oWo§r§orld!")
+由于 `§r` 取消了粗体和斜体两种格式，而斜体需要保留，因此需要紧随其后重新加上 `§o`。注意，把 `§r§o` 写成 `§o§r` 是错误的，*格式化代码遵循从左到右的应用准则*，在编写的时候需要确定先后关系。在这个例子中需要先去除所有格式再加上要保留的格式。
+
+当颜色代码和格式代码发生混用时，*颜色代码会重置文本格式，使上一个格式代码的作用终止。*例如，`§4§oHello §1World!` 显示的文本为#text_component(text(dark_red)[_Hello _#set text(fill: blue)
+World!])。格式代码需要在颜色代码重置的时候重新使用，如 `§4§oHello §1§oWorld!` 显示的文本为#text_component(text(dark_red)[_Hello _#set text(fill: blue)
+_World!_])
+
+若要使颜色代码和格式代码在同一个字符处开始产生作用，应该把颜色代码写在前面，例如，一个深红色、粗体的字符#text_component(text(dark_red)[#set text(font: "Minecraft", weight: "bold")
+H])需要这么写：
+#codebox("§4§lH")
+写成 `§l§4H` 只会使字符#text_component(text(dark_red)[H])渲染为深红色，而没有粗体的效果。
+#example(
+  [编写一段含格式化代码的文本组件，使其输出后实现效果：#text_component([#text(gold)[_He_#set text(font: "Minecraft", weight: "bold")
+  _llo _]Wo#text(green)[rld#set text(fill: aqua, font: "Minecraft", weight: "bold")
+  !]])],
+  [
+    首先分析这段文本的颜色：#text_component([#text(gold)[_Hello_]])为金色 `§6`，#text_component([#text(black)[Wo]])为黑色 `§0`，#text_component([#text(black)[rld]])为绿色 `§a`，#text_component([#text(aqua)[!]])为天蓝色 `§b`。当只考虑颜色时，文本可以这么写：
+    #codebox("§6Hello §0Wo§arld§b!")
+    接着考虑字符格式，可以看到#text_component([_Hello_])为斜体 `§o`，#text_component([#set text(font: "Minecraft", weight: "bold")
+    llo ])和#text_component([#set text(font: "Minecraft", weight: "bold")
+    !])为粗体 `§l`，而#text_component([World])没有格式，不过#text_component([W])这里启用了新的颜色代码，故可用颜色代码重置格式，因此完整的文本如下：
+    #codebox("§6§oHe§lllo §0Wo§arld§b§l!")
+  ]
+)
+=== 交互事件
+交互事件是文本组件最重要的功能之一。有了这项功能后，文本不再仅限于显示信息，它还具有和玩家产生互动的能力。交互事件一共有三种不同的类型——即填入事件、点击事件和悬停事件，这三种事件分别在玩家按住 `Shift` 点击文字、直接点击文字和将鼠标光标移动至文本之上时发生。
+
+对于命令 `/tellraw`、命令 `/title`、告示牌、成书、文本展示实体、对话框等，并非所有交互事件都是可用的，其中所有的事件对于命令 `/title` 而言均不可用。下文将具体说明各事件的可用性。
+==== 填入事件
+#proper-noun(display: "填入事件（Insertion）", "tian2 ru4 shi4 jian4")：当玩家按住 `Shift` 点击文字时触发，用于将一串特定的文本填入玩家的聊天框中。填入聊天框的内容不会将原有的文本覆盖，只会在光标显示的位置插入。例如，聊天框的文本#text_component(text(white)[AB])中，光标位于字符#text_component(text(white)[A])之后、#text_component(text(white)[B])之前，若填入的文本为#text_component(text(white)[C])，则聊天框中的文本会变为#text_component(text(white)[ACB])。注意，这些只是填入聊天框的文本，不代表已经发送出去的文本。。
+
+填入事件的数据格式为：
+#tree(
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-string")#icon("json-string") *insertion*: 填入的文本。])
+)
+例如，命令
+#codebox("tellraw @a {\"text\":\"点击这里发生问候\",\"insertion\":\"Hello World!\"")
+#h(-2em)返回的文本为#text_component(text(white)[点击这里发生问候])，对这段文本按住 `Shift` 的同时点击，则会在玩家的聊天框中自动填入#text_component(text(white)[Hello World!])字样，按下消息发送键后即可将消息以玩家的名义发出。
+==== 点击事件
+#proper-noun(display: "点击事件（Click event）", "dian3 ji1 shi4 jian4")是最常用的交互事件类型，也是与玩家最直接发生互动的事件类型，玩家只需要直接点击文本就可产生相关的事件。格式为：
+#tree(
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-compound")#icon("json-object") *click_event*: 点击事件。]),
+  (2, [#icon("nbt-string")#icon("json-string") *action*: 玩家点击文本后触发的动作事件，具体见下文。]),
+  (2, [各动作事件的额外字段])
+)
+点击事件一共有以下8种不同的动作事件：
+===== `change_page`：将成书翻至特定的页数，*仅在成书中可用*。数据格式为：
+#tree(
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-compound")#icon("json-object") *click_event*]),
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[action]*: `change_page`]),
+  (2, [#icon("nbt-int")#icon("json-number") *#underline[page]*: 指定的页数。])
+)
+#example(
+  [为成书设计一段文本#text_component(text(green)[[To Page 2]])，使得玩家点击后将成书翻至第2页。],
+  [
+    文本组件为
+    #codebox([{text:\"[To page 2]\",color:\"#color_block(green)green\",click_event:{action:\"change_page\",page:2}}])
+  ]
+)
+===== `copy_to_clipboard`：将指定内容复制至剪切板，*在 `/tellraw` 和成书中可用*，数据格式为：
+#tree(
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-compound")#icon("json-object") *click_event*]),
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[action]*: `copy_to_clipboard`]),
+  (2, [#icon("nbt-int")#icon("json-number") *#underline[value]*: 指定要复制的文本内容。])
+)
+===== `custom`：向服务端发送封包，*在 `/tellraw`、告示牌和成书中可用*，一般用于自定义的服务端，对原版服务端基本没有实质效果。数据格式为：
+#tree(
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-compound")#icon("json-object") *click_event*]),
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[action]*: `custom`]),
+  (2, [#icon("nbt-int")#icon("json-number") *#underline[id]*: 需要发送的封包的命名空间ID。]),
+  (2, [*payload*: 需要发送的自定义网络负载，可以是任意类型的数据。嵌套不超过16层，序列化后长度不超过32768字节。])
+)
+===== `open_file`：用于打开指定的文件，出于安全原因，这种点击事件禁止玩家使用，仅用于客户端内部，比如截图后在聊天栏中出现的带横线文本，当点击这段文本的时候就会打开截图的图片文件。数据格式为：
+#tree(
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-compound")#icon("json-object") *click_event*]),
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[action]*: `open_file`]),
+  (2, [#icon("nbt-int")#icon("json-number") *#underline[path]*: 要打开的文件的路径。])
+)
+===== `open_url`：用于打开对应的网址，数据格式为：
+#tree(
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-compound")#icon("json-object") *click_event*]),
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[action]*: `open_file`]),
+  (2, [#icon("nbt-int")#icon("json-number") *#underline[url]*: 需要打开的网址。])
+)
+#example(
+  [设计文本#text_component(text(white)[Minecraft])，使玩家在点击该文本的时候打开Minecraft的官网。],
+  [
+    Minecraft的官网地址为https://www.minecraft.net，只需将其作为字段 #icon("nbt-int")#icon("json-number") `url` 的值即可。
+    #codebox("{text:\"Minecraft\",click_event:{action:\"open_url\",url:\"https://www.minecraft.net\"}}")
+  ]
+)
 = 存档格式<chap:level_format>
 == 存档文件夹的结构<sec:saves>
 == 方块实体<sec:block_entity>
