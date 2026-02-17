@@ -5628,7 +5628,7 @@ H])需要这么写：
   (2, [各动作事件的额外字段])
 )
 点击事件一共有以下8种不同的动作事件：
-===== `change_page`：将成书翻至特定的页数，*仅在成书中可用*。数据格式为：
+===== `change_page`：将成书翻至特定的页数，*仅在成书中可用*，数据格式为
 #tree(
   (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
   (1, [#icon("nbt-compound")#icon("json-object") *click_event*]),
@@ -5642,14 +5642,14 @@ H])需要这么写：
     #codebox([{text:\"[To page 2]\",color:\"#color_block(green)green\",click_event:{action:\"change_page\",page:2}}])
   ]
 )
-===== `copy_to_clipboard`：将指定内容复制至剪切板，*在 `/tellraw` 和成书中可用*，数据格式为：
+===== `copy_to_clipboard`：将指定内容复制至剪切板，*在 `/tellraw` 和成书中可用*，数据格式为
 #tree(
   (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
   (1, [#icon("nbt-compound")#icon("json-object") *click_event*]),
   (2, [#icon("nbt-string")#icon("json-string") *#underline[action]*: `copy_to_clipboard`]),
   (2, [#icon("nbt-string")#icon("json-string") *#underline[value]*: 指定要复制的文本内容。])
 )
-===== `custom`：向服务端发送封包，*在 `/tellraw`、告示牌和成书中可用*，一般用于自定义的服务端，对原版服务端基本没有实质效果。数据格式为：
+===== `custom`：向服务端发送封包，*在 `/tellraw`、告示牌和成书中可用*，一般用于自定义的服务端，对原版服务端基本没有实质效果。数据格式为
 #tree(
   (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
   (1, [#icon("nbt-compound")#icon("json-object") *click_event*]),
@@ -5657,14 +5657,15 @@ H])需要这么写：
   (2, [#icon("nbt-string")#icon("json-string") *#underline[id]*: 需要发送的封包的命名空间ID。]),
   (2, [*payload*: 需要发送的自定义网络负载，可以是任意类型的数据。嵌套不超过16层，序列化后长度不超过32768字节。])
 )
-===== `open_file`：用于打开指定的文件，出于安全原因，这种点击事件禁止玩家使用，仅用于客户端内部，比如截图后在聊天栏中出现的带横线文本，当点击这段文本的时候就会打开截图的图片文件。数据格式为：
+===== `open_file`：用于打开指定的文件，出于安全原因，这种点击事件禁止玩家使用，仅用于客户端内部，比如截图后在聊天栏中出现的带横线文本，当点击这段文本的时候就会打开截图的图片文件。数据格式为
 #tree(
   (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
   (1, [#icon("nbt-compound")#icon("json-object") *click_event*]),
   (2, [#icon("nbt-string")#icon("json-string") *#underline[action]*: `open_file`]),
   (2, [#icon("nbt-string")#icon("json-string") *#underline[path]*: 要打开的文件的路径。])
 )
-===== `open_url`：用于打开对应的网址，*在 `/tellraw` 和成书中可用*，数据格式为：
+===== `open_url`：用于打开对应的网址，*在 `/tellraw` 和成书中可用。*
+若 #icon("text") `options.txt` 中 `chatLinks` 的值为 `false`，此点击事件不生效；若 `chatLinksPrompt` 的值为 `true`，则打开网址时不会有待确认对话框。数据格式为
 #tree(
   (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
   (1, [#icon("nbt-compound")#icon("json-object") *click_event*]),
@@ -5678,12 +5679,56 @@ H])需要这么写：
     #codebox("{text:\"Minecraft\",click_event:{action:\"open_url\",url:\"https://www.minecraft.net\"}}")
   ]
 )
+===== `run_command`：在点击文本的时候执行命令，*在 `/tellraw`、告示牌、成书和非配置阶段的对话框中可用*，数据格式为
+#tree(
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-compound")#icon("json-object") *click_event*]),
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[action]*: `run_command`]),
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[command]*: 要执行的命令，可以省略 `/` 前缀。])
+)
+在命令 `/tellraw` 、成书和对话框中使用该点击事件*等价于使用此点击事件的玩家在聊天栏输入命令，受到聊天栏中最多输入256个字符的限制*。各种情况执行命令的上下文参数按@tab:command_context 确定，*需要额外确认命令所需的权限等级以及使用此点击事件的玩家自身的权限等级，若执行权限等级过低，可使用触发器命令以规避*，详情参见节@subsec:trigger 所作的说明。
+
+若在告示牌中使用，则只允许父组件具有该点击事件，子组件不得使用该点击事件，此时可以通过点击告示牌来执行命令。命令上下文依旧按照@tab:command_context 确定。告示牌一共有四行可用的文本，因此可以应用四个不同的点击事件。当玩家点击告示牌时，不会识别玩家点击告示牌的哪一行文本。所以当玩家点击告示牌时，告示牌上所有的点击事件会按从上到下的顺序同时发生。
+#example(
+  [设计一段文本#text_component(text(white)[Minecraft])，使玩家在点击该文本的时候对此玩家显示主标题#text_component(text(white)[Hello Minecraft!])。],
+  [
+    主标题#text_component(text(white)[Hello Minecraft!])的显示也需要文本组件，因此需要在文本组件内嵌套文本组件。若使用SNBT形式的文本组件，则字段 #icon("nbt-string")#icon("json-string") `command` 可以用单引号定义字符串，从而在内部的文本组件中使用双引号定义的字符串：
+    #codebox("{text:\"Minecraft\",click_event:{action:\"run_command\",command:'title @s title \"Hello Minecraft!\"'}}")
+    同样也可以在 #icon("nbt-string")#icon("json-string") `command` 中用双引号定义字符串，从而在内部的文本组件中使用单引号定义的字符串。
+
+    若整个文本组件使用JSON格式，则必须使用双引号，此时内部命令中的文本组件可以用单引号规避转义：
+    #codebox("{\"text\":\"Minecraft\",\"click_event\":{\"action\":\"run_command\",\"command\":\"title @s title 'Hello Minecraft!'\"}}")
+  ]
+)
+===== `show_dialog`：向玩家显示一个对话框，*在 `/tellraw`、告示牌和成书中可用*，数据格式为
+#tree(
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-compound")#icon("json-object") *click_event*]),
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[action]*: `show_dialog`]),
+  (2, [#icon("nbt-string")#icon("json-string")#icon("nbt-compound")#icon("json-object") *#underline[dialog]*: 要打开的对话框，可以用命名空间ID指定数据包内已有的对话框，也可以在此处用 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象形式直接内联定义一个。])
+)
+===== `suggest_command`：将文本填入聊天框中并覆盖原先的文本，与填入事件不同。此事件在 `/tellraw` 中可用，*在成书中不可用*，数据格式为
+#tree(
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-compound")#icon("json-object") *click_event*]),
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[action]*: `suggest_command`]),
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[command]*: 要填入的文本，不必为命令。若不为命令，则按文本填入聊天框；若为需要执行的命令，则需要添加斜杠 `/`。])
+)
+==== 悬停事件
+#proper-noun(display: "悬停事件（Hover event）", "xuan2 ting2 shi4 jian4")使玩家将他们的鼠标光标移动到文本上时显示悬停在该文本上的提示框，所有悬浮事件仅在命令 `/tellraw` 和成书中可用，效果大致如图所示：
+#figure(
+  caption: "悬停文本",
+  image("图片/悬停文本.png", width: 15em)
+)
+悬停事件一共分为3种，分别可显示文本、物品和实体信息，数据格式为：
 = 存档格式<chap:level_format>
 == 存档文件夹的结构<sec:saves>
 == 方块实体<sec:block_entity>
 == 技术性实体<sec:technical_entity>
 = 记分板
 == 队伍与标签<sec:team_and_tag>
+== 记分板命令 触发器
+=== 触发器<subsec:trigger>
 = 命令/execute<chap:command_execute>
 #appendix
 = 数据库
