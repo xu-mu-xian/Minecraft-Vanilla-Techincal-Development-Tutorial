@@ -2916,7 +2916,7 @@ Minecraft规定：大部分方块的长、宽和高均为1米，体积为1立方
 #example(
   [一个位于点$(-24,55,10)$的命令方块，其相对坐标 `~12 ~-3 ~-5` 所指的方块坐标为#blank。],
   [
-    相对坐标规定命令方块所在的位置即为原点，在将相对坐标转换为绝对坐标时，只需要在绝对坐标的基础上做相应的加减，这个题中的方块坐标为$(-24-12,55-3,10-5)$，计算可得$(-12,52,5)$。
+    相对坐标规定命令方块所在的位置即为原点，在将相对坐标转换为绝对坐标时，只需要在绝对坐标的基础上做相应的加减，这个题中的方块坐标为$(-24+12,55-3,10-5)$，计算可得$(-12,52,5)$。
 
   ]
 )
@@ -4624,7 +4624,7 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
   image("图片/命令data的语法树.png", width: 100%)
 ) <fig:command_data>
 == NBT与JSON
-=== NBT和JSON格式的转换
+=== NBT和JSON格式的转换<subsec:nbt_and_json_conversion>
 NBT和JSON格式结构类似，但还有很多不同之处，在一些情况下，游戏必须对这两种格式进行相互转换以满足计算的需要，即使这两种格式的转换可能会造成数据丢失。
 ===== NBT转换为JSON \*
 #general-table(
@@ -5624,7 +5624,7 @@ H])需要这么写：
 #tree(
   (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
   (1, [#icon("nbt-compound")#icon("json-object") *click_event*: 点击事件。]),
-  (2, [#icon("nbt-string")#icon("json-string") *action*: 玩家点击文本后触发的动作事件，具体见下文。]),
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[action]*: 玩家点击文本后触发的动作事件，具体见下文。]),
   (2, [各动作事件的额外字段])
 )
 点击事件一共有以下8种不同的动作事件：
@@ -5719,12 +5719,62 @@ H])需要这么写：
 #figure(
   caption: "悬停文本",
   image("图片/悬停文本.png", width: 15em)
-)
+) <fig:hover_text>
 悬停事件一共分为3种，分别可显示文本、物品和实体信息，数据格式为：
+#tree(
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-compound")#icon("json-object") *hover_event*: 悬停事件。]),
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[action]*: 悬停事件的名称，具体见下文。]),
+  (2, [各悬停事件的额外字段])
+)
+字段 #icon("nbt-string")#icon("json-string") `action` 一共有3种有效值，分别对应不同的动作事件。
+===== `show_entity`：用于显示实体提示框。
+显示包括实体的名称、类型和UUID三条信息，显示的效果与使用实体名称这种内容类型时将光标移动到返回的实体名称上显示的信息相同。显示的实体不必真实存在，数据格式为：
+#tree(
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-compound")#icon("json-object") *hover_event*: 悬停事件。]),
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[action]*: `show_entity`]),
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[id]*: 所显示实体的命名空间ID]),
+  (2, [#icon("nbt-string")#icon("json-string")#icon("nbt-list")#icon("json-array")#icon("nbt-compound")#icon("json-object") *name*: 所显示实体的名称，需要为一个文本组件。若不指定，则不显示名称。]),
+  (2, [#icon("nbt-string")#icon("json-string")#icon("nbt-int_array")#icon("json-array") *#underline[uuid]*: 所显示实体的UUID，这个字段必须存在。若使用 #icon("nbt-string")#icon("json-string") 字符串形式，则UUID格式为有连字符的十六进制。若使用 #icon("nbt-int_array") 整型数组/ #icon("json-array") 数组格式，则UUID格式为整型数组。])
+)
+===== `show_item`：用于显示物品提示框。
+显示的内容与玩家将鼠标光标移动至物品栏中的物品上时显示的内容相同。比如当显示钻石剑的信息时，提示信息为
+
+#h(-2em)#text_component(background: black, shadow-color: black.transparentize(100%), text(white)[钻石剑\ #text(gray)[在主手时：\ ] #text(dark_green)[7攻击伤害\ 1.6攻击速度\ ] #text(dark_gray)[minecraft:diamond_sword\ 9个组件]])
+
+#h(-2em)显示的物品不必真实存在，数据格式为：
+#tree(
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-compound")#icon("json-object") *hover_event*: 悬停事件。]),
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[action]*: `show_item`]),
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[id]*: 所显示物品的命名空间ID。]),
+  (2, [#icon("nbt-compound")#icon("json-object") *components*: 物品堆叠组件，部分组件信息会显示在提示框中。若文本组件为SNBT格式，则根据节@sec:data_components 直接使用SNBT格式的物品堆叠组件；若文本组件为JSON格式，则需要按照节@subsec:nbt_and_json_conversion 办法将SNBT格式的物品堆叠组件转换为JSON格式。]),
+  (3, [一个物品堆叠组件]),
+  (2, [#icon("nbt-int")#icon("json-number") *count*: 所显示物品的堆叠数量，数量不会直接在提示框中显示。])
+)
+===== `show_text`：用于显示文本提示框，数据格式为：
+#tree(
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [#icon("nbt-compound")#icon("json-object") *hover_event*: 悬停事件。]),
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[action]*: `show_text`]),
+  (2, [#icon("nbt-string")#icon("json-string")#icon("nbt-list")#icon("json-array")#icon("nbt-compound")#icon("json-object") *#underline[value]*: 要显示的文本，使用文本组件。此处无法使用点击事件 #icon("nbt-compound")#icon("json-object") `click_event` 和悬停事件 #icon("nbt-compound")#icon("json-object") `hover_event`。])
+)
+#example(
+  [用命令实现如@fig:hover_text 所示的效果。],
+  [
+    这是聊天栏中的文本，需使用 `/tellraw`，命令可以为
+    #codebox("tellraw @a {text:\"显示悬停文字\",hover_event:{action:\"show_text\",value:\"这是一段悬停文字\"}}")
+    如果想给悬停文字添一些样式，比如，将@fig:hover_text 中的悬停文字变成红色，则只需在字段 `value` 中使用 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象，命令可以写为：
+    #codebox([tellraw \@a {text:\"显示悬停文字\",hover_event:{action:\"show_text\",value:{text:\"这是一段悬停文字\",color:\"#color_block(red)red\"}}}])
+  ]
+)
+== 子组件
 = 存档格式<chap:level_format>
 == 存档文件夹的结构<sec:saves>
 == 方块实体<sec:block_entity>
 == 技术性实体<sec:technical_entity>
+== 数据组件<sec:data_components>
 = 记分板
 == 队伍与标签<sec:team_and_tag>
 == 记分板命令 触发器
