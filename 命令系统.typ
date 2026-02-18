@@ -4950,7 +4950,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
     #codebox("title @a times 10 70 20")
   ]
 )
-== 文本组件类型
+== 文本组件类型<sec:text_component_content>
 文本组件一共有七种可用的组件类型：*纯文本*、*翻译文本*、*记分板分数*、*实体名称*、*按键绑定*、*NBT值*和*精灵图*，这部分数据的结构为
 #tree(
   (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
@@ -5770,6 +5770,288 @@ H])需要这么写：
   ]
 )
 == 子组件
+前面所讲到的文本组件类型和文本组件样式，都只能将它们写在同一个对象中，虽然不同样式是可以随意组合的。因为一个对象中只能使用一种内容类型，而组合后的样式只能作用于一个对象中的文本。这意味着，返回一段文本时，整段文本使用的样式都是同一种。如果需要在一段文本的不同位置应用多种样式组合，比如，如何输出一段文本#text_component(text(red)[Hello #text(blue)[World!]])，使#text_component(text(red)[Hello ])为红色，而#text_component(text(blue)[World!])为蓝色呢？在不使用格式化代码的情况下，显然需要使用多个对象并分别对这些对象应用不同的样式。子组件提供了允许多种样式或交互事件同时存在于一段文本内的可能。文本组件中的 #icon("nbt-list") 列表/ #icon("json-array") 数组和字段 #icon("nbt-list")#icon("json-array") `extra` 有助于实现这一功能。
+=== 数组
+使用 #icon("nbt-list") 列表/ #icon("json-array") 数组形式的文本组件有如下的数据格式：
+#tree(
+  (0, [#icon("nbt-list")#icon("json-array") 文本组件]),
+  (1, [文本组件]),
+  (1, [文本组件]),
+  (1, […])
+)
+因此可以将多个文本组件一起放到数组中：
+#tree(
+  (0, [#icon("nbt-list")#icon("json-array") 文本组件]),
+  (1, [#icon("nbt-compound")#icon("json-object") 复合标签/对象形式的文本组件]),
+  (1, [#icon("nbt-string")#icon("json-string") 字符串形式的文本组件]),
+  (1, [#icon("nbt-list")#icon("json-array") 数组/列表形式的文本组件])
+)
+规定：*#icon("nbt-list") 列表/ #icon("json-array") 数组中第一个元素为父组件，其他的元素均为子组件。*可以在这些对象中使用不同的内容类型，也可以对不同的组件应用不同的样式。下面的一些例子有助于对数组的理解：
+#example(
+  [编写一段文本组件，使之输出一段文本#text_component(text(red)[Hello #text(blue)[World!]])，其中#text_component(text(red)[Hello ])为红色，而#text_component(text(blue)[World!])为蓝色。],
+  [
+    在这个例子中，首先需要编写一段纯文本，并应用样式为红色；再编写一段应用样式为蓝色的纯文本，因此需要使用两个文本组件。第1个可以写为：
+    #codebox([{text:\"Hello \",color:\"#color_block(red)red\"}])
+    第2个可以写为：
+    #codebox([{text:\"World!\",color:\"#color_block(blue)blue\"}])
+    接着用 #icon("nbt-list") 列表/ #icon("json-array") 数组将它们整合到一起形成一个列表：
+    #codebox([[{text:\"Hello \",color:\"#color_block(red)red\"},{text:\"World!\",color:\"#color_block(blue)blue\"}]])
+    于是就可以输出#text_component(text(red)[Hello #text(blue)[World!]])。输出文本时数组中元素与元素之间是不会有空格的，在这个例子中，#text_component(text(red)[Hello])和#text_component(text(blue)[World!])之间的空格是直接算在第1个文本组件中的。而空格也被赋予了红色的样式，但由于这个字符是个空格，因此红色的样式不会直接表现。
+  ]
+)
+#example(
+  [一张冒险地图的过场动画允许玩家按使用键（默认为 `鼠标右键`）以跳过，试设计提示所需的文本。],
+  [
+    现文本设计为#text_component(text(white)[按鼠标右键以跳过动画])，显示在动作栏，键位标识符查@tab:keybind_identifier 可得 `key.use`。由于其他文本没有设计样式，使用 #icon("nbt-string")#icon("json-string") 字符串即可。命令为
+    #codebox("title @a actionbar [\"按\",{keybind:\"key.use\"},\"以跳过动画\"]")
+  ]
+)
+#example(
+  [
+    在聊天栏中编写一段命令，要求能返回命令执行者自己在记分项 `[personal_score]` 上面的分数。返回文本可以如下所示，其中分数显示为红色：
+
+    #h(-2em)#text_component(text(white)[\<玩家>的个人分数为：#text(red)[\<分数>]#text(green)[ [对分数有疑惑？]]])
+
+    #h(-2em)若玩家将鼠标光标移至#text_component(text(green)[ [对分数有疑惑？]])上，则显示悬停的文本提示框，内容为
+
+    #h(-2em)#text_component(text(white)[被刷新的分数也计入个人分数])
+  ],
+  [
+    要求的文本内容一共有三种类型：#text_component(text(white)[\<玩家>])很明显是要求输出实体名称，#text_component(text(white)[的个人分数为：])和#text_component(text(green)[ [对分数有疑惑？]])是纯文本，其中#text_component(text(green)[ [对分数有疑惑？]])还带有悬停事件，而#text_component(text(red)[\<分数>])则要求输出记分板分数。因此需要有4个文本组件，所以需要使用数组将这4个组件包括起来。对于第1个组件，它的类型为实体名称，根据题意要求返回命令执行者自己的名称，因此写为：
+    #codebox("{selector:\"@s\"}")
+    对于第2个组件，它是无样式的纯文本，因此写为：
+    #codebox("\"的个人分数为：\"")
+    对于第3个组件，它的类型为记分板分数。要求输出命令执行者自己在 `[personal_score]` 上的分数，而命令执行者同时也为文本的观察者。加上题目要求的红色样式，因此可以写为：
+    #codebox([{score:{objective:\"test\",name:\"\*\"},color:\"#color_block(red)red\"}])
+    对于第4个组件，为它添加悬停事件：
+    #codebox([{text:\" [对分数有疑惑？]\",color:\"#color_block(green)green\",hover_event:{action:\"show_text\",value:\"被刷新的分数也计入个人分数\"}}])
+    将它们整合起来，于是命令可以写为：
+    #codebox([tellraw \@s [{selector:\"\@s\"},\"的个人分数为：\",{score:{objective:\"test\",name:\"\*\"},color:\"#color_block(red)red\"},{text:\" [对分数有疑惑？]\",color:\"#color_block(green)green\",hover_event:{action:\"show_text\",value:\"被刷新的分数也计入个人分数\"}}]])
+  ]
+)
+=== 字段extra
+字段 #icon("nbt-list")#icon("json-array") `extra` 是为一个组件添加附加文本组件的工具。在使用 #icon("nbt-list")#icon("json-array") `extra`时，必须得保证同一个文本组件中必须存在它所依附的文本，因为 #icon("nbt-list")#icon("json-array") `extra` 不能单独出现在一个文本组件中。若一个对象中只存在一个文本，则可以为它添加 #icon("nbt-list")#icon("json-array") `extra`，作为文本的补充内容使用。数据格式为：
+#tree(
+  (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
+  (1, [文本组件类型]),
+  (1, [文本组件样式]),
+  (1, [#icon("nbt-list")#icon("json-array") *extra*: 附加的文本组件。]),
+  (2, [文本组件])
+)
+规定：*被依附的文本组件为父组件，#icon("nbt-list")#icon("json-array") `extra` 内的组件均为子组件。*当文本组件被成功解析时，返回的内容中子组件的内容一定是跟在父组件内容的后面。在写法上，字段 #icon("nbt-list")#icon("json-array") `extra` 不一定必须放在其所依附文本的后面，放在其前面也是可以的，此时它的内容物依旧均为子组件。
+
+*如果一个父组件中存在多个 #icon("nbt-list")#icon("json-array") `extra`，则只有位置处于最后面的 #icon("nbt-list")#icon("json-array") `extra` 才会被使用。*
+#example(
+  [
+    下列文本组件分别返回什么文本？
+    #codebox("{text:\"A\",extra:[\"B\",{text:\"C\"}]}") <code:extra_example_1>
+    #codebox("{extra:[\"A\",{text:\"B\"}],text:\"C\"}") <code:extra_example_2>
+    #codebox("{text:\"A\",extra:[\"B\",{text:\"C\"}],text:\"D\"}") <code:extra_example_3>
+    #codebox("{text:\"A\",extra:[\"B\"],text:\"C\",extra:[\"D\"]}") <code:extra_example_4>
+  ],
+  [
+    在文本组件@code:extra_example_1 中，可以清晰地看到一段纯文本#text_component(text(white)[A])及其子组件内容，即 #icon("nbt-list")#icon("json-array") `extra` 中的文本#text_component(text(white)[BC])。因此输出文本为#text_component(text(white)[ABC])。
+    
+    文本组件@code:extra_example_2 是 #icon("nbt-list")#icon("json-array") `extra` 与文本交换位置的情况，即使文本组件中的子组件在父组件的前面，输出时 #icon("nbt-list")#icon("json-array") `extra` 的文本也只能跟在父组件文本的后面，因此输出文本#text_component(text(white)[CAB])。
+    
+    文本组件@code:extra_example_3 的情况有些特殊，一个对象中使用了两个纯文本和一个 #icon("nbt-list")#icon("json-array") `extra`。那么子组件所依附的是哪一个父组件呢？根据节@sec:text_component_content 对同一个对象的多个文本中判断优先选择输出哪一个文本的讲述，组件会使用类型优先级最高且位置最靠后的那个文本。于是父组件为纯文本#text_component(text(white)[D])，#icon("nbt-list")#icon("json-array") `extra` 便作为了它的子组件，因此输出的文本为#text_component(text(white)[DBC])。文本#text_component(text(white)[A])被直接忽略，优先级的准则使得它无法作为一个父组件。
+    
+    在文本组件@code:extra_example_4 中，文本#text_component(text(white)[C])为父组件，文本#text_component(text(white)[D])由最后一个 #icon("nbt-list")#icon("json-array") `extra` 输出，因此输出文本为#text_component(text(white)[CD])。
+  ]
+)
+=== 继承
+子组件使多个文本组件存在于同一段文本中。当存在多个组件时，自然可以为每一个组件分别指定一些样式。但是，这些组件之间并不是相互独立的，它们的样式会产生影响。这种发生在组件之间对样式产生影响的行为，一般称之为样式的#proper-noun(display: "继承（Inherit）", "ji4 cheng2")。
+
+继承发生在组件与组件之间，且通常由一个组件对另一个组件产生作用，这意味着继承具有单向性，组件与组件之间的样式和交互事件不是相互影响的。继承具有以下几条准则：
++ 若子组件没有指定任何样式，则其将继承父组件的所有样式。
++ 子组件和子组件之间相互独立，彼此之间的样式不会相互影响。
++ 若子组件指定了若干种类的样式，则该子组件将使用自己指定的样式，对于自己指定的这些样式，父组件的相应样式会被直接忽略。
++ 若子组件没有指定一些的样式，则父组件将这些没有指定的样式继承到子组件。
+#figure(
+  caption: "继承的规律",
+  image("图片/继承的规律.png", width: 22em)
+) <fig:inherit>
+继承的实质是，*子组件将父组件的所有样式作为它的默认样式（颜色、字体、字体处理方式和交互事件）使用*。对于@fig:inherit 中的四种情况，所有未指定的样式均使用默认样式：父组件使用系统本身的默认样式（所有交互事件均默认不存在），子组件将父组件的样式作为默认样式。但子组件的样式2已指定，因此不使用父组件给它的默认样式；而子组件的样式1未指定，因此使用父组件给它的默认样式。
+==== 数组的继承
+#icon("nbt-list") 列表/ #icon("json-array") 数组中第一个元素为父组件，其他的元素均为子组件。
+#example(
+  [
+    判断下面的文本组件输出的文本样式。
+    #codebox([[\
+  #h(1em){text:\"A\",color:\"#color_block(red)red\"},\
+  #h(1em)\"B\",\
+  #h(1em){text:\"C\",bold:true},\
+  #h(1em){text:\"D\",color:\"#color_block(blue)blue\"}\
+]])
+  ],
+  [
+    列表一共包含了4个文本组件，列表中第一个组件即为父组件，现列出这个父组件表现的样式和父组件的系统默认样式：
+    #general-table(
+      caption: "",
+      colspan: 4,
+      columns: (auto, auto, auto, auto),
+      header: ([], [纯文本（#text(black)[`text`]）], [颜色（#text(black)[`color`]）], [粗体（#text(black)[`bold`]）]),
+      [父组件的系统默认样式], [-], [默认颜色], [否（`false`）],
+      [父组件表现的样式], [A], [红色（`red`）#color_block(red)], [默认（`false`）]
+    )
+    父组件的样式即为子组件的默认样式。列表中第二个组件为字符串，其等效于 `{text:"B"}`，整理得：
+    #general-table(
+      caption: "",
+      colspan: 4,
+      columns: (auto, auto, auto, auto),
+      header: ([], [纯文本（#text(black)[`text`]）], [颜色（#text(black)[`color`]）], [粗体（#text(black)[`bold`]）]),
+      [子组件的默认样式], [-], [红色（`red`）#color_block(red)], [否（`false`）],
+      [子组件1], [B], [默认（`red`）#color_block(red)], [默认（`false`）],
+      [子组件2], [C], [默认（`red`）#color_block(red)], [是（`true`）],
+      [子组件3], [D], [蓝色（`blue`）#color_block(blue)], [默认（`false`）]
+    )
+    所以输出的文本为#text_component(text(red)[AB#set text(font:"Minecraft",weight:"bold")
+    C#set text(font:"Minecraft",weight:"medium")
+    #text(blue)[D]])。
+  ]
+)
+有时候，为了取消列表中第一个文本组件的样式对后面文本组件的影响，可以让列表第一个组件不使用任何的样式。但这个时候，第一个文本组件返回的文本就只会使用系统的默认样式了。于是*通常将第一个文本组件设为空值*，采用如下的写法：
+#codebox("[\"\",<文本组件2>,<文本组件3>,…]")
+从第2个文本组件开始写起，既可以防止父组件对后面所有子组件样式的影响，又可以让第一个有文本的文本组件拥有特定的样式。
+==== extra的继承
+被 #icon("nbt-list")#icon("json-array") `extra` 依附的文本组件为父组件，#icon("nbt-list")#icon("json-array") `extra` 内的组件均为子组件。注意，#icon("nbt-list")#icon("json-array") `extra` 虽然为一个文本组件列表，但是该列表的第一个文本组件不会对后面的文本组件造成影响。
+#example(
+  [
+    判断下面的文本组件输出的文本样式。
+    #codebox([{\
+  #h(1em)text:\"A\",\
+  #h(1em)color:\"#color_block(red)red\",\
+  #h(1em)bold:true,\
+  #h(1em)hover_event:{action:\"show\_text\",value:\"A\"\},\
+  #h(1em)extra:[\
+  #h(2em){text:\"B\",color:\"#color_block(green)green\",italic:true\},\
+  #h(2em)\"C\",\
+  #h(2em){text:\"D\",color:\"#color_block(blue)blue\",bold:false},\
+  #h(2em){text:\"E\",hover_event:{action:\"show_text\",value:\"E\"}}\
+  #h(1em)]\
+}])
+  ],
+  [
+    先整理出父组件表现的样式和父组件的系统默认样式：
+    #general-table(
+      caption: "",
+      colspan: 3,
+      columns: (auto, auto, auto),
+      header: ([], [父组件的系统默认样式], [父组件表现的样式]),
+      [纯文本（`text`）], [-], [`A`],
+      [颜色（`color`）], [默认颜色], [红色（`red`）#color_block(red)],
+      [粗体（`bold`）], [否（`false`）], [是（`true`）],
+      [斜体（`italic`）], [否（`false`）], [默认（`false`）],
+      [悬停事件（`hover_event`）], [无], [文本提示框 `A`]
+    )
+    再依次整理出所有子组件的表现格式：
+    #general-table(
+      caption: "",
+      colspan: 6,
+      columns: (auto, auto, auto, auto, auto, auto),
+      header: ([], [子组件的系统默认样式], [子组件1], [子组件2], [子组件3], [子组件4]),
+      [纯文本（`text`）], [-], [B], [C], [D], [E],
+      [颜色（`color`）], [红色（`red`）#color_block(red)], [绿色（`green`）#color_block(green)], [默认（`red`）#color_block(red)], [蓝色（`blue`）#color_block(blue)], [默认（`red`）#color_block(red)],
+      [粗体（`bold`）], [是（`true`）], [默认（`true`）], [默认（`true`）], [否（`false`）], [默认（`true`）],
+      [斜体（`italic`）], [否（`false`）], [是（`true`）], [默认（`false`）], [默认（`false`）], [默认（`false`）],
+      [悬停事件（`hover_event`）], [文本提示框 `A`], [文本提示框 `A`], [文本提示框 `A`], [文本提示框 `A`], [文本提示框 `E`]
+    )
+    所以输出的文本格式为#text_component(text(fill:red,weight:"bold")[A#text(green)[_B_]C#text(fill:blue,weight:"medium")[D]E])，其中#text_component(text(fill:red,weight:"bold")[A#[#text(green)[_B_]]C#text(fill:blue,weight:"medium")[D]])均有悬停文本#text_component(text(white)[A])，#text_component(text(fill:red,weight:"bold")[E])有悬停文本#text_component(text(white)[E])。
+  ]
+)
+=== 组件序列化
+*写入数据的时候，文本组件允许使用 #icon("nbt-list") 列表/ #icon("json-array") 数组格式，但在存储阶段，其中的数据会被统一序列化为 #icon("nbt-list")#icon("json-array") `extra` 模式。*例如，写入的文本组件为：
+#codebox([[{text:\"Hello \",color:\"#color_block(red)red\"},{text:\"World!\",color:\"#color_block(blue)blue\"}]])
+#h(-2em)存储的形式为：
+#codebox([{text:\"Hello \",color:\"#color_block(red)red\"},extra:[{text:\"World!\",color:\"#color_block(blue)blue\"}]}])
+因此，若这个文本组件是一个NBT字段 `text` 的值，要用NBT路径访问#text_component(text(blue)[World!])的颜色，不能写成 `text[1].color`，要写成 `text.extra[0].color`。
+=== 应用实例
+文本组件专门用于显示文本，因此它在冒险地图或服务器中承载了大量的信息，用于剧情推进、提示说明等。在冒险地图中使用文本组件是一项必要的技能。本小节提供了若干实例用于说明文本组件的一些应用。
+#example(
+  [
+    编写一段文本组件，使之在聊天栏中返回如下文本：
+    #text_component(text(white)[#text(dark_red)[1] | #text(red)[2] | #text(gold)[3] | #text(yellow)[4] | #text(green)[5] | #text(dark_green)[6] | #text(dark_aqua)[7] | #text(blue)[8] | #text(dark_blue)[9] | #text(dark_purple)[0]])
+  ],
+  [
+    首先观察：这段文本一共有11种不同的颜色，其中数字 `1` \~ `0` 均为不同的颜色，而竖线为白色（聊天栏文本的默认颜色）。文本本身是可以通过格式化代码赋予一些格式信息的。如果使用格式化代码，则允许只使用一个父组件便实现不同的样式。而这段文本含有聊天栏的默认颜色，则可以使用 `§r` 对样式进行重制。现在按照从左到右的方向依次为文本中的字符带上格式化代码：
+    #codebox("§41§r | §c2§r | §63§r | §e4§r | §a5§r | §26§r | §37§r | §98§r | §19§r | §50")
+    上面便是含有格式化代码的字符串形式文本组件，当然也可以写成对象的格式，这时候只要使用纯文本即可。若因分节符输入困难而不使用格式化代码，则需要用含有多个文本组件的列表。注意，若列表第一个组件内容为深红色的#text_component(text(dark_red)[1])，则后面的所有组件均会认深红色为其默认颜色，这时候所有白色竖线文本就需要更改颜色至白色，这样会使命令的长度大大增加。因此对父组件使用白色的样式，这样列表中其他组件的格式就不会相互影响：
+    #codebox([[\
+  #h(1em)\"\",\
+  #h(1em){text:\"1\",color:\"#color_block(dark_red)dark_red\"},\
+  #h(1em)\" | \",\
+  #h(1em){text:\"2\",color:\"#color_block(red)red\"},\
+  #h(1em)\" | \",\
+  #h(1em){text:\"3\",color:\"#color_block(gold)gold\"},\
+  #h(1em)\" | \",\
+  #h(1em){text:\"4\",color:\"#color_block(yellow)yellow\"},\
+  #h(1em)\" | \",\
+  #h(1em){text:\"5\",color:\"#color_block(green)green\"},\
+  #h(1em)\" | \",\
+  #h(1em){text:\"6\",color:\"#color_block(dark_green)dark_green\"},\
+  #h(1em)\" | \",\
+  #h(1em){text:\"7\",color:\"#color_block(dark_aqua)dark_aqua\"},\
+  #h(1em)\" | \",\
+  #h(1em){text:\"8\",color:\"#color_block(blue)blue\"},\
+  #h(1em)\" | \",\
+  #h(1em){text:\"9\",color:\"#color_block(dark_blue)dark_blue\"},\
+  #h(1em)\" | \",\
+  #h(1em){text:\"0\",color:\"#color_block(dark_purple)dark_purple\"},\
+  #h(1em)\" | \",\
+]])
+  ]
+)
+#example(
+  [
+    编写一段文本组件使在聊天栏中实现如下文本：\ 
+    #text_component(text(white)[#text(green)[[提示]] 在下面的选项中选择其一以推进后续的剧情。\ ========= ★ 请 ★ 选 ★ 择 ★ =========\ #text(green)[#h(1em) [上前与之对话]#h(1em) [绕道去学校]]\ ===================================])\ 
+    其中#text_component(text(green)[[上前与之对话]])有悬停文本提示框#text_component(background:black,text(white)[走上前去与“大仙”对话，\ 说不定能问到些什么])，并设置点击事件为执行命令 `function main:story/talk`；#text_component(text(green)[[绕道去学校]])有悬停文本提示框\ #text_component(background:black,text(white)[学校的事情急，\ 还是先去学校吧，\ 这个人就不去管他了])，并设置点击事件为执行命令 `function main:story/school`。
+  ],
+  [
+    对于一段文本中含有多个样式的情况，一律使用文本组件列表进行编写。先将列表中第一个组件设为空值。#text_component(text(green)[[提示]])为绿色文本，单独使用一个文本组件：
+    #codebox([{text:\"[提示]\",color:\"#color_block(green)green\"}])
+    #text_component(text(white)[#text(green)[[提示]] 在下面的选项中选择其一以推进后续的剧情。\ ========= ★ 请 ★ 选 ★ 择 ★ =========])这两行文本的样式一致，故使用同一个文本组件。鉴于五角星的符号不容易输入，故可以用五角星的Unicode码代替。不同文本行之间用换行符 `\n` 隔开：
+    #codebox("\" 在下面的选项中选择其一以推进后续的剧情。\n========= \u2605 请 \u2605 选 \u2605 择 \u2605 =========\"")
+    接下来是一个换行符和一段空格，从效果上看不出应用的样式，故可与上一个文本组件进行合并，写入上一个组件，同时换行符不能忘记：
+    #codebox([\" 在下面的选项中选择其一以推进后续的剧情。\\n========= \\u2605 请 \\u2605 选 \\u2605 择 \u2605 =========\\n#h(1em)\"])
+    #text_component(text(green)[[上前与之对话]])这段文本不仅有绿色的样式，还有悬停事件和点击事件。注意悬浮的文字中虽然有双引号，但是不需要加转义字符。这是因为文本中的双引号为中文的引号，不会与英文的引号发生匹配，只有英文的引号才需要加转义字符。于是该文本组件可以写为：
+    #codebox([text:\"[上前与之对话]\",color:\"#color_block(green)green\",hover_event:{action:\"show_text\",value:\"走上前去与“大仙”对话，\\n说不定能问到些什么\"},click_event:{action:\"run_command\",command:\"function main:story/talk\"}}])
+    下面是一段空格，在此不做赘述。#text_component(text(green)[[绕道去学校]])与#text_component(text(green)[[上前与之对话]])的编写方式相同，在此也不做赘述。最后是换行符加一段文本。将上面所有的文本组件组合起来，可以得到文本组件：
+    #codebox([[\
+    #h(1em)\"\",\
+    #h(1em){text:\"[提示]\",color:\"#color_block(green)green\"},\
+    #h(1em)\" 在下面的选项中选择其一以推进后续的剧情。\\n========= \\u2605 请 \\u2605 选 \\u2605 择 \u2605 =========\\n#h(1em)\"\
+    #h(1em){\
+    #h(2em)text:\"[上前与之对话]\",\
+    #h(2em)color:\"#color_block(green)green\",\
+    #h(2em)hover_event:{\
+    #h(3em)action:\"show_text\",\
+    #h(3em)value:\"走上前去与“大仙”对话，\\n说不定能问到些什么\"\
+    #h(2em)},\
+    #h(2em)click_event:{\
+    #h(3em)action:\"run_command\",\
+    #h(3em)command:\"function main:story/talk\"\
+    #h(2em)}\
+    #h(1em)},\
+    #h(1em)\"#h(1em)\",\
+    #h(1em)\{\
+    #h(2em)text:\"[绕道去学校]\",\
+    #h(2em)color:\"#color_block(green)green\",\
+    #h(2em)hover_event:{\
+    #h(3em)action:\"show\_text\",\
+    #h(3em)value:\"学校的事情急，\\n还是先去学校吧，\\n这个人就不去管他了\"\
+    #h(2em)},\
+    #h(2em)click_event:\{\
+    #h(3em)action:\"run_command\",\
+    #h(3em)command:\"function main:story/school\"\
+    #h(2em)}\
+    #h(1em)},\
+    #h(1em)\"\\n===================================\"\
+    ]])
+  ]
+)
+== 聊天类型
+
 = 存档格式<chap:level_format>
 == 存档文件夹的结构<sec:saves>
 == 方块实体<sec:block_entity>
