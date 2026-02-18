@@ -5052,7 +5052,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 #tree(
   (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
   (1, [#icon("nbt-string")#icon("json-string") *type*: `translatable`]),
-  (1, [#icon("nbt-string")#icon("json-string") *#underline[translate]*: 翻译标识符。若输入正确，则会返回和客户端当前语言一致的已翻译文本，即返回在相应语言 `.json` 文件中该翻译标识符的值。]),
+  (1, [#icon("nbt-string")#icon("json-string") *#underline[translate]*: 翻译标识符。若输入正确，则会返回和客户端当前语言一致的已翻译文本，即返回在相应语言 `.json` 文件中该翻译标识符的值。也可以不使用资源包，直接填入允许带译文变量的一段文本，此时文本内的译文变量有效。]),
   (1, [#icon("nbt-string")#icon("json-string") *fallback*: 若相应的语言文件中没有需要的翻译标识符，则显示 `en_us.json` 中的内容，即美式英语的文本。若在 `en_us.json` 中也没有找到该翻译标识符，则可以使用这个字段以输出替代的文本，它需要的值为字符串，因此不能添加格式，但可以使用格式化代码。]),
   (1, [#icon("nbt-list")#icon("json-array") *with*: 一些翻译标识符的值中含有 `%s` 的字样，这些被称为标识符中的*译文变量（英文原文为Slots，槽位）*#index(display: "译文变量（Slots）", "yi4 wen2 bian4 liang4")。若不定义此字段，则这些译文变量的位置会显示为无文本。可以使用这个字段对这些译文遍历进行自定义。]),
   (2, [一个文本组件，允许使用字符串、数组、对象等组件。])
@@ -5128,6 +5128,16 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
     #codebox("{translate:\"resourcePack.loaded\",fallback:\"请安装正确的资源包！\"}")
     接下来只需要在主标题中显示：
     #codebox("title @a title {translate:\"resourcePack.loaded\",fallback:\"请安装正确的资源包！\"}")
+  ]
+)
+#example(
+  [显示文本#text_component(text(white)[\<A>胜利，\<B>失败！\<A>获得\<x>金币，\<B>获得\<y>金币])，其中 `<A>` 的值为 `kyifyuy`，`<B>` 的值为 `planet00shaper`，`<x>` 的值为 `78`，`<y>` 的值为 `13`。],
+  [
+    不妨可以用翻译文本组件的译文变量将参数传入至文本，此处不用资源包，直接将带译文变量的文本填入 #icon("nbt-string")#icon("json-string") `translate`：
+    #codebox("{translate:\"%1$s胜利，%2$s失败！%1$s获得%3$s金币，%2$s获得%4$s金币\",with:[\"kyifyuy\",\"planet00shaper\",\"78\",\"13\"]}")
+    因为带有重复的参数，因此译文变量写成了 `%n$s` 的形式。
+
+    不过，在实际的应用情境中，本题的所有变量都会是动态的，`<A>`、`<B>` 很有可能需要实体名称组件，`<x>`、`<y>` 很有可能需要记分板分数组件。这些组件类型的写法见后文的说明。
   ]
 )
 === 按键绑定组件
@@ -5261,6 +5271,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
   (1, [#icon("nbt-string")#icon("json-string") *storage*: 获取命令存储数据的命令存储的命名空间ID。]),
   (1, [#icon("nbt-string")#icon("json-string") *#underline[nbt]*: 所返回NBT值的路径。]),
   (1, [#icon("nbt-bool")#icon("json-bool") *interpret*: 是否将从NBT获取的值当作文本组件解析，若解析失败则什么内容都不会返回。默认值为 `false`]),
+  (1, [#icon("nbt-bool")#icon("json-bool") *plain*: 默认情况下返回的SNBT会有语法高亮，此字段为 `true` 时只会以纯文本的形式显示返回内容。默认值为 `false`。不能与 #icon("nbt-bool")#icon("json-bool") `interpret` 同时为 `true`。]),
   (1, [#icon("nbt-string")#icon("json-string")#icon("nbt-list")#icon("json-array")#icon("nbt-compound")#icon("json-object") *separator*: 可选，表示显示时分割各NBT值的文本，值可以是文本组件可接受的任意数据类型。默认值为 `", "`，显示的是白色的分隔符#text_component(shadow-offset: (0.1em, -0.25em),text(white)[,])。])
 )
 在一个同级文本组件 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象中，NBT数据值组件类型只能从 #icon("nbt-string")#icon("json-string") `block`、#icon("nbt-string")#icon("json-string") `entity` 和 #icon("nbt-string")#icon("json-string") `storage` 中选择一个，且这三个字段必须存在任何一者。若在同一个对象中出现多个，则它们按照如下顺序的优先级决定最终选择的键：#icon("nbt-string")#icon("json-string") `block`、#icon("nbt-string")#icon("json-string") `entity`、#icon("nbt-string")#icon("json-string") `storage`。
@@ -5965,8 +5976,8 @@ H])需要这么写：
 #h(-2em)存储的形式为：
 #codebox([{text:\"Hello \",color:\"#color_block(red)red\"},extra:[{text:\"World!\",color:\"#color_block(blue)blue\"}]}])
 因此，若这个文本组件是一个NBT字段 `text` 的值，要用NBT路径访问#text_component(text(blue)[World!])的颜色，不能写成 `text[1].color`，要写成 `text.extra[0].color`。
-=== 应用实例
-文本组件专门用于显示文本，因此它在冒险地图或服务器中承载了大量的信息，用于剧情推进、提示说明等。在冒险地图中使用文本组件是一项必要的技能。本小节提供了若干实例用于说明文本组件的一些应用。
+== 应用实例
+文本组件专门用于显示文本，因此它在冒险地图或服务器中承载了大量的信息，用于剧情推进、提示说明等。在冒险地图中使用文本组件是一项必要的技能。本节提供了若干实例用于说明文本组件的一些应用。
 #example(
   [
     编写一段文本组件，使之在聊天栏中返回如下文本：
@@ -6051,7 +6062,46 @@ H])需要这么写：
   ]
 )
 == 聊天类型
-
+#proper-noun(display: "聊天（Chat）", "liao2 tian1")是玩家发送文本内容、输入命令的一项功能。相比于通过 `/tellraw` 在聊天栏中发送内容，用聊天功能发送的文本在内容和样式上相对单调且固定，但开发者依然可以像文本组件那样有限地为聊天文本设计内容和样式。
+=== 基本聊天类型
+Minecraft一共有以下几种#proper-noun(display: "聊天类型（Chat type）", "liao2 tian1 lei4 xing2")：
+===== 玩家发送聊天信息
+这种类型只需玩家按 `T` 键呼出聊天栏，在其中输入文本后发送即可，默认的格式为：\
+#text_component(text(white)[\<sender> content])
+===== 使用 `/me` 命令发送信息
+`/me` 通常用于展示命令执行者的状态或是动作，成功执行后返回文本的默认格式为#text_component(text(white)[\* sender content])。这个动作需要的字符串可以是随意的，比如玩家Steve向所有玩家公布自己正在制作地图，则Steve在聊天栏中输入的命令可以为 `/me 正在制作地图`，则返回的结果是#text_component(text(white)[\* Steve 正在制作地图])。该命令所需权限等级为0，语法为：#index(index:"command","me")
+#codebox("me <action>")
+#param-desc(
+  [`<action>`（字符串 `brigadier:string`）], [所展示的动作。]
+)
+===== 发送私信
+`/msg`、`/tell` 和 `/w` 三条命令用于发送私聊信息给指定的玩家，它们的语法完全相同，可相互替代，所需权限等级均为0：#index(index:"command","msg")#index(index:"command","tell")#index(index:"command","w")
+#codebox("msg <targets> <message>")
+#codebox("tell <targets> <message>")
+#codebox("w <targets> <message>")
+#param-desc(
+  [`<message>`（文本 `minecraft:message`）], [需要发送的信息。可以接受目标选择器，如果在这些部分中指定了某些实体且权限等级大于等于2，则返回结果时会显示这些实体的名字。]
+)
+消息在发送者聊天栏中的默认格式为#text_component(text(gray)[#skew(ax:-12deg,"你悄悄地对target说：content")])，在接收者处的默认格式为#text_component(text(gray)[#skew(ax:-12deg,"sender悄悄地对你说：content")])。
+===== 使用 `/say` 命令发送信息
+命令 `/say` 用于向所有玩家发送信息，所需权限等级为2，语法为：#index(index:"command","say")
+#codebox("say <message>")
+#param-desc(
+  [`<message>`（文本 `minecraft:message`）], [贪婪词组，可以接受目标选择器，如果在这些部分中指定了某些实体，则返回结果时会显示这些实体的名字。]
+)
+在默认情况下执行该命令后游戏会在聊天栏显示#text_component(text(white)[[sender] content])。在命令方块中执行该命令时，命令执行者是命令方块本身，返回的结果会显示命令方块的名称。如果命令方块没有名称，则会显示 `@` 以代替命令方块的名称。
+#example(
+  [用 `/say` 命令显示消息#text_component(text(white)[Hello world!])。], [命令为#codebox("say Hello world!")]
+)
+===== 向队内成员发送信息
+`/teammsg` 和 `/tm` 这两条命令用于向同一队伍中的所有成员发送消息，可以相互代替，所需权限等级为0，语法为：#index(index:"command","teammsg")#index(index:"command","tm")
+#codebox("teammsg <message>")
+#codebox("tm <message>")
+#param-desc(
+  [`<message>`（文本 `minecraft:message`）], [需要发送的信息。可以接受目标选择器，如果在这些部分中指定了某些实体且权限等级大于等于2，则返回结果时会显示这些实体的名字。]
+)
+消息在发送者聊天栏中的默认格式为#text_component(text(white)[-> target \<sender> content])，在接收者处的默认格式为#text_component(text(white)[target \<sender> content])。
+=== 聊天类型的定义
 = 存档格式<chap:level_format>
 == 存档文件夹的结构<sec:saves>
 == 方块实体<sec:block_entity>
@@ -6063,6 +6113,7 @@ H])需要这么写：
 === 触发器<subsec:trigger>
 = 命令/execute<chap:command_execute>
 #appendix
+= 命令方块与红石电路
 = 数据库
 == 数据包和资源包版本号<sec:pack_format>
 #split-table(

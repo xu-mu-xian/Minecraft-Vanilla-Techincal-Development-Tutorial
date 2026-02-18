@@ -452,7 +452,7 @@
       } else if level == 4 {
         return numbering("一、", nums.at(3))
       } else if level == 5 {
-        return box(inset: 0pt, width: 1.7em, text(weight: "regular", numbering("1.", nums.at(4))))
+        return box(inset: 0pt, width: 1.7em, text(weight: "regular", numbering("1．", nums.at(4))))
       } else if level == 6 {
         return box(inset: 0pt, width: 1.7em, text(weight: "regular", numbering("(1)", nums.at(5))))
       } else if level == 7 {
@@ -881,7 +881,7 @@
   set enum(
     full: true, 
     numbering: (..nums) => {
-      let formats = ("1.", "(1)", "①", "A.", "a.")
+      let formats = ("1．", "(1)", "①", "A．", "a．")
       let level = nums.pos().len()
       let format-str = formats.at(calc.min(level - 1, formats.len() - 1))
       let current-number = nums.pos().last()

@@ -1,3 +1,4 @@
+// 此包由Gemini编写，训练者：徐木弦
 #let stringtree(line_thickness: 0.5pt, line_color: black, ..items) = {
   set par(justify: true)
   let items = items.pos()
