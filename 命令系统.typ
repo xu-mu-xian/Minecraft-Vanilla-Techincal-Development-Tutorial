@@ -906,7 +906,7 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
 压缩文件，即 `.zip` 文件，也是常用的文件格式，通常被用于数据包和资源包的压缩。读者可自行选择合适的压缩软件对数据包或资源包进行压缩。
 ===== 其他的文件格式
 Minecraft还使用其他一些文件格式，如 `.jfr` 文件、`.log` 文件等。具体见下文的说明。
-=== .minecraft文件夹 \*
+=== .minecraft文件夹 \*<subsec:.minecraft>
 `.minecraft` 文件夹，macOS上为 #icon("folder") `minecraft`，是存储Java版所有游戏数据的文件夹。
 
 对于Windows系统，这个文件夹默认位于 #icon("folder") `C: Users\Admin\AppData\Roaming\.minecraft`，其中 #icon("folder") `AppData` 文件夹一般是隐藏的，可以在文件资源管理器 `查看` 工具栏，在 `显示/隐藏` 一项勾选 `隐藏的项目` 以显示这个文件夹。
@@ -1187,7 +1187,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 数据包的编写是一个极为繁琐的过程，需要不断地调试、纠错，有时甚至要对其底层逻辑进行重构。在编写数据包之前，读者应提前做好规划，对其可行性进行初步的研究，还要考虑数据包运行过程中的流畅性、玩家游玩过程中的平衡性。编写过程合理使用文件层级，对文件适当分类，以免内容混乱，降低文件可读性。
 
 原版数据包位于 #icon("folder") `.minecraft\versions\<版本号>\<版本号>.jar\data`，是编写自定义数据包的重要依据，读者可参考之。
-=== 数据包的基本结构
+=== 数据包的基本结构<subsec:datapack_folder>
 一个数据包拥有以下的基本结构：
 #tree(
   (0, [#icon("folder") *\<数据包名称>*或 #icon("zip") *\<数据包名称>.zip*]),
@@ -1672,7 +1672,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   (1, [#icon("json") *#underline[pack.mcmeta]*: 资源包的元数据。]),
   (1, [#icon("png") *pack.png*: 可选，作为资源包的图标使用。])
 )
-如果该资源包以压缩文件的形式存在，则 #icon("zip") `<资源包名称>.zip` 和 #icon("folder") `<子数据包>`、#icon("folder") `assets`、#icon("json") `pack.mcmeta`、#icon("png") `pack.png` 这些文件之间不要插入其他层级的文件夹。若该资源包为世界指定资源包，则名称一定为 #icon("zip") `resources.zip`。
+如果该资源包以压缩文件的形式存在，则 #icon("zip") `<资源包名称>.zip` 和 #icon("folder") `<子数据包>`、#icon("folder") `assets`、#icon("json") `pack.mcmeta`、#icon("png") `pack.png` 这些文件之间不要插入其他层级的文件夹。*若该资源包为世界指定资源包，则名称一定为 #icon("zip") `resources.zip`。*
 
 资源包中 #icon("folder") `assets` 用于存放各种资源文件，#icon("json") `pack.mcmeta` 作为资源包的#proper-noun(display: "元数据（Metadata）", "yuan2 shu4 ju4")使用。和数据包一样，所谓元数据，就是用于决定 #icon("folder") `<资源包名称>` 或 #icon("zip") `<资源包名称>.zip` 这个文件（夹）是否为一个资源包，只有当元数据存在时，游戏才能识别资源包。
 
@@ -4880,9 +4880,9 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 
 文本组件可以接受的 #icon("nbt") SNBT数据类型为 #icon("nbt-string") *字符串*、#icon("nbt-list") *列表*和 #icon("nbt-compound") *复合标签*，对应的 #icon("json") JSON数据类型则为 #icon("json-string") *字符串*、#icon("json-array") *数组*和 #icon("json-object") *对象*，*其他的数据类型一概不接受*。
 
-当文本组件使用 #icon("nbt-string")#icon("json-string") 字符串形式时，该组件被当作纯文本处理，不能添加任何样式。例如，组件@code:text_component_string_format\是一个 #icon("nbt-string")#icon("json-string") 字符串形式的文本组件，输入后返回的文本为#text_component(text(white)[Hello World!])（字符串的引号不会被返回）：
+当文本组件使用 #icon("nbt-string")#icon("json-string") 字符串形式时，该组件被当作纯文本处理，不能添加任何样式。例如，组件@code:text_component_string_format\是一个 #icon("nbt-string")#icon("json-string") 字符串形式的文本组件，输入后返回的文本为#text_component([Hello World!])（字符串的引号不会被返回）：
 #codebox("\"Hello World!\"") <code:text_component_string_format>
-当使用 #icon("nbt-list") 列表/ #icon("json-array") 数组时，其中的元素可以是任意形式的文本组件，包括 #icon("nbt-string")#icon("json-string") 字符串、#icon("nbt-list") 列表/ #icon("json-array") 数组和 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象，同一 #icon("nbt-list") 列表/ #icon("json-array") 数组内元素的类型可以不同。例如，组件@code:text_component_list_format 返回的内容是#text_component(text(white)[ABC])：
+当使用 #icon("nbt-list") 列表/ #icon("json-array") 数组时，其中的元素可以是任意形式的文本组件，包括 #icon("nbt-string")#icon("json-string") 字符串、#icon("nbt-list") 列表/ #icon("json-array") 数组和 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象，同一 #icon("nbt-list") 列表/ #icon("json-array") 数组内元素的类型可以不同。例如，组件@code:text_component_list_format 返回的内容是#text_component([ABC])：
 #codebox("[\"A\",\"B\",\"C\"]") <code:text_component_list_format>
 #icon("nbt-list") 列表/ #icon("json-array") 数组内的任一元素不能为文本组件不接受的数据形式。例如，组件@code:text_component_list_format_wrong_1 无法被解析，因为 #icon("nbt-list") 列表/ #icon("json-array") 数组内的所有元素均为 #icon("nbt-int") 整型/ #icon("json-number") 数值：
 #codebox("[1,2,3]") <code:text_component_list_format_wrong_1>
@@ -4908,7 +4908,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
   [`<messages>`（文本组件 `minecraft:component`）], [要显示的富文本，使用文本组件，可以在其中使用换行符 `\n`。]
 )
 #example(
-  [向所有玩家的聊天栏显示文本#text_component(text(white)[Hello World!])。],
+  [向所有玩家的聊天栏显示文本#text_component([Hello World!])。],
   [
     命令为
     #codebox("tellraw @a \"Hello World!\"")
@@ -4936,7 +4936,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 ====== 对指定的玩家移除其正在显示的所有标题，语法为：
 #codebox("title <targets> clear")
 #example(
-  [对所有玩家显示主标题#text_component(text(white)[Level 0])，副标题#text_component(text(white)[前厅])。],
+  [对所有玩家显示主标题#text_component([Level 0])，副标题#text_component([前厅])。],
   [
     命令为
     #codebox("title @a title \"Level 0\"")
@@ -4992,7 +4992,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 #h(-2em)出现了三种组件类型：按键、记分板分数、实体名称，根据@tab:text_component_content，记分板分数的优先级最高，故返回记分板分数。
 此外，如果一个 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象中出现了多个同种类型的文本时，则会优先使用 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象中最靠后的文本类型字段。例如，
 #codebox("{text:\"1\",text:\"2\",text:\"3\"}")
-#h(-2em)返回的文本为#text_component(text(white)[3])
+#h(-2em)返回的文本为#text_component([3])
 === 纯文本组件
 显而易见，#proper-noun(display: "纯文本组件（Plain text）", "chun2 wen2 ben3 zu3 jian4")用于直接输出一段固定的文本。格式为：
 #tree(
@@ -5001,7 +5001,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
   (1, [#icon("nbt-string")#icon("json-string") *#underline[text]*: 具体的文本内容。])
 )
 #example(
-  [在所有玩家的主标题显示纯文本#text_component(text(white)[Hello World!])。],
+  [在所有玩家的主标题显示纯文本#text_component([Hello World!])。],
   [
     如果使用 #icon("nbt-string")#icon("json-string") `text`，则命令为
     #codebox("title @a title {type:\"text\",text:\"Hello world!\"}")
@@ -5012,7 +5012,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 )
 纯文本内允许包含各种转义序列，如Unicode、换行符 `\n`。例如下面的命令：
 #codebox("tellraw @a {text:\"\\u2605\\nCiallo~\"}")
-#h(-2em)它会在聊天栏中返回#text_component(text(white)[★\ Ciallo\~])。
+#h(-2em)它会在聊天栏中返回#text_component([★\ Ciallo\~])。
 
 如果还需在其中使用引号和转义字符，则参考节@subsec:json_esacpe 和@subsec:nbt_data_type 说明的转义方式。
 === 翻译文本组件<subsec:translate>
@@ -5103,16 +5103,16 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
         [前缀，%s], box(inset: 0.4em, radius: 4pt, stroke: 1pt + rgb("#d71d1d"), [%2\$s]), [ 然后是 %s 和 ], box(inset: 0.4em, radius: 4pt, stroke: 1pt + rgb("#d71d1d"), [%1\$s]), [ 最后是 %s 还有 ], box(inset: 0.4em, radius: 4pt, stroke: 1pt + rgb("#d71d1d"), [%1\$s]), [！]
       )
     ]
-    于是返回的内容为#text_component(text(white)[前缀，12 然后是 2 和 1 最后是 #[#set text(weight: "bold")
+    于是返回的内容为#text_component([前缀，12 然后是 2 和 1 最后是 #[#set text(weight: "bold")
     3] 还有 1！])。第4个参数虽然存在于列表中，但并没有使用。
   ]
 )
 若 #icon("nbt-string")#icon("json-string") `fallback` 也没有指定值，则返回翻译标识符本身。例如，`custom.1` 是原版资源包中任何一个语言文件中都没有的翻译标识符，那么在不定义 #icon("nbt-string")#icon("json-string") `fallback` 时，文本组件
 #codebox("{translate:\"custom.1\"}")
-返回的内容为#text_component(text(white)[custom.1])。读者可以通过在资源包中添加这些自定义的翻译标识符，并为这些翻译标识符编写相应的值。
+返回的内容为#text_component([custom.1])。读者可以通过在资源包中添加这些自定义的翻译标识符，并为这些翻译标识符编写相应的值。
 #index(display: "检测资源包是否安装并显示不同的文本", index: "method", "jian3 ce4 zi1 yuan2 bao1 shi4 fou3 an1 zhuang1 bing4 xian3 shi4 bu4 tong2 de wen2 ben3")
 #example(
-  [一张冒险地图需要配合资源包使用，玩家进入游戏时地图会向玩家展示主标题，若玩家启用了正确的资源包，则主标题文本为#text_component(text(white)[资源包已启用])；若玩家未使用资源包，则主标题文本为#text_component(text(white)[请安装正确的资源包！])。试实现这个效果。],
+  [一张冒险地图需要配合资源包使用，玩家进入游戏时地图会向玩家展示主标题，若玩家启用了正确的资源包，则主标题文本为#text_component([资源包已启用])；若玩家未使用资源包，则主标题文本为#text_component([请安装正确的资源包！])。试实现这个效果。],
   [
     要使客户端在装载资源包前后显示不同的文本，不妨使用翻译文本组件。当资源包启用的时候，按照翻译标识符显示对应的文本；当资源包未启用的时候，翻译标识符不存在，从而显示 #icon("nbt-string")#icon("json-string") `fallback` 中的内容。
 
@@ -5131,7 +5131,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
   ]
 )
 #example(
-  [显示文本#text_component(text(white)[\<A>胜利，\<B>失败！\<A>获得\<x>金币，\<B>获得\<y>金币])，其中 `<A>` 的值为 `kyifyuy`，`<B>` 的值为 `planet00shaper`，`<x>` 的值为 `78`，`<y>` 的值为 `13`。],
+  [显示文本#text_component([\<A>胜利，\<B>失败！\<A>获得\<x>金币，\<B>获得\<y>金币])，其中 `<A>` 的值为 `kyifyuy`，`<B>` 的值为 `planet00shaper`，`<x>` 的值为 `78`，`<y>` 的值为 `13`。],
   [
     不妨可以用翻译文本组件的译文变量将参数传入至文本，此处不用资源包，直接将带译文变量的文本填入 #icon("nbt-string")#icon("json-string") `translate`：
     #codebox("{translate:\"%1$s胜利，%2$s失败！%1$s获得%3$s金币，%2$s获得%4$s金币\",with:[\"kyifyuy\",\"planet00shaper\",\"78\",\"13\"]}")
@@ -5242,7 +5242,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
   [
     命令为
     #codebox("tellraw @a {score:{name:\"*\",objective:\"test\"}}")
-    在 `Mu_xian` 的客户端中返回的文本为#text_component(text(white)[1])，在 `IIIIfrit` 的客户端中返回的文本为#text_component(text(white)[2])。
+    在 `Mu_xian` 的客户端中返回的文本为#text_component([1])，在 `IIIIfrit` 的客户端中返回的文本为#text_component([2])。
   ]
 )
 === 实体名称组件
@@ -5254,7 +5254,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
   (1, [#icon("nbt-string")#icon("json-string")#icon("nbt-list")#icon("json-array")#icon("nbt-compound")#icon("json-object") *separator*: 可选，表示显示时分割各实体名称的文本，值可以是文本组件可接受的任意数据类型。默认值为 `{"text":", ","color":"gray"}`，显示的是灰色的分隔符#text_component(shadow-offset: (0.1em, -0.25em),text(gray)[,])。])
 )
 #example(
-  [在聊天栏中显示所有玩家的名字，名字之间用#text_component(text(white)[|])分隔。],
+  [在聊天栏中显示所有玩家的名字，名字之间用#text_component([|])分隔。],
   [
     命令为
     #codebox("tellraw @a {selector:\"@a\",separator:\"|\"}")
@@ -5424,7 +5424,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 ===== 自定义物品的名称
 例如，执行以下命令以给予一个苹果：
 #codebox("give @s minecraft:apple[minecraft:custom_name={selector:\"@s\"}]")
-#h(-2em)此时苹果的名称显示为 #text_component(text(white)[_\@s_])，它并没有发生解析。
+#h(-2em)此时苹果的名称显示为 #text_component([_\@s_])，它并没有发生解析。
 ===== 对话框
 对话框中的所有记分板分数组件、实体名称组件和NBT组件都不能解析，要想显示这些数据，只能用宏函数将数据传递进去。
 == 文本组件样式
@@ -5498,7 +5498,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
     #codebox("\"multiplayer.player.joined\": \"%s joined the game\"")
     对其中的 `%s` 定义文本 `Herobrine`，并添加样式，则所需的命令为
     #codebox([tellraw \@a {translate:\"multiplayer.player.joined\",with:[\"Herobrine\"],color:\"#color_block(yellow)yellow\"}])
-    顺着这条思路还可以制造出其他效果。比如，在游戏中传播假死信息：\ #text_component(text(white)[Mu_xian从高处摔了下来])\ 玩家的死亡信息为白色不加粗字体，在使用文本组件编写时只需使用默认样式即可，命令可以为：
+    顺着这条思路还可以制造出其他效果。比如，在游戏中传播假死信息：\ #text_component([Mu_xian从高处摔了下来])\ 玩家的死亡信息为白色不加粗字体，在使用文本组件编写时只需使用默认样式即可，命令可以为：
     #codebox("tellraw @a {translate:\"death.fell.accident.generic\",with:[\"Mu_xian\"]}")
   ]
 )
@@ -5537,11 +5537,11 @@ Minecraft中的字体本质上是图像，如果设计巧妙，则可以将任�
   ]
 )
 #example(
-  [将文本#text_component(text(white)[#strike[Hello World!]])模糊化处理，并设置删除线。],
+  [将文本#text_component([#strike[Hello World!]])模糊化处理，并设置删除线。],
   [
     文本组件为
     #codebox("{text:\"Hello World!\",strikethrough:true,obfuscated:true}")
-    这段文本的效果可能为#text_component(text(white)[#strike[TBilRoa|\*@\$c|]])，它实际上是动态的。
+    这段文本的效果可能为#text_component([#strike[TBilRoa|\*@\$c|]])，它实际上是动态的。
   ]
 )
 === 格式化代码
@@ -5586,11 +5586,11 @@ Minecraft中的字体本质上是图像，如果设计巧妙，则可以将任�
 #codebox("Hello §4Wo§9rld!")
 使用 `§r` 能使之后的文本恢复为默认颜色。下面的文本中#text_component(text(dark_red)[Wo])为深红色，而其余文本均为默认颜色。
 #codebox("Hello §4Wo§rrld!")
-一段文本中位于后面的颜色代码会覆盖掉之前的颜色代码，因为一段文本不能同时拥有两种颜色。而其余的文本格式是可以重叠的，因此格式代码不会覆盖。在下面的文本中，#text_component(text(white)[#set text(font: "Minecraft", weight: "bold")
-Hello ])为粗体，而#text_component(text(white)[#set text(font: "Minecraft", weight: "bold")
+一段文本中位于后面的颜色代码会覆盖掉之前的颜色代码，因为一段文本不能同时拥有两种颜色。而其余的文本格式是可以重叠的，因此格式代码不会覆盖。在下面的文本中，#text_component([#set text(font: "Minecraft", weight: "bold")
+Hello ])为粗体，而#text_component([#set text(font: "Minecraft", weight: "bold")
 _World!_])既为粗体又为斜体：
 #codebox("§lHello §oWorld!")
-若要取消这些文本格式，则须要使用 `§r`。接着上面的这个例子，若想要对#text_component(text(white)[_rld!_])文本取消粗体，则格式化代码需要这样写：
+若要取消这些文本格式，则须要使用 `§r`。接着上面的这个例子，若想要对#text_component([_rld!_])文本取消粗体，则格式化代码需要这样写：
 #codebox("§7lHello §oWo§r§orld!")
 由于 `§r` 取消了粗体和斜体两种格式，而斜体需要保留，因此需要紧随其后重新加上 `§o`。注意，把 `§r§o` 写成 `§o§r` 是错误的，*格式化代码遵循从左到右的应用准则*，在编写的时候需要确定先后关系。在这个例子中需要先去除所有格式再加上要保留的格式。
 
@@ -5620,7 +5620,7 @@ H])需要这么写：
 
 对于命令 `/tellraw`、命令 `/title`、告示牌、成书、文本展示实体、对话框等，并非所有交互事件都是可用的，其中所有的事件对于命令 `/title` 而言均不可用。下文将具体说明各事件的可用性。
 ==== 填入事件
-#proper-noun(display: "填入事件（Insertion）", "tian2 ru4 shi4 jian4")：当玩家按住 `Shift` 点击文字时触发，用于将一串特定的文本填入玩家的聊天框中。填入聊天框的内容不会将原有的文本覆盖，只会在光标显示的位置插入。例如，聊天框的文本#text_component(text(white)[AB])中，光标位于字符#text_component(text(white)[A])之后、#text_component(text(white)[B])之前，若填入的文本为#text_component(text(white)[C])，则聊天框中的文本会变为#text_component(text(white)[ACB])。注意，这些只是填入聊天框的文本，不代表已经发送出去的文本。。
+#proper-noun(display: "填入事件（Insertion）", "tian2 ru4 shi4 jian4")：当玩家按住 `Shift` 点击文字时触发，用于将一串特定的文本填入玩家的聊天框中。填入聊天框的内容不会将原有的文本覆盖，只会在光标显示的位置插入。例如，聊天框的文本#text_component([AB])中，光标位于字符#text_component([A])之后、#text_component([B])之前，若填入的文本为#text_component([C])，则聊天框中的文本会变为#text_component([ACB])。注意，这些只是填入聊天框的文本，不代表已经发送出去的文本。。
 
 填入事件的数据格式为：
 #tree(
@@ -5629,7 +5629,7 @@ H])需要这么写：
 )
 例如，命令
 #codebox("tellraw @a {\"text\":\"点击这里发生问候\",\"insertion\":\"Hello World!\"")
-#h(-2em)返回的文本为#text_component(text(white)[点击这里发生问候])，对这段文本按住 `Shift` 的同时点击，则会在玩家的聊天框中自动填入#text_component(text(white)[Hello World!])字样，按下消息发送键后即可将消息以玩家的名义发出。
+#h(-2em)返回的文本为#text_component([点击这里发生问候])，对这段文本按住 `Shift` 的同时点击，则会在玩家的聊天框中自动填入#text_component([Hello World!])字样，按下消息发送键后即可将消息以玩家的名义发出。
 ==== 点击事件
 #proper-noun(display: "点击事件（Click event）", "dian3 ji1 shi4 jian4")是最常用的交互事件类型，也是与玩家最直接发生互动的事件类型，玩家只需要直接点击文本就可产生相关的事件。格式为：
 #tree(
@@ -5684,7 +5684,7 @@ H])需要这么写：
   (2, [#icon("nbt-string")#icon("json-string") *#underline[url]*: 需要打开的网址。])
 )
 #example(
-  [设计文本#text_component(text(white)[Minecraft])，使玩家在点击该文本的时候打开Minecraft的官网。],
+  [设计文本#text_component([Minecraft])，使玩家在点击该文本的时候打开Minecraft的官网。],
   [
     Minecraft的官网地址为https://www.minecraft.net，只需将其作为字段 #icon("nbt-int")#icon("json-number") `url` 的值即可。
     #codebox("{text:\"Minecraft\",click_event:{action:\"open_url\",url:\"https://www.minecraft.net\"}}")
@@ -5701,9 +5701,9 @@ H])需要这么写：
 
 若在告示牌中使用，则只允许父组件具有该点击事件，子组件不得使用该点击事件，此时可以通过点击告示牌来执行命令。命令上下文依旧按照@tab:command_context 确定。告示牌一共有四行可用的文本，因此可以应用四个不同的点击事件。当玩家点击告示牌时，不会识别玩家点击告示牌的哪一行文本。所以当玩家点击告示牌时，告示牌上所有的点击事件会按从上到下的顺序同时发生。
 #example(
-  [设计一段文本#text_component(text(white)[Minecraft])，使玩家在点击该文本的时候对此玩家显示主标题#text_component(text(white)[Hello Minecraft!])。],
+  [设计一段文本#text_component([Minecraft])，使玩家在点击该文本的时候对此玩家显示主标题#text_component([Hello Minecraft!])。],
   [
-    主标题#text_component(text(white)[Hello Minecraft!])的显示也需要文本组件，因此需要在文本组件内嵌套文本组件。若使用SNBT形式的文本组件，则字段 #icon("nbt-string")#icon("json-string") `command` 可以用单引号定义字符串，从而在内部的文本组件中使用双引号定义的字符串：
+    主标题#text_component([Hello Minecraft!])的显示也需要文本组件，因此需要在文本组件内嵌套文本组件。若使用SNBT形式的文本组件，则字段 #icon("nbt-string")#icon("json-string") `command` 可以用单引号定义字符串，从而在内部的文本组件中使用双引号定义的字符串：
     #codebox("{text:\"Minecraft\",click_event:{action:\"run_command\",command:'title @s title \"Hello Minecraft!\"'}}")
     同样也可以在 #icon("nbt-string")#icon("json-string") `command` 中用双引号定义字符串，从而在内部的文本组件中使用单引号定义的字符串。
 
@@ -5813,7 +5813,7 @@ H])需要这么写：
 #example(
   [一张冒险地图的过场动画允许玩家按使用键（默认为 `鼠标右键`）以跳过，试设计提示所需的文本。],
   [
-    现文本设计为#text_component(text(white)[按鼠标右键以跳过动画])，显示在动作栏，键位标识符查@tab:keybind_identifier 可得 `key.use`。由于其他文本没有设计样式，使用 #icon("nbt-string")#icon("json-string") 字符串即可。命令为
+    现文本设计为#text_component([按鼠标右键以跳过动画])，显示在动作栏，键位标识符查@tab:keybind_identifier 可得 `key.use`。由于其他文本没有设计样式，使用 #icon("nbt-string")#icon("json-string") 字符串即可。命令为
     #codebox("title @a actionbar [\"按\",{keybind:\"key.use\"},\"以跳过动画\"]")
   ]
 )
@@ -5821,14 +5821,14 @@ H])需要这么写：
   [
     在聊天栏中编写一段命令，要求能返回命令执行者自己在记分项 `[personal_score]` 上面的分数。返回文本可以如下所示，其中分数显示为红色：
 
-    #h(-2em)#text_component(text(white)[\<玩家>的个人分数为：#text(red)[\<分数>]#text(green)[ [对分数有疑惑？]]])
+    #h(-2em)#text_component([\<玩家>的个人分数为：#text(red)[\<分数>]#text(green)[ [对分数有疑惑？]]])
 
     #h(-2em)若玩家将鼠标光标移至#text_component(text(green)[ [对分数有疑惑？]])上，则显示悬停的文本提示框，内容为
 
-    #h(-2em)#text_component(text(white)[被刷新的分数也计入个人分数])
+    #h(-2em)#text_component([被刷新的分数也计入个人分数])
   ],
   [
-    要求的文本内容一共有三种类型：#text_component(text(white)[\<玩家>])很明显是要求输出实体名称，#text_component(text(white)[的个人分数为：])和#text_component(text(green)[ [对分数有疑惑？]])是纯文本，其中#text_component(text(green)[ [对分数有疑惑？]])还带有悬停事件，而#text_component(text(red)[\<分数>])则要求输出记分板分数。因此需要有4个文本组件，所以需要使用数组将这4个组件包括起来。对于第1个组件，它的类型为实体名称，根据题意要求返回命令执行者自己的名称，因此写为：
+    要求的文本内容一共有三种类型：#text_component([\<玩家>])很明显是要求输出实体名称，#text_component([的个人分数为：])和#text_component(text(green)[ [对分数有疑惑？]])是纯文本，其中#text_component(text(green)[ [对分数有疑惑？]])还带有悬停事件，而#text_component(text(red)[\<分数>])则要求输出记分板分数。因此需要有4个文本组件，所以需要使用数组将这4个组件包括起来。对于第1个组件，它的类型为实体名称，根据题意要求返回命令执行者自己的名称，因此写为：
     #codebox("{selector:\"@s\"}")
     对于第2个组件，它是无样式的纯文本，因此写为：
     #codebox("\"的个人分数为：\"")
@@ -5861,13 +5861,13 @@ H])需要这么写：
     #codebox("{text:\"A\",extra:[\"B\"],text:\"C\",extra:[\"D\"]}") <code:extra_example_4>
   ],
   [
-    在文本组件@code:extra_example_1 中，可以清晰地看到一段纯文本#text_component(text(white)[A])及其子组件内容，即 #icon("nbt-list")#icon("json-array") `extra` 中的文本#text_component(text(white)[BC])。因此输出文本为#text_component(text(white)[ABC])。
+    在文本组件@code:extra_example_1 中，可以清晰地看到一段纯文本#text_component([A])及其子组件内容，即 #icon("nbt-list")#icon("json-array") `extra` 中的文本#text_component([BC])。因此输出文本为#text_component([ABC])。
     
-    文本组件@code:extra_example_2 是 #icon("nbt-list")#icon("json-array") `extra` 与文本交换位置的情况，即使文本组件中的子组件在父组件的前面，输出时 #icon("nbt-list")#icon("json-array") `extra` 的文本也只能跟在父组件文本的后面，因此输出文本#text_component(text(white)[CAB])。
+    文本组件@code:extra_example_2 是 #icon("nbt-list")#icon("json-array") `extra` 与文本交换位置的情况，即使文本组件中的子组件在父组件的前面，输出时 #icon("nbt-list")#icon("json-array") `extra` 的文本也只能跟在父组件文本的后面，因此输出文本#text_component([CAB])。
     
-    文本组件@code:extra_example_3 的情况有些特殊，一个对象中使用了两个纯文本和一个 #icon("nbt-list")#icon("json-array") `extra`。那么子组件所依附的是哪一个父组件呢？根据节@sec:text_component_content 对同一个对象的多个文本中判断优先选择输出哪一个文本的讲述，组件会使用类型优先级最高且位置最靠后的那个文本。于是父组件为纯文本#text_component(text(white)[D])，#icon("nbt-list")#icon("json-array") `extra` 便作为了它的子组件，因此输出的文本为#text_component(text(white)[DBC])。文本#text_component(text(white)[A])被直接忽略，优先级的准则使得它无法作为一个父组件。
+    文本组件@code:extra_example_3 的情况有些特殊，一个对象中使用了两个纯文本和一个 #icon("nbt-list")#icon("json-array") `extra`。那么子组件所依附的是哪一个父组件呢？根据节@sec:text_component_content 对同一个对象的多个文本中判断优先选择输出哪一个文本的讲述，组件会使用类型优先级最高且位置最靠后的那个文本。于是父组件为纯文本#text_component([D])，#icon("nbt-list")#icon("json-array") `extra` 便作为了它的子组件，因此输出的文本为#text_component([DBC])。文本#text_component([A])被直接忽略，优先级的准则使得它无法作为一个父组件。
     
-    在文本组件@code:extra_example_4 中，文本#text_component(text(white)[C])为父组件，文本#text_component(text(white)[D])由最后一个 #icon("nbt-list")#icon("json-array") `extra` 输出，因此输出文本为#text_component(text(white)[CD])。
+    在文本组件@code:extra_example_4 中，文本#text_component([C])为父组件，文本#text_component([D])由最后一个 #icon("nbt-list")#icon("json-array") `extra` 输出，因此输出文本为#text_component([CD])。
   ]
 )
 === 继承
@@ -5967,7 +5967,7 @@ H])需要这么写：
       [斜体（`italic`）], [否（`false`）], [是（`true`）], [默认（`false`）], [默认（`false`）], [默认（`false`）],
       [悬停事件（`hover_event`）], [文本提示框 `A`], [文本提示框 `A`], [文本提示框 `A`], [文本提示框 `A`], [文本提示框 `E`]
     )
-    所以输出的文本格式为#text_component(text(fill:red,weight:"bold")[A#text(green)[_B_]C#text(fill:blue,weight:"medium")[D]E])，其中#text_component(text(fill:red,weight:"bold")[A#[#text(green)[_B_]]C#text(fill:blue,weight:"medium")[D]])均有悬停文本#text_component(text(white)[A])，#text_component(text(fill:red,weight:"bold")[E])有悬停文本#text_component(text(white)[E])。
+    所以输出的文本格式为#text_component(text(fill:red,weight:"bold")[A#text(green)[_B_]C#text(fill:blue,weight:"medium")[D]E])，其中#text_component(text(fill:red,weight:"bold")[A#[#text(green)[_B_]]C#text(fill:blue,weight:"medium")[D]])均有悬停文本#text_component([A])，#text_component(text(fill:red,weight:"bold")[E])有悬停文本#text_component([E])。
   ]
 )
 === 组件序列化
@@ -5981,7 +5981,7 @@ H])需要这么写：
 #example(
   [
     编写一段文本组件，使之在聊天栏中返回如下文本：
-    #text_component(text(white)[#text(dark_red)[1] | #text(red)[2] | #text(gold)[3] | #text(yellow)[4] | #text(green)[5] | #text(dark_green)[6] | #text(dark_aqua)[7] | #text(blue)[8] | #text(dark_blue)[9] | #text(dark_purple)[0]])
+    #text_component([#text(dark_red)[1] | #text(red)[2] | #text(gold)[3] | #text(yellow)[4] | #text(green)[5] | #text(dark_green)[6] | #text(dark_aqua)[7] | #text(blue)[8] | #text(dark_blue)[9] | #text(dark_purple)[0]])
   ],
   [
     首先观察：这段文本一共有11种不同的颜色，其中数字 `1` \~ `0` 均为不同的颜色，而竖线为白色（聊天栏文本的默认颜色）。文本本身是可以通过格式化代码赋予一些格式信息的。如果使用格式化代码，则允许只使用一个父组件便实现不同的样式。而这段文本含有聊天栏的默认颜色，则可以使用 `§r` 对样式进行重制。现在按照从左到右的方向依次为文本中的字符带上格式化代码：
@@ -6015,13 +6015,13 @@ H])需要这么写：
 #example(
   [
     编写一段文本组件使在聊天栏中实现如下文本：\ 
-    #text_component(text(white)[#text(green)[[提示]] 在下面的选项中选择其一以推进后续的剧情。\ ========= ★ 请 ★ 选 ★ 择 ★ =========\ #text(green)[#h(1em) [上前与之对话]#h(1em) [绕道去学校]]\ ===================================])\ 
-    其中#text_component(text(green)[[上前与之对话]])有悬停文本提示框#text_component(background:black,text(white)[走上前去与“大仙”对话，\ 说不定能问到些什么])，并设置点击事件为执行命令 `function main:story/talk`；#text_component(text(green)[[绕道去学校]])有悬停文本提示框\ #text_component(background:black,text(white)[学校的事情急，\ 还是先去学校吧，\ 这个人就不去管他了])，并设置点击事件为执行命令 `function main:story/school`。
+    #text_component([#text(green)[[提示]] 在下面的选项中选择其一以推进后续的剧情。\ ========= ★ 请 ★ 选 ★ 择 ★ =========\ #text(green)[#h(1em) [上前与之对话]#h(1em) [绕道去学校]]\ ===================================])\ 
+    其中#text_component(text(green)[[上前与之对话]])有悬停文本提示框#text_component(background:black,text(white)[走上前去与“大仙”对话，\ 说不定能问到些什么])，并设置点击事件为执行命令 `function main:story/talk`；#text_component(text(green)[[绕道去学校]])有悬停文本提示框#text_component(background:black,text(white)[学校的事情急，\ 还是先去学校吧，\ 这个人就不去管他了])，并设置点击事件为执行命令 `function main:story/school`。
   ],
   [
     对于一段文本中含有多个样式的情况，一律使用文本组件列表进行编写。先将列表中第一个组件设为空值。#text_component(text(green)[[提示]])为绿色文本，单独使用一个文本组件：
     #codebox([{text:\"[提示]\",color:\"#color_block(green)green\"}])
-    #text_component(text(white)[#text(green)[[提示]] 在下面的选项中选择其一以推进后续的剧情。\ ========= ★ 请 ★ 选 ★ 择 ★ =========])这两行文本的样式一致，故使用同一个文本组件。鉴于五角星的符号不容易输入，故可以用五角星的Unicode码代替。不同文本行之间用换行符 `\n` 隔开：
+    #text_component([#text(green)[[提示]] 在下面的选项中选择其一以推进后续的剧情。\ ========= ★ 请 ★ 选 ★ 择 ★ =========])这两行文本的样式一致，故使用同一个文本组件。鉴于五角星的符号不容易输入，故可以用五角星的Unicode码代替。不同文本行之间用换行符 `\n` 隔开：
     #codebox("\" 在下面的选项中选择其一以推进后续的剧情。\n========= \u2605 请 \u2605 选 \u2605 择 \u2605 =========\"")
     接下来是一个换行符和一段空格，从效果上看不出应用的样式，故可与上一个文本组件进行合并，写入上一个组件，同时换行符不能忘记：
     #codebox([\" 在下面的选项中选择其一以推进后续的剧情。\\n========= \\u2605 请 \\u2605 选 \\u2605 择 \u2605 =========\\n#h(1em)\"])
@@ -6067,9 +6067,9 @@ H])需要这么写：
 Minecraft一共有以下几种#proper-noun(display: "聊天类型（Chat type）", "liao2 tian1 lei4 xing2")：
 ===== 玩家发送聊天信息
 这种类型只需玩家按 `T` 键呼出聊天栏，在其中输入文本后发送即可，默认的格式为：\
-#text_component(text(white)[\<sender> content])
+#text_component([\<sender> content])
 ===== 使用 `/me` 命令发送信息
-`/me` 通常用于展示命令执行者的状态或是动作，成功执行后返回文本的默认格式为#text_component(text(white)[\* sender content])。这个动作需要的字符串可以是随意的，比如玩家Steve向所有玩家公布自己正在制作地图，则Steve在聊天栏中输入的命令可以为 `/me 正在制作地图`，则返回的结果是#text_component(text(white)[\* Steve 正在制作地图])。该命令所需权限等级为0，语法为：#index(index:"command","me")
+`/me` 通常用于展示命令执行者的状态或是动作，成功执行后返回文本的默认格式为#text_component([\* sender content])。这个动作需要的字符串可以是随意的，比如玩家Steve向所有玩家公布自己正在制作地图，则Steve在聊天栏中输入的命令可以为 `/me 正在制作地图`，则返回的结果是#text_component([\* Steve 正在制作地图])。该命令所需权限等级为0，语法为：#index(index:"command","me")
 #codebox("me <action>")
 #param-desc(
   [`<action>`（字符串 `brigadier:string`）], [所展示的动作。]
@@ -6089,9 +6089,9 @@ Minecraft一共有以下几种#proper-noun(display: "聊天类型（Chat type）
 #param-desc(
   [`<message>`（文本 `minecraft:message`）], [贪婪词组，可以接受目标选择器，如果在这些部分中指定了某些实体，则返回结果时会显示这些实体的名字。]
 )
-在默认情况下执行该命令后游戏会在聊天栏显示#text_component(text(white)[[sender] content])。在命令方块中执行该命令时，命令执行者是命令方块本身，返回的结果会显示命令方块的名称。如果命令方块没有名称，则会显示 `@` 以代替命令方块的名称。
+在默认情况下执行该命令后游戏会在聊天栏显示#text_component([[sender] content])。在命令方块中执行该命令时，命令执行者是命令方块本身，返回的结果会显示命令方块的名称。如果命令方块没有名称，则会显示 `@` 以代替命令方块的名称。
 #example(
-  [用 `/say` 命令显示消息#text_component(text(white)[Hello world!])。], [命令为#codebox("say Hello world!")]
+  [用 `/say` 命令显示消息#text_component([Hello world!])。], [命令为#codebox("say Hello world!")]
 )
 ===== 向队内成员发送信息
 `/teammsg` 和 `/tm` 这两条命令用于向同一队伍中的所有成员发送消息，可以相互代替，所需权限等级为0，语法为：#index(index:"command","teammsg")#index(index:"command","tm")
@@ -6100,20 +6100,225 @@ Minecraft一共有以下几种#proper-noun(display: "聊天类型（Chat type）
 #param-desc(
   [`<message>`（文本 `minecraft:message`）], [需要发送的信息。可以接受目标选择器，如果在这些部分中指定了某些实体且权限等级大于等于2，则返回结果时会显示这些实体的名字。]
 )
-消息在发送者聊天栏中的默认格式为#text_component(text(white)[-> target \<sender> content])，在接收者处的默认格式为#text_component(text(white)[target \<sender> content])。
+消息在发送者聊天栏中的默认格式为#text_component([-> target \<sender> content])，在接收者处的默认格式为#text_component([target \<sender> content])。
 === 聊天类型的定义
+上述聊天类型返回的文本都可以通过数据包修改，即可写注册表 `chat_type`。原版存在七个聊天类型，分别对应的聊天类型如下所示：
+#general-table(
+  caption: "原版聊天类型",
+  colspan: 3,
+  columns: (auto, auto, auto),
+  header: ([注册项], [聊天类型], [默认格式]),
+  [`chat`], [玩家发送聊天信息], [`<sender> content`],
+  [`emote_command`], [使用 `/me` 命令发送信息], [`* sender content`],
+  [`msg_command_incoming`], [`/msg`、`/tell` 和 `/w` 私信的接收者], [`sender悄悄地对你说：content`],
+  [`msg_command_outgoing`], [`/msg`、`/tell` 和 `/w` 私信的发送者], [`你悄悄地对target说：content`],
+  [`say_command`], [使用 `/say` 命令发送信息], [`[sender] content`],
+  [`team_msg_command_incoming`], [`/teammsg` 和 `/tm` 队内消息的接收者], [`target <sender> content`],
+  [`team_msg_command_outcoming`], [`/teammsg` 和 `/tm` 队内消息的发送者], [`-> target <sender> content`],
+)
+虽然 `chat_type` 是可写注册表，但游戏实际使用的也就以上7种聊天类型，且它们的命名空间ID都是 `minecraft` 。所以有效的聊天类型配置文件必须使用如下的数据包路径：
+#tree(
+  (0, [#icon("folder") *data*]),
+  (1, [#icon("folder") *minecraft*]),
+  (2, [#icon("folder") *chat_type*]),
+  (3, [#icon("json") *chat.json*]),
+  (3, [#icon("json") *emote_command.json*]),
+  (3, [#icon("json") *msg_command_incoming.json*]),
+  (3, [#icon("json") *msg_command_outgoing.json*]),
+  (3, [#icon("json") *say_command.json*]),
+  (3, [#icon("json") *team_msg_command_incoming.json*]),
+  (3, [#icon("json") *team_msg_command_outcoming.json*])
+)
+#h(-2em)其他任何的路径都不会被游戏识别，因此只能对原有的这7个配置文件做修改。
+
+一个聊天类型配置文件的格式如下所示：
+#tree(
+  (0, [#icon("json-object") 文件封装]),
+  (1, [#icon("json-object") *#underline[chat]*: 聊天信息在聊天栏内显示的内容和样式。]),
+  (2, [#icon("json-string") *#underline[translation_key]*: 聊天信息的内容，需要是一个翻译标识符或一个允许包含译文变量的文本。]),
+  (2, [#icon("json-array") *#underline[parameters]*: 传入到聊天内容中的参数。]),
+  (3, [#h(-2em)#icon("json-string") 一个参数，有效值只能是 `content`、`sender` 或 `target`。三种有效值的意义如下表所示：#general-table(
+    caption: "聊天信息的可用参数",
+    colspan: 3,
+    columns: (auto, auto, auto),
+    header: ([参数], [意义], [可用]),
+    [`content`], [聊天信息的文本], [所有聊天类型均可用],
+    [`sender`], [聊天信息的发送者], [所有聊天类型均可用],
+    [`target`], [聊天信息的接收者], [仅适用于聊天类型 `msg_command_outgoing`、`team_msg_command_incoming` 和 `team_msg_command_outcoming`]
+  )]),
+  (2, [#icon("json-object") *style*: 聊天信息的样式，默认没有样式。]),
+  (3, [文本组件样式]),
+  (1, [#icon("json-object") *#underline[narration]*: 聊天信息在复述功能中复述的内容。]),
+  (2, [#icon("json-string") *#underline[translation_key]*: 聊天信息的内容，需要是一个翻译标识符或一个允许包含译文变量的文本。]),
+  (2, [#icon("json-array") *#underline[parameters]*: 传入到聊天内容中的参数。]),
+  (3, [#icon("json-string") 一个参数，有效值只能是 `content`、`sender` 或 `target`。]),
+  (2, [#icon("json-object") *style*: 聊天信息的样式，对复述功能无效。]),
+  (3, [文本组件样式])
+)
+例如，若 #icon("json-string") `translation_key` 的值为 `%s%s%s`，#icon("json-array") `parameters` 为 `["sender", "content", "sender"]`，则返回的内容为 #text_component("sender content sender")。*#icon("json-array") `parameters` 中的参数可以重复。*
+#example(
+  [修改玩家发送的聊天信息，使之呈现的样式为#text_component("sender：content")],
+  [
+    如下所示：
+    #codefile(
+      lang: "json",
+      title: "data > minecraft > chat_type > chat.json",
+      "{
+  \"chat\": {
+    \"parameters\": [
+      \"sender\",
+      \"content\"
+    ],
+    \"translation_key\": \"%s：%s\"
+  },
+  \"narration\": {
+    \"parameters\": [
+      \"sender\",
+      \"content\"
+    ],
+    \"translation_key\": \"chat.type.text.narrate\"
+  }
+}"
+    )
+  ]
+)
+#heading(level: 2, numbering: none, [第五章思考题与习题])
++ 针对下面的输出内容，分别写出其不带格式化代码的SNBT文本组件。
+  + #text_component(text(red)[MC-CMD])
+  + #text_component("分节符\"\\\"的作用很大")
+  + #text_component(text(green)[纯文本JSON语法为：{\"text\":\"\<文本>\"}])
+  + #text_component(text(gray)[#skew(ax:-12deg,"游戏规则keep_inventory已更新")])
+  + #text_component(text(yellow)[#strike[错误的语法]])
+  + #text_component("\\\\\"Hello World!\\\\\"")
+  + #text_component(text(blue)[/\\\ \\/])
++ 针对下面的输出内容，分别写出其不带格式化代码的SNBT文本组件。
+  + #text_component(text(green)[[任务]#text(black)[合成一个钻石镐]])
+  + #text_component(text(red)[红色#text(weight:"bold")[粗体]#box(text(black)[#skew(ax:-12deg,"斜体")])])
+  + #text_component(text(blue)[123#text(red)[45]#text(yellow)[6#underline[7]]#text(green)[#underline[8]9]])
+  + #text_component(text(black)[\\#text(blue)[\"\\]#text(yellow)[He]#text(weight:"bold")[llo #text(red)[Wor]]#text(red)[ld]#text(green)[\\\"\\]])
++ 判断下列说法是否正确。
+  + #icon("nbt-string")#icon("json-string") `translate` 字段的值可以包含 `%s`。
+  + 一个命令方块中有如下的命令：`tellraw @a {score:{name:"*",objective:"test"}}`，激活该命令方块，此时不会有任何玩家看到返回的分数。
+  + 触发实体为玩家时，该文本组件无法被解析：`{selector:"@e[type=villager]"}`
++ 文本组件
+  #codebox("{score:\"@r\",nbt:\"Items\",block:\"~ ~1 ~\",entity:\"@r\",translate:\"commands.debug.stopped\",with:[4,7,5],text:\"OK!\",text:\"NO\",entity:\"@e\"}")
+  返回的文本内容为#blank。
++ 若有一翻译标识符 `custom.1`，其在 #icon("json") `zh_cn.json` 的值如下所示：
+  #codebox("%s%3$s%s%s%6$s%1$s%s%s%2$s%s")
+  + 写出该文本组件返回的文本：
+    #codebox("{translate:\"custom.1\",with:[1,true,\"7\",\"A\",[9,\"6\"],{text:false},\"5\"]}")
+  + 要想返回文本#text_component("FfalseOKfalse8F20OKtext")，写出使用翻译标识符 `custom.1` 的文本组件。
++ 在下表中填写各种事件的可用性，填写的内容在命令 `/tellraw`、命令 `/title`、告示牌、成书和文本展示实体中选择。
+  #general-table(
+    caption: "",
+    colspan: 3,
+    columns: (auto, auto, auto),
+    header: ([事件类型], [值], [可用性]),
+    table.cell(colspan: 2)[填入事件], [#blank#blank],
+    table.cell(rowspan: 7)[点击事件], [`change_page`], [#blank#blank],
+    [`copy_to_clipboard`], [#blank#blank],
+    [`custom`], [#blank#blank],
+    [`open_url`], [#blank#blank],
+    [`run_command`], [#blank#blank],
+    [`show_dialog`], [#blank#blank],
+    [`suggest_command`], [#blank#blank],
+    table.cell(rowspan: 3)[悬停事件], [`show_entity`], [#blank#blank],
+    [`show_item`], [#blank#blank],
+    [`show_text`], [#blank#blank],
+  )
++ 编写一段在 `/tellraw` 中运行的文本组件，使返回的文本#text_component("show")拥有悬浮文字，悬浮文字显示一个石头的物品信息，其中石头的数据组件为
+  #codebox("{\"minecraft:custom_name\":\"show\"}")
++ 编写一段在 `/tellraw` 中运行的文本组件，使返回的文本#text_component("click here")拥有点击事件，点击该文本后返回一段仍能够被点击的文本#text_component("click again!")，点击这段文本后才返回红色的#text_component(text(red)[Hello!])文本。
 = 存档格式<chap:level_format>
-== 存档文件夹的结构<sec:saves>
+Minecraft具体的游戏数据，如某个位置的箱子里存储的物品、一个实体的位置、世界边界的大小、Boss栏、玩家已达成的进度……这些数据绝大部分都以NBT的形式存储在游戏存档里，是为#proper-noun(display: "存档格式（Level format）", "cun2 dang3 ge2 shi4")。本章将对这些游戏数据的结构、编辑方法做具体的阐述。
+#pagebreak()
+== 概述<sec:saves>
+*存档（Level，又称地图、世界）*#index(display: "存档（Level，地图，世界）", "cun2 dang3")是独立运行游戏世界的基本单位，它以文件夹的形式存储于 #icon("folder") `saves` 内。每个存档都可以自由移动，因此可以在 #icon("folder") `saves` 文件夹内增添或删除存档，这为冒险地图的下载和安装提供了可能，也允许玩家将他们的存档备份到其他地方。#icon("folder") `saves` 的路径在小节@subsec:.minecraft 中已有说明，其基本结构是：
+#tree(
+  (0, [#icon("folder") *saves*]),
+  (1, [#icon("folder") *\<存档名称>*: 一个存档。])
+)
+#h(-2em)其中存档文件夹的名称会显示在游戏存档页面的第二行，文件夹的名称允许使用格式化代码以应用样式。例如，下图所示存档的文件夹名称为 `§b§l跃动晶界§c2  §aby Mu_xian§f§k`。
+#figure(
+  caption: "存档名称",
+  image("图片/存档名称.png", width: 30em)
+)
+存档文件夹的结构在26.1-Snapshot-6发生过变动，自26.1-Snapshot-6起，一个存档文件夹的基本结构如下所示：
+#tree(
+  (0, [#icon("folder") *\<存档名称>*]),
+  (1, [#icon("folder") *data*: 存档数据。]),
+  (2, [#icon("folder") *\<命名空间>*: 任意命名空间下的存档数据。]),
+  (3, [#icon("folder") *maps*: 地图数据。]),
+  (4, [#icon("nbt") *last_id.dat*: 地图计数文件，游戏在使用地图时，会给每张独立的地图分配一个地图编号。]),
+  (4, [#icon("nbt") *\<地图ID>.dat*: 地图数据文件，地图数据不在物品数据中存储，而是在此处存储。使用地图计数文件存储的地图ID。]),
+  (3, [#icon("nbt") *command_storage.dat*: 命令存储文件，数据格式见小节@subsec:command_storage。]),
+  (3, [#icon("nbt") *custom_boss_events.dat*: 存储自定义Boss栏的文件，数据格式见小节@subsec:bossbar。]),
+  (3, [#icon("nbt") *game_rules.dat*: 存储当前存档游戏规则的文件。]),
+  (3, [#icon("nbt") *random_sequences.dat*: 随机序列数据文件，数据格式见小节@subsec:random_sequence。]),
+  (3, [#icon("nbt") *scheduled_events.dat*: 计划事件数据文件。]),
+  (3, [#icon("nbt") *scoreboard.dat*: 记分板数据文件，数据格式见小节@subsec:scoreboard_data。这个文件内还有队伍相关的数据。]),
+  (3, [#icon("nbt") *stopwatch.dat*: 秒表数据文件，数据格式见小节@subsec:stopwatch。]),
+  (3, [#icon("nbt") *wandering_trader.dat*: 流浪商人数据文件。]),
+  (3, [#icon("nbt") *weather.dat*: 天气数据文件，数据格式见小节@subsec:weather。]),
+  (3, [#icon("nbt") *world_clocks.dat*: 世界时钟数据文件。]),
+  (3, [#icon("nbt") *world_gen_settings.dat*: 存储世界生成设置的文件。]),
+  (1, [#icon("folder") *datapacks*: 世界指定数据包。]),
+  (2, [#icon("folder")#icon("zip") *\<数据包名称>[.zip]*: 一个数据包。文件（夹）结构已在小节@subsec:datapack_folder 给出，其中文件的编写方式会在《数据包》教程详细给出。]),
+  (1, [#icon("folder") *dimensions*: 维度数据。]),
+  (2, [#icon("folder") *\<命名空间>*: 任意命名空间下的维度数据。]),
+  (3, [#icon("folder") *\<维度名称>*: 一个维度，可以添加路径。内容详见节@subsec:dimension_and_region。]),
+  (4, [#icon("folder") *data*: 该维度的零散数据。]),
+  (5, [#icon("folder") *minecraft*: 命名空间，必须为 `minecraft`，无论自定义维度的自身命名空间。]),
+  (6, [#icon("nbt") *chunk_tickets.dat*: 区块标签数据文件。]),
+  (6, [#icon("nbt") *raids.dat*: 袭击数据文件。]),
+  (6, [#icon("nbt") *ender_dragon_fight.dat*: 末影龙战斗数据文件，此文件仅存在于末地或其他可发生末影龙战斗的维度。]),
+  (6, [#icon("nbt") *world_border.dat*: 该维度的世界边界数据文件。]),
+  (4, [#icon("folder") *entities*: 该维度的实体数据。]),
+  (5, [#icon("nbt") *r.\<x>.\<z>.mca*: 区域文件。]),
+  (5, [#icon("nbt") *c.\<x>.\<z>.mcc*: 区域额外文件。]),
+  (4, [#icon("folder") *poi*: 该维度的兴趣点数据。]),
+  (5, [#icon("nbt") *r.\<x>.\<z>.mca*: 区域文件。]),
+  (5, [#icon("nbt") *c.\<x>.\<z>.mcc*: 区域额外文件。]),
+  (4, [#icon("folder") *region*: 该维度的基础数据。]),
+  (5, [#icon("nbt") *r.\<x>.\<z>.mca*: 区域文件。]),
+  (5, [#icon("nbt") *c.\<x>.\<z>.mcc*: 区域额外文件。]),
+  (1, [#icon("folder") *generated*: 世界生成数据。]),
+  (2, [#icon("folder") *\<命名空间>*: 任意命名空间下的世界生成数据。]),
+  (3, [#icon("folder") *structure*: 结构模板注册表。这部分数据的使用方法可见附录@sec:structure_block。]),
+  (4, [#icon("nbt") *\<名称>.nbt*: 一个结构模板，可以添加路径。]),
+  (1, [#icon("folder") *players*: 玩家所有数据。]),
+  (2, [#icon("folder") *advancements*: 存储玩家达成进度的文件夹。]),
+  (3, [#icon("json") *\<玩家UUID>.json*: 存储进入过该存档的此玩家达成的进度。]),
+  (2, [#icon("folder") *data*: 存储基本的玩家数据的文件夹。]),
+  (3, [#icon("json") *\<玩家UUID>.json*: 一个进入过该存档的玩家的数据。]),
+  (2, [#icon("folder") *stats*: 存储统计信息的文件夹。]),
+  (3, [#icon("json") *\<玩家UUID>.json*: 一个进入过该存档的玩家的统计信息数据，这些数据会显示在菜单的统计信息页面。]),
+  (1, [#icon("folder") *resourcepacks*: 世界指定资源包。]),
+  (2, [#icon("zip") *resources.zip*: 世界指定资源包，该资源包的内容仅在该存档可用。必须为 #icon("zip") `.zip` 格式的压缩文件，名称必须为 `resources.zip`。]),
+  (1, [#icon("png") *icon.png*: 存档的图标。]),
+  (1, [#icon("nbt") *level.dat[\_old]*: 世界全局信息数据文件。只有存在该文件时，#icon("folder") `<存档名称>` 才会被识别为一个有效的存档。]),
+  (1, [#icon("file") *session.lock*: 存档会话锁文件，存储最后一次访问此存档的时间戳和访问权限。])
+)
+== 存档数据
+=== 命令存储<subsec:command_storage>
+=== Boss栏<subsec:bossbar>
+=== 随机序列<subsec:random_sequence>
+=== 秒表<subsec:stopwatch>
+=== 天气<subsec:weather>
+== 维度与区域文件<subsec:dimension_and_region>
 == 方块实体<sec:block_entity>
 == 技术性实体<sec:technical_entity>
 == 数据组件<sec:data_components>
 = 记分板
 == 队伍与标签<sec:team_and_tag>
+== 记分板的基本概念
+=== 记分板NBT格式<subsec:scoreboard_data>
 == 记分板命令 触发器
 === 触发器<subsec:trigger>
 = 命令/execute<chap:command_execute>
 #appendix
 = 命令方块与红石电路
+== 结构方块<sec:structure_block>
 = 数据库
 == 数据包和资源包版本号<sec:pack_format>
 #split-table(
@@ -6891,7 +7096,9 @@ Minecraft一共有以下几种#proper-noun(display: "聊天类型（Chat type）
     [26.1-Snapshot-4], [97.1], [78.1],
     [26.1-Snapshot-5], [98.0], [79.0],
     [26.1-Snapshot-6], [99.0], [80.0],
-    [26.1-Snapshot-7], [99.1], [81.0]
+    [26.1-Snapshot-7], [99.1], [81.0],
+    [26.1-Snapshot-8], [99.2], [81.1],
+    [26.1-Snapshot-9], [99.2], [81.1]
   )
 )<tab:pack_format>
 == 方块状态<sec:block_state>

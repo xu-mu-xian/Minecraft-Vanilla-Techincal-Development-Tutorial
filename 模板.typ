@@ -762,7 +762,13 @@
 
 // 文本组件
 #let text_component(background: rgb("#ffcece"), baseline: 25%, content, font: ("Minecraft", "Unifont"), shadow-offset: (0.1em, 0.1em), shadow-color: rgb("3F3F3F")) = [
+  #show regex("[\u4E00-\u9FFF]"): it => text(
+    font: "Unifont",
+    size: 0.8em,
+    it
+  )
   #text(
+    fill: white,
     font: font,
     box(
       baseline: baseline,
@@ -779,10 +785,14 @@
             dy: shadow-offset.at(1),
             {
               show text: set text(fill: rgb(shadow-color))
+              set par(leading: 0.5em, spacing: 0.5em)
               content
             },
           ),
-          text[#content],
+          text[
+            #set par(leading: 0.5em, spacing: 0.5em)
+            #content
+          ],
         ),
       )
     )
