@@ -943,6 +943,15 @@
     },
     number-align: bottom
   )
+  // caption
+  show figure.caption: it => {
+    if repr(it.body) == "[]" {
+      it.supplement
+      it.counter.display(it.numbering)
+    } else {
+      it
+    }
+  }
   // 图片
   show figure: set block(above: 1.5em, breakable: true)
   set figure(numbering: n => {
@@ -955,7 +964,7 @@
   // 表格
   show table: it => xubiao.update(false) + it
   show figure.where(kind: table): set figure(gap: 0.3em)
-  show figure.where(kind: table): set figure.caption(position: top, separator: "  ")
+  show figure.where(kind: table): set figure.caption(position: top)
   show figure.caption: set text(font: ("TeX Gyre Termes", "Source Han Sans SC",), size: 0.85em, weight: "bold")
   show figure.caption: set block(sticky: true)
   show table.cell: it => {

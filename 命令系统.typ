@@ -301,9 +301,10 @@ Minecraft有许多不同的游戏资源，如草方块、石头、箭、铁锹�
   [声音], [可写，位于 `sounds`],
   [纹理], [可写，位于 `textures`],
   table.cell(colspan: 2)[属性修饰符], [可写，存储于所属物品的堆叠组件内],
-  table.cell(colspan: 2)[Boss栏], [可写，存储于存档文件夹中的 `level.dat`],
-  table.cell(colspan: 2)[命令存储], [可写，存储于存档文件夹中的 `data\command_storage_minecraft.dat`],
-  table.cell(colspan: 2)[随机序列], [可写，存储于存档文件夹中各自维度的 `data\random_sequences.dat` 文件内],
+  table.cell(colspan: 2)[命令存储], [可写，存储于存档文件夹中的 #icon("nbt") `data > <命名空间> > command_storage.dat`],
+  table.cell(colspan: 2)[Boss栏], [可写，存储于存档文件夹中的 #icon("nbt") `data > minecraft > custom_boss_events.dat`],
+  table.cell(colspan: 2)[随机序列], [可写，存储于存档文件夹中各自维度的 #icon("nbt") `data > minecraft > random_sequences.dat` 文件内],
+  table.cell(colspan: 2)[秒表], [可写，存储于存档文件夹中各自维度的 #icon("nbt") `data > minecraft > stopwatches.dat` 文件内]
 )
 === 扁平化 \*
 Minecraft的历次版本更新都会对某一些特定的系统进行优化和更改，比如：战斗更新对PVP机制进行了颠覆性的更改，使得1.9之前和之后的PVP是两个完全不同的系统。命令系统也经历过类似的大幅度更改，这便是随着水域更新进行的#proper-noun(display:"扁平化（The flattening）","bian3 ping2 hua4")。
@@ -421,7 +422,7 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 一般而言，命名空间和路径推荐的写法是#proper-noun(display: "蛇形命名法（Snake case）", "she2 xing2 ming4 ming2 fa3")，即当名称中含有多个单字时，以下划线 `_` 取代每一个空格的写法。蛇形命名法的书写仍需遵守合法字符的规定，不能出现大写字母。例如，下面的命名空间ID在命名空间和路径上均使用了蛇形命名法：
 #codebox("ancient_city:get_out")
 === 数据包标签 <subsec:tag_in_datapack>
-一个单独的命名空间ID只能映射至单独的一个对象，如果要同时映射多个对象，一般的做法是将对象分类，通过映射同一种类别的对象从而映射多个对象。这种将游戏资源分类的手段被称为#proper-noun(display: "数据包标签（Tags in data packs）", "shu4 ju4 bao1 biao1 qian1")，简称#proper-noun(display: "标签（Tag）", "biao1 qian1")由于命令系统存在多个名为“标签”的概念，笔者不建议使用这样的简称以防止与其他概念的混淆。。原版游戏有一些既有数据包标签，数据包标签的名称大多拥有实际的意义：例如，数据包标签 `#fire` 映射至两种方块，即 `fire`（火焰）和 `soul_fire`（灵魂火焰）；`#mineable/axe` 映射至所有能被斧采集的方块。
+一个单独的命名空间ID只能映射至单独的一个对象，如果要同时映射多个对象，一般的做法是将对象分类，通过映射同一种类别的对象从而映射多个对象。这种将游戏资源分类的手段被称为#proper-noun(display: "数据包标签（Tags in data packs）", "shu4 ju4 bao1 biao1 qian1")，简称#proper-noun(display: "标签（Tag）", "biao1 qian1")。由于命令系统存在多个名为“标签”的概念，笔者不建议使用这样的简称以防止与其他概念的混淆。。原版游戏有一些既有数据包标签，数据包标签的名称大多拥有实际的意义：例如，数据包标签 `#fire` 映射至两种方块，即 `fire`（火焰）和 `soul_fire`（灵魂火焰）；`#mineable/axe` 映射至所有能被斧采集的方块。
 
 数据包标签的表示方式类似于命名空间ID，但需要在前面加上井号 `#`，写法为
 #codebox("#<namespace>:<id>")
@@ -653,7 +654,7 @@ Minecraft的命令有很多，可用 `/help` 命令查询任何可用命令的�
 ===== #proper-noun(display: "执行朝向（Execution rotation）", "zhi2 xing2 chao2 xiang4")
 这个参数是命令执行时面向的方向，包含偏航角和俯仰角两个参数。
 ===== #proper-noun(display: "执行锚点（Execution anchor）", "zhi2 xing2 mao2 dian3")
-#proper-noun(display: "实体锚点（Entity Anchor）", "shi2 ti3 mao2 dian3")是实体身上用于定位的*点*，有两个可用的实体锚点：脚部和眼部。故名思义，脚部位于实体碰撞箱的底部中心点，这个位置实际上就是实体本身的位置，也是*默认使用的实体锚点*。眼部位于实体眼睛高度处碰撞箱的中心点。眼部和脚部在水平方向上的位置是一样的，在$y$轴上，这个实体眼睛部位的高度就是眼部和脚部高度的差值。
+#proper-noun(display: "实体锚点（Entity anchor）", "shi2 ti3 mao2 dian3")是实体身上用于定位的*点*，有两个可用的实体锚点：脚部和眼部。故名思义，脚部位于实体碰撞箱的底部中心点，这个位置实际上就是实体本身的位置，也是*默认使用的实体锚点*。眼部位于实体眼睛高度处碰撞箱的中心点。眼部和脚部在水平方向上的位置是一样的，在$y$轴上，这个实体眼睛部位的高度就是眼部和脚部高度的差值。
 #figure(
   caption: "玩家的实体锚点",
   image("图片/玩家的实体锚点.png", width: 9em)
@@ -909,7 +910,7 @@ Minecraft还使用其他一些文件格式，如 `.jfr` 文件、`.log` 文件�
 === .minecraft文件夹 \*<subsec:.minecraft>
 `.minecraft` 文件夹，macOS上为 #icon("folder") `minecraft`，是存储Java版所有游戏数据的文件夹。
 
-对于Windows系统，这个文件夹默认位于 #icon("folder") `C: Users\Admin\AppData\Roaming\.minecraft`，其中 #icon("folder") `AppData` 文件夹一般是隐藏的，可以在文件资源管理器 `查看` 工具栏，在 `显示/隐藏` 一项勾选 `隐藏的项目` 以显示这个文件夹。
+对于Windows系统，这个文件夹默认位于 #icon("folder") `C: Users\Admin\AppData\Roaming\.minecraft`，其中 #icon("folder") `AppData` 文件夹一般是隐藏的，可以在文件资源管理器 `查看` 工具栏，在 `显示 > 隐藏` 一项勾选 `隐藏的项目` 以显示这个文件夹。
 
 对于Mac系统，这个文件夹默认位于 #icon("folder") `home\用户名\Library\Application Support\minecraft`。对于Linux系统，这个文件夹默认位于 #icon("folder") `home\用户名\.minecraft`，其中以 `.` 开头的文件夹默认是隐藏的，需要使用 `Ctrl` + `H` 切换是否可见。
 
@@ -967,7 +968,7 @@ Minecraft还使用其他一些文件格式，如 `.jfr` 文件、`.log` 文件�
   \"hash\": \"4674523c91196e0898c24a06531f94154111f2a3\",
   \"size\": 459788
 }")
-    这时获取到哈希值 `4674523c91196e0898c24a06531f94154111f2a3`，其前两位是 `46`。然后打开文件夹 #icon("folder") `objects\46`，在其中找到名为 #icon("file") `4674523c91196e0898c24a06531f94154111f2a3` 的文件，此即为简体中文的语言文件。
+    这时获取到哈希值 `4674523c91196e0898c24a06531f94154111f2a3`，其前两位是 `46`。然后打开文件夹 #icon("folder") `objects > 46`，在其中找到名为 #icon("file") `4674523c91196e0898c24a06531f94154111f2a3` 的文件，此即为简体中文的语言文件。
   ])], false, true),
   (1, [#icon("folder") *backups*: 存放备份存档的文件夹。]),
   (2, [#icon("zip") *\<日期>\_\<时间>\_\<存档名称>.zip*: 一个备份存档。]),
@@ -1054,7 +1055,7 @@ Description: Ticking entity"
   (1, [#icon("folder") *versions*: 存储游戏不同版本游戏资源的文件夹。]),
   (2, [#icon("folder") *\<版本号>*: 一个游戏版本，可以是正式版，也可以是快照。]),
   (3, [#icon("jar") *\<版本号>.jar*: 物理客户端文件，是存放该版本号游戏源代码的地方。可以用压缩软件打开这个文件。]),
-  (4, [#icon("folder") *assets*: 存放该版本号原版资源包内容的文件夹，它决定了客户端游戏内容的外观。在制作资源包时可以参考这个文件夹的结构。不含在 #icon("folder") `.minecraft\assets` 中存放的语言和声音文件。]),
+  (4, [#icon("folder") *assets*: 存放该版本号原版资源包内容的文件夹，它决定了客户端游戏内容的外观。在制作资源包时可以参考这个文件夹的结构。不含在 #icon("folder") `.minecraft > assets` 中存放的语言和声音文件。]),
   (4, [#icon("folder") *com*]),
   (4, [#icon("folder") *data*: 存放该版本号原版数据包内容的文件夹，它决定了可写注册表的内容，如进度、战利品表、配方、结构等。在制作数据包时可以参考这个文件夹的结构。]),
   (4, [#h(-2em)#icon("file") *flightrecorder-config.jfc*: Java Flight Recorder配置文件，可用于JFR分析。JFR分析，即使用Java Flight Recorder分析数据和某些自定义事件。自定义事件包括：
@@ -1182,11 +1183,11 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   ],
   align: right
 )
-对于非数据包标签、函数、进度、战利品表、物品修饰器、战利品表谓词或配方的注册项，进入存档会出现#proper-noun(display: "实验性设置（Experimental settings）", "shi2 yan4 xing4 she4 zhi4")的警告，此时可点击创建备份并加载或我知道我在做什么！。但若这些注册项出现各种各样的错误（不一定是语法错误），则进入存档会出现#proper-noun(display: "安全模式（Safe mode）", "an1 quan2 mo2 shi4")错误，可在官方启动器设置中打开“当《Minecraft：Java版》启动时输出日志”一项以随时获得错误日志，或在 `.minecraft\debug` 文件夹中获取 `.txt` 输出日志以检查存在的错误。
+对于非数据包标签、函数、进度、战利品表、物品修饰器、战利品表谓词或配方的注册项，进入存档会出现#proper-noun(display: "实验性设置（Experimental settings）", "shi2 yan4 xing4 she4 zhi4")的警告，此时可点击创建备份并加载或我知道我在做什么！。但若这些注册项出现各种各样的错误（不一定是语法错误），则进入存档会出现#proper-noun(display: "安全模式（Safe mode）", "an1 quan2 mo2 shi4")错误，可在官方启动器设置中打开“当《Minecraft：Java版》启动时输出日志”一项以随时获得错误日志，或在 `.minecraft > debug` 文件夹中获取 `.txt` 输出日志以检查存在的错误。
 
 数据包的编写是一个极为繁琐的过程，需要不断地调试、纠错，有时甚至要对其底层逻辑进行重构。在编写数据包之前，读者应提前做好规划，对其可行性进行初步的研究，还要考虑数据包运行过程中的流畅性、玩家游玩过程中的平衡性。编写过程合理使用文件层级，对文件适当分类，以免内容混乱，降低文件可读性。
 
-原版数据包位于 #icon("folder") `.minecraft\versions\<版本号>\<版本号>.jar\data`，是编写自定义数据包的重要依据，读者可参考之。
+原版数据包位于 #icon("folder") `.minecraft > versions > <版本号> > <版本号>.jar > data`，是编写自定义数据包的重要依据，读者可参考之。
 === 数据包的基本结构<subsec:datapack_folder>
 一个数据包拥有以下的基本结构：
 #tree(
@@ -1323,7 +1324,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   ]
 )
 ==== 子数据包
-数据包的基础功能有限，为了搭建一套复杂的体系，有时候会使用#proper-noun(display: "前置数据包（Library Datapack）", "qian2 zhi4 shu4 ju4 bao1")。这就像是在写程序时引用“第三方库”，可以极大地降低开发难度，还避免了“重复造轮子”。这些前置数据包也是数据包，可用子数据包的形式将它们添加到开发的数据包中。
+数据包的基础功能有限，为了搭建一套复杂的体系，有时候会使用#proper-noun(display: "前置数据包（Library datapack）", "qian2 zhi4 shu4 ju4 bao1")。这就像是在写程序时引用“第三方库”，可以极大地降低开发难度，还避免了“重复造轮子”。这些前置数据包也是数据包，可用子数据包的形式将它们添加到开发的数据包中。
 
 子数据包会在当前主数据包的基础上添加内容，同时也会*覆盖*主数据包相同路径的文件。不过，仅在主数据包文件夹的子层级添加一个数据包并不会让主数据包识别到这个子数据包，应当在元数据的 #icon("json-object") `overlays` 中配置。配置方式见上文的数据格式。注意，由于 #icon("json-string") `directory` 字段允许包含的字符仅有小写字母、`0123456789`、`_` 和 `-`，那么有效子数据包的名称及相对路径也只能包含这些字符。
 #example(
@@ -1560,13 +1561,13 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
     [药水效果], [`potion`],
     [时间线], [`timeline`],
     [村民交易], [`villager_trade`],
-    [自定义世界生成（生物群系）], [`worldgen\biome`],
-    [自定义世界生成（超平坦预设）], [`worldgen\flat_level_generator_preset`],
-    [自定义世界生成（结构）], [`worldgen\structure`],
-    [自定义世界生成（世界预设）], [`worldgen\world_preset`]
+    [自定义世界生成（生物群系）], [`worldgen > biome`],
+    [自定义世界生成（超平坦预设）], [`worldgen > flat_level_generator_preset`],
+    [自定义世界生成（结构）], [`worldgen > structure`],
+    [自定义世界生成（世界预设）], [`worldgen > world_preset`]
   )
 )
-对于一个特定的数据包标签 #icon("json") `data\<命名空间>\tags\<注册名>\<标签>.json`，引用它的方式是带 `#` 号的命名空间ID，其中 `<注册表>` 层级不书写：
+对于一个特定的数据包标签 #icon("json") `data > <命名空间> > tags > <注册名> > <标签>.json`，引用它的方式是带 `#` 号的命名空间ID，其中 `<注册表>` 层级不书写：
 #codebox("#<命名空间>:<标签>")
 若命名空间不写，则默认使用 `minecraft` 内的数据包标签。`<注册表>` 层级下可以添加一定的路径。例如，#icon("json") `data\<命名空间>\tags\<注册名>\<路径>\<标签>.json` 的引用格式为
 #codebox("#<命名空间>:<路径>/<标签>")
@@ -1650,7 +1651,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 == 资源包<sec:resourcepack>
 为了搭配所制作的小游戏、冒险地图或原版模组，使得游戏的观感和体验感提高，作者通常会系统性地改变游戏的外观，例如方块的纹理、外形等。于是就需要使用资源包。 
 
-#proper-noun(display: "资源包（Resource pack）", "zi1 yuan2 bao1")允许玩家在不修改源代码的情况下自定义纹理、模型、声音、语言等外观性资源，对客户端有效。资源包本质上是一个文件夹或压缩文件，被储存在 #icon("folder") `.minecraft/resourcepacks` 中，同一个 #icon("folder") `resourcepacks` 文件夹内能存放多个资源包。选项资源包窗口“可用”一栏仅罗列 #icon("folder") `resourcepacks` 文件夹内的所有的有效资源包，可在这一栏选用资源包，只有位于“已选”一栏的资源包有效。点击打开包文件夹后可以手动添加资源包。
+#proper-noun(display: "资源包（Resource pack）", "zi1 yuan2 bao1")允许玩家在不修改源代码的情况下自定义纹理、模型、声音、语言等外观性资源，对客户端有效。资源包本质上是一个文件夹或压缩文件，被储存在 #icon("folder") `.minecraft > resourcepacks` 中，同一个 #icon("folder") `resourcepacks` 文件夹内能存放多个资源包。选项资源包窗口“可用”一栏仅罗列 #icon("folder") `resourcepacks` 文件夹内的所有的有效资源包，可在这一栏选用资源包，只有位于“已选”一栏的资源包有效。点击打开包文件夹后可以手动添加资源包。
 #figure(
   caption: "选择资源包窗口",
   image("图片/选择资源包窗口.png", width: 28em)
@@ -6257,7 +6258,7 @@ Minecraft具体的游戏数据，如某个位置的箱子里存储的物品、�
   (3, [#icon("nbt") *random_sequences.dat*: 随机序列数据文件，数据格式见小节@subsec:random_sequence。]),
   (3, [#icon("nbt") *scheduled_events.dat*: 计划事件数据文件。]),
   (3, [#icon("nbt") *scoreboard.dat*: 记分板数据文件，数据格式见小节@subsec:scoreboard_data。这个文件内还有队伍相关的数据。]),
-  (3, [#icon("nbt") *stopwatch.dat*: 秒表数据文件，数据格式见小节@subsec:stopwatch。]),
+  (3, [#icon("nbt") *stopwatches.dat*: 秒表数据文件，数据格式见小节@subsec:stopwatch。]),
   (3, [#icon("nbt") *wandering_trader.dat*: 流浪商人数据文件。]),
   (3, [#icon("nbt") *weather.dat*: 天气数据文件，数据格式见小节@subsec:weather。]),
   (3, [#icon("nbt") *world_clocks.dat*: 世界时钟数据文件。]),
@@ -6295,12 +6296,95 @@ Minecraft具体的游戏数据，如某个位置的箱子里存储的物品、�
   (3, [#icon("json") *\<玩家UUID>.json*: 一个进入过该存档的玩家的统计信息数据，这些数据会显示在菜单的统计信息页面。]),
   (1, [#icon("folder") *resourcepacks*: 世界指定资源包。]),
   (2, [#icon("zip") *resources.zip*: 世界指定资源包，该资源包的内容仅在该存档可用。必须为 #icon("zip") `.zip` 格式的压缩文件，名称必须为 `resources.zip`。]),
-  (1, [#icon("png") *icon.png*: 存档的图标。]),
+  (1, [#icon("png") *icon.png*: 存档的图标，必须是$64 times 64$像素大小的图片。]),
   (1, [#icon("nbt") *level.dat[\_old]*: 世界全局信息数据文件。只有存在该文件时，#icon("folder") `<存档名称>` 才会被识别为一个有效的存档。]),
   (1, [#icon("file") *session.lock*: 存档会话锁文件，存储最后一次访问此存档的时间戳和访问权限。])
 )
+#example(
+  [
+    将以下的图片设为存档的图标。
+    #figure(
+      caption: "",
+      image("图片/存档图标例题.png", width: 4em)
+    )
+  ],
+  [
+    将这张图片命名为 #icon("png") `icon.png`，并将其放于路径 `<存档名称> > icon.png`。注意，这张图必须保证是$64 times 64$像素大小。
+
+  ]
+)
+#example(
+  [将一个资源包 #icon("folder") `跃动晶界跑酷地图专用资源包` 做成存档 #icon("folder") `§b§l跃动晶界§c2  §aby Mu_xian§f§k` 的世界专用资源包。],
+  [
+    首先将文件夹形式的资源包转换成压缩文件，有效压缩文件形式的资源包根目录 #icon("zip") `跃动晶界跑酷地图专用资源包` 和 #icon("folder") `assets`、#icon("json") `pack.mcmeta` 之间不能有额外的文件夹。
+    
+    其次将压缩文件重命名为 #icon("zip") `resources.zip`，并将其放在 #icon("zip") `§b§l跃动晶界§c2  §aby Mu_xian§f§k > resourcepacks > resources.zip`。
+  ]
+)
+#icon("file") `level.dat` 和 #icon("file") `level.dat_old` 是存档的全局信息数据，#icon("file") `level.dat_old` 是数据的实时备份版本，当 #icon("file") `level.dat` 因为各种原因损坏时，这个文件能确保存档全局信息不丢失。在游戏数据发生变动时，两个文件的存在能确保安全更替。#icon("file") `level.dat` 和 #icon("file") `level.dat_old` 的数据结构一致，都是NBT格式的文件，格式如下所示：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-compound") *#underline[Data]*: 存档的全局信息数据。]),
+  (2, [#icon("nbt-bool") *allowCommands*: 该存档是否启用命令。若此字段不存在，则检查字段 #icon("nbt-int") `GameType`，若其值为 `1`（创造模式），则此字段为 `true`，否则为 `false`。]),
+  (2, [#icon("nbt-compound") *DataPacks*: 存档启用和禁用的数据包。]),
+  (3, [#icon("nbt-list") *Disabled*: 未启用的数据包列表。]),
+  (4, [#icon("nbt-string") 一个未启用的数据包名称。]),
+  (3, [#icon("nbt-list") *Enabled*: 已启用的数据包列表，加载顺序为从上到下。]),
+  (4, [#icon("nbt-string") 一个已启用的数据包名称。]),
+  (3, [#icon("nbt-int") *DataVersion*: 游戏数据版本。]),
+  (2, [#icon("nbt-compound") *difficulty_settings*: 游戏数据版本。]),
+  (3, [#icon("nbt-string") *difficulty*: 游戏难度，有效值 `peaceful`（和平）、`easy`（简单）、`normal`（普通）、`hard`（困难），默认值为 `normal`。]),
+  (3, [#icon("nbt-bool") *hardcore*: 是否启用极限模式，控制玩家在死亡之后是否自动转变为旁观模式，默认值为 `false`。]),
+  (3, [#icon("nbt-bool") *locked*: 是否在此存档内锁定游戏难度，默认值为 `false`。]),
+  (2, [#icon("nbt-list") *enabled_features*: 启用的功能开关。此字段不一定存在，若不存在，则仅启用 `vanilla` 功能。]),
+  (3, [#icon("nbt-string") 一项启用的功能开关，有效值有 `vanilla`（原版）、`trade_rebalance`（村民交易平衡性调整）、`redstone_experiments`（红石实验性内容）和 `minecart_improvements`（矿车改进）。]),
+  (2, [#icon("nbt-int") *GameType*: 该存档的默认游戏模式，有效值 `0`（生存模式）、`1`（创造模式）、`2`（冒险模式）、`3`（旁观模式），默认值为 `0`。]),
+  (2, [#icon("nbt-bool") *initialized*: 存档是否被正确初始化并生成奖励箱，默认值为 `true`。]),
+  (2, [#icon("nbt-long") *LastPlayed*: 上次保存游戏的时间戳，默认值为 `0`。]),
+  (2, [#icon("nbt-string") *LevelName*: 存档名称，允许使用格式化代码。]),
+  (2, [#icon("nbt-int_array") *singleplayer_uuid*: 单人游戏的所有者玩家UUID，只在单人游戏使用，专用服务器不使用这个字段。]),
+  (2, [#icon("nbt-list") *removed_features*: 用于崩溃中的 `Removed feature flags` 部分记录。]),
+  (3, [#icon("nbt-string") 一条记录。]),
+  (2, [#icon("nbt-list") *ServerBrands*: 打开过此存档的服务端的铭牌列表。]),
+  (3, [#icon("nbt-string") 一个服务端铭牌。]),
+  (2, [#icon("nbt-compound") *spawn*: 世界出生点数据。]),
+  (3, [#icon("nbt-string") *dimension*: 世界出生点的维度，默认值为 `minecraft:overworld`（主世界）。]),
+  (3, [#icon("nbt-int_array") *pos*: 世界出生点的坐标，依次为$x$、$y$、$z$坐标，默认值为 `[I;0,0,0]`。]),
+  (3, [#icon("nbt-float") *pitch*: 在世界出生点出生时玩家的俯仰角，默认值为 `0.0f`。]),
+  (3, [#icon("nbt-float") *yaw*: 在世界出生点出生时玩家的偏航角，默认值为 `0.0f`。]),
+  (2, [#icon("nbt-long") *Time*: 存档的游戏时间，单位为游戏刻，默认值为 `0`。]),
+  (2, [#icon("nbt-int") *#underline[version]*: 存档区块文件的版本，对于Anvil文件格式（当前）为 `19133`，对于MCRegion格式为 `19132`。]),
+  (2, [#icon("nbt-compound") *#underline[Version]*: 该存档的详细版本信息。]),
+  (3, [#icon("nbt-int") *Id*: 游戏数据版本。]),
+  (3, [#icon("nbt-string") *Name*: 游戏版本名称。]),
+  (3, [#icon("nbt-string") *Series*: 开发系列，正式版和快照为 `main`。]),
+  (3, [#icon("nbt-bool") *Snapshot*: 此版本是否为快照。]),
+  (2, [#icon("nbt-bool") *WasModded*: 存档是否被修改过的客户端或服务端加载并保存，默认值为 `false`。])
+)
 == 存档数据
+自26.1-Snapshot-6起，存档数据，即位于存档文件夹 #icon("folder") `data` 中的数据都按照带命名空间父目录的格式存储。但是，大部分数据都只存储在 `minecraft` 命名空间，无论这些资源本身使用的命名空间。
+#figure(
+  caption: [Boss栏 `foo:test` 的命名空间为 `foo`，但其数据存储于 `minecraft` 命名空间],
+  image("图片/Boss栏footest的命名空间为foo，但其数据存储于minecraft命名空间.png", width: 28em)
+)
 === 命令存储<subsec:command_storage>
+对于大部分的游戏数据，玩家可以修改这些字段的值，但不能自由添加或删去这些字段，而*#proper-noun(display: "命令存储（Command storage）", "ming4 ling4 cun2 chu3")允许玩家在文件中写入、修改任意的数据，便于存储、处理适用于全局游戏的自定义数据。它与方块实体、实体构成三种能使用命令访问的数据。*使用命令存储数据可以摆脱方块实体和实体的限制，可以制定任意的标签、数据类型。每一个命令存储由不同的命名空间ID区分。
+
+命令存储文件位于 #icon("nbt") `<存档名称> > data > <命名空间> > command_storage.dat`，这里的 `.dat` 文件是NBT格式的文件。`<命名空间>` 即为命令存储的命名空间（不包含ID），默认为 `minecraft`，允许存在多个不同命名空间的 `.dat` 文件。一个 #icon("nbt") `command_storage.dat` 文件的数据树如下所示：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-compound") *data*: 存储该命名空间下不同ID的命令存储数据。]),
+  (2, [#icon("nbt-compound") *contents*: 允许存在多个不同的标签 #icon("nbt-compound") `<ID>` 以支持同一个命名空间下的不同ID。]),
+  (3, [#icon("nbt-compound") *\<ID>*: 标签名为一个命令存储的ID。命令 `/data` 可以读取、编辑或写入一个命令存储，这些数据都会被存储到标签 #icon("nbt-compound") `<ID>` 内。如果一个命名空间ID的命令存储地址不存在，则会自动创建该命名空间ID。因此一个命令存储文件下可以包含多个相同命名空间而ID不同的具体的命令存储。此时一般称这个标签为拥有该命名空间ID的命令存储的根标签。]),
+  (4, [任意NBT数据]),
+  (1, [#icon("nbt-int") *DataVersion*: 游戏数据版本。])
+)
+#example(
+  [],
+  [
+    
+  ]
+)
 === Boss栏<subsec:bossbar>
 === 随机序列<subsec:random_sequence>
 === 秒表<subsec:stopwatch>
