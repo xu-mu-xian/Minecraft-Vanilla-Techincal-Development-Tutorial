@@ -6380,12 +6380,129 @@ Minecraft具体的游戏数据，如某个位置的箱子里存储的物品、�
   (1, [#icon("nbt-int") *DataVersion*: 游戏数据版本。])
 )
 #example(
-  [],
   [
-    
+    一个命令存储文件 #icon("nbt") `data > tutorial > command_storage.dat` 的数据结构如下所示：
+    #tree(
+      (0, [#icon("nbt-compound") 根标签]),
+      (1, [#icon("nbt-compound") *data*]),
+      (2, [#icon("nbt-compound") *contents*]),
+      (3, [#icon("nbt-compound") *a*]),
+      (4, [#icon("nbt-byte") *yes*: `1`]),
+      (1, [#icon("nbt-int") *DataVersion*: `4777`])
+    )
+    回答下列问题：
+    + 该命令存储的命名空间ID为#blank。
+    + 假设该命令存储的初始值为空，若要使该命令存储的所存储的数据如上所示，写出可行的命令。
+  ],
+  [
+    + 此命令存储的命名空间为 `tutorial`，而ID为标签 #icon("nbt-compound") `contents` 子标签的标签名。所以该命令存储的命名空间ID为 `tutorial:a`。
+    + 写入一个命令存储需要命令 `/data merge` 或 `/data modify`，注意命令存储 `tutorial:a` 的数据从标签 #icon("nbt-compound") `a` 开始。使用 `/data merge` 的命令可以为
+      #codebox("data merge storage minecraft:a {yes:1b}")
   ]
 )
+#example(
+  [
+    在一张后室主题的冒险地图中，命令存储文件 #icon("nbt") `data > the_backrooms > command_storage.dat` 的数据如下所示：
+    #tree(
+      (0, [#icon("nbt-compound") 根标签]),
+      (1, [#icon("nbt-int") *DataVersion*: `4777`]),
+      (1, [#icon("nbt-compound") *data*]),
+      (2, [#icon("nbt-compound") *contents*]),
+      (3, [#icon("nbt-compound") *main*]),
+      (4, [#icon("nbt-compound") *game_data*]),
+      (5, [#icon("nbt-list") *spawnpoint*]),
+      (6, [#icon("nbt-compound")]),
+      (7, [#icon("nbt-int_array") *Pos*: `[I;0,5,0]`]),
+      (7, [#icon("nbt-string") *level*: `level_0`]),
+      (5, [#icon("nbt-list") *player_data*]),
+      (6, [#icon("nbt-compound")]),
+      (7, [#icon("nbt-int") *san*: `10812`]),
+      (7, [#icon("nbt-int") *serial_number*: `1219`]),
+      (7, [#icon("nbt-string") *current_level*: `level_0`]),
+      (6, [#icon("nbt-compound")]),
+      (7, [#icon("nbt-int") *san*: `976`]),
+      (7, [#icon("nbt-int") *serial_number*: `1220`]),
+      (7, [#icon("nbt-string") *current_level*: `level_0`]),
+    )
+    其中复合标签的列表 #icon("nbt-list") `spawnpoint` 存储了后室各层级的玩家出生点，子标签 #icon("nbt-int_array") `Pos` 按$x$、$y$、$z$坐标的顺序存储了出生点坐标，#icon("nbt-string") `level` 是该出生点坐标所处的层级。#icon("nbt-list") `player_data` 存储了与玩家有关的数据，其中的每个复合标签均为一个具体玩家的数据：#icon("nbt-list") `san` 是玩家当前的SAN值，#icon("nbt-list") `serial_number` 是该玩家的编号，#icon("nbt-string") `current_level` 是该玩家当前所处的层级。按要求对其中的命令存储内容进行操作：
+    + 获取编号为1219的玩家的SAN值；
+    + 将层级Level 0（命令存储格式中为 `level_0`）的玩家出生点$y$坐标改为 `10`。
+  ],
+  [
+    + 显然获取值的操作需要使用命令 `/data get`。编号为1219的玩家数据可以从数据树上找到：<enu:backrooms_data>
+      #tree(
+        (0, [#icon("nbt-compound")]),
+        (1, [#icon("nbt-int") *san*: `10812`]),
+        (1, [#icon("nbt-int") *serial_number*: `1219`]),
+        (1, [#icon("nbt-string") *current_level*: `level_0`]),
+      )
+      这个复合标签是列表 #icon("nbt-list") `player_data` 的第一个元素，该玩家的SAN值也可以从这个复合标签中获取。虽然使用节点 `player_data[0]` 可以直接定位到这个元素，但是这样的做法不值得提倡，因为在数据的处理过程中无法保证这个复合标签一定位于列表的第1个。因此不妨使用当前列表或数组中的复合标签元素，节点写成 `player_data[{serial_number:1219}]`，这样无论该复合标签在列表的什么位置，都可以精确地定位到这个复合标签。
+      
+      `/data get` 中的完整NBT路径为 `game_data.player_data[{serial_number:1219}].san`，而命令存储的命名空间ID为 `backrooms:main`，因此完整的命令为
+      #codebox("data get storage backrooms:main game_data.player_data[{serial_number:1219}].san")
+    + 该小题适用命令 `/data modify`。由题意，Level 0的玩家出生点数据存储在如下的数据树中：
+      #tree(
+        (0, [#icon("nbt-compound")]),
+        (1, [#icon("nbt-int_array") *Pos*: `[I;0,5,0]`]),
+        (1, [#icon("nbt-string") *level*: `level_0`]),
+      )
+      同第@enu:backrooms_data 小题之理，定位这个复合标签时也应该使用当前列表或数组中的复合标签元素。定位到 #icon("nbt-int_array") `Pos` 中的$y$坐标时，由于题目已经规定了三个坐标值在数组中的顺序，因此可直接使用节点 `Pos[1]`。完整的命令为：
+      #codebox("data modify storage backrooms:main game_data.spawnpoint[{level:\"level_0\"}].Pos[1] set value 10")
+  ]
+)
+命令存储一般用于存储全局性的数据，因为它自身不具备将数据绑定至各个玩家的能力，因此在实际编写时必须手动维护一套将数据映射至各个玩家的算法。显然记分板更适用于存储玩家各自的数据。
 === Boss栏<subsec:bossbar>
+#proper-noun(display: "Boss栏（Boss bar）", "Boss lan2")是显示在HUD#footnote[即平视显示器（Heads-up display），是叠加在游戏视野上的画面。]顶端中央的一个可被填充的条式图形，通常用于显示末影龙和凋零的血量。除了用于显示Boss的血量，Boss栏在多人游戏和冒险地图中也被用于显示倒计时、游戏进展等。如果设计得当，可以用Boss栏制造出很好的效果。
+
+一个Boss栏拥有一个*最大值*和一个*当前值*，这两个值决定了Boss栏被填充的比例。在GUI和HUD大小不变的情况下，一个Boss栏的长度是不变的，只有Boss栏中填充的内容发生变化，填充的比例为当前值与最大值的比。例如，最大值为20、当前值为10的Boss栏填充占比为50%。当前值不必比最大值小，若当前值大于或等于最大值，则Boss栏中的填充固定为100%。
+==== 命令/bossbar
+手动创建和修改BOSS栏需要通过命令 `/bossbar` 完成，它需要的权限等级为2，下面是命令 `/bossbar` 的所有用法：#index(index: "command", "bossbar")
+===== 添加一个Boss栏，语法为
+#codebox("bossbar add <id> <name>")
+#param-desc(
+  [`<id>`（命名空间ID `minecraft:resource_location`）], [被添加Boss栏的命名空间ID，可自由指定。若不填写命名空间，则默认命名空间为 `minecraft`。Boss栏的ID在系统内部使用，作为与其他Boss栏区分的凭证。],
+  [`<name>`（文本组件 `minecraft:component`）], [Boss栏的显示名称，必须为文本组件。显示名称会显示在HUD的Boss栏上方。]
+)
+===== 查询一个Boss栏的信息，语法为
+#codebox("bossbar get <id> (max|players|value|visible)")
+#param-desc(
+  [`(max|players|value|visible)` ], [查询的信息，有效值如下。\ `max`：Boss栏的最大值。\ `players`：这个Boss栏对哪些玩家显示。\ `value`：Boss栏的当前值。\ `visible`：Boss栏是否可见。]
+)
+===== 列出所有的Boss栏，语法为
+#codebox("bossbar list")
+===== 移除一个Boss栏，语法为
+#codebox("bossbar remove <id>")
+===== 编辑Boss栏
+====== 编辑Boss栏填充的颜色，语法为
+#codebox("bossbar set <id> color (blue|green|pink|purple|red|white|yellow)")
+#param-desc(
+  [`(blue|green|pink|purple|red|white|yellow)` ], [填充的颜色。]
+)
+#figure(
+  caption: "Boss栏的不同颜色",
+  image("图片/Boss栏的不同颜色.png", width: 20em)
+)
+====== 编辑Boss栏的最大值，语法为
+#codebox("bossbar set <id> max <max>")
+#param-desc(
+  [`<max>`（整型 `brigadier:integer`）], [设置的最大值，默认值为 `100`。]
+)
+====== 编辑Boss栏的显示名字，语法为
+#codebox("bossbar set <id> name <name>")
+====== 编辑Boss栏可被哪些玩家看见，语法为
+#codebox("bossbar set <id> players [<targets>]")
+#param-desc(
+  [`[<targets>]`（实体 `minecraft:entity`）], [可选，指定Boss栏可以被哪些玩家看到，必须指定玩家。若不定义，则对所有玩家显示此Boss栏。]
+)
+====== 编辑Boss栏显示的样式，语法为
+#codebox("bossbar set <id> style (notched_6|notched_10|notched_12|notched_20|progress)")
+#param-desc(
+  [`(notched_6|notched_10|notched_12|notched_20|progress)` ], [显示样式，有效值如下。\ `notched_6`：分为6段。\ `notched_10`：分为10段。\ `notched_12`：分为12段。\ `notched_20`：分为20段。\ `progress`：不做任何分段，为默认样式。]
+)
+#figure(
+  caption: "Boss栏的不同样式",
+  image("图片/Boss栏的不同样式.png", width: 20em)
+)
 === 随机序列<subsec:random_sequence>
 === 秒表<subsec:stopwatch>
 === 天气<subsec:weather>
@@ -6402,6 +6519,86 @@ Minecraft具体的游戏数据，如某个位置的箱子里存储的物品、�
 = 命令/execute<chap:command_execute>
 #appendix
 = 命令方块与红石电路
+命令系统程序化运行的载体一般有两种：一是传统的命令方块电路；二是数据包。命令方块电路是具象化、实体化的命令系统构建模式，在命令系统未完善的早期版本，冒险地图作者就已经能够通过纯粹的红石电路搭建整个地图的机关。在命令方块随骇人更新加入游戏后，命令就能借助红石电路程序化执行了。在往后很长一段时间，命令通常被视为红石电路的一部分，社区中的命令玩家通常称呼自己为“CBer”，意味围绕命令方块玩游戏的玩家。而随着数据包的加入和完善，命令系统最终脱离了红石电路，拥有了更程序化的运行载体。
+
+*当今主流的原版技术性开发应使用数据包作为开发工具。命令方块因其性能不佳、不便于数据备份和维护基本被淘汰。*不过，由于命令方块仍然在某些地方有独特用处，于是本教程依旧保留了命令方块电路的内容。#cite(<command_block_not_recommended>, form: none)
+
+广义的命令方块电路除了包含核心的几种命令方块元件，还包括结构方块这种较为实用的管理员用品，因此本章还囊括了结构方块的教程。
+#pagebreak()
+== 红石电路基础
+命令方块是一种红石机械元件，放在红石电路中对红石信号做出一定的响应，因此在介绍命令方块电路前，有必要先了解一些红石电路的基础知识。*#proper-noun(display: "红石电路（Redstone circuits）", "hong2 shi2 dian4 lu4")是为玩家建造的，可以用于控制或激活其他机械的结构。*
+=== 红石信号
+#proper-noun(display: "红石信号（Redstone signal）", "hong2 shi2 xin4 hao4")是红石电路中由电源元件产生的，能够由传输元件进行传输并使机械元件作出一定响应的信号。红石信号有两种状态：*有信号*和*无信号*，或简单地表示为*1*和*0*。信号从无到有的瞬间被称为#proper-noun(display: "上升沿（Rising Edge）", "shang4 sheng1 yan2")，从有到无的瞬间被称为#proper-noun(display: "下降沿（Falling Edge）", "xia4 jiang4 yan2")。
+
+当一个红石信号经过暂时性的改变而最终回到了起始状态，这种暂时性的改变被称为#proper-noun(display: "脉冲（Pulse）", "mai4 chong1")。若红石信号从无到有，再从有到无，即形成了“0-1-0”过程，则称这个脉冲为*正脉冲（On-pulse，或简称为脉冲）*#index(display: "正脉冲（On-pulse）", "zheng4 mai4 chong1")；若红石信号从有到无，再从无到有，即形成了“1-0-1”过程，则称这个脉冲为#proper-noun(display: "负脉冲（Off-pulse）", "fu4 mai4 chong1")。脉冲的长度一般由红石刻度量，且无论持续时间的长短，满足上述定义的过程均可以被称为脉冲。不同红石元件对脉冲长度的响应要求不同，例如，红石灯无法因短于2 rt的负脉冲而熄灭，红石比较器无法传导所有短于1 rt和大部分等于1 rt的脉冲。
+
+红石信号具有#proper-noun(display: "信号强度（Signal strength）", "xin4 hao4 qiang2 du4")，通常是介于0和15之间（含）的整数。当处于无信号状态时，强度一般为0；处于有信号状态时，强度一般为1  \~ 15。0到15是大部分红石元件可接受的强度范围，但红石比较器却能够处理大于15或小于0的信号强度。
+
+事实上，任何大于0的信号强度不会引起脉冲长度的变化，也不会对机械元件的运作造成影响，更不会影响充能和激活。
+=== 充能与激活理论
+为了进一步研究红石信号对电路中各方块的作用机制，社区玩家提出了*充能与激活理论*。此理论作出如下定义：
++ 方块在接收到红石信号后，若方块本身作出一定响应，如门打开、红石灯亮、命令方块执行命令等，则称这个方块被*激活*了。
++ 方块在接收到红石信号后，若方块能向所有毗邻方块输出红石信号，则称这个方块被*充能*了，这个方块也被称为#proper-noun(display: "红石导体（Redstone conductor）", "hong2 shi2 dao3 ti3")，或*充能方块*。并非所有方块都能作为红石导体，仅有部分固体方块能作为红石导体使用，如泥土、石头。#footnote[注意方块没有透明度的属性，不能以方块的透明度去判断一个方块是否能作为红石导体。]一个红石导体被多少强度的信号充能，就称该方块有多少*充能等级*。充能又分为强充能和弱充能：
+  + 若该红石导体能够激活毗邻的红石粉和其他红石元件，则称这种充能行为为#proper-noun(display: "强充能（Strongly powered）", "qiang2 chong1 neng2")。
+  + 若该红石导体只能够激活毗邻其他红石元件，而不能激活红石粉，则称这种充能行为为#proper-noun(display: "弱充能（Weekly powered）", "ruo4 chong1 neng2")。
+*一次充能行为是否为强弱充能与充能等级无关。*
+
+注意，上述说法仅作为理论存在，游戏中并不直接存在这种机制，能作为红石导体的方块均没有相关的方块状态。充能行为实际上是游戏中的NC更新，与之相关的理论贴合游戏机制，便于理解和分析，至今仍被社区接纳。
+=== 红石元件
+#proper-noun(display: "红石元件（Redstone components）", "hong2 shi2 yuan2 jian4")，即用于构成红石电路的方块。通常分为以下几类：
+==== 电源元件
+电源元件是一类可以产生红石信号的元件。
+===== 红石块
+#figure(
+  caption: [红石块的信号输出#footnote[本教程使用的红石图例：#box(image("图标/红石图例/强充能.png"),baseline:30%,width:3em) 表示能够被强充能的位置，#box(image("图标/红石图例/弱充能.png"),baseline:30%,width:3em) 表示能够被弱充能的位置，#box(image("图标/红石图例/激活.png"),baseline:30%,width:3em) 表示只能被激活的位置，#box(image("图标/红石图例/无响应.png"),baseline:30%,width:3em) 表示不会做出任何响应的位置。]],
+  image("图片/红石块的信号输出.png", width: 9em)
+)
+作为永久性电源使用，持续输出强度为15的信号。红石块共有六个毗邻位置可用于输出信号，*可以激活所有毗邻元件，但无法充能毗邻的红石导体。*
+===== 按钮
+#figure(
+  caption: "按钮：木质按钮（左）与石质按钮（右）",
+  [#box(image("图片/木质按钮.png"))#h(4em)#box(image("图片/石质按钮.png"))]
+)
+可附着于其他方块表面碰撞箱的完整面，用于手动输出脉冲信号。当按钮被打开时，其会向六个毗邻位置输出强度为15的信号。不同种类的按钮开启并输出信号的持续时间不同，其中石质按钮的信号持续时间为10 rt；木质则为15 rt。*按钮可以激活所有毗邻的元件，同时强充能其依附的方块。*
+#figure(
+  caption: "按钮的信号输出",
+  image("图片/按钮的信号输出.png", width: 9em)
+)
+===== 压力板
+#figure(
+  caption: "压力板：从左到右依次为：木质压力板、石质压力板、轻质测重压力板和重质测重压力板",
+  [#box(image("图片/木质压力板.png"),width:5em)#h(4em)#box(image("图片/石质压力板.png"),width:5em)#h(4em)#box(image("图片/轻质测重压力板.png"),width:5em)#h(4em)#box(image("图片/重质测重压力板.png"),width:5em)]
+)
+压力板能够用于探测位于其上的实体。当压力板上有实体时，压力板被激活，并向其毗邻的位置输出信号，并将它下方的方块强充能。
+
+不同类型的压力板需要不同条件才能开启——木质压力板可以被除了掉落中的方块和投掷物外的所有实体开启，石质压力板只能由玩家和生物开启，测重压力板可用于探测所有实体。同时，不同的压力板输出的信号强度有所不同：木质和石质压力板输出的信号强度总是为15。测重压力板会探测位于其上的实体数量，然后决定输出的信号强度，具体情况列于下表：
+#general-table(
+  caption: "测重压力板信号强度表",
+  colspan: 3,
+  columns: (auto, auto, auto),
+  header: (table.cell(rowspan: 2)[信号强度], table.cell(colspan: 2)[需要的实体数量], table.cell(fill: rgb("#ff6565"))[#text(fill:white,font:"Source Han Sans SC",weight:"bold")[轻质]], table.cell(fill: rgb("#ff6565"))[#text(fill:white,font:"Source Han Sans SC",weight:"bold")[重质]]),
+  [0], [0], [0],
+  [1], [1], [1 \~ 10],
+  [2], [2], [11 \~ 20],
+  [3], [3], [21 \~ 30],
+  [4], [4], [31 \~ 40],
+  [5], [5], [41 \~ 50],
+  [6], [6], [51 \~ 60],
+  [7], [7], [61 \~ 70],
+  [8], [8], [71 \~ 80],
+  [9], [9], [81 \~ 90],
+  [10], [10], [91 \~ 100],
+  [11], [11], [101 \~ 110],
+  [12], [12], [111 \~ 120],
+  [13], [13], [121 \~ 130],
+  [14], [14], [131 \~ 140],
+  [15], [$gt.eq.slant 15$], [$gt.eq.slant 141$]
+)
+*压力板可以激活所有的毗邻元件，同时强充能其下方的毗邻方块。*
+#figure(
+  caption: "压力板的信号输出",
+  image("图片/压力板的信号输出.png", width: 9em)
+)
 == 结构方块<sec:structure_block>
 = 数据库
 == 数据包和资源包版本号<sec:pack_format>
