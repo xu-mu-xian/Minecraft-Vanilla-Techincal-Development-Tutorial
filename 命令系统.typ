@@ -1969,7 +1969,7 @@ Minecraft的架构是*客户端-服务端模型*，顾名思义，Minecraft使�
 每秒游戏刻的数量数由*每秒刻数（Ticks per second，简称TPS）*#index(display: "每秒刻数（Ticks per second，TPS）", "mei3 miao3 ke4 shu4")这个指标显示；此外还有一个指标与每秒游戏刻数相关，即*每刻毫秒数（Milliseconds per tick，简称MSPT）*#index(display: "每刻毫秒数（Milliseconds per tick，MSPT）", "mei3 ke4 hao2 miao3 shu4")，它反映的是游戏刻计算的平均时间。TPS是一个可变量，它可以由命令 `/tick` 修改，不做修改的默认值为20。也就是说，正常情况下每秒有20gt，或者称最大TPS频率为20。MSPT可以由 `F3`（调试屏幕）查看，这个统计量名称为 `ms ticks`。正常情况下MSPT不会大于50，且只有当MSPT值不大于50时才能保证TPS维持在20。
 
 MSPT与TPS的数量关系可表示为
-$ "MSPT" times "TPS" lt.eq 1000 $
+$ "MSPT" times "TPS" lt.eq.slant 1000 $
 受限于游戏中的计算量及计算机的性能，若计算量过大，MSPT增大，则TPS会相应地减小，造成*掉刻*。TPS无法维持在最大频率时，可由下式计算出实际的TPS：
 $ "TPS" eq 1000 / "MSPT" $
 如果按照默认的每秒20gt的频率渲染画面，难免会产生肉眼可见的不连续画面。因此客户端渲染游戏画面时，并不是完全按照刻率渲染，而是在刻之间*补帧*以形成平滑画面。用于描述渲染频率的指标为*帧率（Frame per second，简称FPS）*#index(display: "帧率（Frame per second，FPS）", "zhen1 lv4")，它反应的是客户端的每秒渲染的帧数。帧率受到客户端渲染计算量、计算机性能的影响，可以通过*最大帧率*选项控制最高FPS。
@@ -2032,12 +2032,7 @@ Minecraft的游戏计算内容繁多，在同一个线程中的计算不可能�
     + 每隔20 gt对玩家同步一次该维度的时间。
     + 运行维度游戏刻逻辑，若计算出现异常，则游戏崩溃。游戏刻逻辑按以下流程计算：
       + 更新世界边界。
-      + \*计算天气循环、更新降雨和雷暴计时器。此计时器可由 `/weather` 命令重置，该命令亦可用于直接更改游戏内天气，所需权限等级为2，语法为：#index(index: "command", "weather")
-        #codebox("weather (clear|rain|thunder) [<duration>]")
-        #param-desc(
-          [`(clear|rain|thunder)` ], [用于指定天气为晴天、雨天（温度值低于0.15的区域会下雪）或雷暴。],
-          [`[<time>]`（时间 `minecraft:time`）], [可选，与语法@code:tick_step 所述一致。如不填写，则重置游戏内的天气循环时间。]
-        )
+      + \*计算天气循环、更新降雨和雷暴计时器。
       + 计算日夜更替，若玩家入睡情况满足跳过当前时间至下一次日出，则将时间调整至下一次日出。若此时正在降雨，则重置天气循环。
       + 更新内部光照等级乘数。
       + \*更新时间。
@@ -3398,7 +3393,7 @@ Minecraft游戏世界的加载单位被称为*区块*，一个区块的水平横
 当描述一个方块在该区块内的位置时，就需要使用到区段坐标。并且需要在该区段的西北下角建立一个空间直角坐标系，用这个坐标系描述方块在区段内的相对位置。因此在这个坐标系内，所有坐标参数均为大于等于0且小于等于15的整数，西北下角的方块在区段内位置可表示为$(0,0,0)$。
 
 对于一个方块坐标为$(a,b,c)$（$a$、$b$、$c in ZZ$）的方块，可以直接使用floor函数#footnote[floor函数即向下取整函数，取不大于该实数的最大整数。数学语言一般记作$floor.l x floor.r$，例如$floor(3.14)=3$，$floor(-1.5)=-2$，$floor(1)=1$。]求得该方块所在区段的区段坐标为：
-$ [floor(a/16), floor(b/16), floor(c/16)] $
+$ [floor(a/16), floor(b/16), floor(c/16)] $ <equ:block_position_to_chunk_coordinates>
 该数据显示于调试屏幕 `Chunk` 一行。因此该方块所在区块为
 $ [floor(a/16), floor(c/16)] $
 该区段西北下角方块的方块坐标可由区段坐标转化：
@@ -4172,7 +4167,7 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
 其中 `0a` 标识了 #icon("nbt-compound") 复合标签类型，`00 0d 62 6c 65 6e 64 69 6e 67 5f 64 61 74 61` 是标签名长度和标签名，为13个字符的 `blending_data`，`03` 是 `blending_data` 第一个子标签的数据类型，是为 #icon("nbt-int") 整型。接下来的 `00 0b 6d 61 78 5f 73 65 63 74 69 6f 6e` 是第一个子标签的标签名 `max_section`，`00 00 00 04` 是这个标签的值 `20`。随后的 `03` 是 `blending_data` 第二个子标签的数据类型，是为 #icon("nbt-int") 整型。第二个子标签的标签名可解读为 `max_section`，值为 `-4`。末尾的字节 `00` 是结束类型。故该标签为
 #codebox("blending_data: {max_section: 20, min_section: -4}")
 == 测试NBT标签<sec:testing_nbt>
-对于一段已有的NBT数据，有时会需要检测它是否满足一定要求，检测方法是提供一段SNBT用于对比，这样的SNBT被称为#proper-noun(display: "测试NBT标签（Tseting NBT Tags）", "ce4 shi4 NBT biao1 qian1")。测试NBT标签主要在目标选择器的NBT参数和 `custom_data` 数据组件谓词中使用。本节将以目标选择器NBT参数为主描述测试NBT标签的匹配方法。#cite(<testing_nbt>, form: none)
+对于一段已有的NBT数据，有时会需要检测它是否满足一定要求，检测方法是提供一段SNBT用于对比，这样的SNBT被称为#proper-noun(display: "测试NBT标签（Tseting NBT Tags）", "ce4 shi4 NBT biao1 qian1")。测试NBT标签主要在目标选择器的NBT参数、`custom_data` 数据组件谓词和实体谓词中使用。本节将以目标选择器NBT参数为主描述测试NBT标签的匹配方法。#cite(<testing_nbt>, form: none)
 ==== 对普通标签的匹配
 满足这一类匹配要求的标签类型为*除了 #icon("nbt-compound") 复合标签和 #icon("nbt-list") 列表外的其他所有类型*，#icon("nbt-byte_array") 字节型数组、#icon("nbt-int_array") 整型数组和 #icon("nbt-long_array") 长整型数组均位于此列。对于这些标签，提供的测试NBT标签和接受对比的目标NBT必须在名称、标签类型和值上完全一致。
 
@@ -6267,7 +6262,7 @@ Minecraft具体的游戏数据，如某个位置的箱子里存储的物品、�
   (2, [#icon("folder")#icon("zip") *\<数据包名称>[.zip]*: 一个数据包。文件（夹）结构已在小节@subsec:datapack_folder 给出，其中文件的编写方式会在《数据包》教程详细给出。]),
   (1, [#icon("folder") *dimensions*: 维度数据。]),
   (2, [#icon("folder") *\<命名空间>*: 任意命名空间下的维度数据。]),
-  (3, [#icon("folder") *\<维度名称>*: 一个维度，可以添加路径。内容详见节@subsec:dimension_and_region。]),
+  (3, [#icon("folder") *\<维度ID>*: 一个维度，可以添加路径。内容详见节@subsec:dimension_and_region。]),
   (4, [#icon("folder") *data*: 该维度的零散数据。]),
   (5, [#icon("folder") *minecraft*: 命名空间，必须为 `minecraft`，无论自定义维度的自身命名空间。]),
   (6, [#icon("nbt") *chunk_tickets.dat*: 区块标签数据文件。]),
@@ -6280,7 +6275,7 @@ Minecraft具体的游戏数据，如某个位置的箱子里存储的物品、�
   (4, [#icon("folder") *poi*: 该维度的兴趣点数据。]),
   (5, [#icon("nbt") *r.\<x>.\<z>.mca*: 区域文件。]),
   (5, [#icon("nbt") *c.\<x>.\<z>.mcc*: 区域额外文件。]),
-  (4, [#icon("folder") *region*: 该维度的基础数据。]),
+  (4, [#icon("folder") *region*: 该维度的区块基础数据。]),
   (5, [#icon("nbt") *r.\<x>.\<z>.mca*: 区域文件。]),
   (5, [#icon("nbt") *c.\<x>.\<z>.mcc*: 区域额外文件。]),
   (1, [#icon("folder") *generated*: 世界生成数据。]),
@@ -6455,8 +6450,8 @@ Minecraft具体的游戏数据，如某个位置的箱子里存储的物品、�
 #proper-noun(display: "Boss栏（Boss bar）", "Boss lan2")是显示在HUD#footnote[即平视显示器（Heads-up display），是叠加在游戏视野上的画面。]顶端中央的一个可被填充的条式图形，通常用于显示末影龙和凋零的血量。除了用于显示Boss的血量，Boss栏在多人游戏和冒险地图中也被用于显示倒计时、游戏进展等。如果设计得当，可以用Boss栏制造出很好的效果。
 
 一个Boss栏拥有一个*最大值*和一个*当前值*，这两个值决定了Boss栏被填充的比例。在GUI和HUD大小不变的情况下，一个Boss栏的长度是不变的，只有Boss栏中填充的内容发生变化，填充的比例为当前值与最大值的比。例如，最大值为20、当前值为10的Boss栏填充占比为50%。当前值不必比最大值小，若当前值大于或等于最大值，则Boss栏中的填充固定为100%。
-==== 命令/bossbar
-手动创建和修改BOSS栏需要通过命令 `/bossbar` 完成，它需要的权限等级为2，下面是命令 `/bossbar` 的所有用法：#index(index: "command", "bossbar")
+==== 命令 `/bossbar`
+手动创建和修改BOSS栏可以通过命令 `/bossbar` 完成，它需要的权限等级为2，下面是命令 `/bossbar` 的所有用法：#index(index: "command", "bossbar")
 ===== 添加一个Boss栏，语法为
 #codebox("bossbar add <id> <name>")
 #param-desc(
@@ -6503,13 +6498,363 @@ Minecraft具体的游戏数据，如某个位置的箱子里存储的物品、�
   caption: "Boss栏的不同样式",
   image("图片/Boss栏的不同样式.png", width: 20em)
 )
+====== 编辑Boss栏的当前值，语法为
+#codebox("bossbar set <id> value <value>")
+#param-desc(
+  [`<value>`（整型 `brigadier:integer`）], [设置的当前值。]
+)
+====== 编辑Boss栏的可见性，语法为
+#codebox("bossbar set <id> visible <visible>")
+#param-desc(
+  [`<visible>`（布尔值 `brigadier:bool`）], [设置Boss栏是否可见。]
+)
+==== Boss栏NBT格式 \*
+Boss栏数据被存储在 #icon("nbt") `data > minecraft > custom_boss_events.dat`。无论Boss栏自身的命名空间为何，#icon("nbt") `custom_boss_events.dat` 只存储于 `minecraft` 命名空间。这部分数据格式如下：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-compound") *#underline[data]*: 存储的多个自定义Boss栏数据。]),
+  (2, [#icon("nbt-compound") *\<Boss栏命名空间ID>*: 一项Boss栏。]),
+  (3, [#icon("nbt-string") *#underline[Color]*: Boss栏的填充颜色，有效值 `blue`、`green`、`pink`、`purple`、`red`、`white`、`yellow`。]),
+  (3, [#icon("nbt-bool") *#underline[CreateWorldFog]*: 该Boss栏是否使天空暗淡。]),
+  (3, [#icon("nbt-bool") *#underline[DarkenScreen]*: 该Boss栏是否创建迷雾效果。]),
+  (3, [#icon("nbt-int") *#underline[Max]*: Boss栏最大值。]),
+  (3, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *#underline[Name]*: Boss栏的显示名字，是一个文本组件。]),
+  (3, [#icon("nbt-string") *#underline[Overlay]*: Boss栏的显示样式，有效值 `notched_6`、`notched_10`、`notched_12`、`notched_20`、`progress`。]),
+  (3, [#icon("nbt-bool") *#underline[PlayBossMusic]*: 是否播放Boss音乐。]),
+  (3, [#icon("nbt-list") *#underline[Players]*: 可以看见该Boss栏的玩家列表。]),
+  (4, [#icon("nbt-int_array") 一个玩家的UUID。]),
+  (3, [#icon("nbt-int") *#underline[Value]*: Boss栏当前值。]),
+  (3, [#icon("nbt-bool") *#underline[Visible]*: 该Boss栏是否对玩家可见。]),
+  (1, [#icon("nbt-int") *DataVersion*: 游戏数据版本。])
+)
 === 随机序列<subsec:random_sequence>
+#proper-noun(display: "随机序列（Random sequences）", "sui2 ji1 xu4 lie4")是游戏中可控的随机数发生器，在游戏中的应用主要在战利品表上，如实体、方块的掉落物、猪灵的以物易物等。
+==== 命令 `/random`
+`/random` 是用于生成随机数以及修改随机序列的命令，以下是所有用法。#index(index: "command", "random")
+===== 获取一个随机数
+#codebox("random (value|roll) <range> [<sequence>]")
+#param-desc(
+  [`(value|roll)` ], [产生随机数时，设为 `value` 会将结果仅显示给执行命令的玩家；设为 `roll` 会将结果通知给所有玩家。],
+  [`<range>`（整数范围 `minecraft:int_range`）], [生成的随机数在该参数指定的范围内，范围可以包含负数。此范围能够产生的数值个数必须介于 `2` 和 `2147483646` 之间（含），比如参数 `1` 只能产生1这个随机数，因此无效；参数 `1..2` 能产生1、2两个随机数，因此是有效的。],
+  [`[<sequence>]`（命名空间ID `minecraft:resource_location`）], [可选。每一个随机数的产生都使用了一个随机序列，这些序列是独一无二的，因此可以自定义命名空间ID来指定这些序列，这样就可以用命名空间ID唯一地指定特定地序列。如果指定的序列不存在，则游戏会现场创建一个随机序列使用。如指定了该参数，则命令 `/random` 所需权限等级为2；不指定则为0。]
+)
+===== 重制随机数规则
+#codebox("random reset (*|<sequence>) [<seed>] [<includeWorldSeed>] [<includeSequenceId>]")
+#param-desc(
+  [`(*|<sequence>)` ], [指定要重制规则的随机数序列。若设为 `*`，则重制所有的随机序列；若使用参数 `<sequence>`，则是要重制规则的随机数序列的命名空间ID。],
+  [`[<seed>]`（长整型 `brigadier:long`）], [用于重制随机序列的种子。在同一个序列中使用相同的种子得到的随机数是一样的。],
+  [`[<includeWorldSeed>]`（布尔值 `brigadier:bool`）], [可选，用于决定在重制随机序列的种子中是否掺入世界种子。],
+  [`[<includeSequenceId>]`（布尔值 `brigadier:bool`）], [可选，用于决定在重制随机序列的种子中是否掺入随机序列ID。]
+)
+==== 随机序列数据文件 \*
+随机序列的数据存储于 #icon("nbt") `data > minecraft > random_sequences.dat`。无论随机序列自身的命名空间为何，#icon("nbt") `random_sequences.dat` 只存储于 `minecraft` 命名空间。随机序列的数据格式为
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-compound") *#underline[data]*: 随机序列的数据。]),
+  (2, [#icon("nbt-bool") *include_sequence_id*: 计算随机序列时是否掺入随机序列的命名空间ID。]),
+  (2, [#icon("nbt-bool") *include_world_seed*: 计算随机序列时是否掺入世界种子。]),
+  (2, [#icon("nbt-int") *salt*: 初始化随机序列时掺入的盐。#proper-noun(display: "盐（Salt）", "yan2")是一种将散列内容插入到数据任意位置的手段，用于加密。]),
+  (2, [#icon("nbt-compound") *#underline[sequences]*: 存储游戏中的所有随机序列。]),
+  (3, [#icon("nbt-compound") *\<随机序列命名空间ID>*: 一个随机序列。]),
+  (4, [#icon("nbt-long_array") *#underline[source]*: 随机数源。]),
+  (5, [#icon("nbt-long") 随机数种子的低64位。]),
+  (5, [#icon("nbt-long") 随机数种子的高64位。]),
+  (1, [#icon("nbt-int") *DataVersion*: 游戏数据版本。])
+)
 === 秒表<subsec:stopwatch>
+#proper-noun(display: "秒表（Stopwatch）", "miao3 biao3")用于记录真实的时间流逝而非游戏刻，因此秒表的计时与游戏刻并不完全一致。计时的单位为*毫秒*。只要服务端开启，这些秒表就会开始计时。只有当服务端被关闭时，秒表才会停止计时。因此，以下情况都会让秒表持续计时：#cite(<stopwatch>, form: none)
++ 在单人或多人游戏进入游戏暂停界面。
++ 服务端发生掉刻。
++ 使用 `/tick freeze` 冻结游戏刻。
++ 没有玩家在独立服务端内进行游戏。
++ 计算机休眠。
+==== 命令 `/stopwatch`
+命令 `/stopwatch` 用于管理游戏中存在的秒表，它需要的权限等级为2，以下是所有用法。
+===== 创建一个新的秒表
+#codebox("stopwatch create <id>")
+#param-desc(
+  [`<id>`（命名空间ID `minecraft:resource_location`）], [秒表的命名空间ID。如果指定的秒表不存在，则游戏会现场创建一个秒表使用。]
+)
+===== 查询特定秒表的时间
+#codebox("stopwatch query <id> [<scale>]")
+#param-desc(
+  [`[<scale>]`（双精度浮点数 `brigadier:double`）], [可选，将返回的值进行缩放的倍率。缩放操作为：先乘以此值，再向下取整。]
+)
+此命令查询得到的时间单位为秒，但精确到小数点后3位，所以实际上能够得到精确的毫秒数据。
+===== 重置指定的秒表
+#codebox("stopwatch restart <id>")
+此命令会让指定命名空间ID的秒表归零，但由于它不能让秒表停止计时，因此秒表归零后会立即开始从零计时。
+===== 移除指定的秒表
+#codebox("stopwatch remove <id>")
+==== 秒表数据文件 \*
+秒表的数据存储于 #icon("nbt") `data > minecraft > stopwatches.dat`。无论秒表自身的命名空间为何，#icon("nbt") `stopwatches.dat` 只存储于 `minecraft` 命名空间。秒表的数据格式为
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-compound") *#underline[data]*: 秒表的数据。]),
+  (2, [#icon("nbt-compound") *#underline[stopwatches]*: 存储游戏中的所有秒表。]),
+  (3, [#icon("nbt-long") *\<秒表命名空间ID>*: 一个秒表的当前计时，单位为毫秒。]),
+  (1, [#icon("nbt-int") *DataVersion*: 游戏数据版本。])
+)
 === 天气<subsec:weather>
+#proper-noun(display: "天气（Weather）", "tian1 qi4")是游戏中的全局性事件，所有维度的天气会保持一致。游戏中一共有3种天气：晴天、降雨和雷暴。
+==== 命令 `/weather`
+命令 `/weather` 可用于直接更改游戏内天气，也可用于重置降雨计时器和雷暴计时器，所需权限等级为2，语法为：#index(index: "command", "weather")
+#codebox("weather (clear|rain|thunder) [<duration>]")
+#param-desc(
+  [`(clear|rain|thunder)` ], [用于指定天气为晴天、雨天（温度值低于0.15的区域会下雪）或雷暴。],
+  [`[<time>]`（时间 `minecraft:time`）], [可选，指定天气的持续时间，格式为：`<单精度浮点数>[<单位>]`，单位可以为：`t`（游戏刻），`s`（秒）或 `d`（游戏日），无单位默认为游戏刻。如不填写，则按指定的天气随机取值：\ 对于 `clear`：随机取 `12000` 到 `180000` 之间（含）的值。\ 对于 `rain`：随机取 `12000` 到 `24000` 之间（含）的值。\ 对于 `thunder`：随机取 `3600` 到 `15600` 之间（含）的值。]
+)
+使用 `/weather` 改变天气会导致降雨计时器和雷暴计时器被重置为相同的值，因此晴天过后总是为雷暴。
+
+若游戏规则 `advance_weather` 为 `false`，则游戏中的天气只能通过此命令更改。
+==== 天气数据文件 \*
+天气的数据存储于 #icon("nbt") `data > minecraft > weather.dat`，数据格式为
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-compound") *#underline[data]*: 天气的数据。]),
+  (2, [#icon("nbt-int") *clear_weather_time*: 存档内世界晴天剩余时间，默认值为 `0`。]),
+  (2, [#icon("nbt-bool") *raining*: 当前世界是否为降雨天气，默认值为 `false`。]),
+  (2, [#icon("nbt-int") *rain_time*: 如果世界当前不处于降雨天气，此值代表距离下一次降雨的时间；如果当前正处于降雨天气，此值代表距离降雨结束的时间。]),
+  (2, [#icon("nbt-bool") *thundering*: 当前世界是否为雷暴天气，默认值为 `false`。]),
+  (2, [#icon("nbt-int") *rain_time*: 如果世界当前不处于雷暴天气，此值代表距离下一次雷暴的时间；如果当前正处于雷暴天气，此值代表距离雷暴结束的时间。]),
+  (1, [#icon("nbt-int") *DataVersion*: 游戏数据版本。])
+)
 == 维度与区域文件<subsec:dimension_and_region>
+一个游戏世界存在多个维度，因此游戏存储数据时首先需要对维度进行区分。Minecraft原版存在三个维度：主世界、下界和末地，使用数据包可以添加一些自定义维度。所有维度的数据都按该维度的命名空间ID存储于 #icon("folder") `<存档名称> > dimensions > <命名空间> > … > <ID>` 中。
+
+维度的命名空间ID允许使用任意的路径。例如，`minecraft:overworld`（主世界）维度的文件夹路径为
+#tree(
+  (0, [#icon("folder") *dimensions*]),
+  (1, [#icon("folder") *minecraft*]),
+  (2, [#icon("folder") *overworld*])
+)
+#h(-2em)自定义维度 `the_backrooms:level_0/red_rooms` 的文件夹路径为
+#tree(
+  (0, [#icon("folder") *dimensions*]),
+  (1, [#icon("folder") *the_backrooms*]),
+  (2, [#icon("folder") *level_0*]),
+  (3, [#icon("folder") *red_rooms*])
+)
+维度数据可以分为区块数据和零散数据，其中存储区块信息的文件被称为#proper-noun(display: "区域文件（Region file）", "qu1 yu4 wen2 jian4")，或称#proper-noun(display: "Anvil文件（Anvil file）", "Anvil wen2 jian4")，这些文件均使用NBT格式，其后缀为 `.mca`。Anvil文件以 #icon("nbt") `r.<x>.<z>.mca` 的名字命名，一个Anvil文件存储了一个#proper-noun(display: "区域（Region）", "qu1 yu4")内所有区块的相关信息，其中一个区域包含$32 times 32$个区块。如果一个区域的信息量过大，则游戏会创建一个对应的区域额外文件，这个文件被命名为 #icon("nbt") `c.<x>.<z>.mcc`。游戏存储区块数据时，不会将这个区块的所有数据都存储在一个Anvil文件中，而是将这些数据拆分为区块基础数据、实体数据和兴趣点数据，并将它们分配到不同的文件夹内存储。其中 #icon("folder") `region` 文件夹存储区块全局信息；#icon("folder") `entities` 文件夹存储实体信息；#icon("folder") `poi` 文件夹存储兴趣点信息。维度零散数据则存储于 #icon("folder") `data` 中。因此，完整的维度数据文件结构如下所示：
+#tree(
+  (0, [#icon("folder") *dimensions*: 维度数据。]),
+  (1, [#icon("folder") *\<命名空间>*: 任意命名空间下的维度数据。]),
+  (2, [#icon("folder") *\<维度ID>*: 一个维度，可以添加路径。]),
+  (3, [#icon("folder") *data*: 该维度的零散数据。]),
+  (4, [#icon("folder") *minecraft*: 命名空间，必须为 `minecraft`，无论自定义维度的自身命名空间。]),
+  (5, [#icon("nbt") *chunk_tickets.dat*: 区块标签数据文件。]),
+  (5, [#icon("nbt") *raids.dat*: 袭击数据文件。]),
+  (5, [#icon("nbt") *ender_dragon_fight.dat*: 末影龙战斗数据文件，此文件仅存在于末地或其他可发生末影龙战斗的维度。]),
+  (5, [#icon("nbt") *world_border.dat*: 该维度的世界边界数据文件。]),
+  (3, [#icon("folder") *entities*: 该维度的实体数据。]),
+  (4, [#icon("nbt") *r.\<x>.\<z>.mca*: 区域文件。]),
+  (4, [#icon("nbt") *c.\<x>.\<z>.mcc*: 区域额外文件。]),
+  (3, [#icon("folder") *poi*: 该维度的兴趣点数据。]),
+  (4, [#icon("nbt") *r.\<x>.\<z>.mca*: 区域文件。]),
+  (4, [#icon("nbt") *c.\<x>.\<z>.mcc*: 区域额外文件。]),
+  (3, [#icon("folder") *region*: 该维度的区块基础数据。]),
+  (4, [#icon("nbt") *r.\<x>.\<z>.mca*: 区域文件。]),
+  (4, [#icon("nbt") *c.\<x>.\<z>.mcc*: 区域额外文件。]),
+)
+=== Anvil文件
+对于一个Anvil文件 #icon("nbt") `r.<x>.<z>.mca`，文件名中的$x$和$z$均为常量（$x$、$z in ZZ$），现定义$(x,z)$为 #icon("nbt") `r.<x>.<z>.mca` 所存储区域$Omega$的区域坐标，记该区域内某个区块的（绝对）区块坐标为$[x_"c",z_"c"]$（$x_"c"$、$z_"c"in ZZ$），则满足
+$ cases(
+  32x lt x_"c" lt 32x+31,
+  32z lt z_"c" lt 32z+31
+) $
+#h(-2em)因此有
+$ cases(
+  x = floor(x_"c"\/32),
+  z = floor(z_"c"\/32)
+) $ <equ:chunk_coordinates_in_region_coordinates>
+#figure(
+  caption: [区域和区块坐标，其中每一个方格均代表一个区域，内包含$32 times 32$个区块],
+  image("图片/区域和区块坐标，其中每一个方格均代表一个区域，内包含32×32个区块.png", width: 35em)
+)
+根据这个式子，仅凭一个区块坐标就能找到存储该区块或方块的Anvil文件和该区块所在的标签。
+#example(
+  [已知一个区块的区块坐标为$[312,-109]$，计算这个区块的数据所处的区域文件。],
+  [
+    直接代入@equ:chunk_coordinates_in_region_coordinates，得$x=floor(312\/32)=9$，$z=floor(-109\/32)=-4$，因此区域坐标为$(9,-4)$，相应的区域文件为 #icon("nbt") `r.9.-4.mca`。
+
+  ]
+)
+由于区块位于区域$Omega$内，其数据都被存储在 #icon("nbt") `r.<x>.<z>.mca` 内，而这些Anvil文件又是相互独立的，内部的标签名可以相同。因此可以不必使用绝对的区块坐标，仅表示该区块位于区域$Omega$内的位置即可。现定义$[x'_"c",z'_"c"]$（$x'_"c"$、$z'_"c"in ZZ$）为相对于区域$Omega$的区块坐标，称为相对区块坐标，则满足
+$ cases(
+  x_"c"-32x=x'_"c",
+  z_"c"-32z=z'_"c"
+) $
+将@equ:chunk_coordinates_in_region_coordinates\代入，得相对区块坐标
+$ cases(
+  x'_"c"=x_"c"-32floor(x_"c"\/32),
+  z'_"c"=z_"c"-32floor(z_"c"\/32)
+) $ <equ:relative_chunk_coordinates>
+如果使用 #icon("nbtstudio") NBTStudio打开Anvil文件，可以看到其中有很多名为 #icon("nbt-compound") `Chunk [x'c,z'c] in world at (xc,zc)` 的复合标签，一个复合标签存储一个区块的信息，其中该复合标签存储区块的绝对区块坐标为$[x_"c",z_"c"]$，相对区块坐标为$[x'_"c",z'_"c"]$。
+
+对于任意一个二维的方块坐标$(x_0,z_0)$，将@equ:block_position_to_chunk_coordinates\的计算结果代入@equ:chunk_coordinates_in_region_coordinates，它所在的区域坐标可计算为：
+$ cases(
+  x = floor(floor(x_0\/16)\/32),
+  z = floor(floor(z_0\/16)\/32)
+) $ <equ:block_position_to_region_coordinates>
+将@equ:block_position_to_chunk_coordinates\代入@equ:relative_chunk_coordinates，相应地、该方块坐标所在区块的在区域内的相对区块坐标$[x'_"c",z'_"c"]$为
+$ cases(
+  x'_"c"=floor(x_0\/16)-32floor(floor(x_0\/16)\/32),
+  z'_"c"=floor(z_0\/16)-32floor(floor(z_0\/16)\/32)
+) $ <equ:block_position_to_relative_chunk_coordinates>
+#example(
+  [已知一个方块的方块坐标为$(3247,98,-1030)$，求存储该方块的数据的Anvil文件名和区块标签名],
+  [
+    首先代入@equ:block_position_to_chunk_coordinates，计算此方块坐标所属绝对区块坐标
+    #align(center)[$x_"c"=floor(3247\/16)=202$，$z_"c"=floor(-1030\/16)=-65$]
+    #h(-2em)接下来代入@equ:block_position_to_region_coordinates，计算此方块坐标所属区域坐标
+    #align(center)[$x=floor(floor(3247\/16)\/32)=6$，$z=floor(floor(-1030\/16)\/32)=-3$]
+    #h(-2em)因此对应的Anvil文件名为 #icon("nbt") `r.6.-3.mca`。
+    
+    又根据@equ:block_position_to_relative_chunk_coordinates，可得局部区块坐标
+    #align(center)[$x'_"c"=floor(3247\/16)-32floor(floor(3247\/16)\/32)=10$]
+    #align(center)[$z'_"c"=floor-1030\/16)-32floor(floor(-1030\/16)\/32)=31$]
+    #h(-2em)于是存储区块的复合标签的标签名为 `Chunk [10,31] in world at (202,-65)`。
+  ]
+) <exa:block_position_to_anvil_file>
+=== 维度数据 \*
+一个维度拥有以下的数据格式。
+==== 区块基础数据
+区块基础数据存储的是这个区块的方块、地形、高度图、光照等基本信息。存储位置为 #icon("folder") `region`，@exa:block_position_to_anvil_file\所述的Anvil文件路径就为 #icon("nbt") `dimensions > <命名空间> > <维度ID> > region > r.6.-3.mca`。区块基础数据的格式如下：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-compound") *below_zero_retrogen*: 仅在1.18之前的世界更新为1.18及之后的世界时使用，用于在高度为负的区域生成方块。]),
+  (2, [#icon("nbt-long_array") *missing_bedrock*: 从区块内部$(0,0)$位置起先沿$x$轴正方向、再沿$z$轴正方向遍历所有水平位置以检查是否缺失基岩，从而决定是否重新生成此位置下的方块。由于一个区块有256个可用的水平位置，每一个位置都用一个二进制位表示是否缺失基岩，这些二进制位会被转换为4个长整型整数，依次存入该数组内。]),
+  (2, [#icon("nbt-string") *#underline[target_status]*: 重新生成方块时区块的目标状态，可用值有 `empty`（尚未进行区块生成）、`structure_starts`（生成结构范围）、`structure_references`（计算结构引用）、`biomes`（填充生物群系）、`noise`（填充初始噪声地形）、`surface`（应用表面规则）、`carvers`（地形雕刻）、`features`（生成地物）、`initialize_light`（初始化光照计算）、`light`（计算初始光照）、`spawn`（生成初始实体）和 `full`（区块生成完毕）。]),
+  (1, [#icon("nbt-compound") *blending_data*: 用于新旧区块平滑过渡的混合数据。]),
+  (2, [#icon("nbt-list") *heights*: 混合数据中元胞的高度值，有16个值。]),
+  (3, [#icon("nbt-double") 一个高度值。]),
+  (2, [#icon("nbt-int") *#underline[max_section]*: 混合数据中最高区段的$y$坐标。]),
+  (2, [#icon("nbt-int") *#underline[min_section]*: 混合数据中最低区段的$y$坐标。]),
+  (1, [#icon("nbt-list") *#underline[block_entities]*: 存储区块内所有方块实体信息。]),
+  (2, [#icon("nbt-compound") 一个方块实体。这部分数据格式见节@sec:block_entity。]),
+  (3, [方块实体格式]),
+  (1, [#icon("nbt-list") *#underline[block_ticks]*: 存储区块中的方块计划刻。]),
+  (2, [#icon("nbt-compound") 一项方块计划刻。]),
+  (3, [#icon("nbt-string") *i*: 方块的命名空间ID。]),
+  (3, [#icon("nbt-int") *p*: 计划刻的处理优先级，该值越低，则此计划刻会被优先处理。]),
+  (3, [#icon("nbt-int") *t*: 此计划刻将要执行的倒计时。]),
+  (3, [#icon("nbt-int") *x*: 方块的$x$坐标。]),
+  (3, [#icon("nbt-int") *y*: 方块的$y$坐标。]),
+  (3, [#icon("nbt-int") *z*: 方块的$z$坐标。]),
+  (1, [#icon("nbt-long_array") *carving_masks*: 区块雕刻时的标记，仅在区块生成时使用。位置使用YZX编码。YZX编码的计算方式为 `y<<8|z<<4|x`。]),
+  (1, [#icon("nbt-int") *DataVersion*: 游戏数据版本。]),
+  (1, [#icon("nbt-list") *entities*: 生成实体时使用的信息，实体生成完毕后该字段被删除。]),
+  (2, [#icon("nbt-compound") 一个实体。这部分数据格式见节@sec:entity。]),
+  (3, [实体格式]),
+  (1, [#icon("nbt-list") *#underline[fluid_ticks]*: 存储区块中的流体计划刻。]),
+  (2, [#icon("nbt-compound") 一项流体计划刻。]),
+  (3, [#icon("nbt-string") *i*: 流体的命名空间ID。]),
+  (3, [#icon("nbt-int") *p*: 计划刻的处理优先级，该值越低，则此计划刻会被优先处理。]),
+  (3, [#icon("nbt-int") *t*: 此计划刻将要执行的倒计时。]),
+  (3, [#icon("nbt-int") *x*: 流体的$x$坐标。]),
+  (3, [#icon("nbt-int") *y*: 流体的$y$坐标。]),
+  (3, [#icon("nbt-int") *z*: 流体的$z$坐标。]),
+  (1, [#icon("nbt-compound") *HeightMaps*: 从区块内部$(0,0)$位置起先沿$x$轴正方向、再沿$z$轴正方向遍历所有水平位置以存储区块的高度图信息。]),
+  (2, [#icon("nbt-long") *MOTION_BLOCKING*: 最高的能阻挡移动的方块，包括流体方块。]),
+  (2, [#icon("nbt-long") *MOTION_BLOCKING_NO_LEAVES*: 最高的能阻挡移动的方块，不包括树叶。]),
+  (2, [#icon("nbt-long") *OCEAN_FLOOR*: 最高的能阻挡移动的非流体方块。]),
+  (2, [#icon("nbt-long") *OCEAN_FLOOR_WG*: 最高的能阻挡移动的非流体方块，仅用于世界生成，生成完毕即被删除。]),
+  (2, [#icon("nbt-long") *WORLD_SURFACE*: 最高的非空气方块。]),
+  (2, [#icon("nbt-long") *WORLD_SURFACE_WG*: 最高的非空气方块，仅用于世界生成，生成完毕即被删除。]),
+  (1, [#icon("nbt-long") *#underline[InhabitedTime]*: 所有玩家在此区块停留的总时间之和，用于区域难度计算。]),
+  (1, [#icon("nbt-bool") *isLightOn*: 区块是否已经正常完成光照计算。]),
+  (1, [#icon("nbt-long") *LastUpdate*: 此区块最后一次保存时的游戏时间。]),
+  (1, [#icon("nbt-list") *#underline[PostProcessing]*: 存储区块生成完毕后需要进行更新的位置。]),
+  (2, [#icon("nbt-list") 一个区段内需要进行更新的位置，存储区段的顺序从低到高。]),
+  (3, [#icon("nbt-short") 一个需要更新的方块的位置，使用ZYX编码。ZYX编码计算同上文YZX编码的计算方式类似。]),
+  (1, [#icon("nbt-list") *#underline[sections]*: 区块中所有区段的信息。]),
+  (2, [#icon("nbt-compound") 一个区段的信息。]),
+  (3, [#icon("nbt-compound") *biome*: 此区段的生物群系信息。]),
+  (4, [#icon("nbt-long_array") *data*: 以元胞为单位存储生物群系信息。存储方式为建立“调色板”以保存方块状态与数字的映射，即以下的 #icon("nbt-list") `palette` 字段，#icon("nbt-list") `palette` 内元素的索引作为对应生物群系的ID，此ID仅在本子区块有效。并将数字按照YZX编码按顺序存储到此字段。为节省空间，如果该区段只存在一种生物群系，则此项不存在。]),
+  (4, [#icon("nbt-list") *palette*: 生物群系的集合。]),
+  (5, [#icon("nbt-string") 一个生物群系的命名空间ID。]),
+  (3, [#icon("nbt-compound") *block_states*: 此区段的方块状态信息。]),
+  (4, [#icon("nbt-long_array") *data*: 存储区段内所有方块的方块状态。存储方式与上文生物群系存储方式完全一致。如果该区段只存在一种方块状态，则此项不存在。]),
+  (4, [#icon("nbt-long_array") *palette*: 方块状态的集合。]),
+  (5, [#icon("nbt-compound") 一个方块状态。]),
+  (6, [#icon("nbt-string") *#underline[Name]*: 一个生物群系的命名空间ID。]),
+  (6, [#icon("nbt-compound") *Properties*: 可选，由若干方块属性组成的方块状态。]),
+  (7, [#icon("nbt-compound") *\<方块属性>*: 标签名为方块状态的属性，值使用字符串表示。]),
+  (3, [#icon("nbt-byte_array") *BlockLight*: 存储区段内所有方块光照亮度信息。使用YZX编码。]),
+  (3, [#icon("nbt-byte_array") *SkyLight*: 存储区段内所有天空光照亮度信息。使用YZX编码。]),
+  (3, [#icon("nbt-byte") *#underline[Y]*: 区段的$y$坐标。]),
+  (1, [#icon("nbt-bool") *shouldSave*: 在加载区块后是否要标记此区块已被修改。]),
+  (1, [#icon("nbt-string") *#underline[Status]*: 存储该区块当前在世界生成中的状态。可用值有 `empty`（尚未进行区块生成）、`structure_starts`（生成结构范围）、`structure_references`（计算结构引用）、`biomes`（填充生物群系）、`noise`（填充初始噪声地形）、`surface`（应用表面规则）、`carvers`（地形雕刻）、`features`（生成地物）、`initialize_light`（初始化光照计算）、`light`（计算初始光照）、`spawn`（生成初始实体）和 `full`（区块生成完毕）。]),
+  (1, [#icon("nbt-compound") *#underline[structures]*: 存储该区块内的结构。]),
+  (2, [#icon("nbt-compound") *#underline[References]*: 包含 #icon("nbt-compound") `starts` 中结构的区块坐标。]),
+  (3, [#icon("nbt-long_array") *\<结构命名空间ID>*: 包含此结构生成点的区块坐标。]),
+  (2, [#icon("nbt-compound") *#underline[starts]*: 未生成完毕的结构，生成完毕后该字段会被删除。]),
+  (3, [#icon("nbt-compound") *\<结构命名空间ID>*: 一项结构和它生成时需要的数据。]),
+  (4, [#icon("nbt-list") *Children*: 组成此结构的、还未被生成的结构片段。]),
+  (5, [#icon("nbt-compound") 一个结构片段。]),
+  (6, [结构片段格式]),
+  (4, [#icon("nbt-int") *ChunkX*: 结构的起始区块$x$坐标。]),
+  (4, [#icon("nbt-int") *ChunkZ*: 结构的起始区块$z$坐标。]),
+  (4, [#icon("nbt-string") *#underline[id]*: 结构的命名空间ID。如果结构已经生成，则该值为 `INVALID`。]),
+  (4, [#icon("nbt-int") *references*: 与此结构关联的引用计数。]),
+  (1, [#icon("nbt-compound") *UpgradeData*: 区块更新的数据。]),
+  (2, [#icon("nbt-compound") *Indices*: 需要更新的位置，包含了一个区块中所有区段的信息。]),
+  (3, [#icon("nbt-int_array") *\<区段序号>*: 区段内需要更新的方块位置信息。每个整数都代表了一个位置，位置使用YZX编码。]),
+  (2, [#icon("nbt-list") *neighbor_block_ticks*: 更新时需要保存的方块计划刻。]),
+  (3, [#icon("nbt-compound") 一项方块计划刻。]),
+  (4, [#icon("nbt-string") *i*: 方块的命名空间ID。]),
+  (4, [#icon("nbt-int") *p*: 计划刻的处理优先级，该值越低，则此计划刻会被优先处理。]),
+  (4, [#icon("nbt-int") *t*: 此计划刻将要执行的倒计时。]),
+  (4, [#icon("nbt-int") *x*: 方块的$x$坐标。]),
+  (4, [#icon("nbt-int") *y*: 方块的$y$坐标。]),
+  (4, [#icon("nbt-int") *z*: 方块的$z$坐标。]),
+  (2, [#icon("nbt-list") *neighbor_fluid_ticks*: 更新时需要保存的流体计划刻。]),
+  (3, [#icon("nbt-compound") 一项流体计划刻。]),
+  (4, [#icon("nbt-string") *i*: 流体的命名空间ID。]),
+  (4, [#icon("nbt-int") *p*: 计划刻的处理优先级，该值越低，则此计划刻会被优先处理。]),
+  (4, [#icon("nbt-int") *t*: 此计划刻将要执行的倒计时。]),
+  (4, [#icon("nbt-int") *x*: 流体的$x$坐标。]),
+  (4, [#icon("nbt-int") *y*: 流体的$y$坐标。]),
+  (4, [#icon("nbt-int") *z*: 流体的$z$坐标。]),
+  (2, [#icon("nbt-byte") *#underline[Sides]*: 使用二进制位表示是否对某一方向上的区块进行更新升级，从低位到高位分别表示北、东北、东、东南、南、西南、西、西北。]),
+  (1, [#icon("nbt-int") *#underline[xPos]*: 此区块的$x$坐标。]),
+  (1, [#icon("nbt-int") *#underline[yPos]*: 此区块中最低区段的$y$坐标。]),
+  (1, [#icon("nbt-int") *#underline[zPos]*: 此区块的$z$坐标。])
+)
+==== 实体数据
+实体数据存储的是这个区块的实体信息。存储位置为 #icon("folder") `entities`，文件内的数据格式如下：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-int") *DataVersion*: 游戏数据版本。]),
+  (1, [#icon("nbt-list") *#underline[Entities]*: 存储区块内所有实体的数据。]),
+  (2, [#icon("nbt-compound") 一个实体。这部分数据格式见节@sec:entity。]),
+  (3, [实体格式]),
+  (1, [#icon("nbt-int_array") *#underline[Position]*: 该区块的区块坐标，依次为$x$坐标、$z$坐标。])
+)
+==== 兴趣点数据
+#proper-noun(display: "兴趣点（Point of Interest，POI）", "xing4 qu4 dian3")是指对部分实体有吸引力的一个点，通常由单个方块构成。兴趣点方块可以是村民的工作站方块，也可以是蜜蜂的工作方块、避雷针等。兴趣点数据存储于 #icon("folder") `poi` 文件夹内的Anvil文件，其数据格式为
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-int") *DataVersion*: 游戏数据版本。]),
+  (1, [#icon("nbt-compound") *Sections*: 所有区段的数据。]),
+  (2, [#icon("nbt-compound") *\<区段$y$坐标>*:单个区段的数据。]),
+  (3, [#icon("nbt-list") *#underline[Records]: 区段内的所有兴趣点。*]),
+  (4, [#icon("nbt-compound") 一个兴趣点。]),
+  (5, [#icon("nbt-int") *free_tickets*: 此兴趣点剩余的认领数。为 `0` 时该兴趣点认领名额已满。]),
+  (5, [#icon("nbt-int_array") *#underline[pos]*: 兴趣点坐标，依次为$x$、$y$、$z$坐标。]),
+  (5, [#icon("nbt-string") *#underline[type]*: 兴趣点的命名空间ID。]),
+  (3, [#icon("nbt-bool") *Valid*: 该兴趣点是否有效。])
+)
+==== 维度零散数据
 == 方块实体<sec:block_entity>
+== 实体<sec:entity>
+== 状态效果
+== 属性
 == 技术性实体<sec:technical_entity>
+== 玩家
+== 物品堆叠
 == 数据组件<sec:data_components>
+== 教程：NBT Studio的使用 \*
 = 记分板
 == 队伍与标签<sec:team_and_tag>
 == 记分板的基本概念
@@ -6528,7 +6873,7 @@ Minecraft具体的游戏数据，如某个位置的箱子里存储的物品、�
 == 红石电路基础
 命令方块是一种红石机械元件，放在红石电路中对红石信号做出一定的响应，因此在介绍命令方块电路前，有必要先了解一些红石电路的基础知识。*#proper-noun(display: "红石电路（Redstone circuits）", "hong2 shi2 dian4 lu4")是为玩家建造的，可以用于控制或激活其他机械的结构。*
 === 红石信号
-#proper-noun(display: "红石信号（Redstone signal）", "hong2 shi2 xin4 hao4")是红石电路中由电源元件产生的，能够由传输元件进行传输并使机械元件作出一定响应的信号。红石信号有两种状态：*有信号*和*无信号*，或简单地表示为*1*和*0*。信号从无到有的瞬间被称为#proper-noun(display: "上升沿（Rising Edge）", "shang4 sheng1 yan2")，从有到无的瞬间被称为#proper-noun(display: "下降沿（Falling Edge）", "xia4 jiang4 yan2")。
+#proper-noun(display: "红石信号（Redstone signal）", "hong2 shi2 xin4 hao4")是红石电路中由电源元件产生的，能够由传输元件进行传输并使机械元件作出一定响应的信号。红石信号有两种状态：*有信号*和*无信号*，或简单地表示为*1*和*0*。信号从无到有的瞬间被称为#proper-noun(display: "上升沿（Rising edge）", "shang4 sheng1 yan2")，从有到无的瞬间被称为#proper-noun(display: "下降沿（Falling edge）", "xia4 jiang4 yan2")。
 
 当一个红石信号经过暂时性的改变而最终回到了起始状态，这种暂时性的改变被称为#proper-noun(display: "脉冲（Pulse）", "mai4 chong1")。若红石信号从无到有，再从有到无，即形成了“0-1-0”过程，则称这个脉冲为*正脉冲（On-pulse，或简称为脉冲）*#index(display: "正脉冲（On-pulse）", "zheng4 mai4 chong1")；若红石信号从有到无，再从无到有，即形成了“1-0-1”过程，则称这个脉冲为#proper-noun(display: "负脉冲（Off-pulse）", "fu4 mai4 chong1")。脉冲的长度一般由红石刻度量，且无论持续时间的长短，满足上述定义的过程均可以被称为脉冲。不同红石元件对脉冲长度的响应要求不同，例如，红石灯无法因短于2 rt的负脉冲而熄灭，红石比较器无法传导所有短于1 rt和大部分等于1 rt的脉冲。
 

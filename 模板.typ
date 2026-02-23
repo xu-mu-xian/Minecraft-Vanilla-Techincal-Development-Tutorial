@@ -1067,6 +1067,10 @@
       context {
         link(it.element.location())[#if appendix-part.at(it.element.location()) {[#it.element.supplement #numbering("I", counter(heading).at(it.element.location()).at(0)).#counter(figure.where(kind: it.element.kind)).at(it.element.location()).at(0)]} else {[#it.element.supplement#str(counter(heading).at(it.element.location()).at(0)).#counter(figure.where(kind: it.element.kind)).at(it.element.location()).at(0)]}]
       }
+    } else if it.element.func() == math.equation {
+      context {
+        link(it.element.location())[#if appendix-part.at(it.element.location()) {[#it.element.supplement (#numbering("I", counter(heading).at(it.element.location()).at(0)).#str(counter(math.equation).at(it.element.location()).at(0))) ]} else {[#it.element.supplement (#str(counter(heading).at(it.element.location()).at(0)).#str(counter(math.equation).at(it.element.location()).at(0))) ]}]
+      }
     } else if it.element.func() == text {
       show regex("^\d+\."): m => m.text.slice(0, -1)
       it
