@@ -1327,6 +1327,8 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 数据包的基础功能有限，为了搭建一套复杂的体系，有时候会使用#proper-noun(display: "前置数据包（Library datapack）", "qian2 zhi4 shu4 ju4 bao1")。这就像是在写程序时引用“第三方库”，可以极大地降低开发难度，还避免了“重复造轮子”。这些前置数据包也是数据包，可用子数据包的形式将它们添加到开发的数据包中。
 
 子数据包会在当前主数据包的基础上添加内容，同时也会*覆盖*主数据包相同路径的文件。不过，仅在主数据包文件夹的子层级添加一个数据包并不会让主数据包识别到这个子数据包，应当在元数据的 #icon("json-object") `overlays` 中配置。配置方式见上文的数据格式。注意，由于 #icon("json-string") `directory` 字段允许包含的字符仅有小写字母、`0123456789`、`_` 和 `-`，那么有效子数据包的名称及相对路径也只能包含这些字符。
+
+子数据包的 #icon("json") `pack.mcmeta` 不会被识别，其元数据都应在主数据的元数据中配置。因此子数据包不能嵌套子数据包。
 #example(
   [一个版本号为88.0的数据包需要使用 #icon("folder") `jigsaw_marker_v1.0` 这个前置数据包作为其子包，此前置数据包使用的数据包版本号也为88.0，尝试配置子数据包。],
   [
@@ -2826,7 +2828,7 @@ Java版原版所有可用的实体可分为若干类别，这些实体的命名�
 + 列举出在数据包内所有不使用 `.json` 格式的数据项类型。
 + 尝试覆盖原版数据包中定义的 `#base_stone_overworld` 方块标签，使其仅引用石头（`stone`）、深板岩（`deepslate`）两种方块。
 = 坐标
-Minecraft的游戏世界是三维的。在编写数据包的时候，有时需要确定实例所需的位置参数。这样的参数被称为#proper-noun(display:"坐标（Coordinate）","zuo biao")。本章将详细介绍各种坐标参数以及这些参数在命令上的应用。
+Minecraft的游戏世界是三维的。在编写数据包的时候，有时需要确定实例所需的位置参数。这样的参数被称为#proper-noun(display:"坐标（Coordinate）","zuo4 biao1")。本章将详细介绍各种坐标参数以及这些参数在命令上的应用。
 #pagebreak()
 == 坐标系与坐标
 Minecraft使用的空间直角坐标系是右手坐标系。在这种空间直角坐标系中，$x$轴和$z$轴所反映的是水平方向上的位置，$y$轴所反映的是垂直方向上的位置。其中，*$x$轴的正方向指向正东，而$z$轴的正方向指向正南*。
@@ -2865,7 +2867,7 @@ Minecraft使用的空间直角坐标系是右手坐标系。在这种空间直�
 
 Minecraft规定：大部分方块的长、宽和高均为1米，体积为1立方米。用坐标系表示这些位置时，默认了方块的边长和坐标系的单位长度在数值上相等，这意味着坐标系的基本单位为米，或称为“格”。
 
-一个方块使用其*西北下角*的点作为它的#proper-noun(display:"方块坐标（Block position）","fangkuaizuobiao")。若一个方块的西北下角顶点坐标为$(x,y,z)$，则该方块的方块坐标记为$(x,y,z)$，而这个方块位于$(x,y,z)$和$(x+1,y+1,z+1)$这两个坐标围成的立体几何图形之间。
+一个方块使用其*西北下角*的点作为它的#proper-noun(display:"方块坐标（Block position）","fang1 kuai4 zuo4 biao1")。若一个方块的西北下角顶点坐标为$(x,y,z)$，则该方块的方块坐标记为$(x,y,z)$，而这个方块位于$(x,y,z)$和$(x+1,y+1,z+1)$这两个坐标围成的立体几何图形之间。
 #figure(
   caption: [用方块这个方向的顶点来表示方块坐标],
   image("图片/用方块这个方向的顶点来表示方块坐标.png", width: 35%)
@@ -2882,7 +2884,7 @@ Minecraft规定：大部分方块的长、宽和高均为1米，体积为1立方
   ]
 )
 ==== 三维坐标
-#proper-noun(display:"三维坐标（Three-dimensional coordinates）","sanweizuobiao")是精确表示一个位置的坐标参数，命令参数类型为 `minecraft:vec3`，用于表示坐标位置的三个元素均为双精度浮点数。三维坐标一般应用于实体，它也可能会在粒子生成和声音播放的时候被使用。例如，这是一个合法的三维坐标：
+#proper-noun(display:"三维坐标（Three-dimensional coordinates）","san1 wei2 zuo4 biao1")是精确表示一个位置的坐标参数，命令参数类型为 `minecraft:vec3`，用于表示坐标位置的三个元素均为双精度浮点数。三维坐标一般应用于实体，它也可能会在粒子生成和声音播放的时候被使用。例如，这是一个合法的三维坐标：
 #codebox("5.0 56.0 17.0")
 #h(-2em)这个坐标带有小数点，因为三维坐标的三个参数均是双精度浮点数。但是，这并不意味着三维坐标只能使用浮点数。也可以在三维坐标中使用整数形式，如：
 #codebox("5 56 17")
@@ -2891,13 +2893,13 @@ Minecraft规定：大部分方块的长、宽和高均为1米，体积为1立方
   caption: [整数坐标发生的“偏移”],
   image("图片/整数坐标发生的“偏移”.png", width: 36em)
 )
-这些位置的偏移都位于相对方块两条对边的中心线上，这是因为三维坐标使用了#proper-noun(display:"中心校准（Center correct）","zhongxinjiaozhun")，即使用整数形式的三维坐标，当其某一个坐标参数为$n$（$n∈Z$）时，其实际坐标为$n−0.5$，这样可以与方块的位置相适应。注意*中心校准仅适用于$x$坐标和$z$坐标。$y$坐标严格使用实际坐标*。
+这些位置的偏移都位于相对方块两条对边的中心线上，这是因为三维坐标使用了#proper-noun(display:"中心校准（Center correct）","zhong1 xin1 jiao4 zhun3")，即使用整数形式的三维坐标，当其某一个坐标参数为$n$（$n∈Z$）时，其实际坐标为$n−0.5$，这样可以与方块的位置相适应。注意*中心校准仅适用于$x$坐标和$z$坐标。$y$坐标严格使用实际坐标*。
 
 注意这里不使用“三维坐标根据方块坐标位于方块中心”的说法，是因为三维坐标的三个参数中整数和浮点数形式可以混用，并且使用小数形式的参数严格遵循实际坐标，整数形式的参数则使用中心校准。比如，位于 `5 56 17.0` 的玩家实际位于$(5.5,56,17.0)$。
 ==== 平面方块坐标
 故名思义，平面方块坐标 `minecraft:column_pos` 就是二维的方块坐标，以西北角的二维坐标作为一个方块纵列的平面坐标，两个元素均为整数。
 ==== 二维坐标
-即只由$x$坐标和$z$坐标构成的#proper-noun(display:"二维坐标（Three-dimensional coordinates）","erweizuobiao")。二维坐标的命令参数类型为 `minecraft:vec2`，两个元素均为双精度浮点数。二维坐标若为整数，则也使用中心校准。
+即只由$x$坐标和$z$坐标构成的#proper-noun(display:"二维坐标（Two-dimensional coordinates）","er4 wei2 zuo4 biao1")。二维坐标的命令参数类型为 `minecraft:vec2`，两个元素均为双精度浮点数。二维坐标若为整数，则也使用中心校准。
 === 相对坐标#h(1em)局部坐标
 ==== 相对坐标
 世界坐标是以空间直角坐标系为基准的、固定的坐标体系，每一个位置都有其固定的坐标。在表示这些坐标的时候，有时候需要确定“相对位置”，即抛开固有的以原点为基准的坐标系，使用“相对偏移量”来表达一个位置相对于另一个位置的坐标，即下文所要介绍的#proper-noun(display:"相对坐标（Relative world coordinates）", "xiang1 dui4 zuo4 biao1")。与之相对的固定空间直角坐标系坐标被称为#proper-noun(display:"绝对坐标（Absolute world coordinates）", "jue2 dui4 zuo4 biao1")。
@@ -3474,7 +3476,7 @@ $ (a-16floor(a/16), b-16floor(b/16), c-16floor(c/16)) $
   #codebox("forceload add 12 17 124 156")
   #codebox("forceload remove -13 14 100 110")
   求最终指定的强加载区块数量。
-= UUID与目标选择器
+= UUID与目标选择器<chap:target_selector>
 一些命令，诸如 `/tp`、`/spreadplayers` 等，不可避免地会与实体产生互动。这些命令基本上都会使用有如 `minecraft:entity`、`minecraft:game_profile` 的参数类型。这些参数类型的表示方式是：如果要选择特定玩家，则可以直接指定*玩家的名称*，选择其他实体的情况则可能需要使用其他的参数，这便是下文所讲的UUID和目标选择器。
 #pagebreak()
 == UUID
@@ -6777,9 +6779,9 @@ $ cases(
   (4, [#icon("nbt-long_array") *data*: 存储区段内所有方块的方块状态。存储方式与上文生物群系存储方式完全一致。如果该区段只存在一种方块状态，则此项不存在。]),
   (4, [#icon("nbt-long_array") *palette*: 方块状态的集合。]),
   (5, [#icon("nbt-compound") 一个方块状态。]),
-  (6, [#icon("nbt-string") *#underline[Name]*: 一个生物群系的命名空间ID。]),
+  (6, [#icon("nbt-string") *#underline[Name]*: 方块的命名空间ID。]),
   (6, [#icon("nbt-compound") *Properties*: 可选，由若干方块属性组成的方块状态。]),
-  (7, [#icon("nbt-compound") *\<方块属性>*: 标签名为方块状态的属性，值使用字符串表示。]),
+  (7, [#icon("nbt-string") *\<方块属性>*: 标签名为方块状态的属性，值使用字符串表示。]),
   (3, [#icon("nbt-byte_array") *BlockLight*: 存储区段内所有方块光照亮度信息。使用YZX编码。]),
   (3, [#icon("nbt-byte_array") *SkyLight*: 存储区段内所有天空光照亮度信息。使用YZX编码。]),
   (3, [#icon("nbt-byte") *#underline[Y]*: 区段的$y$坐标。]),
@@ -6846,13 +6848,620 @@ $ cases(
   (3, [#icon("nbt-bool") *Valid*: 该兴趣点是否有效。])
 )
 ==== 维度零散数据
+这一部分数据均存储于存储于 #icon("folder") `data > minecraft` 文件夹内，被放置在命名空间之下。但是无论维度自身使用什么命名空间，其零散数据只存储于 `minecraft` 命名空间。例如，维度 `the_backrooms:level_0` 的零散数据位于 #icon("folder") `dimensions > the_backrooms > level_0 > data > minecraft`。
+
+零散数据包括区块标签数据、袭击数据和世界边界数据。
+===== 区块标签数据
+区块标签数据文件，即 #icon("nbt") `data > minecraft > chunk_tickets.dat`，是存储区块加载标签的文件，其数据格式为
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-compound") *#underline[data]*]),
+  (2, [#icon("nbt-list") *#underline[tickets]*: 区块加载标签数据。]),
+  (3, [#icon("nbt-compound") 一个加载标签。]),
+  (4, [#icon("nbt-long") *#underline[chunk_pos]*: 拥有该加载标签的区块的位置。]),
+  (4, [#icon("nbt-int") *#underline[level]*: 加载标签的等级，可能为加载等级或计算等级，或者两者都是。]),
+  (4, [#icon("nbt-long") *ticks_left*: 标签的存活时间，为 `0` 时为永久性标签。]),
+  (4, [#icon("nbt-string") *#underline[type]*: 标签类型，是一个命名空间ID。]),
+  (1, [#icon("nbt-int") *DataVersion*: 游戏数据版本。]),
+)
+===== 袭击数据
+袭击数据文件是存储袭击事件相关数据的文件，文件位于 #icon("nbt") `data > minecraft > raids.dat`。其数据格式为
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-compound") *#underline[data]*: 袭击数据。]),
+  (2, [#icon("nbt-int") *#underline[next_id]*: 下一次袭击的编号，每次袭击发生后就增加1，未发生过袭击时此值为 `1`。]),
+  (2, [#icon("nbt-list") *#underline[raids]*: 此维度存在的袭击。]),
+  (3, [#icon("nbt-compound") 一个袭击事件。]),
+  (4, [#icon("nbt-bool") *#underline[active]*: 该袭击是否处于激活状态。]),
+  (4, [#icon("nbt-int_array") *#underline[center]*: 袭击中心的坐标，依次为$x$、$y$、$z$坐标。]),
+  (4, [#icon("nbt-int") *#underline[cooldown_ticks]*: 距离下一波袭击的游戏刻数。上一波袭击结束或袭击开始时此值为初始值 `300`。]),
+  (4, [#icon("nbt-int") *#underline[groups_spawned]*: 袭击已进行的波数。]),
+  (4, [#icon("nbt-int") *#underline[group_count]*: 该袭击的总波数。]),
+  (4, [#icon("nbt-list") *#underline[heroes_of_the_village]*: 袭击胜利后要给予村庄英雄效果的玩家。]),
+  (5, [#icon("nbt-int_array") 一个玩家的UUID。]),
+  (4, [#icon("nbt-int") *#underline[id]*: 袭击的编号。]),
+  (4, [#icon("nbt-int") *#underline[post_raid_ticks]*: 袭击所有波次结束后至游戏宣布袭击胜利并给予玩家村庄英雄效果的冷却时间。]),
+  (4, [#icon("nbt-int") *#underline[raid_omen_level]*: 该袭击所用的袭击之兆等级。]),
+  (4, [#icon("nbt-bool") *#underline[started]*: 袭击是否已经开始。]),
+  (4, [#icon("nbt-string") *#underline[status]*: 该袭击当前的状态，有效值有 `ongoing`（正在进行）、`victory`（胜利）、`loss`（失败）和 `stopped`（已结束）。]),
+  (4, [#icon("nbt-int") *#underline[ticks_active]*: 袭击从开始到此文件保存时运行的非冻结游戏刻数，此值超过 `48000` 时袭击被判定为平局。]),
+  (4, [#icon("nbt-int") *#underline[total_health]*: 本袭击波次中所有生物的最大生命值总量。]),
+  (2, [#icon("nbt-int") *#underline[tick]*: 存档从创建至此运行的游戏刻数，不计入游戏刻冻结的时间。]),
+  (1, [#icon("nbt-int") *DataVersion*: 游戏数据版本。])
+)
+===== 世界边界数据
+世界边界数据文件位于 #icon("nbt") `data > minecraft > world_border.dat`，其数据格式为
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-compound") *#underline[data]*: 世界边界数据。]),
+  (2, [#icon("nbt-double") *center_x*: 世界边界中心$x$坐标。]),
+  (2, [#icon("nbt-double") *center_z*: 世界边界中心$z$坐标。]),
+  (2, [#icon("nbt-double") *damage_per_block*: 缓冲区外每增加一层伤害区每秒钟对玩家造成的伤害增量。]),
+  (2, [#icon("nbt-double") *lerp_target*: 世界边界直径的更改量。]),
+  (2, [#icon("nbt-long") *lerp_time*: 世界边界直径发生变化所需的时间。]),
+  (2, [#icon("nbt-double") *safe_zone*: 缓冲区的宽度。]),
+  (2, [#icon("nbt-double") *size*: 世界边界直径。]),
+  (2, [#icon("nbt-int") *warning_blocks*: 产生警告时玩家距离边界墙的距离。]),
+  (2, [#icon("nbt-int") *warning_time*: 距离边界墙到达该位置的倒计时，若玩家在该位置，则产生警告。]),
+  (1, [#icon("nbt-int") *DataVersion*: 游戏数据版本。])
+)
 == 方块实体<sec:block_entity>
+方块实体数据以NBT的格式存储在 #icon("nbt") `regions` 文件夹下的Anvil文件中。其中有一个字段名为 #icon("nbt-list") `block_entities`，是一个复合标签的列表，这便是专门用于存储方块实体的标签。每一个复合标签承载一个方块的方块实体信息，视复合标签为该方块实体的根标签。
+
+所有拥有方块实体的数据列举于附录@sec:block_entity_data 中，供读者参考。
+=== 方块实体共通标签 \*
+一般来说，不同的方块实体拥有不同的标签数据，如告示牌的文本、箱子容纳的物品等，但是所有方块实体一定包含几种特定的标签，这些标签是所有方块实体所共同拥有的，于是称这些标签为#proper-noun(display: "方块实体共通标签（Tags common to all block entities）", "fang1 kuai4 shi2 ti3 gong4 tong2 biao1 qian1")。这些标签无法被命令 `/data` 所修改，使用像 `/setblock` 这样的命令放置方块时也无法指定这些共通标签的值。但是除标签 #icon("nbt-bool") `keepPacked` 外，其他标签均可被命令 `/data get` 查询。下面列出了所有的方块实体共有的字段：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-compound") *components*: 使用此方块实体对应的物品放置此方块实体时，如果物品带有非默认的且不会被继承处理的数据组件，则数据会被复制存储入此标签内。]),
+  (2, [一个特定的物品堆叠组件，使用与之匹配的数据类型。]),
+  (1, [#icon("nbt-string") *#underline[id]*: 该方块的命名空间ID。]),
+  (1, [#icon("nbt-bool") *#underline[keepPacked]*: 该方块是否“有效”。“有效”的判定条件是，在区块加载的时候被立即放置。这个标签无法被 `/data get` 查询。]),
+  (1, [#icon("nbt-int") *#underline[x]*: 该方块的$x$坐标。]),
+  (1, [#icon("nbt-int") *#underline[y]*: 该方块的$y$坐标。]),
+  (1, [#icon("nbt-int") *#underline[z]*: 该方块的$z$坐标。])
+)
+每个方块实体的数据格式由共通标签和各自的特有字段组成：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [方块实体共通标签]),
+  (1, [各方块实体的特有字段])
+)
+=== 方块实体数据的应用实例
+不是所有方块都有方块实体，下面的例子仅仅列举了其中一些方块实体的数据应用。
+#example(
+  [灾厄旗帜由于其图案的样式超出了合成次数的上限，因此无法被自然合成，但它可以通过命令来获取。写出放置一个灾厄旗帜需要的命令（方块实体的名称不需要）。],
+  [
+    查阅附录@sec:block_entity_data 的数据知旗帜的特有标签为
+    #tree(
+      (0, [#icon("nbt-compound") 根标签]),
+      (1, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *CustomName*: 可选，该旗帜的自定义名称，需要为文本组件。]),
+      (1, [#icon("nbt-list") *patterns*: 可选，按顺序使用的旗帜图案。列表中复合标签的次序越靠前，其对应的图案在旗帜上的层级就越往下。]),
+      (2, [#icon("nbt-compound") 一个单独的旗帜图案。]),
+      (3, [#icon("nbt-string") *#underline[color]*: 图案的颜色。有效值有 `black`（黑色）、`blue`（蓝色）、`brown`（棕色）、`cyan`（青色）、`gray`（灰色）、`green`（绿色）、`light_blue`（淡蓝色）、`light_gray`（淡灰色）、`lime`（黄绿色）、`magenta`（品红色）、`orange`（橙色）、`pink`（粉红色）、`purple`（紫色）、`red`（红色）、`white`（白色）、`yellow`（黄色）。]),
+      (3, [#icon("nbt-string")#icon("nbt-compound") *#underline[pattern]*: 图案的类型，当使用 #icon("nbt-string") 字符串形式时，值为图案的命名空间ID。旗帜图案可由数据包自定义，在数据包内的相应文件为 #icon("json") `data > <命名空间> > banner_pattern > <ID>.json`。也可以以内联SNBT的形式直接在此处定义一个图案类型，此时使用 #icon("nbt-compound") 复合标签形式。]),
+      (4, [*若使用 #icon("nbt-compound") 复合标签形式，则以下字段：*], false),
+      (4, [#icon("nbt-string") *asset_id*: 资源包内旗帜图案纹理的命名空间ID，文件路径为 #icon("png") `assets > <命名空间> > textures > entity > banner > <路径>.png`。]),
+      (4, [#icon("nbt-string") *translation_key*: 该旗帜图案的翻译标识符前缀，游戏解析时会加上 #icon("nbt-string") `color` 字段的值作为后缀。])
+    )
+    灾厄旗帜为白色旗帜，其图案样式为：青色菱形、底淡灰横条、中灰竖条、淡灰色方框边、中黑横条、淡灰色上半方形、淡灰色圆形和黑色方框边。图案样式的顺序不可变化，则 #icon("nbt-list") `patterns` 的数据为
+    #codebox("patterns:[
+  {color:\"cyan\",pattern:\"minecraft:rhombus\"},
+  {color:\"light_gray\",pattern:\"minecraft:stripe_bottom\"},
+  {color:\"gray\",pattern:\"minecraft:stripe_center\"},
+  {color:\"light_gray\",pattern:\"minecraft:border\"},
+  {color:\"black\",pattern:\"minecraft:stripe_middle\"},
+  {color:\"light_gray\",pattern:\"minecraft:half_horizontal\"},
+  {color:\"light_gray\",pattern:\"minecraft:circle\"},
+  {color:\"black\",pattern:\"minecraft:border\"}
+]")
+    在实际编写命令时，不要使用换行符和进位符。本题要求放置一个灾厄旗帜，则在本地坐标放置灾厄旗帜的命令为
+    #codebox("setblock ~ ~ ~ white_banner{patterns:[{color:\"cyan\",pattern:\"minecraft:rhombus\"},{color:\"light_gray\",pattern:\"minecraft:stripe_bottom\"},{color:\"gray\",pattern:\"minecraft:stripe_center\"},{color:\"light_gray\",pattern:\"minecraft:border\"},{color:\"black\",pattern:\"minecraft:stripe_middle\"},{color:\"light_gray\",pattern:\"minecraft:half_horizontal\"},{color:\"light_gray\",pattern:\"minecraft:circle\"},{color:\"black\",pattern:\"minecraft:border\"}]}")
+  ]
+)
+#example(
+  [在$(0,56,0)$放置一个站立的橡木告示牌，使之正面呈现的文本为#text_component(background:rgb("#b69b62"),shadow-color:black.transparentize(100%),text(red)[#align(center)[准备好了吗？\ #text(green)[[点击这里开始游戏]\ \ \ ]]])。点击该告示牌后，将告示牌替换为文本#text_component(background:rgb("#b69b62"),shadow-color:black.transparentize(100%),text(black)[\ Loading...\ \ \ ])。],
+  [
+    查阅附录@sec:block_entity_data，告示牌的方块实体数据如下：
+    #tree(
+      (0, [#icon("nbt-compound") 根标签]),
+      (1, [#icon("nbt-compound") *back_text*: 告示牌背面的文本信息。]),
+      (2, [#icon("nbt-string") *color*: 文本的颜色，相当于用染料为告示牌文本染色。]),
+      (2, [#icon("nbt-list") *filtered_messages*: 告示牌被过滤的文字，含有四个元素，按顺序分别存储告示牌第一行、第二行、第三行和第四行的文本。]),
+      (3, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") 一行文本，必须使用文本组件。]),
+      (2, [#icon("nbt-bool") *has_glowing_text*: 告示牌文本是否发光。]),
+      (2, [#icon("nbt-list") *#underline[messages]*: 告示牌的文字，含有四个元素，按顺序分别存储告示牌第一行、第二行、第三行和第四行的文本。]),
+      (3, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") 一行文本，必须使用文本组件。]),
+      (1, [#icon("nbt-compound") *front_text*: 告示牌正面的文本信息。]),
+      (2, [#icon("nbt-string") *color*: 文本的颜色，相当于用染料为告示牌文本染色。]),
+      (2, [#icon("nbt-list") *filtered_messages*: 告示牌被过滤的文字，含有四个元素，按顺序分别存储告示牌第一行、第二行、第三行和第四行的文本。]),
+      (3, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") 一行文本，必须使用文本组件。]),
+      (2, [#icon("nbt-bool") *has_glowing_text*: 告示牌文本是否发光。]),
+      (2, [#icon("nbt-list") *#underline[messages]*: 告示牌的文字，含有四个元素，按顺序分别存储告示牌第一行、第二行、第三行和第四行的文本。]),
+      (3, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") 一行文本，必须使用文本组件。]),
+      (1, [#icon("nbt-bool") *#underline[is_waxed]*: 告示牌是否被涂蜡。被涂蜡后告示牌文本不能修改，但交互事件中的命令仍可以执行。])
+    )
+    不考虑点击事件的情况下，原告示牌第一和第二行的文本分别为
+    #codebox([{text:\"准备好了吗？\",color:\"#color_block(red)red\"}])
+    #codebox([{text:\"[点击这里开始游戏]\",color:\"#color_block(green)green\"}])
+    告示牌上的文本组件可以添加点击事件，点击告示牌的任意位置均可触发点击事件，无论拥有点击事件的文本组件所处的行数。当一个告示牌上有多个点击事件时，点击告示牌会触发所有事件。这里的点击事件所处的位置随意，可以选择在第二行的文本组件添加点击事件，#icon("nbt-string") `command` 值先空着：
+    #codebox([{text:\"[点击这里开始游戏]\",color:\"#color_block(green)green\",click_event:{action:\"run_command\",command:\"\"}}])
+    点击事件会将该告示牌的内容替换掉。告示牌的文本是存储在方块实体中的，可以很容易想到用命令 `/data` 修改告示牌上的文本：
+    #codebox("data merge block …")
+    玩家在点击告示牌的时候，命令执行者为玩家，执行的位置为告示牌所处的位置，因此用 `~ ~ ~` 表示修改数据的告示牌为当前位置上的告示牌。告示牌修改文本后，第一行内容为空，第二行为默认样式的#text_component(background:rgb("#b69b62"),shadow-color:black.transparentize(100%),text(black)[Loading...])，于是整个 `/data` 命令可以写为
+    #codebox("data merge block ~ ~ ~ {front_text:{messages:[\"\",\"loading...\",\"\",\"\"]}}")
+    这里 `/data` 使用到了双引号，不妨将定义 #icon("nbt-string") `command` 的引号写成单引号以规避转义，所以告示牌第二行的文本组件为
+    #codebox([{text:\"[点击这里开始游戏]\",color:\"#color_block(green)green\",click_event:{action:\"run_command\",command:'data merge block \~ \~ \~ {front_text:{messages:[\"\",\"loading...\",\"\",\"\"]}}}}])
+    综上所述，放置告示牌需要的完整命令为
+    #codebox([setblock 0 56 0 oak_sign{front_text:{message:[{text:\"准备好了吗？\",color:\"#color_block(red)red\"},{text:\"[点击这里开始游戏]\",color:\"#color_block(green)green\",click_event:{action:\"run_command\",command:'data merge block \~ \~ \~ {front_text:{messages:[\"\",\"loading...\",\"\",\"\"]}}'}},\"\",\"\"]}}])
+  ]
+)
+#index(index: "method", display: "获取现实时间", "huo4 qu3 xian4 shi2 shi2 jian1")
+#example(
+  [在游戏中获取计算机上的现实时间。],
+  [
+    命令方块的方块实体数据有这样一条字段：#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") `LastOutput`，这条字段会存储上一个命令的输出。当上一条命令执行有误的时候，会有如下的输出：`[时:分:秒]错误内容`，其中 `[时:分:秒]` 便是计算机系统上的现实时间。
+
+    因此需要放置一个命令方块，在其中执行错误的命令，随后获取命令方块的 #icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") `LastOutput` 数据，将时间截取出来。放置的命令方块可以为保持开启的循环型命令方块以每刻获取当前时间。
+
+    首先不妨在$(0,0,0)$（确保该位置已被加载）放置一个保持开启的循环型命令方块，控制台中含有以下的错误命令：
+    #codebox("advancement")
+    #h(-2em)命令方块是否保持开启由字段 #icon("nbt-bool") `auto` 控制，保持开启需要的值为 `true`。控制台命令由 #icon("nbt-string") 存储。放置此命令方块所需的命令为
+    #codebox("setblock 0 0 0 repeating_command_block{auto:true,Command:\"advancement\"}")
+    然后高频获取 #icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") `LastOutput`，此时的 #icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") `LastOutput` 内容大致如下所示：
+    #codebox("{extra: [{color: \"red\", extra: [{click_event: {action: \"suggest_command\", command: \"/advancement\"}, color: \"gray\", extra: [\"...\", \"dvancement\", {color: \"red\", italic: 1b, translate: \"command.context.here\"}], text: \"\"}], text: \"\"}], text: \"[16:40:25] \"}
+")
+    #h(-2em)其中的 `[16:40:25]` 需要被截取，这是一个字符串，可以用字符串切片得到任意的形式。比如，将整个时间切出来、去除外侧的方括号，将结果存入命令存储 `foo:test` 的自定义字段 #icon("nbt-string") `system_time`，显然需要从第2个字符切到第9个，命令为：
+    #codebox("data modify storage foo:test system_time set string block 0 0 0 LastOutput.text 1 9")
+    #h(-2em)现在就可以用文本组件将这个结果显示出来：
+    #codebox("{source:\"storage\",nbt:\"system_time\",storage:\"foo:test\}")
+    或者也可以单独将时、分、秒截取出来：
+    #codebox("data modify storage foo:clock system_time.hour set string block 0 0 0 LastOutput.text 1 3")
+    #codebox("data modify storage foo:clock system_time.minute set string block 0 0 0 LastOutput.text 4 6")
+    #codebox("data modify storage foo:clock system_time.second set string block 0 0 0 LastOutput.text 7 9")
+    #h(-2em)不过，字符串切片得到的结果都是字符串，如果需要对这些时间数据进行运算，则需要使用宏将他们转换成数值：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > foo > function > clock.mcfunction",
+      "function foo:clock_macro with storage foo:clock system_time"
+    )
+    #codefile(
+      lang: "mcfunction",
+      title: "data > foo > function > clock_macro.mcfunction",
+      "$scoreboard players set #system_time_hour var $(hour)
+$scoreboard players set #system_time_minute var $(minute)
+$scoreboard players set #system_time_second var $(second)"
+    )
+  ]
+)
+#cite(<get_system_time>, form: none)
 == 实体<sec:entity>
-== 状态效果
-== 属性
+存储实体格式的Anvil文件位于文件夹 #icon("folder") `entities` 下，相应字段能够存储绝大部分种类的实体数据，只有玩家的数据不在此处，因此本节所讲述的实体格式不会包含任何与玩家有关的信息。
+=== 处理实体的命令
+==== 命令 `/summon`
+通常地、如果需要生成一个实体，除了用创造模式物品栏里的刷怪蛋外，还可以用命令 `/summon` 生成一个自定义的实体，这使得实体的性质更丰富。命令 `/summon` 需要的参数等级为2，语法为：#index(index: "command", "summon")
+#codebox("summon <entity> [<pos>] [<nbt>]")
+#param-desc(
+  [`<entity>`（召唤实体 `minecraft:entity_summon`）], [生成实体的命名空间ID，必须为可召唤实体的命名空间ID。],
+  [`[<pos>]`（三维坐标 `minecraft:vec3`）], [可选，生成该实体的坐标，坐标使用中心点校准。如不指定，则使用命令执行位置。命令中坐标的位置必须已经加载。],
+  [`[<nbt>]`（NBT复合标签 `minecraft:nbt_compound_tag`）], [可选，该实体的NBT数据，必须为SNBT，是根标签的值。如不指定，则会在坐标的位置生成一个默认的实体。]
+)
+例如，在命令执行者的位置生成一只猪：
+#codebox("summon pig")
+#h(-2em)或
+#codebox("summon pig ~ ~ ~")
+当然也可以在命令后面添加SNBT以自定义这只猪的各项性质，下面的内容将重点介绍实体SNBT的写法。
+==== 命令 `/kill`
+命令用于清除实体，所需权限等级为2，语法为：#index(index: "command", "kill")
+#codebox("kill [<targets>]")
+#param-desc(
+  [`<targets>`（实体 `minecraft:entity`）], [可选，不指定则清除命令执行者自身。]
+)
+==== 命令` /ride`
+命令 `/ride` 用于控制实体的骑乘关系，它需要的权限等级为2，以下是所有用法：#index(index: "command", "ride")
+===== 让指定骑手骑乘指定坐骑，语法为
+#codebox("ride <target> mount <vehicle>")
+#param-desc(
+  [`<targets>`（实体 `minecraft:entity`）], [骑手，可以为玩家名称、UUID或目标选择器。],
+  [`<vehicle>`（实体 `minecraft:entity`）], [坐骑，可以为玩家名称、UUID或目标选择器。]
+)
+注意，遇到下列情况即命令执行失败：
+====== *坐骑为玩家或标记*；
+====== 骑手已骑乘了其他坐骑；
+====== 骑手和坐骑为同一实体；
+====== 骑手和坐骑有直接或间接的骑乘关系。
+#example(
+  [让最近的物品展示实体骑乘最近的狼。],
+  [
+    命令为
+    #codebox("ride @n[type=item_display] mount @n[type=wolf]")
+  ]
+)
+===== 让指定骑手取消骑乘当前的坐骑，语法为
+#codebox("ride <target> dismount")
+#wrap-content(
+  tips(
+    width: 20em,
+    [
+      + 可以多层嵌套骑乘实体，如：让狼作为坐骑，物品展示实体骑乘狼，标记骑乘物品展示实体。
+      + 常用的坐骑为狼，常用的骑手为展示实体。狼提供移动方式，也可以跟随玩家；展示实体能提供自定义的外观和动画。
+      + 标记不能作为坐骑！如果需要用到标记，请将它作为骑手使用。
+    ]
+  ),
+  [
+
+    对原版技术性开发而言，骑乘是常用的组合实体的手段。通常是将一个能够提供移动方式的实体作为坐骑，提供外观的实体作为骑手，这样就能创建自定义实体。在编辑其数据的时候，也可以用 `/execute on` 子命令精确地指向具有骑乘关系的实体。
+  ],
+  align: left
+)
+=== 实体共通标签
+与方块实体类似，所有实体的根标签下一定有一些共同存在的子标签，这些标签不会因为实体种类的变化而有所改变，于是称这类标签为#proper-noun(display: "实体共通标签（Tags common to all entities）", "shi2 ti3 gong4 tong1 biao1 qian1")。下面列举了所有的实体共有的字段，注意，不是所有的实体共通标签都能被命令 `/data` 所修改。
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-short") *Air*: 该实体剩余的空气值。]),
+  (1, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *CustomName*: 该实体的自定义名称，未指定名称时该标签不存在。需要是一个文本组件。]),
+  (1, [#icon("nbt-bool") *CustomNameVisible*: 该实体的自定义名称能否总是显示在该实体的上方，未指定名称时不存在。]),
+  (1, [#icon("nbt-string")#icon("nbt-compound") *data*: 任意自定义数据。写入数据的时候可以使用 #icon("nbt-string") 字符串形式，但存储的时候一律存储为 #icon("nbt-compound") 复合标签形式。]),
+  (2, [自定义数据结构]),
+  (1, [#icon("nbt-double") *#underline[fall_distance]*: 该实体已下坠的距离。]),
+  (1, [#icon("nbt-short") *#underline[Fire]*: 该实体身上的火焰距熄灭的剩余游戏刻时长。对于未着火的玩家，此值为 `-20s`，对于未着火的其他实体，此值为 `-1s`。]),
+  (1, [#icon("nbt-bool") *Glowing*: 该实体是否发光。]),
+  (1, [#icon("nbt-bool") *HasVisualFire*: 该实体是否在外观上有着火效果。]),
+  (1, [#icon("nbt-string") *#underline[id]*: 该实体的命名空间ID，此值不可被修改。]),
+  (1, [#icon("nbt-bool") *#underline[Invulnerable]*: 该实体是否会受到伤害。这里的伤害是指除创造模式玩家造成的伤害和属于伤害类型标签 `#bypasses_invulnerability` 以外的其他伤害。]),
+  (1, [#h(-2em)#icon("nbt-list") *#underline[Motion]*: 列表中存在三个元素，均为双精度浮点数，用于表示该实体在当前游戏刻的速度。在三维空间中将速度矢量分解为沿三个坐标轴的速度矢量，即$"d"x$、$"d"y$和$"d"z$，分别用此列表第一、二、三个元素表示。#figure(caption:"速度矢量的分解",image("图片/速度矢量的分解.png",width:12em))]),
+  (1, [#icon("nbt-bool") *NoGravity*: 该实体是否会受到重力影响。]),
+  (1, [#icon("nbt-bool") *#underline[OnGround]*: 该实体是否接触地面。]),
+  (1, [#icon("nbt-list") *Passengers*: 骑乘该实体的实体。]),
+  (2, [#icon("nbt-compound") 一个骑乘该实体的实体。]),
+  (3, [实体格式]),
+  (1, [#icon("nbt-int") *#underline[PortalCooldown]*: 该实体距下次被允许穿过下界传送门前往另一维度的游戏刻。]),
+  (1, [#icon("nbt-list") *#underline[Pos]*: 该实体的三维坐标，列表内元素顺序不可改变。]),
+  (2, [#icon("nbt-double") $x$坐标。]),
+  (2, [#icon("nbt-double") $y$坐标。]),
+  (2, [#icon("nbt-double") $z$坐标。]),
+  (1, [#icon("nbt-list") *#underline[Rotation]*: 该实体的朝向，列表内元素顺序不可改变。]),
+  (2, [#icon("nbt-float") 偏航角。]),
+  (2, [#icon("nbt-float") 俯仰角。]),
+  (1, [#icon("nbt-bool") *Silent*: 该实体是否会发出声音。]),
+  (1, [#icon("nbt-list") *Tags*: 该实体的所有记分板标签。]),
+  (2, [#icon("nbt-compound") 一个记分板标签。]),
+  (1, [#icon("nbt-int") *TicksFrozen*: 可能不存在，表示实体已冷冻的时间。当实体在细雪中时每游戏刻增加 `1`，离开细雪则每游戏刻减少 `2`。为 `0` 时此标签不存在。]),
+  (1, [#icon("nbt-int_array") *#underline[UUID]*: 该实体的UUID。])
+)
+如果一个实体属于生物一类（Java类名LivingEntity），则它拥有如下的共同标签，这些标签被称为*生物共通标签*：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-float") *#underline[AbsorptionAmount]*: 此生物的伤害吸收值。]),
+  (1, [#icon("nbt-list") *active_effects*: 该生物拥有的状态效果列表。]),
+  (2, [#icon("nbt-compound") 一个状态效果。]),
+  (3, [格式见节@sec:active_effects。]),
+  (1, [#icon("nbt-list") *attributes*: 该实体的属性列表。]),
+  (2, [#icon("nbt-compound") 一个属性。]),
+  (3, [格式见节@sec:attribute。]),
+  (1, [#icon("nbt-compound") *Brain*: 生物记忆的相关信息，用于AI计算。不使用生物记忆的实体该项标签为空。具体格式见附录@sec:entity_data 的相关说明。]),
+  (2, [#icon("nbt-compound") *#underline[memories]*: 生物记忆。此处存储长期记忆，不存储短期记忆，短期记忆仅存在于内存中临时使用。]),
+  (3, [#icon("nbt-compound") *\<生物记忆类型命名空间ID>*: 一项长期记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。每种生物记忆的初始过期时间都不同，此值为 `0l` 时该记忆被删除。]),
+  (4, [#icon("nbt-bool")#icon("nbt-int")#icon("nbt-long")#icon("nbt-int_array")#icon("nbt-list")#icon("nbt-compound") *value*: 记忆的值，每种生物记忆的值类型都不同。]),
+  (1, [#icon("nbt-list") *current_explosion_impact_pos*: 此生物被所有形式的爆炸击退时的坐标，列表内元素顺序不可改变。#icon("nbt-int") `current_impulse_context_reset_grace_time` 为 `0` 时此字段被删除。]),
+  (2, [#icon("nbt-double") $x$坐标。]),
+  (2, [#icon("nbt-double") $y$坐标。]),
+  (2, [#icon("nbt-double") $z$坐标。]),
+  (1, [#icon("nbt-int") *#underline[current_impulse_context_reset_grace_time]*: 爆炸击退减少摔落伤害的最长时间，单位为游戏刻。]),
+  (1, [#icon("nbt-short") *#underline[DeathTime]*: 距离生物死亡而被删除的时间。生物存活时该值为 `0s`，死亡后每游戏刻增加 `1s`，直到该值达到 `20s` 时生物被删除。]),
+  (1, [#icon("nbt-compound") *equipment*: 生物的装备。]),
+  (2, [#icon("nbt-compound") *\<槽位>*: 在此槽位上装备的物品。有效的槽位有 `mainhand`、`offhand`、`feet`、`legs`、`chest`、​`head`、`body` 和 `saddle`。]),
+  (3, [无槽位物品格式，见节@sec:item_stack。]),
+  (1, [#icon("nbt-bool") *FallFlying*: 该生物是否处于滑翔状态。]),
+  (1, [#icon("nbt-float") *Health*: 该生物的生命值。]),
+  (1, [#icon("nbt-int") *#underline[HurtByTimestamp]*: 以该生物生成的时间为准，存储该生物上次被伤害的时间。]),
+  (1, [#icon("nbt-short") *#underline[HurtTime]*: 该生物受伤后伤害免疫阶段（变红）的剩余时间，初始为10 gt，每游戏刻减1。]),
+  (1, [#icon("nbt-int_array") *last_hurt_by_mob*: 当前最后一次攻击该生物的生物的UUID。]),
+  (1, [#icon("nbt-int_array") *last_hurt_by_player*: 当前最后一次攻击该生物的玩家的UUID。]),
+  (1, [#icon("nbt-int") *last_hurt_by_player_memory_time*: 生物被玩家攻击后该值为 `100`（单位为游戏刻），每游戏刻减少1，此值降到 `0` 以下后清除 #icon("nbt-int_array") `last_hurt_by_player` 的数据，并删除此字段。]),
+  (1, [#icon("nbt-compound") *locator_bar_icon*: 生物的路径点图标。]),
+  (2, [#icon("nbt-int")#icon("nbt-list") *color*: 此生物路径点的图标颜色，可以用 #icon("nbt-int") 整型指定RGB颜色，对二进制而言，每八位表示一个通道，从高到低依次为R、G、B通道。也可以用 #icon("nbt-list") 列表分别指定每个通道。游戏在存储时一律存储为 #icon("nbt-int") 整型。]),
+  (3, [*若使用 #icon("nbt-list")列表形式，则包含以下字段：*], false),
+  (3, [#icon("nbt-float") R通道分量，表示红色值。]),
+  (3, [#icon("nbt-float") G通道分量，表示绿色值。]),
+  (3, [#icon("nbt-float") B通道分量，表示蓝色值。]),
+  (2, [#icon("nbt-string") *style*: 路径点样式的命名空间ID。]),
+  (1, [#icon("nbt-int_array") *sleeping_pos*: 该生物所睡床的坐标，依次为$x$、$y$、$z$坐标。该生物不睡觉时此标签不存在。]),
+  (1, [#icon("nbt-string") *Team*: 可选，该生物所在的队伍。]),
+  (1, [#icon("nbt-int") *ticks_since_last_hurt_by_mob*: 生物最近一次被生物攻击后距离上次攻击的游戏刻数。])
+)
+具体到每一个实体时，除了上述的共通标签，还可以使用实体自身特有的标签，由于篇幅限制，本章无法对所有实体的所有标签进行分析，故将它们列举于附录@sec:entity_data 中，供读者查阅。
+=== 实体数据的应用实例
+实体种类、可用字段繁多，以下列举一些应用实例以说明实体数据的使用。
+#example(
+  [生成一个有双臂、没有基座的盔甲架。],
+  [
+    查阅附录@sec:entity_data，盔甲架的两种标签：#icon("nbt-bool") `ShowArms` 和#icon("nbt-bool") `NoBasePlate` 分别控制盔甲架是否显示双臂、是否使基座不可见。易知生成有双臂、没有基座的盔甲架的命令可以为
+    #codebox("summon minecraft:armor_stand ~ ~ ~ {ShowArms:true,NoBasePlate:true}")
+  ]
+)
+#example(
+  [对于世界中所有的棕色绵羊，使用命令将其中任意一只变成粉红色绵羊。],
+  [
+    在这个例子中，需要用命令进行两个行为：一是选择目标，二是对目标的数据进行更改。前者即为@chap:target_selector\所讲的目标选择器，显然选择世界中任意一只绵羊的目标选择器为
+    #codebox("@e[type=sheep,sort=random,limit=1]")
+    其次要对选择的绵羊进行进一步的限定。根据附录@sec:entity_data，控制绵羊外观颜色的标签为 #icon("nbt-byte") `Color`，使用颜色的数字ID，这也是扁平化后少数还存留数字ID的地方，其对应关系如下表所示：
+    #split-table(
+      caption: "颜色数字ID表",
+      original-cols: (auto, auto),
+      seperator: (2,),
+      header: ([数值], [颜色]),
+      data: (
+        [`0`], [白色],
+        [`1`], [橙色],
+        [`2`], [品红],
+        [`3`], [淡蓝],
+        [`4`], [黄色],
+        [`5`], [黄绿],
+        [`6`], [粉红],
+        [`7`], [灰色],
+        [`8`], [淡灰],
+        [`9`], [青色],
+        [`10`], [紫色],
+        [`11`], [蓝色],
+        [`12`], [棕色],
+        [`13`], [绿色],
+        [`14`], [红色],
+        [`15`], [黑色]
+      )
+    )
+    其中棕色对应数据值 `12`。根据选择器NBT参数的语法，将这个目标选择器写为
+    #codebox("@e[type=sheep,sort=random,limit=1,nbt={Color:12b}]")
+    第二步为更改目标实体的数据，很明显需要使用命令 `/data merge` 或 `/data modify`。本例使用 `/data merge` 的写法，粉红色的数据值为 `6`，于是最终的命令为
+    #codebox("data merge entity @e[type=sheep,sort=random,limit=1,nbt={Color:12b}] {Color:6b}")
+  ]
+)
+#example(
+  [
+    数据包AMR Bot的无人机是由多个实体通过骑乘拼接起来的自定义实体。在设计上无人机需要跟随玩家，因此根实体选用狼，现生成这个自定义实体，要求狼有以下的性质：
+    + 隐形；
+    + 静音；
+    + 无法受到伤害；
+    + 被一个物品展示实体骑乘，这个物品展示实体又被一个交互实体骑乘。
+    #figure(
+      caption: "AMR Bot数据包",
+      image("图片/AMR Bot数据包.png", width: 5em)
+    )
+  ],
+  [
+    首先确定这个自定义实体的类型为狼，其次对于这个自定义实体的特征，可以逐个分析出实现这些特征所需要的标签：
+    + 隐形：狼的可用字段中并没有直接控制它是否隐形的，因此需要使用状态效果。在 #icon("list") `active_effects` 直接给狼定义无限时长的隐身状态效果，不显示粒子效果。
+      #codebox("active_effects:[{id:\"minecraft:invisibility\",duration:-1,show_particles:false}]")
+    + 静音：由字段 #icon("nbt-bool") `Silent` 定义。
+      #codebox("Silent:true")
+    + 无法受到伤害：由字段 #icon("nbt-bool") `Invulnerable` 定义。
+      #codebox("Invulnerable:true")
+    + 被一个物品展示实体骑乘，这个物品展示实体又被一个交互实体骑乘：实体的骑乘由实体共通标签 #icon("nbt-list") `Passengers` 存储，内部每一个元素都是一个完整的实体格式，写法如下所示。
+      #codebox("Passengers:[{id:\"minecraft:item_display\",Passengers:[{id:\"minecraft:interaction\"}]}]")
+    将上面的所有标签整合到一起，放在命令 `/summon` 中，可得到
+    #codebox("summon wolf ~ ~ ~ {
+  active_effects:[
+    {
+      id:\"minecraft:invisibility\",
+      duration:-1,
+      show_particles:false
+    }
+  ],
+  Silent:true,
+  Invulnerable:true,
+  Passengers:[
+    {
+      id:\"minecraft:item_display\",
+      Passengers:[
+        {
+          id:\"minecraft:interaction\"
+        }
+      ]
+    }
+  ]
+}")
+  ]
+)
+#example(
+  [
+    生成一个潜行的Mu_xian玩家模型。
+    #figure(
+      caption: "",
+      image("图片/潜行Mu_xian.png", width: 5em)
+    )
+  ],
+  [
+    参考附录@sec:entity_data，命令为
+    #codebox("summon mannequin ~ ~ ~ {profile:{name:\"Mu_xian\"},pose:\"crouching\"}")
+  ]
+)
+#example(
+  [
+    生成一个物品展示框，使之朝向上方，里面存储了一个被旋转了7次的铁镐，且该物品展示框无法被冒险模式的玩家破坏。
+    #figure(
+      caption: "",
+      image("图片/物品展示框例题图.png", width: 4em)
+    )
+  ],
+  [
+    查阅附录@sec:entity_data，除了实体共通标签外，物品展示框还拥有下列标签：
+    #tree(
+      (0, [#icon("nbt-compound") 根标签]),
+      (1, [#icon("nbt-byte") *#underline[Facing]*: 物品展示框的朝向，用 `0b` 表示朝向下方，`1b` 表示上方，`2b` 表示北方，`3b` 表示南方，`4b` 表示西方，`5b` 表示东方。]),
+      (1, [#icon("nbt-bool") *#underline[Fixed]*: 物品展示框是否为一个锁定的物品展示框。锁定的物品展示框意思为，该物品展示框无法被绝大部分伤害源所破坏（特例：处于创造模式的玩家），并且里面物品无法被旋转、放置或移除；此外该物品展示框无论是否有支撑方块，均不会被破坏。]),
+      (1, [#icon("nbt-bool") *#underline[Invisible]*: 物品展示框是否隐形。]),
+      (1, [#icon("nbt-compound") *Item*: 物品展示框中的物品。]),
+      (2, [无槽位物品格式]),
+      (1, [#icon("nbt-float") *ItemDropChance*: 物品展示框被破坏时内部物品掉落的概率。]),
+      (1, [#icon("nbt-byte") *ItemRotation*: 物品被旋转的次数。])
+    )
+    详细的物品格式概念将在节@sec:item_stack 中讲解，这里先给出一个铁镐的物品格式：
+    #codebox("{id:\"minecraft:iron_pickaxe\",count:1}")
+    物品展示框的其他一些标签在此用不到，故不单独介绍它们。要想生成一个题设要求的物品展示框，可以不难写出如下的命令：
+    #codebox("summon item_frame ~ ~ ~ {
+  Facing:1b,
+  Item:{
+    id:\"minecraft:iron_pickaxe\",
+    count:1
+  },
+  ItemRotation:7b,
+  Invisible:1b,
+  Fixed:1b
+}")
+  ]
+)
+#example(
+  [
+    为标签 #icon("nbt-int") `DisabledSlots` 编写数据，使之禁用盔甲架如下部位的特定交互事件：
+    + 添加和改变靴子栏的物品； <enu:armor_stand_boot>
+    + 添加、移除和改变主手的手持物品。 <enu:armor_stand_mainhand>
+  ],
+  [
+    标签 #icon("nbt-int") `DisabledSlots` 用于禁止玩家与盔甲架某些部位的交互。虽然它使用整型数据，但在内部其实是使用二进制存储盔甲架物品栏可交互信息的。该二进制数据一共有22位数字，每一位都用于存储禁用的部位与禁用的交互动作。对于每一位数字，使用 `1` 以表示禁用与特定部位物品的特定交互动作，使用 `0` 以解除禁用。每一位的禁用部位和禁用动作如下表所示：
+    #split-table(
+      caption: "盔甲架禁用部位与禁用动作",
+      original-cols: (auto, auto),
+      seperator: (2,),
+      header: ([位数], [禁用部位与禁用动作]),
+      data: (
+        [0], [添加和改变主手的手持物品],
+        [1], [添加和改变靴子栏的物品],
+        [2], [添加和改变护腿栏的物品],
+        [3], [添加和改变胸甲栏的物品],
+        [4], [添加和改变头盔栏的物品],
+        [5], [添加和改变副手的手持物品],
+        [6], [空位],
+        [7], [空位],
+        [8], [移除和改变主手的手持物品],
+        [9], [移除和改变靴子栏的物品],
+        [10], [移除和改变护腿栏的物品],
+        [11], [移除和改变胸甲栏的物品],
+        [12], [移除和改变头盔栏的物品],
+        [13], [移除和改变副手的手持物品],
+        [14], [空位],
+        [15], [空位],
+        [16], [添加主手的手持物品],
+        [17], [添加靴子栏的物品],
+        [18], [添加护腿栏的物品],
+        [19], [添加胸甲栏的物品],
+        [20], [添加头盔栏的物品],
+        [21], [添加副手的手持物品]
+      )
+    )
+    禁用特定部位和特定交互动作时，需要先确定禁用的部位和动作分属哪些位数，再将这些位上的数据组合成二进制数据。第@enu:armor_stand_boot 小题禁用添加和改变靴子栏的物品，控制这项禁用为二进制数据的第1位（注意与第0位作区分），所以二进制数据为 `10`，即：
+    #codebox("DisabledSlots:0b10")
+    第@enu:armor_stand_mainhand 小题的禁用项使用了多个位数，分别为第0位禁用添加和改变主手的手持物品和第8位移除和改变主手的手持物品，得到二进制数据 `100000001`，即：
+    #codebox("DisabledSlots:0b100000001")
+  ]
+)
+#example(
+  [有一个位于坐标$(0,70,0)$的朝向为南、左内角形状的橡木楼梯，将这个橡木楼梯变成受到重力影响的下落方块，要求石头每多下落一格，就对下方的实体多造成2点伤害。],
+  [
+    有一类实体被称作#proper-noun(display: "下落的方块（Falling block）", "xia4 luo4 de fang1 kuai4")，顾名思义，这类实体由方块转化而来，受到重力的影响。一般下落的方块可由游戏中原本受重力影响的方块，如沙子、沙砾、铁砧等转化，使用NBT可以让其他不受重力影响的方块也转化为下落的方块。不过，下落的方块并不能直接由命令 `/summon` 凭空生成。只有当下落的方块生成的位置有命名空间ID与之代表的方块命名空间ID相同的方块时，该下落的方块才会正常生成。在其他情况下，下落的方块会在其生成之后1gt内被删除。因此生成这个下落的石头方块时，一定要在原石头方块的位置生成。
+
+    在这个题设中，需要用到的下落的方块的标签如下：
+    #tree(
+      (0, [#icon("nbt-compound") 根标签]),
+      (1, [#icon("nbt-compound") *#underline[BlockState]*: 该下落的方块代表的方块。]),
+      (2, [#icon("nbt-string") *#underline[Name]*: 方块的命名空间ID。]),
+      (2, [#icon("nbt-compound") *Properties*: 可选，由若干方块属性组成的方块状态。]),
+      (3, [#icon("nbt-string") *\<方块属性>*: 标签名为方块状态的属性，值使用字符串表示。]),
+      (1, [#icon("nbt-list") *FallHurtAmount*: 下落的方块每多下落一格对下方实体造成伤害的增量，仅当 #icon("nbt-bool") `HurtEntities` 存在时有效。]),
+      (1, [#icon("nbt-bool") *#underline[HurtEntities]*: 是否对砸中的实体造成伤害。])
+    )
+    首先指定一个朝向为南、左内角形状的橡木楼梯：
+    #codebox("minecraft:oak_stairs[facing=south,shape=inner_left]")
+    现在使这个橡木楼梯变成下落的方块，则标签 #icon("nbt-compound") `BlockState` 为
+    #codebox("BlockState:{Name:\"minecraft:oak_stairs\",Properties:{facing:\"south\",shape:\"inner_left\"}}")
+    综上所述，首先放置这个橡木楼梯：
+    #codebox("setblock 0 70 0 minecraft:oak_stairs[facing=south,shape=inner_left]")
+    其次将它变为下落的方块：
+    #codebox("summon falling_block 0 70 0 {
+  BlockState:{
+    Name:\"minecraft:oak_stairs\",
+    Properties:{
+      facing:\"south\",
+      shape:\"inner_left\"
+    }
+  },
+  FallHurtAmount:2.0f,
+  HurtEntities:true
+}")
+  ]
+)
+#example(
+  [生成一个掉落物钻石，使之永远不会自行消失。],
+  [
+    物品虽然在物品栏中严格使用物品格式，但是掉落物形式的物品却是一种实体，使用实体格式，物品本身的信息被打包在物品堆叠组件中成为实体格式的一部分。掉落物物品的实体格式中有一个标签名为 #icon("nbt-compound") `Item`，复合标签内即为该物品的物品堆叠组件。现在先提供一个钻石的物品格式：
+    #codebox("{id:\"minecraft:diamond\"}")
+    题设还有一个要求：物品永远不会自行消失。掉落物物品的实体格式有一个名为 #icon("nbt-short") `Age` 的标签，存储该掉落物物品已存在的游戏刻长度，即从生成至未被捡起的时长。该标签的值会随着游戏过程而增加，掉落物物品刚生成时值为 `0s`，一旦值达到 `6000s`，该物品就会消失，在游戏中表现为5分钟内掉落物未被捡起就自行消失。如果值被设为 `-32768s`，则该值不会随着游戏过程而增加，也就可以实现物品永远不会自行消失的目地。最终的命令为：
+    #codebox("summon item ~ ~ ~ {Item:{id:\"minecraft:diamond\"},Age:-32768s}")
+  ]
+)
+== 状态效果<sec:active_effects>
+有时候需要对实体施加一定的增益或减益，这种给予增益或减益的手段便是#proper-noun(display: "状态效果（Status effect）", "zhuang4 tai4 xiao4 guo3")，这是一种从实体外部施加作用于实体的、在限定时间内给实体提供正面或负面效果的游戏机制。
+
+一个状态效果包含有三个要素，即命名空间ID、作用时间和倍率。命名空间ID决定了施加于实体的是何种状态效果，对实体起正面作用还是负面作用；作用时间决定了该状态效果持续的时间；倍率决定了该状态效果的等级：*等级比倍率大1*，例如，若一个状态效果等级为I，则其倍率为0。
+
+大多数的状态效果都随着其倍率（或等级）增大而效果增强，少数如夜视在任何倍率下效果都是一样的。一个状态效果的持续时间可以是有限的，也可以是无限的。*一个实体可以同时拥有多个不同种类的状态效果，但不能拥有相同的状态效果，即使其倍率不同。*当一个实体拥有某种状态效果，其持续时间和倍率都是确定的，则无法为这个实体施加倍率更低的同种状态效果，但可以施加倍率更高的同种状态效果，此时原先低倍率的状态效果会被隐藏，但持续时间会继续扣除，*若高倍率的状态效果终止，则低倍率的状态效果会重新出现。*
+
+下表列举了所有可用状态效果的ID，其中命名空间前缀 `minecraft:` 已省略：
+#triple-split-table(
+  caption: "状态效果表",
+  original-cols: (auto, auto),
+  seperator: (2, 5),
+  header: ([状态效果], [英文ID]),
+  data: (
+    [速度], [`speed`],
+    [缓慢], [`slowness`],
+    [急迫], [`haste`],
+    [挖掘疲劳], [`mining_fatigue`],
+    [力量], [`strength`],
+    [瞬间治疗], [`instant_health`],
+    [瞬间伤害], [`instant_damage`],
+    [跳跃提升], [`jump_boost`],
+    [反胃], [`nausea`],
+    [生命恢复], [`regeneration`],
+    [抗性提升], [`resistance`],
+    [防火], [`fire_resistance`],
+    [水下呼吸], [`water_breathing`],
+    [隐身], [`invisibility`],
+    [失明], [`blindness`],
+    [夜视], [`night_vision`],
+    [饥饿], [`hunger`],
+    [虚弱], [`weakness`],
+    [中毒], [`poison`],
+    [凋零], [`wither`],
+    [生命提升], [`health_boost`],
+    [伤害吸收], [`absorption`],
+    [饱和], [`saturation`],
+    [发光], [`glowing`],
+    [漂浮], [`levitation`],
+    [幸运], [`luck`],
+    [霉运], [`unluck`],
+    [缓降], [`slow_falling`],
+    [潮涌能量], [`conduit_power`],
+    [海豚的恩惠], [`dolphins_grace`],
+    [不祥之兆], [`bad_omen`],
+    [村庄英雄], [`hero_of_the_village`],
+    [黑暗], [`darkness`],
+    [试炼之兆], [`trial_omen`],
+    [袭击之兆], [`raid_omen`],
+    [蓄风], [`wind_charged`],
+    [盘丝], [`weaving`],
+    [渗浆], [`oozing`],
+    [寄生], [`infested`],
+    [鹦鹉螺之息], [`breath_of_the_nautilus`]
+  )
+)
+== 属性<sec:attribute>
 == 技术性实体<sec:technical_entity>
+=== 标记
+=== 展示实体
+=== 交互实体
 == 玩家
-== 物品堆叠
+== 物品堆叠<sec:item_stack>
 == 数据组件<sec:data_components>
 == 教程：NBT Studio的使用 \*
 = 记分板
@@ -7728,6 +8337,8 @@ $ cases(
   )
 )<tab:pack_format>
 == 方块状态<sec:block_state>
+== 方块实体数据<sec:block_entity_data>
+== 实体数据<sec:entity_data>
 == 数据包标签<sec:tag_in_datapack>
 = 索引
 == 本书命令

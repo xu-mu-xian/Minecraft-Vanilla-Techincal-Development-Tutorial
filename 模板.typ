@@ -549,122 +549,49 @@
 
 // 图标
 #let icon(name) = {
-  if name == "folder" {
-    box(image("图标/data/文件夹.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "file" {
-    box(image("图标/data/文件.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "text" {
-    box(image("图标/data/文本文件.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "png" {
-    box(image("图标/data/图片文件.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "nbt" {
-    box(image("图标/data/NBT文件.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "json" {
-    box(image("图标/data/JSON文件.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "mcfunction" {
-    box(image("图标/data/函数文件.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "ogg" {
-    box(image("图标/data/声音文件.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "zip" {
-    box(image("图标/data/压缩文件.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "jar" {
-    box(image("图标/data/JAR文件.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "json-string" {
-    box(image("图标/data/JSON字符串.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "json-bool" {
-    box(image("图标/data/JSON布尔值.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "json-number" {
-    box(image("图标/data/JSON数值.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "json-array" {
-    box(image("图标/data/JSON数组.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "json-object" {
-    box(image("图标/data/JSON对象.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "nbt-byte" {
-    box(image("图标/data/字节型.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "nbt-bool" {
-    box(image("图标/data/布尔值.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "nbt-short" {
-    box(image("图标/data/短整型.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "nbt-int" {
-    box(image("图标/data/整型.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "nbt-long" {
-    box(image("图标/data/长整型.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "nbt-float" {
-    box(image("图标/data/单精度浮点数.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "nbt-double" {
-    box(image("图标/data/双精度浮点数.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "nbt-string" {
-    box(image("图标/data/字符串.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "nbt-byte_array" {
-    box(image("图标/data/字节型数组.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "nbt-int_array" {
-    box(image("图标/data/整型数组.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "nbt-long_array" {
-    box(image("图标/data/长整型数组.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "nbt-list" {
-    box(image("图标/data/列表.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "nbt-compound" {
-    box(image("图标/data/复合标签.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "vscode" {
-    box(image("图标/VSCode.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "dhp" {
-    box(image("图标/DHP.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "nbtstudio" {
-    box(image("图标/NBTStudio.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "paint" {
-    box(image("图标/画图.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "ps" {
-    box(image("图标/PS.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "gimp" {
-    box(image("图标/GIMP.png", height:1em), baseline: 0pt, height:0.85em)
-  }
-  if name == "mine_stone" {
-    box(image("图标/advancement/石器时代.png", height:auto), baseline: 1em, height:3em)
-  }
-  if name == "obtain_armor" {
-    box(image("图标/advancement/整装上阵.png", height:auto), baseline: 1em, height:3em)
-  }
-  if name == "sprite-apple" {
-    box(image("图标/sprite/apple.png", height:auto), baseline: 1em, height:3em)
-  }
-  if name == "sprite-heart_full" {
-    box(image("图标/sprite/full.png", height:auto), baseline: 0.2em, height:1em)
-  }
-  if name == "sprite-Mu_xian" {
-    box(image("图标/sprite/Mu_xian.png", height:auto), baseline: 0.2em, height:1em)
+  let icon_map = (
+    "folder": box(image("图标/data/文件夹.png", height:1em), baseline: 0pt, height:0.85em),
+    "file": box(image("图标/data/文件.png", height:1em), baseline: 0pt, height:0.85em),
+    "text": box(image("图标/data/文本文件.png", height:1em), baseline: 0pt, height:0.85em),
+    "png": box(image("图标/data/图片文件.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbt": box(image("图标/data/NBT文件.png", height:1em), baseline: 0pt, height:0.85em),
+    "json": box(image("图标/data/JSON文件.png", height:1em), baseline: 0pt, height:0.85em),
+    "mcfunction": box(image("图标/data/函数文件.png", height:1em), baseline: 0pt, height:0.85em),
+    "ogg": box(image("图标/data/声音文件.png", height:1em), baseline: 0pt, height:0.85em),
+    "zip": box(image("图标/data/压缩文件.png", height:1em), baseline: 0pt, height:0.85em),
+    "jar": box(image("图标/data/JAR文件.png", height:1em), baseline: 0pt, height:0.85em),
+    "json-string": box(image("图标/data/JSON字符串.png", height:1em), baseline: 0pt, height:0.85em),
+    "json-bool": box(image("图标/data/JSON布尔值.png", height:1em), baseline: 0pt, height:0.85em),
+    "json-number": box(image("图标/data/JSON数值.png", height:1em), baseline: 0pt, height:0.85em),
+    "json-array": box(image("图标/data/JSON数组.png", height:1em), baseline: 0pt, height:0.85em),
+    "json-object": box(image("图标/data/JSON对象.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbt-byte": box(image("图标/data/字节型.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbt-bool": box(image("图标/data/布尔值.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbt-short": box(image("图标/data/短整型.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbt-int": box(image("图标/data/整型.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbt-long": box(image("图标/data/长整型.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbt-float": box(image("图标/data/单精度浮点数.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbt-double": box(image("图标/data/双精度浮点数.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbt-string": box(image("图标/data/字符串.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbt-byte_array": box(image("图标/data/字节型数组.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbt-int_array": box(image("图标/data/整型数组.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbt-long_array": box(image("图标/data/长整型数组.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbt-list": box(image("图标/data/列表.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbt-compound": box(image("图标/data/复合标签.png", height:1em), baseline: 0pt, height:0.85em),
+    "vscode": box(image("图标/VSCode.png", height:1em), baseline: 0pt, height:0.85em),
+    "dhp": box(image("图标/DHP.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbtstudio": box(image("图标/NBTStudio.png", height:1em), baseline: 0pt, height:0.85em),
+    "paint": box(image("图标/画图.png", height:1em), baseline: 0pt, height:0.85em),
+    "ps": box(image("图标/PS.png", height:1em), baseline: 0pt, height:0.85em),
+    "gimp": box(image("图标/GIMP.png", height:1em), baseline: 0pt, height:0.85em),
+    "mine_stone": box(image("图标/advancement/石器时代.png", height:auto), baseline: 1em, height:3em),
+    "obtain_armor": box(image("图标/advancement/整装上阵.png", height:auto), baseline: 1em, height:3em),
+    "sprite-apple": box(image("图标/sprite/apple.png", height:auto), baseline: 1em, height:3em),
+    "sprite-heart_full": box(image("图标/sprite/full.png", height:auto), baseline: 0.2em, height:1em),
+    "sprite-Mu_xian": box(image("图标/sprite/Mu_xian.png", height:auto), baseline: 0.2em, height:1em)
+  )
+  if name in icon_map {
+    icon_map.at(name)
   }
 }
 
