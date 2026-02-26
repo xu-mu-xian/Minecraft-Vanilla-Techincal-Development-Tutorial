@@ -1249,6 +1249,31 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   }
 }"
 )
+#index(index: "method", display: "禁用原版游戏资源", "jin4 yong4 yuan2 ban3 you2 xi4 zi1 yuan2")
+#example(
+  [尝试在1.21.11版本中禁用原版所有的进度。],
+  [
+    原版所有进度位于路径 #icon("nbt-compound") `data > minecraft > advancement`，命名空间为 `minecraft`，只需在元数据中配置：
+    #codefile(
+  lang: "json",
+  title: "pack.mcmeta",
+  "{
+  \"pack\": {
+    \"description\": \"The default data for Minecraft\",
+    \"max_format\": 94.1,
+    \"min_format\": 94.1,
+  },
+  \"filter\": {
+    \"block\": [
+      {
+        \"namespace\": \"minecraft\",
+        \"path\": \"advancement\"
+      }
+    ]
+  }
+}")
+  ]
+)
 ==== 数据包版本号
 元数据中有一个很重要的参数：#proper-noun(display: "数据包版本号（Data pack format）", "shu4 ju4 bao1 ban3 ben3 hao2")，这是一个用于区分不同版本数据包的参数。每当Mojang对数据包做出修改时，版本号都会发生变动。在1.19.4以前，数据包版本号一般一个大版本变更一次；自1.19.4起，由于Mojang对技术性开发的更新变得频繁，版本号一般每个快照变更一次。数据包应当使用其所在游戏版本的版本号，由于Mojang对数据包的改动可能是颠覆性的，版本号不对应可能会出现错误。
 
@@ -2172,7 +2197,7 @@ $ L_"s" = cases(
 #param-desc(
   prefix: "式中：",
   [$x$、$z$], [被计算区块的区块坐标。],
-  [$x_i$、$z_i$], [区块$i$的区块坐标，$i = 1,2,3...$。],
+  [$x_i$、$z_i$], [区块$i$的区块坐标，$i = 1,2,3 dots.h.c$。],
   [$d_∞$], [被计算区块到区块$i$的切比雪夫距离，$d_∞ = max{abs(x-x_i),abs(z-z_i)}$。]
 )
 #example(
@@ -2827,7 +2852,7 @@ Java版原版所有可用的实体可分为若干类别，这些实体的命名�
 + 编写一个资源包的元数据，使得此资源包能支持从20到80.0的数据版本。
 + 列举出在数据包内所有不使用 `.json` 格式的数据项类型。
 + 尝试覆盖原版数据包中定义的 `#base_stone_overworld` 方块标签，使其仅引用石头（`stone`）、深板岩（`deepslate`）两种方块。
-= 坐标
+= 坐标<chap:coordinates>
 Minecraft的游戏世界是三维的。在编写数据包的时候，有时需要确定实例所需的位置参数。这样的参数被称为#proper-noun(display:"坐标（Coordinate）","zuo4 biao1")。本章将详细介绍各种坐标参数以及这些参数在命令上的应用。
 #pagebreak()
 == 坐标系与坐标
@@ -2985,9 +3010,51 @@ $theta$的符号可以按如下方法判断：对局部坐标$y O z$面内的向
 )
 在以上描述中，$theta$的值都被限定在$[-90,90]$内。这个范围一般被视为俯仰角的可用值（调试屏幕显示的范围），但是超出这个范围的参数仍然可以被识别。识别的规则是：*给一个俯仰角参数加上或减去360，则新的俯仰角参数与原来的俯仰角参数等效*。最终将任意俯仰角换算至的范围$[-90,90]$内。例如，`370` 会被识别为 `10`。但是显然任意俯仰角的范围局限于$[-90+360n, 90+360n]$，$n in ZZ$，诸如 `-180` 这样的参数不在此范围内，因此该参数是无效的。
 
-和相对偏航角一样，游戏也允许使用~和相对偏移量表示相对俯仰角，格式为：
+和相对偏航角一样，游戏也允许使用 `~` 和相对偏移量表示相对俯仰角，格式为：
 #codebox("~[<pitch>]")
 表示在原来俯仰角的基础上增加一定角度值后形成的俯仰角。由偏航角、俯仰角组成的朝向参数允许绝对朝向和相对朝向混用。
+=== 命令/rotate
+命令 `/rotate` 用于修改实体的朝向，以下是所有用法：#index(index: "command", "rotate")
+===== 使实体旋转至特定的朝向
+#codebox("rotate <target> <rotation>")
+#param-desc(
+  [`<targets>`（实体 `minecraft:entity`）], [需要被旋转的实体。],
+  [`<rotation>`（朝向 `minecraft:rotation`）], [特定的朝向，含有两个参数，依次为偏航角、俯仰角。允许使用波浪号 `~` 以表示相对朝向。]
+)
+#example(
+  [将最近的玩家修改为水平面向正南方。],
+  [
+    水平面向正南方的偏航角为 `0.0`，俯仰角为 `0.0`，因此命令为
+    #codebox("rotate @p 0.0 0.0")
+  ]
+)
+===== 使实体朝向特定的坐标
+#codebox("rotate <target> facing <facingLocation>")
+#param-desc(
+  [`<facingLocation>`（三维坐标 `minecraft:vec3`）], [指定朝向的坐标，必须为精确的三维坐标，整数坐标会被中心校准。]
+)
+执行锚点会对该命令的执行结果造成影响，因为它会改变命令上下文。若该命令的执行者锚点为 `feet`，则以朝向位置对脚底的方向作为视线方向（如@fig:raycasting_by_anchor (a)），因此如果朝向位置的$y$坐标与指定实体脚底$y$坐标相等，理论上该指定实体的视线方向应是水平的；若该命令的执行者锚点为 `eyes`（如@fig:raycasting_by_anchor (b)），则以朝向位置对眼睛的方向作为视线方向 。若该命令单独使用，则默认锚点为 `feet`，如果需要将锚点设为 `eyes`，则可以用 `/execute` 命令修改：
+#codebox("execute anchored eyes run rotate @s facing 0 70 0")
+#sub-figure(
+  caption: "锚点与朝向位置的关系对视线方向的影响",
+  label: <fig:raycasting_by_anchor>,
+  [#image("图片/锚点与朝向位置的关系对视线方向的影响a.png", height: 10em)\(a)],
+  [#image("图片/锚点与朝向位置的关系对视线方向的影响b.png", height: 10em)\(b)]
+)
+===== 使实体朝向特定的实体
+#codebox("rotate <target> facing entity <facingEntity> [<facingAnchor>]")
+#param-desc(
+  [`<facingEntity>`（实体 `minecraft:entity`）], [指定朝向的目标实体],
+  [`[<facingAnchor>]`（实体锚点 `minecraft:entity_anchor`）], [指定朝向目标实体的锚点，可用值：\ `feet`（默认）朝向目标实体的脚部。\ `eyes`（默认）朝向目标实体的眼部。]
+)
+朝向的准则遵循@fig:raycasting_by_anchor 所示的规律，视线方向会严格按照锚点之间的位置关系。例如，单独使用如下的命令：
+#codebox("rotate A facing entity B eyes")
+这时指定实体A的锚点为 `feet`，而朝向为实体B的锚点 `eyes`，此时朝向实体的上方而不是实体B的眼睛部位，如@fig:command_tp_anchor_example 所示。
+#figure(
+  caption: [`/tp` 命令锚点例子],
+  image("图片/tp命令锚点例子.png", height: 11em)
+) <fig:command_tp_anchor_example>
+只有当实体A的锚点为 `eyes` 时，才会朝向实体B的眼睛部位，这时需要使用命令 `/execute`。
 === 朝向与局部坐标的关系 \*
 对于空间内的任意向量$bold(alpha)$，在计算其朝向时，可以先将其正交分解为两个向量：即如@equ:any_rotation 所示的平行于水平面的向量$bold(alpha)_parallel$和垂直于水平面的向量$bold(alpha)_perp$。偏航角是分向量$bold(alpha)_parallel$与z轴的夹角（注意符号），俯仰角是$bold(alpha)$与其水平分向量的夹角（注意符号）。运用方向角公式可以求出两个向量$bold(alpha)_1=(x_1,y_1,z_1)$、$bold(alpha)_2=(x_2,y_2,z_2)$之间的夹角$gamma$：
 $ cos gamma= (bold(alpha)_1bold(alpha)_2)/(bar.v.double bold(alpha)_1bar.v.double bar.v.double bold(alpha)_2 bar.v.double)=(x_1 x_2+y_1 y_2+z_1 z_2)/(sqrt(x_1^2+y_1^2+z_1^2)sqrt(x_2^2+y_2^2+z_2^2)) $
@@ -3238,27 +3305,12 @@ $ S=(abs(x_1-x_2)+1)(abs(y_1-y_2)+1)(abs(z_1-z_2)+1) $ <equ:source_region_volume
 #param-desc(
   [`<facingLocation>`（三维坐标 `minecraft:vec3`）], [决定目标实体朝向的坐标。]
 )
-执行锚点会对该命令的执行结果造成影响，因为它会改变命令上下文。若该命令的执行者锚点为 `feet`，则以朝向位置对脚底的方向作为视线方向（如@fig:raycasting_by_anchor (a)，因此如果朝向位置的$y$坐标与指定实体脚底$y$坐标相等，理论上该指定实体的视线方向应是水平的；若该命令的执行者锚点为 `eyes`（如@fig:raycasting_by_anchor (b)），则以朝向位置对眼睛的方向作为视线方向 。若该命令单独使用，则默认锚点为 `feet`，如果需要将锚点设为 `eyes`，则可以用 `/execute` 命令修改。
-#sub-figure(
-  caption: "锚点与朝向位置的关系对视线方向的影响",
-  label: <fig:raycasting_by_anchor>,
-  [#image("图片/锚点与朝向位置的关系对视线方向的影响a.png", height: 10em)\(a)],
-  [#image("图片/锚点与朝向位置的关系对视线方向的影响b.png", height: 10em)\(b)]
-)
 ===== 将指定实体传送至指定的坐标位置，并指定其朝向的实体，语法为：
 #codebox("tp <targets> <location> facing entity <facingEntity> [<facingAnchor>]")
 #param-desc(
   [`<facingEntity>`（实体 `minecraft:entity`）], [指定要朝向的实体。],
   [`[<facingAnchor>]`（实体锚点 `minecraft:entity_anchor`）], [可选，指定朝向实体的何种锚点，可以为 `eyes` 或 `feet`，默认为 `feet`。]
 )
-朝向的准则遵循图@fig:raycasting_by_anchor 所示的规律，视线方向会严格按照锚点之间的位置关系。例如，单独使用如下的命令：
-#codebox("tp A ~ ~ ~ facing entity B eyes")
-这时指定实体A的锚点为 `feet`，而朝向为实体B的锚点 `eyes`，此时朝向实体的上方而不是实体B的眼睛部位，如@fig:command_tp_anchor_example 所示。
-#figure(
-  caption: [`/tp` 命令锚点例子],
-  image("图片/tp命令锚点例子.png", height: 10em)
-) <fig:command_tp_anchor_example>
-只有当实体A的锚点为 `eyes` 时，才会朝向实体B的眼睛部位，这时需要使用命令 `/execute`。
 === 使用二维坐标的命令
 `/spreadplayers` 和 `/worldborder` 使用的坐标参数均为二维坐标 `minecraft:vec2`。
 ==== 命令 `/spreadplayers`
@@ -7019,7 +7071,7 @@ $ cases(
     #codebox("data modify storage foo:clock system_time.hour set string block 0 0 0 LastOutput.text 1 3")
     #codebox("data modify storage foo:clock system_time.minute set string block 0 0 0 LastOutput.text 4 6")
     #codebox("data modify storage foo:clock system_time.second set string block 0 0 0 LastOutput.text 7 9")
-    #h(-2em)不过，字符串切片得到的结果都是字符串，如果需要对这些时间数据进行运算，则需要使用宏将他们转换成数值：
+    #h(-2em)不过，字符串切片得到的结果都是字符串，如果需要对这些时间数据进行运算，则需要使用宏将它们转换成数值：
     #codefile(
       lang: "mcfunction",
       title: "data > foo > function > clock.mcfunction",
@@ -7455,10 +7507,496 @@ $scoreboard players set #system_time_second var $(second)"
     [鹦鹉螺之息], [`breath_of_the_nautilus`]
   )
 )
+命令 `/effect` 用于移除或施加实体的状态效果，它需要的权限等级为2，以下是所有用法：#index(index: "command", "effect")
+===== 移除状态效果，语法为
+#codebox("effect clear [<targets>] [<effect>]")
+#param-desc(
+  [`<targets>`（实体 `minecraft:entity`）], [可选，指定的目标实体，必须为玩家名称、UUID或目标选择器，不填写则清除命令执行者自身的所有状态效果。],
+  [`[<effect>]`（注册项 `minecraft:resource`）], [可选，指定要移除的状态效果的命名空间ID，不填写则清除指定实体的所有状态效果。]
+)
+===== 施加状态效果，语法为
+#codebox("effect give <targets> <effect> [<seconds>] [<amplifier>] [<hideParticles>]")
+#param-desc(
+  [`[<seconds>]`（整型 `brigadier:integer`）], [状态效果持续时间，为不大于 `1000000` 的正整数。对于除瞬间伤害（`instant_damage`）、瞬间治疗（`instant_health`）和饱和（`saturation`）外的状态效果而言单位均为秒，而这三者的单位则为游戏刻。如果该参数不指定，则将除了除瞬间伤害、瞬间治疗和饱和外的状态效果默认设定为30秒，瞬间伤害、瞬间治疗和饱和则被设为1gt。],
+  [`[<amplifier>]`（整型 `brigadier:integer`）], [可选，状态效果的倍率，必须为不大于 `255` 的非负整数。倍率是比等级小 `1` 的参数，倍率设为 `0` 时，等级为I；设为 `1` 时，等级为II。默认为 `0`。],
+  [`[<hideParticles>]`（布尔值 `brigadier:bool`）], [是否显示粒子效果和HUD上显示的状态效果图标。该参数在冒险地图中较为常用。]
+)
+===== 施加无限时长的状态效果，语法为
+#codebox("effect give <targets> <effect> infinite [<amplifier>] [<hideParticles>]")
+#example(
+  [给所有玩家施加2秒的速度提升II效果。],
+  [
+    命令如下所示，注意等级为II，则倍率为1：
+    #codebox("effect give @a speed 2 1")
+  ]
+)
+存储实体状态效果的NBT数据结构如下所示：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-list") *active_effects*: 该生物拥有的状态效果列表。]),
+  (2, [#icon("nbt-compound") 一个状态效果。]),
+  (3, [#icon("nbt-bool") *ambient*: 该状态效果是否由信标施加。]),
+  (3, [#icon("nbt-byte") *amplifier*: 该状态效果的倍率。若实际倍率大于127，设实际倍率为$s$，此标签存储的值为$127-s$。]),
+  (3, [#icon("nbt-int") *duration*: 状态效果的持续时间，单位为游戏刻。如果持续时间为无尽，则值为 `-1`。]),
+  (3, [#icon("nbt-compound") *hidden_effect*: 存储类型、命名空间ID相同但倍率较低的状态效果，在高倍率状态效果结束后该状态效果会出现，是为低倍率状态效果提供隐藏功能的标签。]),
+  (4, [不包含字段 #icon("nbt-string") `id` 的状态效果格式]),
+  (3, [#icon("nbt-string") *id*: 该状态效果的ID。]),
+  (3, [#icon("nbt-bool") *show_icon*: 是否显示图标。]),
+  (3, [#icon("nbt-bool") *show_particles*: 是否显示粒子效果。])
+)
+#example(
+  [直接生成一个村民，使之带有10秒的跳跃提升II和10秒的速度I效果。],
+  [
+    命令如下所示，注意标签 #icon("nbt-int") `duration` 数据的单位为游戏刻，因此要把10秒化为200gt：
+    #codebox("summon villager ~ ~ ~ {active_effects:[{id:\"minecraft:jump_boost\",duration:200,amplifier:1b},{Id:\"minecraft:speed\",duration:200,amplifier:0b}]\}")
+  ]
+)
 == 属性<sec:attribute>
+相对于状态效果这样由外部施加给实体的机制，决定了诸如攻击伤害、移动速度这样的实体本身的“能力”，游戏有另一套机制来描述之，即属性。*#proper-noun(display: "属性（Attribute）", "shu3 xing4")是一套用于决定玩家和生物本身能力的机制。*
+
+一个属性一定存在一个*属性名称*，这个名称需要是一个命名空间ID。属性名称决定了该属性控制玩家和生物哪方面的能力，如移动速度、生命值上限。在属性的机制中使用特定的值以表示一方面能力的大小，即*属性的值*，为了与属性的基值做区分，通常称之为属性的最终值。这个值可以为浮点数。属性的值由两部分决定，一个是#proper-noun(display: "属性基值（Attribute base）", "shu3 xing4 ji1 zhi2")，另一个是属#proper-noun(display: "属性修饰符（Attribute modifiers）", "shu3 xing4 xiu1 shi4 fu2")。*若存在属性修饰符，则属性的最终值等于在基值上进行修饰后的值；若不存在属性修饰符，则属性的最终值等于基值。*下面举一个例子以说明这个机制运作的原理。
+
+属性的基值是一个属性在不加任何修饰符、处于原本状态下的值，例如决定玩家攻击力的属性基值为1，表示玩家的基础攻击力为1，即不带任何装备、武器的情况下造成的伤害为1点（$0.5 times$#icon("sprite-heart_full")）。而玩家一旦手持武器，则造成的攻击会发生变化，但这并不意味着是玩家本身的攻击力得到了提升，而是因为手持的武器提供了一个属性修饰符，该修饰符在攻击力基值的基础上增加了一定的数值。因此玩家一次攻击造成的伤害值实际上是由两部分组成的，一部分是玩家本身的攻击力，另一部分是武器提供的加成。若一个玩家手持钻石剑，其单次攻击的伤害值为玩家攻击力的1点基值加上钻石剑的修饰符提供的6点加成值，总和为7点。
+
+虽然修饰符可以自由地对属性的值进行修改，而对于特定名称的属性，其值必须处于一个规定的*值域*内，每种属性的值域各不相同。在实际修改属性的值时，一定要注意修改后的值是否超限。此外，每种属性各有一个*默认值*，若属性未定义基值，则使用默认值作为基值计算。
+
+不同属性适用生物也不同，各自使用的基值也不相同。下面列举了所有的属性，包括它们的名称、值域、默认值和基值，其中名称的命名空间前缀 `minecraft:` 已省略。
+#general-table(
+  caption: "可用属性表",
+  colspan: 6,
+  columns: (auto, 11em, auto, auto, auto, auto),
+  header: ([属性名称], [ID], [值域], [默认值], [适用生物], [基值]),
+  table.cell(rowspan: 5)[护甲值], table.cell(rowspan: 5)[`armor`], table.cell(rowspan: 5)[0 \~ 30], table.cell(rowspan: 5)[0], [杀手兔], [8],
+  [凋零], [4],
+  [岩浆怪], [$3 times "体型"+1$],
+  [僵尸、尸壳、溺尸、僵尸村民、僵尸猪灵], [2],
+  [其他所有生物], [0],
+  [盔甲韧性], [`armor_toughness`], [0 \~ 20], [0], [所有生物], [0],
+  table.cell(rowspan: 16)[攻击伤害], table.cell(rowspan: 16)[`attack_damage`], table.cell(rowspan: 16)[0 \~ 2048], table.cell(rowspan: 16)[2], [巨人], [50],
+  [监守者], [30],
+  [铁傀儡], [15],
+  [劫掠兽], [12],
+  [青蛙], [10],
+  [远古守卫者], [8],
+  [末影人、猪灵蛮兵], [7],
+  [幻翼], [#box(height: 2em, $display(cases(2"," s=0, 6+s"," s>0))$)#footnote[$s$为幻翼的体型，由 #icon("nbt-int") `size` 字段存储。]],
+  [烈焰人、守卫者、成年疣猪兽、熊猫、北极熊、成年僵尸疣猪兽], [6],
+  [猪灵、掠夺者、卫道士、僵尸猪灵], [5],
+  [恼鬼、狼], [4],
+  [旋风人、猫、嘎吱、海豚、溺尸、尸壳、豹猫、兔子、僵尸、僵尸村民], [3],
+  [悦灵、美西螈、蜜蜂、沼骸、洞穴蜘蛛、苦力怕、末影螨、唤魔者、狐狸、成年山羊、幻术师、骷髅、史莱姆、蜘蛛、流浪者、女巫、凋灵、凋灵骷髅], [2],
+  [岩浆怪、史莱姆], [$1+"体型"$],
+  [幼年山羊、玩家、蠹虫], [1],
+  [幼年疣猪兽、幼年僵尸疣猪兽], [0.5],
+  table.cell(rowspan: 3)[击退], table.cell(rowspan: 3)[`attack_knockback`], table.cell(rowspan: 3)[0 \~ 5], table.cell(rowspan: 3)[0], [劫掠兽、监守者], [1.5],
+  [疣猪兽、僵尸疣猪兽], [1],
+  [其他所有生物], [0],
+  [攻击速度], [`attack_speed`], [0 \~ 1024], [4], [玩家], [4],
+  [方块破坏速度], [`block_break_speed`], [0 \~ 1024], [1], [玩家], [1],
+  [方块交互距离], [`block_interaction_range`], [0 \~ 64], [4.5], [玩家], [4.5],
+  [着火时间], [`burning_time`], [0 \~ 1024], [1], [所有生物], [1],
+  table.cell(rowspan: 3)[镜头距离], table.cell(rowspan: 3)[`camera_distance`], table.cell(rowspan: 3)[0 \~ 32], table.cell(rowspan: 3)[4], [末影龙、巨人], [16],
+  [快乐恶魂、恶魂], [8],
+  [其他所有生物], [4],
+  [实体交互距离], [`entity_interaction_range`], [0 \~ 64], [3], [玩家], [3],
+  [爆炸击退抗性], [`explosion_knockback_resistance`], [0 \~ 1], [0], [所有生物], [0],
+  table.cell(rowspan: 2)[摔落伤害倍数], table.cell(rowspan: 2)[`fall_damage_multiplier`], table.cell(rowspan: 2)[0 \~ 100], table.cell(rowspan: 2)[1], [骆驼、驴、马、羊驼、骡、骷髅马、行商羊驼、僵尸马], [0.5],
+  [其他所有生物], [0],
+  table.cell(rowspan: 5)[飞行速度], table.cell(rowspan: 5)[`flying_speed`], table.cell(rowspan: 5)[0 \~ 1024], table.cell(rowspan: 5)[0.4], [蜜蜂、凋灵], [0.6],
+  [鹦鹉], [0.4],
+  [悦灵], [0.1],
+  [恶魂], [0.06],
+  [快乐恶魂], [0.05],
+  table.cell(rowspan: 11)[生物跟随距离], table.cell(rowspan: 11)[`follow_range`], table.cell(rowspan: 11)[0 \~ 2048], table.cell(rowspan: 11)[32], [恶魂], [100],
+  [末影人], [64],
+  [烈焰人], [48],
+  [凋灵], [40],
+  [僵尸、尸壳、溺尸、僵尸村民、僵尸猪灵], [35],
+  [嘎吱、狐狸、掠夺者、劫掠兽], [32],
+  [旋风人、监守者], [24],
+  [北极熊], [20],
+  [幻术师], [18],
+  [唤魔者、猪灵蛮兵、卫道士], [12],
+  [其他所有AI生物], [16],
+  [重力], [`gravity`], [$-1$ \~ 1], [0.08], [所有生物], [0.08],
+  table.cell(rowspan: 3)[跳跃力度], table.cell(rowspan: 3)[`jump_strength`], table.cell(rowspan: 3)[0 \~ 32], table.cell(rowspan: 3)[0.42], [马、骷髅马、僵尸马], [$U[0.4,1]$#footnote[服从均匀分布。]],
+  [驴、骡、羊驼、行商羊驼], [0.5],
+  [其他所有生物], [0.42],
+  table.cell(rowspan: 4)[击退抗性], table.cell(rowspan: 4)[`knockback_resistance`], table.cell(rowspan: 4)[0 \~ 1], table.cell(rowspan: 4)[0], [铁傀儡、监守者], [1],
+  [劫掠兽], [0.75],
+  [疣猪兽、僵尸疣猪兽], [0.6],
+  [其他所有生物], [0],
+  [幸运值], [`luck`], [$-1024$ \~ 1024], [0], [玩家], [0],
+  [最大伤害吸收值], [`max_absorption`], [0 \~ 2048], [0], [所有生物], [0],
+  table.cell(rowspan: 25)[最大生命值#footnote[大多数生物在生成时的生命值会自动设为最大生命值。]], table.cell(rowspan: 25)[`max_health`], table.cell(rowspan: 25)[0 \~ 1024], table.cell(rowspan: 25)[0], [监守者], [500],
+  [凋灵], [300],
+  [末影龙], [200],
+  [铁傀儡、巨人、劫掠兽], [100],
+  [远古守卫者], [80],
+  [猪灵蛮兵], [50],
+  [末影人、疣猪兽、驯服的狼、僵尸疣猪兽], [40],
+  [骆驼、骆驼尸壳、幻术师], [32],
+  [旋风人、守卫者、潜影贝、海龟、北极熊], [30],
+  [女巫], [26],
+  [僵尸马], [25],
+  [唤魔者、掠夺者、卫道士], [24],
+  [驴、马、羊驼、骡、行商羊驼], [$U[15,30]$],
+  [岩浆怪、史莱姆], [$"尺寸"^2$],
+  [悦灵、盔甲架、烈焰人、苦力怕、溺尸、快乐恶魂、尸壳、非体弱熊猫、幻翼、玩家、骷髅、流浪者、炽足兽、村民、流浪商人、凋灵骷髅、僵尸村民、僵尸、僵尸猪灵], [20],
+  [沼骸、焦骸、猪灵、蜘蛛], [16],
+  [鹦鹉螺、骷髅马、僵尸鹦鹉螺], [15],
+  [美西螈、嗅探兽、恼鬼], [14],
+  [犰狳、洞穴蜘蛛、铜傀儡], [142],
+  [蜜蜂、猫、牛、海豚、狐狸、青蛙、恶魂、发光鱿鱼、山羊、哞菇、豹猫、体弱熊猫、猪、鱿鱼], [10],
+  [杀手兔、末影螨、绵羊、蠹虫、野生狼], [8],
+  [蝙蝠、鹦鹉、蝌蚪], [6],
+  [鸡、雪傀儡], [4],
+  [鳕鱼、河豚、兔子、鲑鱼、热带鱼], [3],
+  [嘎吱], [1],
+  [挖掘效率], [`mining_efficiency`], [0 \~ 1024], [0], [玩家], [0],
+  [移动效率], [`movement_efficiency`], [0 \~ 1], [0], [所有生物], [0],
+  table.cell(rowspan: 20)[速度#footnote[设该值为$a$，生物脚下的方块阻力为$f$，则最高移动速度为#box(baseline: 30%, inset: (y: 0.5em))[$display(v=0.21168a/(1-0.91f)f^3)$]。]], table.cell(rowspan: 20)[`movement_speed`], table.cell(rowspan: 20)[0 \~ 1024], table.cell(rowspan: 20)[0.7], [海豚], [1.2],
+  [美西螈、青蛙、蝌蚪], [1],
+  [蝙蝠、鳕鱼、末影龙、恶魂、发光鱿鱼、幻翼、河豚、鲑鱼、潜影贝、鱿鱼、热带鱼、恼鬼、流浪商人], [0.7],
+  [旋风人、凋灵], [0.6],
+  [唤魔者、巨人、守卫者、幻术师], [0.5],
+  [嘎吱], [0.4],
+  [猪灵、猪灵蛮兵、掠夺者、卫道士], [0.35],
+  [蜜蜂、猫、洞穴蜘蛛、远古守卫者、末影人、狐狸、疣猪兽、豹猫、兔子、蜘蛛、监守者、狼、僵尸疣猪兽、劫掠兽], [0.3],
+  [鸡、苦力怕、末影螨、铁傀儡、猪、北极熊、蠹虫、骷髅、流浪者、沼骸、海龟、女巫、凋灵骷髅], [0.25],
+  [烈焰人、溺尸、尸壳、绵羊、僵尸、僵尸村民、僵尸猪灵], [0.23],
+  [马], text(size:0.9em)[$U[0.1125,0.3375]$],
+  [史莱姆], [$0.2+0.1 times "尺寸"$],
+  [铜傀儡、牛、山羊、岩浆怪、哞菇、鹦鹉、骷髅马、僵尸马], [0.2],
+  [驴、羊驼、骡、炽足兽、行商羊驼], [0.175],
+  [非懒惰的熊猫], [0.15],
+  [犰狳], [0.14],
+  [悦灵、嗅探兽、玩家], [0.1],
+  [骆驼], [0.09],
+  [懒惰的熊猫], [0.07],
+  [快乐恶魂], [0.05],
+  [额外氧气#footnote[设该属性值为$o$，若$o=0$，则生物在水中每游戏刻氧气值减1；若$o>0$，则生物每游戏刻有#box(baseline: 30%, inset: (y: 0.5em))[$display(o/(o+1))$]的概率不消耗氧气值。]], [`oxygen_bonus`], [0 \~ 1024], [0], [所有生物], [0],
+  table.cell(rowspan: 3)[安全摔落高度], table.cell(rowspan: 3)[`safe_fall_distance`], table.cell(rowspan: 3)[$-1024$ \~ 1024], table.cell(rowspan: 3)[3], [骆驼、驴、马、羊驼、骡、骷髅马、行商羊驼、僵尸马], [6],
+  [狐狸], [5],
+  [其他所有生物], [3],
+  [尺寸], [`scale`], [0.0625 \~ 16], [1], [所有生物], [1],
+  [潜行速度], [`sneaking_speed`], [0 \~ 1], [0.3], [玩家], [0.3],
+  table.cell(rowspan: 2)[僵尸增援], table.cell(rowspan: 2)[`spawn_reinforcements`], table.cell(rowspan: 2)[0 \~ 1], table.cell(rowspan: 2)[0], [僵尸、尸壳、溺尸、僵尸村民], [$U[0,0.1]$],
+  [僵尸猪灵], [0],
+  table.cell(rowspan: 5)[最大行走高度], table.cell(rowspan: 5)[`step_height`], table.cell(rowspan: 5)[0 \~ 10], table.cell(rowspan: 5)[0.6], [骆驼], [1.5],
+  [嘎吱], [1.0625],
+  [美西螈、铜傀儡、驴、溺尸、末影人、青蛙、马、铁傀儡、羊驼、骡、劫掠兽、骷髅马、行商羊驼、海龟、僵尸马], [1],
+  [盔甲架], [0],
+  [其他所有生物], [0.6],
+  [水下挖掘速度], [`submerged_mining_speed`], [0 \~ 20], [0.2], [玩家], [0.2],
+  [横扫伤害比率#footnote[设该值为$r$，当$r=0$时，横扫攻击伤害为1；当$r>0$时，横扫攻击伤害为$1+r d$，其中$d$为近战攻击伤害。]], [`sweeping_damage_ratio`], [0 \~ 1], [0], [玩家], [0],
+  [生物引诱范围], [`tempt_range`], [0 \~ 2048], [10], [犰狳、美西螈、蜜蜂、鸡、狐狸、青蛙、山羊、疣猪兽、豹猫、熊猫、猪、北极熊、兔子、绵羊、嗅探兽、炽足兽、海龟、骆驼、马、骷髅马、僵尸马、驴、骡、羊驼、行商羊驼、牛、哞菇、猫、狼、鹦鹉], [10],
+  [水中移动效率], [`water_movement_efficiency`], [0 \~ 1], [0], [所有生物], [0],
+  table.cell(rowspan: 2)[路径点传输距离], table.cell(rowspan: 2)[`waypoint_transmit_range`], table.cell(rowspan: 2)[0 \~ 60000000], table.cell(rowspan: 2)[0], [玩家], [60000000],
+  [其他生物], [0],
+  [路径点接收距离], [`waypoint_receive_range`], [0 \~ 60000000], [0], [玩家], [60000000]
+)
+=== 属性修饰符
+在一个属性上可以使用多个属性修饰符，则属性的最终值为基值和这些属性修饰符共同修饰后的结果。在数据的存储上，每一个修饰符都需要作区分，用命名空间ID唯一地标识每个属性修饰符，充当修饰符“身份证”的作用。不同修饰符中的不同属性允许使用相同的ID。
+
+一个属性修饰符在对基值进行修饰时，会采用一定的#proper-noun(display: "运算模式（Operation）", "yun4 suan4 mo2 shi4")。修饰符一共有三种运算模式：#proper-noun(display: "属性增量（Add value）", "shu3 xing4 zeng1 liang4")、#proper-noun(display: "倍率增量（Add multiplied base）", "bei4 lv4 zeng1 liang4")和#proper-noun(display: "最终倍乘（Add multiplied total）", "zui4 zhong1 bei4 cheng2")，每一个修饰符只会采用其中一种运算方式。
+==== 属性增量
+属性增量即在基值的基础上进行加减运算。若一个属性同时存在多个运算模式为属性增量的修饰符，则属性的最终值为基值与这些修饰符值得代数和。设$x_1$、$x_2$、……$x_n$是运算模式为属性增量的属性修饰符$M_1$、$M_2$、……$M_n$的修饰量，而被修饰的属性基值为常数$B$，则该属性的最终值$f(x_1,x_2,dots.h.c,x_n)$可以表示为
+$ f(x_1,x_2,dots.h.c,x_n) = B + sum_(i=1)^(n) x_i $ <equ:modifier_add>
+#example(
+  [用两个属性增量的修饰符修饰同一属性，已知属性基值为1，修饰量分别为2、3，求属性的最终值。],
+  [
+    属性的最终值为$f=1+(2+3)=6$。
+
+  ]
+) <exa:modifier_add>
+==== 倍率增量
+倍率增量在属性增量修饰完成后进行，用于将属性增量修饰完成后的属性值乘以一定倍率。对于同一个属性中多个倍率增量的修饰符，修饰后的值为倍率增量的修饰量代数和与1的和与属性增量修饰完成后属性值的乘积，设$y_1$、$y_2$、……$y_m$是倍率增量的修饰符$M_1$、$M_2$、……$M_m$的修饰量，而$f(x_1,x_2,dots.h.c,x_n)$为属性增量的修饰符修饰完成后的属性值，则该属性的最终值$g(y_1,y_2,dots.h.c,y_m)$可以表示为
+$ g(y_1,y_2,dots.h.c,y_m) = f(x_1,x_2,dots.h.c,x_n)(1 + sum_(i=1)^(m) y_i) $
+将@equ:modifier_add 代入，得
+$ g(y_1,y_2,dots.h.c,y_m) = (B + sum_(i=1)^(n) x_i)(1 + sum_(i=1)^(m) y_i) $ <equ:modifier_multiply_base>
+#example(
+  [在@exa:modifier_add 的基础上，追加两个修饰量分别为2、4的倍率增量修饰符，求属性的最终值。],
+  [
+    属性的最终值为$g=6 times (1+2+4)=42$。
+
+  ]
+) <exa:modifier_multiply_base>
+==== 最终倍乘
+最终倍乘在所有的属性增量和倍率增量修饰符修饰完成后进行。最终倍乘的意义为：将属性增量和倍率增量修饰符修饰完成后的属性值增加一定的倍数。若一个属性存在一个最终倍乘的修饰符，记属性增量和倍率增量修饰完成后的属性值为$g$，而该最终倍乘的修饰量为$z$，则属性的最终值$h(z)$可以表示为
+$ h(z)=g dot.c (z+1) $
+可以看到，对原值$g$倍乘的倍率实际上为修饰量加1后的值。若存在多个最终倍乘的修饰符，则在上一个最终倍乘修饰完毕后，在当前属性值的基础上再进行倍乘。设$z_1$、$z_2$、……$z_p$是倍率增量的修饰符$M_1$、$M_2$、……$M_p$的修饰量，则属性的最终值$h(z_1,z_2,dots.h.c,z_p)$可以表示为
+$ h(z_1,z_2,dots.h.c,z_p)=g dot.c product_(i=1)^(p) (z_i+1) $ <equ:modifier_multiply>
+#example(
+  [在@exa:modifier_multiply_base 的基础上，追加两个修饰量分别为2、3的最终倍乘修饰符，求属性的最终值。],
+  [
+    属性的最终值为$h=42 times (2+1) times (3+1)=504$。
+
+  ]
+)
+==== 修饰符公式
+修饰符进行修饰运算时，遵循“先属性增量，再倍率增量，后最终倍乘”的运算顺序。设$x_1$、$x_2$、……$x_n$是属性增量的修饰量，$y_1$、$y_2$、……$y_m$是倍率增量的修饰量，$z_1$、$z_2$、……$z_p$是最终倍乘的修饰量，将@equ:modifier_multiply_base 和@equ:modifier_multiply 结合，可得属性最终值的多元函数：
+$ phi = phi(x_1,x_2,dots.h.c,x_n,y_1,y_2,dots.h.c,y_m,z_1,z_2,dots.h.c,z_p) $ <equ:modifier>
+通常记Op0为所有属性增量修饰值的代数和，Op1为所有倍率增量修饰值的代数和，Op2为所有最终倍率修饰值加1后的乘积，即：
+$ "Op0" = sum_(i=1)^(n) x_i $
+$ "Op1" = sum_(i=1)^(m) y_i $
+$ "Op2" = product_(i=1)^(p) (z_i+1) $
+于是@equ:modifier 又可以写成如下的形式，即*修饰符一般公式*：
+$ phi = (B + "Op0")("Op1" + 1)"Op2" $ <equ:modifier_caculation>
+#param-desc(
+  prefix: "式中：",
+  [$phi$], [属性经过修饰后的最终值。],
+  [$B$], [属性的基值。]
+)
+#example(
+  [一个属性的基值为0.3，已知该属性拥有修饰量为0.2的一个属性增量修饰符，修饰量为5的一个倍率增量修饰符和两个修饰量分别为1和4的最终倍乘修饰符，求该属性的最终值。],
+  [
+    根据题意，不难得出$"Op0"=0.2$，$"Op1"=5$，$"Op2"=(1+1) times(4+1)=10$，属性基值$B=0.3$，则根据@equ:modifier_caculation，计算得到属性的最终值为$phi=(0.3+0.2) times(5+1) times 10=30$。
+
+  ]
+)
+=== 命令/attribute的语法
+命令 `/attribute` 是用于查询、修改属性的命令，玩家的属性也是可以被修改的。它需要的权限等级为2，以下是所有用法：#index(index: "command", "attribute")
+===== 返回目标实体指定属性的基值或最终值，语法为
+#codebox("attribute <target> <attribute> [base] get [<scale>]")
+#param-desc(
+  [`<targets>`（实体 `minecraft:entity`）], [指定的目标实体，必须为玩家名称、UUID或目标选择器。],
+  [`<attribute>`（命名空间ID `minecraft:resource_location`）], [指定属性的命名空间ID。],
+  [`[base]` ], [可选，若填写该参数，则返回属性的基值，不填写则返回最终值。],
+  [`[<scale>]`（双精度浮点数 `brigadier:double`）], [可选，定义返回的属性基值或最终值的缩放倍率。]
+)
+===== 修改目标实体属性的基值，语法为
+#codebox("attribute <target> <attribute> base set <value>")
+#param-desc(
+  [`<value>`（双精度浮点数 `brigadier:double`）], [指定的基值。]
+)
+===== 重置目标实体属性的默认值，语法为
+#codebox("attribute <target> <attribute> base reset")
+===== 为目标实体的指定属性添加一个属性修饰符，语法为
+#codebox("attribute <target> <attribute> modifier add <id> <value> (add_value|add_multiplied_total|add_multiplied_base)")
+#param-desc(
+  [`<value>`（双精度浮点数 `brigadier:double`）], [修饰符的修饰量。],
+  [`(add_value|add_multiplied_total|add_multiplied_base)` ], [运算模式，分别为：\ `add_value` 属性增量\ `add_multiplied_total` 倍率增量\ `add_multiplied_base` 最终倍乘]
+)
+===== 删除特定UUID的属性修饰符，语法为
+#codebox("attribute <target> <attribute> modifier remove <id>")
+===== 返回指定UUID修饰符的修饰量，语法为
+#codebox("attribute <target> <attribute> modifier value get <id> [<scale>]")
+#example(
+  [将当前玩家的最大生命值设置为40。],
+  [
+    如果直接修改最大生命值属性的基值，则命令可以为
+    #codebox("attribute @s max_health base set 40")
+    如果使用修饰符，则可以用修饰量为20的属性增量修饰基值，命令为
+    #codebox("attribute @s max_health modifier add minecraft:health_boost 20 add")
+    其中命名空间ID可以自由指定。
+  ]
+)
+=== 属性NBT格式
+属性是实体数据的一部分，属性NBT隶属于实体格式。属性修饰符也可以存在于物品堆叠组件中，当实体持有这些有修饰符的物品时，即对实体的属性值进行修饰。当属性存在于实体数据时，使用标签 #icon("nbt-list") `attributes`，其数据结构为
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-list") *attributes*: 该实体的属性列表。]),
+  (2, [#icon("nbt-compound") 一个属性。]),
+  (3, [#icon("nbt-double") *#underline[base]*: 该属性的基值。]),
+  (3, [#icon("nbt-string") *#underline[id]*: 该属性的名称，使用命名空间ID。]),
+  (3, [#icon("nbt-list") *modifiers*: 该实体的属性列表。]),
+  (4, [#icon("nbt-compound") 一个属性修饰符。]),
+  (5, [#icon("nbt-double") *#underline[amount]*: 该修饰符的修饰量。]),
+  (5, [#icon("nbt-string") *#underline[id]*: 该修饰符的命名空间ID。]),
+  (5, [#icon("nbt-string") *#underline[operation]*: 运算模式，可用值为 `add_value`（属性增量）、`add_multiplied_total`（倍率增量）和 `add_multiplied_base`（最终倍乘）。])
+)
+#example(
+  [生成一个一次普通攻击会造成10点伤害、最大生命值为100的僵尸。],
+  [
+    下面的命令直接修改了基值：
+    #codebox("summon ~ ~ ~ zombie {attributes:[{base:10.0d,id:\"minecraft:attack_damage\"},{base:100.0d,id:\"minecraft:max_health\"}]}")
+  ]
+)
 == 技术性实体<sec:technical_entity>
+命令系统处理的实体一般可分为三类：一是*标记实体*、二是*展示用实体*、三是*可交互实体*。
+
+相对于直接作用对象实体而言，搭建系统时通常需要处理另外一些实体，这些实体不直接参与游戏进程，主要充当游戏后台的角色，作为命令运行的辅助工具，对游戏过程产生间接的影响。例如，当一个玩家经过某一特定位置，现在需要对这个位置做一个标记以方便该玩家此后某一时间通过命令回到该位置，这时可以使用到标记实体，当玩家第一次经过该点时在该位置放置一个标记实体，当玩家需要回到该位置时，就可以使用命令 `/tp` 将玩家传送至该标记实体。这些标记实体的其主要作用是辅助命令的执行。由于无法直接通过标记静态的方块来实现这一功能，因此标记实体的存在极为必要。*为了尽量规避这些实体做出多余的行为以干扰到游戏的正常运行，一般选择行动较少的、对游戏本身的影响较少的实体。*
+
+展示用实体，顾名思义，就是用于展示图像、文字之类的实体。由于它们的作用主要体现在视觉方面，因此也需要有尽量少的干扰行为。
+
+可以直接与之发生交互的、对游戏进程有着直接影响的实体，比如玩家、与玩家发生互动的生物等，可称之为“可交互实体”，这类实体一般拥有特定的实体边界框。
+
+对于这三类实体，Minecraft各有一种专门适用于命令系统的实体，即标记、展示实体和交互实体。#proper-noun(display: "盔甲架（Armor stand）", "kui1 jia3 jia4")作为一种传统的兼具标记、展示和交互功能的实体，在这些技术性实体未加入之前被广泛使用，其主要特点是显形，可以直观地显示标记实体的状态。但是随着标记、展示实体和交互实体的加入，盔甲架基本上不再参与到这几项任务中，本教程不再讲述盔甲架的使用。
 === 标记
+于21w15a加入的#proper-noun(display: "标记（Marker）", "biao1 ji4")是完全无行为、不会产生更新、没有碰撞箱、不会干扰玩家的一种隐形实体，相对于盔甲架而言对游戏的多余影响更小。标记*只存在于服务端，不在客户端中渲染*，只能使用命令检查标记的存在。
+
+标记只能通过命令 `/summon` 生成：
+#codebox("summon minecraft:marker")
+#example(
+  [生成一个标记，使其 #icon("nbt-compound") `data` 标签拥有一个子标签 #icon("nbt-bool") `marker:true`。],
+  [
+    自定义标签是 #icon("nbt-compound") `data` 的子标签，注意标签 #icon("nbt-compound") `data` 不能遗漏。
+    #codebox("summon minecraft:marker ~ ~ ~ {data:{marker:true}}")
+    如此标记的数据树为：
+    #tree(
+      (0, [#icon("nbt-compound") 根标签]),
+      (1, [#icon("nbt-compound") *data*]),
+      (2, [#icon("nbt-bool") *marker*: `true`])
+    )
+  ]
+)
 === 展示实体
+#proper-noun(display: "展示实体（Display）", "zhan3 shi4 shi2 ti3")是一类用于展示内容的实体，包括#proper-noun(display: "物品展示实体（Item display）", "wu4 pin3 zhan3 shi4 shi2 ti3")、#proper-noun(display: "方块展示实体（Block display）", "fang1 kuai4 zhan3 shi4 shi2 ti3")和#proper-noun(display: "文本展示实体（Text display）", "wen2 ben3 zhan3 shi4 shi2 ti3")三种。这些展示实体没有碰撞箱，没有任何自主行为，只能通过命令 `/summon` 生成。在生成时如果不指定NBT，则不会显示任何内容。
+==== 展示实体共通标签
+下面这些字段是三种展示实体共同拥有的，即#proper-noun(display: "展示实体共通标签（Tags common to all display entities）", "zhan3 shi4 shi2 ti3 gong4 tong1 biao1 qian1")。它们指定了展示内容的形式、渐变动画和插值。
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-string") *billboard*: 展示内容跟随玩家视角的变换形式。有效值 `fixed`（固定不发生旋转）、`vertical`（跟随玩家视角在水平方向上转动）、`horizontal`（跟随玩家视角在竖直方向上转动）和 `center`（跟随玩家视角绕中心自由转动）。]),
+  (1, [#icon("nbt-compound") *brightness*: 该实体渲染使用的亮度值，若不存在则使用当前位置使用的亮度值。一个位置的亮度值由#proper-noun(display: "天空光照（Sky light）", "tian1 kong1 guang1 zhao4")和#proper-noun(display: "方块光照（Block light）", "fang1 kuai4 guang1 zhao4")决定。]),
+  (2, [#icon("nbt-int") *block*: 方块光照等级，有效值 `0` \~ `15`。]),
+  (2, [#icon("nbt-int") *sky*: 天空光照等级，有效值 `0` \~ `15`。]),
+  (1, [#icon("nbt-int") *glow_color_override*: 覆盖发光边框的颜色，使用RGB格式，对二进制来说从高到底依次是：R通道8位、G通道8位、B通道8位。若设为 `-1`，则使用该实体所在队伍的颜色。默认为 `-1`。只有当 #icon("nbt-bool") `Glowing` 的值为 `true` 时才会显示发光边框。]),
+  (1, [#h(-2em)#icon("nbt-float") *height*: 定义#proper-noun(display: "剔除边界框（Rendering culling bounding box）", "ti4 chu2 bian1 jie4 kuang1")的高度，剔除边界框的作用是，当剔除边界框不在玩家的视角范围内，则该实体不在该玩家的客户端渲染。若 #icon("nbt-float") `height` 值定义为$h$，则剔除边界框自实体位置（使用实际坐标）向上延伸$h$，如@fig:rendering_culling_bounding_box 所示。
+  #figure(caption: "剔除边界框的范围", image("图片/剔除边界框的范围.png", width: 10em)) <fig:rendering_culling_bounding_box>
+  ]),
+  (1, [#icon("nbt-float") *width*: 定义剔除边界框的宽度。若 #icon("nbt-float") `width` 值定义为$w$，则剔除边界框自实体位置（使用实际坐标）横向扩展#box(baseline: 30%, inset: (y: 0.5em))[$display(w/2)$]，如@fig:rendering_culling_bounding_box 所示。#icon("nbt-float") `height` 和 #icon("nbt-float") `width` 默认值均为 `0.0f`，即不使用剔除边界框，只要实体位于玩家视角范围内即渲染。]),
+  (1, [#icon("nbt-int") *start_interpolation*: 此#proper-noun(display: "插值（Interpolation）", "cha1 zhi2")方式用于制造渲染上的渐变动画而非跳跃式的突变，由该字段定义插值开始的时间，插值会在定义后第 `start_interpolation` 刻开始。单位为游戏刻，使用游戏内时间。若设为 `-1`，则使用当前游戏时间。*制作插值动画时此标签是必须的。*]),
+  (1, [#icon("nbt-int") *interpolation_duration*: 实体动画渲染意义上的插值持续的时长，单位为游戏刻。插值会在第 #icon("nbt-int") `start_interpolation`$+$#icon("nbt-int") `interpolation_duration` 游戏刻终止。在插值过程中，所有标记为可插值的字段都作为单个#proper-noun(display: "插值集（Interpolation set）", "cha1 zhi2 ji2")的一部分。当插值集内的任意值被修改时，修改后可插值字段的*所有*值都会被视作*当前值*，修改前的值被视作*先前值*。在插值的持续时间内，*实体会由先前值定义的外观过渡至当前值定义的外观*。若同一游戏刻内出现值的多次变更，则只会计算一次变更。下面标注了所有的可插值字段。]),
+  (1, [#icon("nbt-float") *shadow_strength*: 可插值，控制实体阴影的透明度，默认值为 `1.0f`。]),
+  (1, [#icon("nbt-int") *teleport_duration*: 应用于实体本身位置和朝向的插值。例如，若更改了某展示实体的位置（如使用 `/tp` 命令），定义 #icon("nbt-int") `teleport_duration` 插值可制造展示实体从原本位置移动到新位置的动画而非突然的传送。若该标签的值设为 `0`，则为突然移动。大于 `0` 的值可制造移动动画。此值必须介于 `0` 和 `59` 之间（含）。]),
+  (1, [#icon("nbt-list")#icon("nbt-compound") *transformation*: 可插值。此字段数据结构较为复杂，用于表示模型的渲染变换。变换仅在渲染上有意义，实体本身的位置和朝向不作变换，因此只受 #icon("nbt-int") `interpolation_duration` 插值作用，不受 #icon("nbt-int") `teleport_duration` 插值的影响。所有渲染变换一律以展示实体的实际位置为变换的原点。]),
+  (2, [渲染变换的数据]),
+  (1, [#icon("nbt-float") *view_range*: 展示实体的最大可视范围。记该值为$v$，在选项中设置的实体渲染距离的最大值为$e$，若玩家与该实体的距离超过$64v e$，则该实体不会被渲染。默认值为 `1.0f`。])
+)
+#index(index: "method", display: "用展示实体实现运镜", "yong4 zhan3 shi4 shi2 ti3 shi2 xian4 yun4 jing4")
+#example(
+  [一张冒险地图需要制作运镜，要求镜头从$(0,70,0)$移动至$(5,72,0)$，同时视角从面向$(5,70,0)$变换至面向$(5,70,5)$，整个运镜在2秒内完成。],
+  [
+    运镜可以通过展示实体完成，当玩家旁观展示实体时，其视角会随着展示实体的视角移动。因此可以生成一个物品展示实体，初始状态：位于$(0,70,0)$、朝向$(5,70,0)$；最终状态：位于$(5,72,0)$、朝向$(5,70,5)$。这中间的运镜可以通过长达两秒（40游戏刻）的 #icon("nbt-int") `teleport_duration` 以实现。
+
+    首先生成这个展示实体并设置初始化的状态，由$(0,70,0)$面向$(5,70,0)$实际上是水平朝向正东方，偏航角为 `-90`，俯仰角为 `0`：
+    #codebox("summon item_display 0 70 0 {Rotation:[-90.0f,0.0f],teleport_duration:40}")
+    其次必须保证玩家（这里用 `@s` 指代这个玩家）处于旁观模式且旁观这个展示实体，依次执行：
+    #codebox("gamemode spectator @s")
+    #codebox("spectate @n[type=item_display,x=0.5,y=70,z=0.5] @s")
+    最后设置终止状态、并立即开始插值，以下两条命令应在同一游戏刻内依次执行：
+    #codebox("tp @n[type=item_display,x=0.5,y=70,z=0.5] 5 72 0 facing 5 70 5")
+    #codebox("data modify entity @n[type=item_display,x=0.5,y=70,z=0.5] start_interpolation set value 0")
+    将以上命令按顺序整合进函数内：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > display_camera.mcfunction",
+      "summon item_display 0 70 0 {Rotation:[-90.0f,0.0f],teleport_duration:40}
+gamemode spectator @s
+spectate @n[type=item_display,x=0.5,y=70,z=0.5] @s
+tp @n[type=item_display,x=0.5,y=70,z=0.5] 5 72 0 facing 5 70 5
+data modify entity @n[type=item_display,x=0.5,y=70,z=0.5] start_interpolation set value 0"
+    )
+    玩家在聊天栏中运行此函数，运镜即可生效。
+  ]
+)
+#cite(<display_camera>, form: none)
+==== 各类展示实体特有标签
+===== 方块展示实体
+方块展示实体用于展示一个方块，被展示的方块仅有渲染意义，不具备具体使用价值。默认的实体锚点位于被展示方块的西北下角，若在 `/summon` 中使用整数形式的坐标，因为命令中坐标参数使用中心点校准，因此生成的方块展示实体不会贴合方格；贴合方格应使用小数坐标。下面是方块展示实体的特有字段：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-compound") *#underline[block_state]*]),
+  (2, [#icon("nbt-string") *#underline[Name]*: 方块的命名空间ID。]),
+  (2, [#icon("nbt-compound") *Properties*: 可选，由若干方块属性组成的方块状态。]),
+  (3, [#icon("nbt-string") *\<方块属性>*: 标签名为方块状态的属性，值使用字符串表示。]),
+)
+#example(
+  [在$(0,70,0)$位置贴合方格展示一个开启的、朝向为东的铁门。],
+  [
+    命令为
+    #codebox("summon block_display 0.0 70.0 0.0 block_state:{Name:\"minecraft:iron_door\",Properties:{open:\"true\",face:\"east\"}}")
+  ]
+)
+===== 物品展示实体
+物品展示用于展示一个物品，同样，被展示的物品仅有渲染意义。被展示的物品可以带有特定的堆叠组件，拥有自定义物品模型的物品也可以被渲染。允许使用 `/item` 或 `/loot` 变更和获取其中的物品数据。下面是物品展示特有的字段：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-compound") *item*: 一个要展示的物品，使用物品格式，见节@sec:item_stack。默认为空气。]),
+  (2, [无槽位物品格式]),
+  (1, [#icon("nbt-string") *item_display*: 描述展示物品的方式，有效值：`none`（无变换）、`thirdperson_lefthand`（第三人称视角左手）、`thirdperson_righthand`（第三人称视角右手）、`firstperson_lefthand`（第一人称视角左手）、`firstperson_righthand`（第一人称视角右手）、`head`（放置于头部）、`gui`（GUI视图）、`ground`（平铺于地面）、`fixed`（默认变换）和 `on_shelf`（在展示架中）。默认值为 `none`。])
+)
+===== 文本展示实体
+顾名思义，文本展示实体用于展示一段文本。下面是文本展示的特有字段：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-string") *alignment*: 规定文本对齐方向，可用值有 `center`（居中对齐）、`left`（左对齐）和 `right`（右对齐）。]),
+  (1, [#icon("nbt-int") *background*: 可插值。文本的背景颜色，使用ARGB颜色格式，默认值为 `0x40000000`。渲染时会丢弃Alpha（透明度）通道小于10%的片段，所以当A小于 `0x1A` 时背景会完全透明。]),
+  (1, [#icon("nbt-bool") *default_background*: 是否使用默认的文本背景，此项设置会覆盖字段 #icon("nbt-int") `background` 的值，默认为 `false`。]),
+  (1, [#icon("nbt-int") *line_width*: 一行文本的最大宽度，超过此数值即换行，默认值为 `200`。]),
+  (1, [#icon("nbt-bool") *see_through*: 是否能透过方块渲染，默认为 `false`。]),
+  (1, [#icon("nbt-bool") *shadow*: 文本是否渲染阴影，默认为 `false`。]),
+  (1, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *#underline[text]*: 显示的文本内容，使用文本组件。]),
+  (1, [#icon("nbt-byte") *text_opacity*: 可插值，用$-128$与127之间的值表示透明度。透明度需要是0 \~ 255之间的数，故大于127的值一律使用负数替代，换算公式为$"真正透明度"="<text\_opacity>"+256$。例如，完全不透明（255）使用$-1$这个值来表示（$"<text\_opacity>"=255-256=-1$）。类似于字段 #icon("nbt-int") `background`，透明度小于26（即通道小于10%）时会丢弃片段，故文本将不可见。默认值为 `-1b`（完全不透明）。])
+)
+#index(index: "method", display: "获取玩家的名字", "huo4 qu3 wan2 jia1 de ming2 zi4")
+#example(
+  [将最近的玩家的名字存入存储 `toturial:test` 的字段 #icon("nbt-string") `player_name`。],
+  [
+    玩家的名字可以由实体名称组件得到，经过动态解析之后，文本内容会变成不需要解析的静态类组件。虽然在聊天栏、标题中只能看到解析的结果，但文本展示实体可以存储SNBT格式的解析结果。
+    以上结果是由实体名称组件解析而来。因此可以生成一个解析最近玩家名字的文本展示实体：
+    #codebox("summon minecraft:text_display ~ ~ ~ {text:{selector:\"@p\"}}")
+    文本展示实体生成完毕后，用
+    #codebox("data get entity @n[type=minecraft:text_display] text")
+    #h(-2em)获取 #icon("nbt-compound") `text` 的值，其中的内容大致如下所示：
+    #codebox("{click_event: {action: \"suggest_command\", command: \"/tell Mu_xian \"}, insertion: \"Mu_xian\", text: \"Mu_xian\", hover_event: {name: \"Mu_xian\", action: \"show_entity\", id: \"minecraft:player\", uuid: [I; 1699506248, -677556729, -1141634424, -430286865]}}")
+    可见玩家名字存储于 #icon("nbt-string") `text` 中，按以下命令即可获取玩家名字并存入存储：
+    #codebox("data modify storage tutorial:test player_name set from entity @n[type=minecraft:text_display] text.text")
+  ]
+)
+==== 渲染变换
+对于展示实体的渲染变换，字段 #icon("nbt-list")#icon("nbt-compound") `transformation` 拥有两种数据形式：*矩阵形式*和*分解形式*。编写NBT时可用矩阵形式，但实体被保存时一律使用分解形式。
+===== 矩阵形式
+使用矩阵形式时，字段 #icon("nbt-list") `transformation` 的数据类型为列表：
+#tree(
+  (0, [#icon("nbt-list") *transformation*: 含有十六个元素的仿射变换矩阵。]),
+  (1, [#icon("nbt-float") 矩阵中的一个元素。])
+)
+使用一个$4 times 4$的矩阵以表示变换方式$bold(A)$：
+$ bold(A) = mat(
+  a_(11), a_(12), a_(13), a_(14);
+  a_(21), a_(22), a_(23), a_(24);
+  a_(31), a_(32), a_(33), a_(34);
+  a_(41), a_(42), a_(43), a_(44);
+) $
+#wrap-content(
+  tips(
+    [列表中每一个元素后面不要忘记附加 `f` 以表明单精度浮点数的数据类型。],
+    width: 20em
+  ),
+  [
+
+    这是一个#proper-noun(display: "行主序矩阵（Row-major matrix）", "hang2 zhu3 xu4 ju3 zhen4")，每一个元素都是浮点数，在NBT中写成列表的形式即
+  ],
+  align: right
+)
+#codebox("[<a11>, <a12>, <a13>, <a14>, <a21>, <a22>, <a23>, <a24>, <a31>, <a32>, <a33>, <a34>, <a41>, <a42>, <a43>, <a44>]")
+这个矩阵用于描述一个#proper-noun(display: "仿射变换（Affine transform）", "fang3 she4 bian4 huan4")。为了以矩阵形式表示三维空间中点的变换，将原空间映射至仿射空间。对于三维空间内每一个点$(x_0,y_0,z_0)$，在其尾部添加一个1以在仿射空间内表示一个点，即$(x_0,y_0,z_0,1)$。令该点经过一定仿射变换$bold(A)$后位于$(x',y',z',1)$，则写成矩阵乘法的形式：
+$ mat(x'; y'; z'; 1) = mat(
+  a_(11), a_(12), a_(13), a_(14);
+  a_(21), a_(22), a_(23), a_(24);
+  a_(31), a_(32), a_(33), a_(34);
+  a_(41), a_(42), a_(43), a_(44);
+) mat(x; y; z; 1) $
+基础变换形式有平移、旋转、缩放（镜像）、剪切，*所有的变换均基于实体的实际坐标进行*，下面依次讲解之。
+====== 平移
+设展示实体上任意一点$(x_0,y_0,z_0,1)$在$x$、$y$、$z$轴分别平移$a$、$b$、$c$后得到点$(x',y',z',1)$，则
+$ cases(
+  x' = &x_0 & & &+&a,
+  y' = & &y_0 & &+&b,
+  z' = & & &z_0 &+&c,
+  1 = & & & &&1
+) $
+则平移矩阵$bold(T)$为
+$ bold(T)(a,b,c) = mat(
+  1, 0, 0, a;
+  0, 1, 0, b;
+  0, 0, 1, c;
+  0, 0, 0, 1
+) $
+====== 旋转
+一共有三种旋转方式，即绕$x$轴、绕$y$轴和绕$z$轴旋转。旋转矩阵的推导过程在@chap:coordinates\对朝向和局部坐标的推导中已给出，同理可得绕$x$轴旋转$alpha$的矩阵形式
 === 交互实体
 == 玩家
 == 物品堆叠<sec:item_stack>
