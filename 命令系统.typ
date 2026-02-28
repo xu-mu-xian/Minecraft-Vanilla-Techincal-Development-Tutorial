@@ -7958,8 +7958,8 @@ $ bold(A) = mat(
   a_(11), a_(12), a_(13), a_(14);
   a_(21), a_(22), a_(23), a_(24);
   a_(31), a_(32), a_(33), a_(34);
-  a_(41), a_(42), a_(43), a_(44);
-) $
+  a_(41), a_(42), a_(43), a_(44)
+) $ <equ:affine_matrix>
 #wrap-content(
   tips(
     [列表中每一个元素后面不要忘记附加 `f` 以表明单精度浮点数的数据类型。],
@@ -7983,10 +7983,10 @@ $ mat(x'; y'; z'; 1) = mat(
 ====== 平移
 设展示实体上任意一点$(x_0,y_0,z_0,1)$在$x$、$y$、$z$轴分别平移$a$、$b$、$c$后得到点$(x',y',z',1)$，则
 $ cases(
-  x' = &x_0 & & &+&a,
-  y' = & &y_0 & &+&b,
-  z' = & & &z_0 &+&c,
-  1 = & & & &&1
+  x' &= &x_0 & & &+&a,
+  y' &= & &y_0 & &+&b,
+  z' &= & & &z_0 &+&c,
+  1 &= & & & &&1
 ) $
 则平移矩阵$bold(T)$为
 $ bold(T)(a,b,c) = mat(
@@ -7997,8 +7997,408 @@ $ bold(T)(a,b,c) = mat(
 ) $
 ====== 旋转
 一共有三种旋转方式，即绕$x$轴、绕$y$轴和绕$z$轴旋转。旋转矩阵的推导过程在@chap:coordinates\对朝向和局部坐标的推导中已给出，同理可得绕$x$轴旋转$alpha$的矩阵形式
+$ bold(R)_x (alpha) = mat(
+  1, 0, 0, 0;
+  0, cos alpha , -sin alpha, 0;
+  0, sin alpha, cos alpha, 0;
+  0, 0, 0, 1
+) $
+绕$y$轴旋转$beta$的矩阵形式为
+$ bold(R)_y (beta) = mat(
+  cos beta, 0, sin beta, 0;
+  0, 1 , 0, 0;
+  -sin beta, 0, cos beta, 0;
+  0, 0, 0, 1
+) $
+绕$z$轴旋转$gamma$的矩阵形式为
+$ bold(R)_z (gamma) = mat(
+  cos gamma, sin gamma, 0, 0;
+  -sin gamma, cos gamma , 0, 0;
+  0, 0, 1, 0;
+  0, 0, 0, 1
+) $
+====== 缩放
+设展示实体上任意一点$(x_0,y_0,z_0,1)$沿$x$、$y$、$z$轴分别缩放$m$、$n$、$p$倍后得到点$(x',y',z',1)$，则
+$ cases(
+  x' &= &m x_0,
+  y' &= &&n y_0,
+  z' &= &&&p z_0,
+  1 &= &&&&1,
+) $
+则缩放矩阵$bold(S)$为
+$ bold(S)(m,n,p) = mat(
+  m, 0, 0, 0;
+  0, n, 0, 0;
+  0, 0, p, 0;
+  0, 0, 0, 1
+) $ <equ:scale_matrix>
+若$m=n=p$，则是均匀缩放；不然则是非均匀缩放。
+#example(
+  [尝试生成一个方块展示实体，使之展示一个$2 times 2 times 2$大小的海晶灯，使用等级为15的方块光照。],
+  [
+    由于仅应用缩放变换，因此仿射变换矩阵中主对角线上除右下角的元素外，其余元素均为2，所需命令为
+    #codebox("summon block_entity ~ ~ ~ {brightness:{block:15},transformation:[2f,0f,0f,0f,0f,2f,0f,0f,0f,0f,2f,0f,0f,0f,0f,1f]}")
+  ]
+)
+====== 镜像
+对于@equ:scale_matrix 而言，特别地、若$m$、$n$、$p$三者中至少有一个为负数，都会进行镜像变换。负缩放因子使坐标系在对应轴上反转，表面法线方向改变，从而造成内凹渲染。
+#figure(
+  caption: "镜像变换造成的内凹渲染",
+  image("图片/镜像变换造成的内凹渲染.png", width: 18em)
+)
+若展示实体上任意一点$(x_0,y_0,z_0,1)$沿$x$轴镜像，其他方向上不作变化，易得镜像矩阵
+$ bold(M)_x (m) = mat(
+  m, 0, 0, 0;
+  0, 1, 0, 0;
+  0, 0, 1, 0;
+  0, 0, 0, 1
+) $
+其中$m<0$。同理可得沿$y$轴镜像、沿$z$轴镜像的矩阵$bold(M)_y (n)$、$bold(M)_z (p)$。在多个方向进行的镜像变换也很容易得出，例如在$x$轴、$y$轴和$z$轴方向上同时应用镜像变换所需的矩阵（$m<0$，$n<0$，$p<0$）为
+$ bold(M)_(x,y,z) (m,n,p) = mat(
+  m, 0, 0, 0;
+  0, n, 0, 0;
+  0, 0, p, 0;
+  0, 0, 0, 1
+) $
+====== 剪切
+剪切变换将实体上所有点沿某一方向做一定移动，通过原点的直线上任意一点沿该方向移动的距离随直线与原点的距离线性变化，这使得图像变得倾斜。一种剪切变换发生在两个正交坐标轴组成的平面内，在其中一个方向上做剪切，在另一个方向上不做变换。三维坐标系中坐标轴两两正交一共有六对正交关系，因此初等剪切变换一共有六种。
+#figure(
+  caption: "剪切变换",
+  image("图片/剪切变换.png", width: 18em)
+) <fig:shear_transformation>
+如@fig:shear_transformation，图像在一个方向发生剪切的过程中，实际上与另一个方向拥有一个剪切角度$theta_(i,j)$，下标（$i,j$）代表在$i$方向内做剪切，并与$j$方向呈一定剪切角度。若图中横向为$x$轴，纵向为$y$轴，剪切角度记为$theta_(x,y)$，显然有
+$ cases(
+  x' &= &x_0 + &y_0 tan theta_(x,y),
+  y' &= &&y_0,
+  z' &= &&&z_0,
+  1 &= &&&&1
+) $
+则$x$轴方向上做剪切、并与$y$轴方向呈一定剪切角度所需矩阵$bold(H)$为
+$ bold(H)(theta_(i,j)) = mat(
+  1, tan theta_(x,y), 0, 0;
+  0, 1, 0, 0;
+  0, 0, 1, 0;
+  0, 0, 0, 1
+) $
+同理可推导得到其他六种剪切变换所需的矩阵。当剪切变换的方向为$x$轴时，元素$tan theta_(i,j)$一定位于矩阵的第一行，$y$轴则为第二行，$z$轴则为第三行；与变换方向呈剪切角度的方向为$x$轴时，元素$tan theta_(i,j)$一定位于第一列，$y$轴则为第二列，$z$轴则为第三列。例如，某个剪切变换在$z$轴方向进行，与$x$轴方向呈剪切角度，则$tan theta_(z,x)$位于第三行第一列。
+
+以上描述的剪切矩阵均为仅在一个方向上做变换、并与另一个方向呈一定剪切角度的情况。若同时应用多个不同的剪切变换，使用上面的规律填入元素，则剪切矩阵可记为
+$ bold(H)(theta_(i,j)) = mat(
+  1, tan theta_(x,y), tan theta_(x,z), 0;
+  tan theta_(y,x), 1, tan theta_(y,z), 0;
+  tan theta_(z,x), tan theta_(z,y), 1, 0;
+  0, 0, 0, 1
+) $ <equ:shear_matric>
+若某个方向的剪切变换不使用，将@equ:shear_matric 中对应位置的$tan theta_(i,j)$写为0即可。
+====== 组合变换
+一种变换可能无法满足要求，有时需要同时应用多种以表示复杂的变换。对于有限个仿射变换$bold(A)_1$、$bold(A)_2$、……$bold(A)_n$，*依次*将它们作用于一点$bold(x)$，则变换后得到的点$bold(x')$为
+$ bold(x')=bold(A)_n bold(A)_(n-1) dots.h.c bold(A)_2 bold(A)_1 bold(x) $
+注意矩阵的乘法遵循*从右向左*的运算规则，且不支持交换律，但是支持结合律，因此有
+$ bold(x')=(bold(A)_n bold(A)_(n-1) dots.h.c bold(A)_2 bold(A)_1)bold(x) $
+令$bold(A)=bold(A)_n bold(A)_(n-1) dots.h.c bold(A)_2 bold(A)_1$，则$bold(x)=bold(A) bold(x')$，其中$bold(A)$为组合变换矩阵。组合变换中各种变换的次序非常重要，上一个变换可能会影响下一个变换的结果。
+
+在标签 #icon("nbt-list") `transformation` 中使用的矩阵均为组合变换矩阵。
+#example(
+  [修改一个方块展示实体的NBT数据，使之依次绕$y$轴旋转$30 degree$、绕$x$轴旋转$45 degree$、绕$z$轴旋转$90 degree$。],
+  [
+    求出组合变换矩阵，注意按从右向左的顺序计算：
+    #math.equation(numbering: none, block: true)[$ bold(A) &= bold(R)_z (90 degree) bold(R)_x (45 degree) bold(R)_y (30 degree)\ &= mat(
+      cos 90 degree, sin 90 degree, 0, 0;
+      -sin 90 degree, cos 90 degree , 0, 0;
+      0, 0, 1, 0;
+      0, 0, 0, 1
+    ) mat(
+      1, 0, 0, 0;
+      0, cos 45 degree , -sin 45 degree, 0;
+      0, sin 45 degree, cos 45 degree, 0;
+      0, 0, 0, 1
+    ) mat(
+      cos 30 degree, 0, sin 30 degree, 0;
+      0, 1 , 0, 0;
+      -sin 30 degree, 0, cos 30 degree, 0;
+      0, 0, 0, 1
+    )\ &= mat(
+      display(-sqrt(2)/4), display(-sqrt(2)/2), display(sqrt(6)/4), 0;
+      display(sqrt(3)/2), 0, display(1/2), 0;
+      display(-sqrt(2)/4), display(sqrt(2)/2), display(sqrt(6)/4), 0;
+      0, 0, 0, 1
+    ) approx mat(
+      -0.35, -0.71, 0.61, 0;
+      0.87, 0, 0.5, 0;
+      -0.35, 0.71, 0.61, 0;
+      0, 0, 0, 1
+    )$]
+    故命令应为
+    #codebox("data merge entity @e[type=block_display,limit=1] {transformation:[-0.35f, -0.71f, 0.61f, 0.0f, 0.87f, 0.0f, 0.5f, 0.0f, -0.35f, 0.71f, 0.61f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f]}")
+  ]
+)
+===== 分解形式 \*
+对于@equ:affine_matrix 所述$4 times 4$大小的仿射变换矩阵$bold(A)$，其元素$a_(41)$、$a_(42)$、$a_(43)$总是为0，$a_(44)$总是为1，若不为1，则将整个矩阵按#box(baseline: 30%, inset: (y: 0.5em))[$display(1/a_(44))$]的比例缩放，从而使$a_(44)$为1。可以将其分块写成如下的形式：
+$ bold(A) = mat(
+  augment: #(hline: 3, vline: 3),
+  a_(11), a_(12), a_(13), a_(14);
+  a_(21), a_(22), a_(23), a_(24);
+  a_(31), a_(32), a_(33), a_(34);
+  a_(41), a_(42), a_(43), a_(44)
+) = mat(
+  bold(B)_(3 times 3), bold(T)_(3 times 1);
+  bold(O)_(1 times 3), bold(E)_(1 times 1)
+) $ <equ:affine_matrix_block>
+式中分块阵$bold(B)$是左上角$3 times 3$区域，这个区域代表模型的线性变换，存储了包括旋转、缩放、镜像和剪切在内的所有线性变换数据，注意，这个分块阵不适用于平移变换，因为平移变换不是线性变换。而分块阵$bold(T)$的三个元素仅被平移变换所使用。
+
+分解形式的 #icon("nbt-compound") `transformation` 字段是分块阵$bold(B)$经#proper-noun(display: "奇异值分解（Singular value decomposition，SVD）", "qi2 yi4 zhi2 fen1 jie3")后使用的数据。对于任意的3阶方阵$bold(B)$，总存在3阶正交方阵$bold(U)$和$bold(V)$、3阶对角阵$bold(Sigma)$，有
+$ bold(B)=bold(U)bold(Sigma)bold(V)^"T" $ <equ:svd>
+#param-desc(
+  prefix: "式中：",
+  [$bold(V)^"T"$], [矩阵$bold(V)$的转置矩阵。]
+)
+称$bold(U)$为#proper-noun(display: "左奇异向量矩阵（left-singular vector matrix）", "zuo3 qi2 yi4 xiang4 liang4 ju3 zhen4")，$bold(V)$为#proper-noun(display: "右奇异向量矩阵（Right-singular vector matrix）", "you4 qi2 yi4 xiang4 liang4 ju3 zhen4")，对角阵$bold(Sigma)$中对角线上的三个元素被称为#proper-noun(display: "奇异值（Singular values）", "qi2 yi4 zhi2")。下面介绍奇异值分解的计算方法。
+
+对@equ:svd，等号左右两边取转置矩阵，得
+$ bold(B)^"T"=bold(V)bold(Sigma)bold(U)^"T" $
+#h(-2em)由于方阵$bold(U)$和$bold(V)$是正交的，因此$bold(V)^"T"bold(V)=bold(E)$、$bold(U)^"T"bold(U)=bold(E)$。则有
+$ bold(B)bold(B)^"T"=bold(U)bold(Sigma)bold(V)^"T"bold(V)bold(Sigma)bold(U)^"T"=bold(U)bold(Sigma)^2 bold(U)^"T" $
+#h(-2em)对上式进行变形：
+$ bold(U)(bold(B)bold(B)^"T")bold(U)^"T"=bold(Sigma)^2 $
+方阵$bold(B)bold(B)^"T"$是一个实对称阵，显然上式描述的是将$bold(B)bold(B)^"T"$相似对角化的过程，其中#box(baseline: 30%, inset: (y: 0.5em))[$display(bold(Sigma)=mat(sigma_1, , ; , sigma_2, ; , , sigma_3))$]，使用的正交阵便为左奇异向量矩阵$bold(U)$。如果记$lambda_1$、$lambda_2$、$lambda_3$是$bold(B)bold(B)^"T"$的三个特征值，这些特征值是非负的，读者可自行证明，于是有
+$ bold(Sigma)^2=mat(lambda_1, , ; , lambda_2, ; , , lambda_3)=mat(sigma^2_1, , ; , sigma^2_2, ; , , sigma^2_3) $
+于是求出$bold(B)bold(B)^"T"$的三个特征值即可求出对角阵$bold(Sigma)$。因此，$bold(Sigma)$和$bold(U)$的求解步骤如下：
+======= 由特征方程$abs(lambda bold(E) - bold(B)bold(B)^"T") = 0$求$bold(B)bold(B)^"T"$的全部特征值$lambda_i$，然后求出对角阵
+$ bold(Sigma)="diag"(sigma_1,sigma_2,sigma_3)="diag"(sqrt(lambda_1),sqrt(lambda_2),sqrt(lambda_3)) $
+======= 对于每个特征值$lambda_i$，由方程组$(lambda_i bold(E)-bold(B)bold(B)^"T")bold(x)=bold(0)$求对应的特征向量$bold(alpha)_i$。
+======= 如果求得的特征向量相互不正交，则对特征向量$bold(alpha)_i$进行正交化，记正交化后的向量为$bold(beta)_i$。
+======= 如果求得的向量$bold(beta)_i$没有单位化，则将其单位化为$bold(gamma)_i$，令$bold(U)=[gamma_1,gamma_2,gamma_3]$。计算完毕。
+\ 
+
+对于右奇异向量矩阵$bold(V)$，有
+$ bold(B)^"T"bold(B)=bold(V)bold(Sigma)bold(U)^"T"bold(U)bold(Sigma)bold(V)^"T"=bold(V)bold(Sigma)^2 bold(V)^"T" $
+#h(-2em)同理可求得右奇异向量矩阵，计算步骤与上述计算左奇异向量矩阵的步骤相同，其中$bold(Sigma)$和上文是同一个矩阵，可不必重复计算。若$bold(B)$可逆，对@equ:svd 变形：
+$ bold(V)=bold(B)^(-1)bold(U)bold(Sigma) $ <equ:svd_v_calculate_directly>
+#h(-2em)则可以不进行对角化计算而直接求出右奇异向量矩阵$bold(V)$。下面举一个奇异值分解的计算实例：
+#example(
+  [对#box(baseline: 43%, inset: (y: 0.5em))[$display(bold(B) = mat(1, 0, 0; 0, 0, 3; 0, 0, -1))$]进行奇异值分解。],
+  [
+    首先求左奇异向量矩阵，#box(baseline: 43%, inset: (y: 0.5em))[$display(bold(B)bold(B)^"T" = mat(1, 0, 0; 0, 0, 3; 0, 0, -1) mat(1, 0, 0; 0, 0, 0; 0, 3, -1) = mat(1, 0, 0; 0, 9, -3; 0, -3, 1))$]。由特征多项式#box(baseline: 43%, inset: (y: 0.5em))[$display(abs(lambda bold(E) - bold(B)bold(B)^"T") = mat(delim: "|", lambda-1, 0, 0; 0, lambda-9, 3; 0, 3, lambda-1) = (lambda -10)(lambda -1)lambda = 0)$]，解得$lambda_1=10$，$lambda_2=1$，$lambda_3=0$。因此有$sigma_1=sqrt(10)$，$sigma_2=1$，$sigma_3=0$，所以#box(baseline: 30%, inset: (y: 0.5em))[$bold(Sigma) = "diag"(sqrt(10),1,0)$]。
+
+    当$lambda_1=10$时，解方程#box(baseline: 30%, inset: (y: 0.5em))[$display((10 bold(E) - bold(B)bold(B)^"T")bold(x) = bold(0))$]，#box(baseline: 43%, inset: (y: 0.5em))[$display(mat(9, 0, 0; 0, 1, 3; 0, 3, 9) ~ mat(1, 0, 0; 0, 1, 3; 0, 0, 0))$]，得基础解系$bold(alpha_1)=(0,-3,1)^"T"$，此即为$lambda_1=10$对应的特征向量。
+
+    当$lambda_2=1$时，解方程$(bold(E)-bold(B)bold(B)^"T")bold(x)=bold(0)$，得基础解系$bold(alpha_2)=(1,0,0)^"T"$。
+    
+    当$lambda_3=0$时，解方程$(0bold(E)-bold(B)bold(B)^"T")bold(x)=bold(0)$，得基础解系$bold(alpha_3)=(0,1,3)^"T"$。
+
+    $bold(alpha_1)$、$bold(alpha_2)$、$bold(alpha_3)$已正交，现对其进行单位化，得#box(baseline: 43%, inset: (y: 0.5em))[$display(bold(gamma_1)=1/sqrt(10)(0,-3,1)^"T")$]，$bold(gamma_2)=(1,0,0)^"T"$，#box(baseline: 43%, inset: (y: 0.5em))[$display(bold(gamma_3)=1/sqrt(10)(0,1,3)^"T")$]。令#box(baseline: 46%, inset: (y: 0.5em))[$display(bold(U)=[bold(gamma_1),bold(gamma_2),bold(gamma_3)]=mat(0,1,0;display(-3/sqrt(10)),0,display(1/sqrt(10));display(1/sqrt(10)),0,display(3/sqrt(10))))$]，此即为左奇异向量矩阵。
+
+    接下来求右奇异向量矩阵，因为$"r"(bold(B))<3$，$bold(B)$不可逆，故不能使用@equ:svd_v_calculate_directly 计算$bold(V)$。
+
+    #box(baseline: 43%, inset: (y: 0.5em))[$display(bold(B)^"T"bold(B)=mat(1, 0, 0; 0, 0, 0; 0, 3, -1)mat(1, 0, 0; 0, 0, 3; 0, 0, -1)=mat(1,0,0;0,0,0;0,0,10))$]已为对角阵，将对角线元素顺序改为$bold(Sigma)^2$的顺序，取$bold(gamma_1)=(0,0,-1)^"T"$，$bold(gamma_2)=(1,0,0)^"T"$，$bold(gamma_3)=(0,1,0)^"T"$，令#box(baseline: 43%, inset: (y: 0.5em))[$display(bold(V)=mat(0,1,0;0,0,1;-1,0,0))$]，此即为右奇异向量矩阵。则有$bold(U)bold(Sigma)bold(V)^"T"=bold(B)$。分解完毕。
+  ]
+)
+矩阵奇异值分解的结果具有几何意义。因为$bold(U)$、$bold(V)$都是正交矩阵，因此它们能用于表示旋转，$bold(Sigma)$是缩放变换矩阵。任何变换都可以被分解成四个过程：初次旋转变换、缩放变换、再次旋转变换和平移变换。因此，用$bold(V)$表示初次旋转变换，用$bold(Sigma)$表示缩放变换，用$bold(U)$表示再次旋转变换，在此基础上再引入平移向量$bold(T)$，则可以得到变换矩阵$bold(A)$的分解形式，此时字段 #icon("nbt-compound") `transformation` 是复合标签：
+#tree(
+  (0, [#icon("nbt-compound") *transformation*: 分解形式。]),
+  (1, [#icon("nbt-list")#icon("nbt-compound") *right_rotation*: 模型进行缩放变换前的旋转变换，即初次旋转变换，与奇异值分解中的$bold(V)$相关。拥有两种可用数据形式：轴角式和四元数形式。编写时可以使用轴角式，但是在存储数据时一律转换成四元数形式。]),
+  (2, [初次旋转数据]),
+  (1, [#icon("nbt-list") *scale*: 模型的缩放变换，与奇异值分解中的$bold(Sigma)$相关。使用三维向量。]),
+  (2, [#icon("nbt-float") 向量的一个分量。]),
+  (1, [#icon("nbt-list")#icon("nbt-compound") *left_rotation*: 模型进行缩放变换后的旋转变换，即再次旋转变换，与奇异值分解中的$bold(U)$相关。同样有轴角式和用四元数形式两种表示方式。编写时可以使用轴角式，但是在存储数据时一律转换成四元数形式。]),
+  (2, [再次旋转数据]),
+  (1, [#icon("nbt-list") *translation*: 模型的平移变换$bold(T)$。对应矩阵形式最后一列前三行元素，见@equ:affine_matrix_block。使用三维向量。]),
+  (2, [#icon("nbt-float") 向量的一个分量。])
+)
+对于 #icon("nbt-list")#icon("nbt-compound") `right_rotation` 和 #icon("nbt-list")#icon("nbt-compound") `left_rotation` 这两个字段，有轴角式和四元数形式两种数据形式表示旋转。下面分别介绍这两种数据形式：
+====== 轴角式
+#proper-noun(display: "轴角式（Angle-axis form）", "zhou2 jiao3 shi4")旋转可以理解为：一个向量$bold(v)$绕一个通过原点（即实体实际位置）的长度为1的轴$bold(u)$旋转角度$theta$得到向量$bold(v)'$。此时有$norm(bold(u))=1$。
+#align(center)[
+  #grid(
+    align: center,
+    column-gutter: 10em,
+    columns: 2,
+    [
+      #figure(
+        caption: "轴角式旋转示意图",
+        image("图片/轴角式旋转示意图.png", height: 10em)
+      )
+    ],
+    [
+      #figure(
+        caption: [向量$bold(v)$的分解],
+        image("图片/向量v的分解.png", height: 10em)
+      )
+    ]
+  )
+]
+为了便于分析，将向量$bold(v)$分解成平行于轴$bold(u)$的向量$bold(v)_parallel$和正交于轴$bold(u)$的向量$bold(v)_parallel$，于是有
+$ bold(v)=bold(v)_parallel+bold(v)_perp $ <equ:decomposition_of_vector_v>
+#h(-2em)将$bold(v)_parallel$用含有$bold(v)$和$bold(u)$的式子表达，即计算$bold(v)$在$bold(u)$上的投影：
+$ bold(v)_parallel = norm(bold(v)_parallel) bold(u)/norm(bold(u)) = ((bold(u) dot.c bold(v))bold(u))/(norm(bold(u))norm(bold(u))) = (bold(u) dot.c bold(v))bold(u) $
+#h(-2em)于是可得到$bold(v)_perp$的表达式
+$ bold(v)_perp = bold(v) - bold(v)_parallel = bold(v) - (bold(u) dot.c bold(v))bold(u) $
+对于向量$bold(v)'$，同样可以将其分解得到
+$ bold(v)'=bold(v)'_parallel + bold(v)'_perp $ <equ:decomposition_of_vector_v_>
+#h(-2em)实际上，在向量$bold(v)$的旋转过程中，向量$bold(v)_parallel$没有发生变化，即
+$ bold(v)'_parallel = bold(v)_parallel $
+#figure(
+  caption: [向量$bold(v)_perp$的旋转],
+  image("图片/向量v⊥的旋转.png", width: 10em)
+) <fig:rotation_of_the_vector_perpendicular_to_v>
+现在考察向量$bold(v)_perp$的旋转。不难发现，向量的旋转实际上是发生在圆周上的，如@fig:rotation_of_the_vector_perpendicular_to_v 所示。此时正交于$bold(u)$轴的平面内没有其他可用轴，为此构建同时正交于$bold(u)$和$bold(v)_perp$的轴$bold(w)$，有
+$ bold(w) = bold(u) times bold(v)_perp $
+#h(-2em)由
+$ norm(bold(w)) = norm(bold(u) times bold(v)_perp) = norm(bold(u)) dot.c norm(bold(v)_perp) dot.c sin 90 degree = norm(bold(v)_perp) $
+#h(-2em)知$bold(w)$和$bold(v)_perp$的模是相等的，故将向量$bold(v)'_perp$可被分解为平行于$bold(w)$的$bold(v)'_bold(w)$和平行于$bold(v)_perp$的$bold(v)'_bold(v)$，有
+$ bold(v)'_perp = bold(v)'_bold(w) + bold(v)'_bold(v) = bold(w) sin theta + bold(v)_perp cos theta = (bold(u) times bold(v)_perp)sin theta + bold(v)_perp cos theta $ <equ:decomposition_of_the_vector_perpendicular_to_v_>
+#h(-2em)所以得到
+$ bold(v)' &= bold(v)'_parallel + bold(v)'_perp\ &= bold(v)_perp + (bold(u) times bold(v)_perp)sin theta + bold(v)_perp cos theta\ &= bold(v)_perp + [bold(u) times (bold(v) - bold(v)_parallel)]sin theta + bold(v)_perp cos theta\ &= bold(v)_perp + (bold(u) times bold(v))sin theta + bold(v)_perp cos theta\ &= (bold(u) dot.c bold(v))bold(u) + (bold(u) times bold(v))sin theta + [bold(v) - (bold(u) dot.c bold(v))bold(u)] cos theta\ &= (bold(u) dot.c bold(v))bold(u)(1 - cos theta) + (bold(u) times bold(v))sin theta + bold(v) cos theta $
+使用轴角式表示旋转时字段 #icon("nbt-compound") `right_rotation` 和 #icon("nbt-compound") `left_rotation` 为复合标签：
+#tree(
+  (0, [#icon("nbt-compound") *right_rotation*或*left_rotation*]),
+  (1, [#icon("nbt-float") *angle*: 绕轴旋转的角度，即$theta$角，采用*角度制*。]),
+  (1, [#icon("nbt-list") *axis*: 含三个元素的有序数组，用于定义旋转轴向量$bold(u)$。一般可以写成单位向量。]),
+  (2, [#icon("nbt-float") 向量的一个分量。])
+)
+====== 四元数形式
+使用四元数形式表示旋转时，字段 #icon("nbt-list") `right_rotation` 和 #icon("nbt-list") `left_rotation` 类型是列表，数据格式为：
+#tree(
+  (0, [#icon("nbt-list") *right_rotation*或*left_rotation*: 表示四元数的四个元素，顺序依次为$x$、$y$、$z$、$w$。]),
+  (1, [#icon("nbt-float") 四元数中的一个元素。])
+)
+一切#proper-noun(display: "四元数（Quaternion）", "si4 yuan2 shu4")都可以写成如下的形式：
+$ q = w + x bold(i) + y bold(j) + z bold(k) $
+其中$x$、$y$、$z$、$w in RR$，称$x bold(i) + y bold(j) + z bold(k)$为四元数$q$的虚部，$w$为实部。一般可以使用向量$q=(w,x,y,z)$来表示四元数，或者将$(x,y,z)$视作一个向量$bold(v)$，用标量和向量的形式表示四元数$q=(w,bold(v))$。四元数的模为#box(baseline: 30%, inset: (y: 0.5em))[$norm(q) = sqrt(w^2 + x^2 + y^2 + z^2)$]，规定：当$norm(q) = 1$时，该四元数为#proper-noun(display: "单位四元数（Unit quaternion）", "dan1 wei4 si4 yuan2 shu4")。同时又有规定：当$w=0$时，可以称该四元数为*纯四元数*。
+
+对于轴角式中的旋转轴和向量，可以将其写成纯四元数的形式，如$u=(0,bold(u))$、$v=(0,bold(v))$。因此@equ:decomposition_of_vector_v、@equ:decomposition_of_vector_v_ 可写成如下的形式：
+$ v = v_parallel + v_perp $
+$ v' = v'_parallel + v'_perp $
+#h(-2em)$v_parallel$的旋转可表示为
+$ v'_parallel = v_parallel $
+#h(-2em)对@equ:decomposition_of_the_vector_perpendicular_to_v_ 作变形，如果将$(u sin theta + cos theta)$视作一个四元数$q$，即$q=(cos theta, bold(u) sin theta)$，则可得
+$ v'_perp = q v_perp $
+注意到，上面的这个四元数q有如下性质：
+$ norm(q) = sqrt(cos^2 theta + bold(u) sin theta dot.c bold(u) sin theta) = sqrt(cos^2 theta + norm(bold(u))^2 sin^2 theta) = 1 $
+#h(-2em)这是一个单位四元数。*一般应用于旋转变换的四元数都是单位四元数，非单位四元数会使得模型在旋转的同时进行缩放*。于是使用四元数形式表示的向量旋转为
+$ v' = v'_parallel + v'_perp = v_parallel + q v_perp $ <equ:quaternion_form_of_v_>
+令$q=p^2$，其中#box(baseline: 30%, inset: (y: 0.5em))[$display(p = (cos theta/2, bold(u) sin theta/2))$]，则@equ:quaternion_form_of_v_ 可化简为
+$ v' &= v_parallel + q v_perp\ &= p p^* v_parallel + p^2 v_perp\ &= p v_parallel p^* + p v_perp p^*\ &= p(v_parallel + v_perp)p^*\ &= p v p^* $
+#param-desc(
+  prefix: "式中：",
+  [$p^*$], [四元数$p$的共轭，若$p=(w,bold(v))$，则$p^*=(w,-bold(v))$。]
+)
+于是得到了四元数形式表示的旋转公式：
+$ v' = q v q^* $ <equ:quaternion_rotation>
+#h(-2em)*其中#box(baseline: 30%, inset: (y: 0.5em))[$display(q = (cos theta/2, bold(u) sin theta/2))$]。这个四元数中各元素分别为#box(baseline: 30%, inset: (y: 0.5em))[$display(w = cos theta/2)$]、#box(baseline: 30%, inset: (y: 0.5em))[$display(x = u_x sin theta/2)$]、#box(baseline: 30%, inset: (y: 0.5em))[$display(y = u_y sin theta/2)$]、#box(baseline: 30%, inset: (y: 0.5em))[$display(z = u_z sin theta/2)$]。$theta$是绕轴$bold(u)$旋转的角度，方向为逆时针。$u_i$是旋转轴$bold(u)$在该坐标轴$i$上的分量。*
+
+\
+
+对于一个渲染变换，设其初次旋转所用四元数为$q_r$，再次旋转所用四元数为$q_l$，令缩放数据$s=(s_x,s_y,s_z)$，平移数据$t=(t_x,t_y,t_z)$。对展示实体上任意一点$A(x_0,y_0,z_0)$构造四元数
+$ q_0 = x_0 bold(i) + y_0 bold(j) + z_0 bold(k) = (0, arrow(O A)) $
+#h(-2em)进行初次旋转，得到
+$ q_1 = q_r q_0 q^*_r $
+#h(-2em)随后应用缩放变换，得到
+$ q_2 = s_x q_(1x) bold(i) + s_y q_(1y) bold(j) + s_z q_(1z) bold(k) $
+#h(-2em)*在初次旋转和放缩变换共同作用下，模型中各点的相对位置会发生改变。*只有当初次旋转四元数$q_r=(1,bold(0))$（不发生旋转）或缩放数据$s=(1,1,1)$（不进行缩放）时，模型才不会发生变形。模型在这之后会*根据再次旋转变换确定最终的旋转角度*，得到
+$ q_3 = q_l q_2 q^*_l $
+#h(-2em)最后应用平移变换，确定模型最终的位置，从而得到点$A$最终的位置：
+$ q = q_3 + t $
+#example(
+  [
+    现用方块展示实体展示一个玻璃。
+    + 生成这个展示实体，使玻璃的体对角线与$y$轴平行。
+    + 使这个展示实体绕体对角线旋转，旋转一周用时4秒。
+    #figure(
+      caption: "",
+      image("图片/展示实体例题.png", width: 5em)
+    )
+  ],
+  [
+    + 模型中体对角线从$O(0,0,0)$到$A(1,1,1)$，现在需要使模型在不发生形变的前提下将$arrow(O A)$变换为与$(0,1,0)$（$y$轴方向向量）平行。现在可以直接确定再次旋转所用的四元数$q_l$，根据@equ:quaternion_rotation，待确定的量有旋转角度$theta$和旋转轴$bold(u)$。
+
+      计算旋转角度：将$arrow(O A)$单位化，得到#box(baseline: 30%, inset: (y: 0.5em))[$display((1/sqrt(3),1/sqrt(3),1/sqrt(3)))$]，因此
+      #math.equation(numbering: none, block: true)[$ theta = arccos [(1/sqrt(3),1/sqrt(3),1/sqrt(3)) dot.c (0,1,0)] = arccos 1/sqrt(3) approx 54.74 degree $]
+      旋转轴垂直于旋转前后的向量，有
+      #math.equation(numbering: none, block: true)[$ bold(u) = (1/sqrt(3),1/sqrt(3),1/sqrt(3)) times (0,1,0) = (-1/sqrt(3),0,1/sqrt(3)) $]
+      将其单位化得#box(baseline: 30%, inset: (y: 0.5em))[$display((-1/sqrt(2),0,1/sqrt(2)))$]，如果使用轴角式，#icon("nbt-compound") `left_rotation` 的数据为：
+      #tree(
+        (0, [#icon("nbt-compound") *left_rotation*]),
+        (1, [#icon("nbt-float") *angle*: `54.74`]),
+        (1, [#icon("nbt-list") *axis*: `[-0.71f, 0.0f, 0.71f]`])
+      )
+      于是由@equ:quaternion_rotation 计算再次旋转四元数
+      #math.equation(numbering: none, block: true)[$ q = (cos theta/2, u_x sin theta/2, u_y sin theta/2, u_z sin theta/2) approx (0.89, -0.33, 0, 0.33) $]
+      模型不需要进行初次旋转、缩放和平移，故$q_r=(1,0,0,0)$，$s=(1,1,1)$，$t=(0,0,0)$。分解形式的 #icon("nbt-compound") `transformation` 字段为：
+      #tree(
+        (0, [#icon("nbt-compound") *transformation*]),
+        (1, [#icon("nbt-list") *left_rotation*: `[-0.33f, 0.0f, 0.33f, 0.89f]`]),
+        (1, [#icon("nbt-list") *right_rotation*: `[0.0f, 0.0f, 0.0f, 1.0f]`]),
+        (1, [#icon("nbt-list") *scale*: `[1.0f, 1.0f, 1.0f]`]),
+        (1, [#icon("nbt-list") *scale*: `[0.0f, 0.0f, 0.0f]`])
+      )
+      生成这个展示实体所需的命令为：
+      #codebox("summon block_display ~ ~ ~ {block_state:{Name:\"minecraft:glass\"},transformation:{left_rotation:[-0.33f,0.0f,0.33f,0.89f],right_rotation:[0.0f,0.0f,0.0f,1.0f],scale:[1.0f,1.0f,1.0f],translation:[0.0f,0.0f,0.0f]}}")
+    + 字段 #icon("nbt-compound") `left_rotation` 的值已定义，旋转动画由插值完成，可由 #icon("nbt-compound") `right_rotation` 定义，待确定的量依然是旋转角度$theta$和旋转轴$bold(u)$。显然旋转轴为方块模型的体对角线，这时体对角线与$y$轴平行，但变换依旧基于模型的局部坐标，因此轴向量为$(1,1,1)$，单位化为#box(baseline: 30%, inset: (y: 0.5em))[$display((1/sqrt(3),1/sqrt(3),1/sqrt(3)))$]。制作插值动画时，可以设定四个固定的旋转角度：$0 degree$、$90 degree$、$180 degree$、$270 degree$，使得模型依此顺序循环变换，每次插值的时长为$4 div 4=1$秒$=20$gt。
+
+      以$theta=90 degree$为例，若使用轴角式，则 #icon("nbt-compound") `right_rotation` 的数据为
+      #tree(
+        (0, [#icon("nbt-compound") *right_rotation*]),
+        (1, [#icon("nbt-float") *angle*: `90`]),
+        (1, [#icon("nbt-list") *axis*: `[0.58f, 0.58f, 0.58f]`])
+      )
+      由@equ:quaternion_rotation 转换为四元数形式$q approx (0.71,0.41,0.41,0.41)$，即
+      #codebox("right_rotation:[0.41f,0.41f,0.41f,0.71f]")
+      同理$theta=180 degree$、$theta=270 degree$、$theta=0 degree$的数据分别为
+      #codebox("right_rotation:[0.58f,0.58f,0.58f,0.0f]")
+      #codebox("right_rotation:[0.41f,0.41f,0.41f,-0.71f]")
+      #codebox("right_rotation:[0.0f,0.0f,0.0f,1.0f]")
+      为将模型的旋转角度平滑过渡至$theta=90 degree$，插值动画的命令为
+      #codebox("data merge entity @n[type=block_display] {transformation:{right_rotation:[0.41f,0.41f,0.41f,0.71f]},interpolation_duration:20}") <code:transformation_decomposed_form_loop>
+      该命令执行后，应用命令方块电路或函数计划使20gt后、命令@code:transformation_decomposed_form_loop 定义的插值动画结束时模型的旋转角度开始平滑过渡至$theta=180 degree$：
+      #codebox("data merge entity @n[type=block_display] {transformation:{right_rotation:[0.58f,0.58f,0.58f,0.0f]},interpolation_duration:20}")
+      20gt后开始平滑过渡至$theta=270 degree$：
+      #codebox("data merge entity @n[type=block_display] {transformation:{right_rotation:[0.41f,0.41f,0.41f,-0.71f]},interpolation_duration:20}")
+      20gt后开始平滑过渡至$theta=0 degree$：
+      #codebox("data merge entity @n[type=block_display] {transformation:{right_rotation:[0.0f,0.0f,0.0f,1.0f]},interpolation_duration:20}")
+      20gt后开始平滑过渡至$theta=90 degree$，此时循环至命令@code:transformation_decomposed_form_loop。若在命令方块电路中执行命令，则可以制造一个周期为80gt的时钟电路，每个命令方块之间需要有20gt的延迟，至少需要使用5个中继器。若在函数中执行命令，则可以在目录 #icon("folder") `data > minecraft > function > animation` 下创建 #icon("mcfunction") `90.mcfunction`、#icon("mcfunction") `180.mcfunction`、#icon("mcfunction") `270.mcfunction`、#icon("mcfunction") `0.mcfunction` 四个函数。例如，函数 `minecraft:animation/90` 的内容可以如下所示：
+      #codefile(
+        lang: "mcfunction",
+        title: "data > minecraft > function > animation > 90.mcfunction",
+        "data merge entity @n[type=block_display] {transformation:{right_rotation:[0.41f,0.41f,0.41f,0.71f]},interpolation_duration:20}
+schedule function minecraft:animation/180 20t"
+      )
+  ]
+)
 === 交互实体
+上述的两种技术型实体：标记和展示实体，都没有判定箱，都不具备直接与之交互的能力。为此游戏又提供了一种技术型的可交互实体，即#proper-noun(display: "交互实体（Interaction）", "jiao1 hu4 shi2 ti3")。这是一种拥有判定箱的、可与玩家发生交互行为的实体，若将其与标记或展示实体联合使用，甚至可以在原版制作出自定义生物。
+
+同标记和展示实体一样，交互实体没有自主行为，不会阻碍方块放置、不会推开其他实体，且只能通过命令 `/summon` 生成。交互实体不可见，但可以通过 `F3` + `B` 观察其实体边界框。玩家攻击和使用交互实体的行为均被视为交互行为，交互实体会自主记录这些行为并存储到其实体数据中。
+
+除了实体共通标签外，交互实体拥有以下特有字段：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-compound") *attack*: 最后一个攻击此交互实体（`鼠标左键`）的玩家。]),
+  (2, [#icon("nbt-int_array") *#underline[player]*: 该玩家的UUID。]),
+  (2, [#icon("nbt-long") *#underline[timestamp]*: 该玩家做出攻击行为的时间点。]),
+  (1, [#icon("nbt-float") *height*: 实体边界框的高度，默认为 `1.0f`，单位为方格。]),
+  (1, [#icon("nbt-compound") *interaction*: 最后一个使用此交互实体（`鼠标右键`）的玩家。]),
+  (2, [#icon("nbt-int_array") *#underline[player]*: 该玩家的UUID。]),
+  (2, [#icon("nbt-long") *#underline[timestamp]*: 该玩家做出使用行为的时间点。]),
+  (1, [#icon("nbt-bool") *response*: 玩家与该展示实体交互时是否触发响应（玩家手臂的挥动），默认为 `false`。]),
+  (1, [#icon("nbt-float") *width*: 实体边界框的宽度，默认为 `1.0f`，单位为方格。])
+)
+#example(
+  [尝试实现打碎石砖的效果：对位于$(0,70,0)$的石砖左键会将其转换为裂纹石砖。],
+  [
+    石砖没有方块实体，本身也并不会与玩家产生交互，因此必须使用交互实体。首先为保证石砖六个面都有交互效果，可以使用一个长宽均为1.1格的交互实体，这样实体比方块略大，将交互实体的位置放在$(0.5,69.9,0.5)$可使其中心与方块中心重合（交互实体的锚点位于其底部中心），于是有
+    #codebox("summon interaction 0 69.9 0 {height:1.1f,width:1.1f,Tags:[\"stone_bricks\"]}")
+    $x$和$z$坐标采用了中心校准，这样就生成了一个带有记分板标签 `stone_bricks` 的交互实体。下面在循环型命令方块中键入下面的命令：
+    #codebox("execute as @e[type=interaction,tag=stone_bricks] positioned as @s if data entity @s attack run setblock ~ ~1 ~ minecraft:cracked_stone_bricks")
+    该命令的意义为：判断此拥有记分板标签 `stone_bricks` 的交互实体是否含有 #icon("nbt-compound") `attack` 这个字段，因为只要玩家对其左键（视为攻击），#icon("nbt-compound") `attack` 字段会立即记录下攻击此实体的玩家，在此之前交互实体没有 #icon("nbt-compound") `attack` 字段。
+
+    只要测试通过，即在交互实体的位置上方一格方块（石砖的位置）放置裂纹石砖。因为这时候交互实体的锚点实际上位于方块坐标为$(0,69,0)$的方块内，因此$y$坐标必须拔高一格。
+    
+    记分板标签和命令 `/execute` 的使用可参考后面的章节。
+  ]
+)
 == 玩家
+
 == 物品堆叠<sec:item_stack>
 == 数据组件<sec:data_components>
 == 教程：NBT Studio的使用 \*

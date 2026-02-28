@@ -870,6 +870,8 @@
     },
     number-align: bottom
   )
+  set math.mat(column-gap: 0.8em, delim: "[", row-gap: 0.6em)
+  set math.cases(gap: 0.6em)
   // caption
   show figure.caption: it => {
     if repr(it.body) == "[]" {
