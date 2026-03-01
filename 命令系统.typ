@@ -1077,7 +1077,16 @@ Description: Ticking entity"
   (5, [#icon("folder") *minecraft*]),
   (6, [#icon("file") *\<名称>.class*: 一个未混淆的Java类文件。]),
   (4, [#h(-2em)#icon("png") *pack.png*: 原版资源包的图标。#figure(caption: [原版资源包的图标（pack.png）],image("图片/原版资源包的图标（pack.png）.png", width: 4em))]),
-  (4, [#icon("json") *versions.json*: 版本信息文件，存储该版本的信息。]),
+  (4, [#h(-2em)#icon("json") *versions.json*: 版本信息文件，存储该版本的信息。此文件的内容可由命令 `/version` 获取，此命令在单人游戏中所需的权限等级为0，多人游戏中为2。语法为：#index(index:"command","version")#codebox("version")#h(-2em)返回的内容大致如下所示：#codebox("Server version info:
+id = 1.21.11
+name = 1.21.11
+data = 4671
+series = main
+protocol = 774 (0x306)
+build_time = Tue Dec 09 20:20:42 CST 2025
+pack_resource = 75.0
+pack_data = 94.1
+stable = yes")]),
   (3, [#icon("json") *\<版本号>.json*: 客户端清单文件。]),
   (1, [#icon("folder") *webcache2*]),
   (1, [#icon("text") *allowed_symlinks.txt*: 信任符号链接列表文件。]),
@@ -4479,8 +4488,8 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
   align: right
 )
 #reset-h6
-====== `a[0][0]` 指向列表 #icon("list") `a` 的第一个子列表的第一个元素。
-====== `a[0][{b:1}]` 指向列表 #icon("list") `a` 的第一个子列表的元素 `{b:1}`，当且仅当该子列表中存在复合标签 `{b:1}`。
+====== `a[0][0]` 指向列表 #icon("nbt-list") `a` 的第一个子列表的第一个元素。
+====== `a[0][{b:1}]` 指向列表 #icon("nbt-list") `a` 的第一个子列表的元素 `{b:1}`，当且仅当该子列表中存在复合标签 `{b:1}`。
 === 路径
 路径是由若干个节点组成的，在编写路径时，一定要注意*从根标签开始编写*。
 #example(
@@ -5432,7 +5441,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
   (2, [*以下字段均可选，若填写了则会在上述玩家档案数据的基础上进行修改，用于定制玩家皮肤。其中的纹理均可用资源包指定，对客户端有效。*], false),
   (2, [#icon("nbt-string")#icon("json-string") *cape*: 披风的纹理，使用命名空间ID，地址从 #icon("folder") `assets\<命名空间>\textures` 开始计。]),
   (2, [#icon("nbt-string")#icon("json-string") *elytra*: 鞘翅的纹理，使用命名空间ID，地址从 #icon("folder") `assets\<命名空间>\textures` 开始计。]),
-  (2, [#icon("nbt-string")#icon("json-string") *model*: 玩家模型的类型，有效值 `wide`（普通）和 `slim`（纤细）。]),
+  (2, [#icon("nbt-string")#icon("json-string") *model*: 玩家模型的类型，有效值 `wide`（宽型）和 `slim`（纤细型）。]),
   (2, [#icon("nbt-string")#icon("json-string") *texture*: 皮肤的纹理，使用命名空间ID，地址从 #icon("folder") `assets\<命名空间>\textures` 开始计。])
 )
 #example(
@@ -5532,7 +5541,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
     [黄色], [`yellow`], [\#FFFF55 #color_block(yellow)],
     [白色], [`white`], [\#FFFFFF #color_block(white)]
   )
-)
+) <tab:color>
 #example(
   [使用正红色 `#FF0000` 渲染纯文本#text_component(text(rgb("ff0000"))[Hello World!])。],
   [
@@ -6283,7 +6292,7 @@ Minecraft一共有以下几种#proper-noun(display: "聊天类型（Chat type）
 Minecraft具体的游戏数据，如某个位置的箱子里存储的物品、一个实体的位置、世界边界的大小、Boss栏、玩家已达成的进度……这些数据绝大部分都以NBT的形式存储在游戏存档里，是为#proper-noun(display: "存档格式（Level format）", "cun2 dang3 ge2 shi4")。本章将对这些游戏数据的结构、编辑方法做具体的阐述。
 #pagebreak()
 == 概述<sec:saves>
-*存档（Level，又称地图、世界）*#index(display: "存档（Level，地图，世界）", "cun2 dang3")是独立运行游戏世界的基本单位，它以文件夹的形式存储于 #icon("folder") `saves` 内。每个存档都可以自由移动，因此可以在 #icon("folder") `saves` 文件夹内增添或删除存档，这为冒险地图的下载和安装提供了可能，也允许玩家将他们的存档备份到其他地方。#icon("folder") `saves` 的路径在小节@subsec:.minecraft 中已有说明，其基本结构是：
+*存档（Level，又称地图、世界）*#index(display: "存档（Level，地图，世界）", "cun2 dang4")是独立运行游戏世界的基本单位，它以文件夹的形式存储于 #icon("folder") `saves` 内。每个存档都可以自由移动，因此可以在 #icon("folder") `saves` 文件夹内增添或删除存档，这为冒险地图的下载和安装提供了可能，也允许玩家将他们的存档备份到其他地方。#icon("folder") `saves` 的路径在小节@subsec:.minecraft 中已有说明，其基本结构是：
 #tree(
   (0, [#icon("folder") *saves*]),
   (1, [#icon("folder") *\<存档名称>*: 一个存档。])
@@ -6340,7 +6349,7 @@ Minecraft具体的游戏数据，如某个位置的箱子里存储的物品、�
   (2, [#icon("folder") *advancements*: 存储玩家达成进度的文件夹。]),
   (3, [#icon("json") *\<玩家UUID>.json*: 存储进入过该存档的此玩家达成的进度。]),
   (2, [#icon("folder") *data*: 存储基本的玩家数据的文件夹。]),
-  (3, [#icon("json") *\<玩家UUID>.json*: 一个进入过该存档的玩家的数据。]),
+  (3, [#icon("nbt") *\<玩家UUID>.dat[\_old]*: 一个进入过该存档的玩家的数据。]),
   (2, [#icon("folder") *stats*: 存储统计信息的文件夹。]),
   (3, [#icon("json") *\<玩家UUID>.json*: 一个进入过该存档的玩家的统计信息数据，这些数据会显示在菜单的统计信息页面。]),
   (1, [#icon("folder") *resourcepacks*: 世界指定资源包。]),
@@ -7146,6 +7155,13 @@ $scoreboard players set #system_time_second var $(second)"
   ],
   align: left
 )
+==== 命令 `/swing`
+命令 `/swing` 用于控制实体手臂的挥动，注意，动作仅在渲染意义上有效，并不会有攻击或交互的效果。此命令所需的权限等级为2，语法为：#index(index: "command", "swing")
+#codebox("swing [<targets>] [mainhand|offhand]")
+#param-desc(
+  [`[<targets>]`（实体  `minecraft:entity`）], [需要挥动手臂的实体，只对生物有效，可以为玩家名称、UUID或目标选择器。],
+  [`[mainhand|offhand]` ], [指定挥动的是主手 `mainhand` 还是副手 `offhand`，默认为主手。]
+)
 === 实体共通标签
 与方块实体类似，所有实体的根标签下一定有一些共同存在的子标签，这些标签不会因为实体种类的变化而有所改变，于是称这类标签为#proper-noun(display: "实体共通标签（Tags common to all entities）", "shi2 ti3 gong4 tong1 biao1 qian1")。下面列举了所有的实体共有的字段，注意，不是所有的实体共通标签都能被命令 `/data` 所修改。
 #tree(
@@ -7283,7 +7299,7 @@ $scoreboard players set #system_time_second var $(second)"
   ],
   [
     首先确定这个自定义实体的类型为狼，其次对于这个自定义实体的特征，可以逐个分析出实现这些特征所需要的标签：
-    + 隐形：狼的可用字段中并没有直接控制它是否隐形的，因此需要使用状态效果。在 #icon("list") `active_effects` 直接给狼定义无限时长的隐身状态效果，不显示粒子效果。
+    + 隐形：狼的可用字段中并没有直接控制它是否隐形的，因此需要使用状态效果。在 #icon("nbt-list") `active_effects` 直接给狼定义无限时长的隐身状态效果，不显示粒子效果。
       #codebox("active_effects:[{id:\"minecraft:invisibility\",duration:-1,show_particles:false}]")
     + 静音：由字段 #icon("nbt-bool") `Silent` 定义。
       #codebox("Silent:true")
@@ -7331,10 +7347,6 @@ $scoreboard players set #system_time_second var $(second)"
 #example(
   [
     生成一个物品展示框，使之朝向上方，里面存储了一个被旋转了7次的铁镐，且该物品展示框无法被冒险模式的玩家破坏。
-    #figure(
-      caption: "",
-      image("图片/物品展示框例题图.png", width: 4em)
-    )
   ],
   [
     查阅附录@sec:entity_data，除了实体共通标签外，物品展示框还拥有下列标签：
@@ -7449,6 +7461,15 @@ $scoreboard players set #system_time_second var $(second)"
     #codebox("{id:\"minecraft:diamond\"}")
     题设还有一个要求：物品永远不会自行消失。掉落物物品的实体格式有一个名为 #icon("nbt-short") `Age` 的标签，存储该掉落物物品已存在的游戏刻长度，即从生成至未被捡起的时长。该标签的值会随着游戏过程而增加，掉落物物品刚生成时值为 `0s`，一旦值达到 `6000s`，该物品就会消失，在游戏中表现为5分钟内掉落物未被捡起就自行消失。如果值被设为 `-32768s`，则该值不会随着游戏过程而增加，也就可以实现物品永远不会自行消失的目地。最终的命令为：
     #codebox("summon item ~ ~ ~ {Item:{id:\"minecraft:diamond\"},Age:-32768s}")
+  ]
+)
+#index(index: "method", display: "通过Motion控制实体的运动", "tong1 guo4 Motion kong4 zhi4 shi2 ti3 de yun4 dong4")
+#example(
+  [生成一个雪球，使之在生成的那一刻拥有水平向正东南方的初速度。],
+  [
+    可以在生成实体的时候直接指定 #icon("nbt-list") `Motion`，水平向正东南方的$x$和$z$方向速度分量应为正且相同，$y$方向分量为0。命令为
+    #codebox("summon snowball ~ ~ ~ {Motion:[1.0f,0.0f,1.0f]}")
+    同时调整 `Motion[0]` 和 `Motion[2]` 可以控制雪球发射的初速度大小。
   ]
 )
 == 状态效果<sec:active_effects>
@@ -7695,7 +7716,7 @@ $scoreboard players set #system_time_second var $(second)"
   table.cell(rowspan: 2)[路径点传输距离], table.cell(rowspan: 2)[`waypoint_transmit_range`], table.cell(rowspan: 2)[0 \~ 60000000], table.cell(rowspan: 2)[0], [玩家], [60000000],
   [其他生物], [0],
   [路径点接收距离], [`waypoint_receive_range`], [0 \~ 60000000], [0], [玩家], [60000000]
-)
+) <tab:attributes>
 === 属性修饰符
 在一个属性上可以使用多个属性修饰符，则属性的最终值为基值和这些属性修饰符共同修饰后的结果。在数据的存储上，每一个修饰符都需要作区分，用命名空间ID唯一地标识每个属性修饰符，充当修饰符“身份证”的作用。不同修饰符中的不同属性允许使用相同的ID。
 
@@ -7760,9 +7781,9 @@ $ phi = (B + "Op0")("Op1" + 1)"Op2" $ <equ:modifier_caculation>
 ===== 返回目标实体指定属性的基值或最终值，语法为
 #codebox("attribute <target> <attribute> [base] get [<scale>]")
 #param-desc(
-  [`<targets>`（实体 `minecraft:entity`）], [指定的目标实体，必须为玩家名称、UUID或目标选择器。],
+  [`<targets>`（实体 `minecraft:entity`）], [指定的目标实体，必须为玩家名称、UUID或目标选择器。必须指定一个实体。],
   [`<attribute>`（命名空间ID `minecraft:resource_location`）], [指定属性的命名空间ID。],
-  [`[base]` ], [可选，若填写该参数，则返回属性的基值，不填写则返回最终值。],
+  [`[base]` ], [字面量，可选，若填写该参数，则返回属性的基值，不填写则返回最终值。],
   [`[<scale>]`（双精度浮点数 `brigadier:double`）], [可选，定义返回的属性基值或最终值的缩放倍率。]
 )
 ===== 修改目标实体属性的基值，语法为
@@ -8193,7 +8214,7 @@ $ bold(V)=bold(B)^(-1)bold(U)bold(Sigma) $ <equ:svd_v_calculate_directly>
     #box(baseline: 43%, inset: (y: 0.5em))[$display(bold(B)^"T"bold(B)=mat(1, 0, 0; 0, 0, 0; 0, 3, -1)mat(1, 0, 0; 0, 0, 3; 0, 0, -1)=mat(1,0,0;0,0,0;0,0,10))$]已为对角阵，将对角线元素顺序改为$bold(Sigma)^2$的顺序，取$bold(gamma_1)=(0,0,-1)^"T"$，$bold(gamma_2)=(1,0,0)^"T"$，$bold(gamma_3)=(0,1,0)^"T"$，令#box(baseline: 43%, inset: (y: 0.5em))[$display(bold(V)=mat(0,1,0;0,0,1;-1,0,0))$]，此即为右奇异向量矩阵。则有$bold(U)bold(Sigma)bold(V)^"T"=bold(B)$。分解完毕。
   ]
 )
-矩阵奇异值分解的结果具有几何意义。因为$bold(U)$、$bold(V)$都是正交矩阵，因此它们能用于表示旋转，$bold(Sigma)$是缩放变换矩阵。任何变换都可以被分解成四个过程：初次旋转变换、缩放变换、再次旋转变换和平移变换。因此，用$bold(V)$表示初次旋转变换，用$bold(Sigma)$表示缩放变换，用$bold(U)$表示再次旋转变换，在此基础上再引入平移向量$bold(T)$，则可以得到变换矩阵$bold(A)$的分解形式，此时字段 #icon("nbt-compound") `transformation` 是复合标签：
+矩阵奇异值分解的结果具有几何意义。因为$bold(U)$、$bold(V)$都是正交矩阵，所以它们能用于表示旋转，$bold(Sigma)$是缩放变换矩阵。任何变换都可以被分解成四个过程：初次旋转变换、缩放变换、再次旋转变换和平移变换。因此，用$bold(V)$表示初次旋转变换，用$bold(Sigma)$表示缩放变换，用$bold(U)$表示再次旋转变换，在此基础上再引入平移向量$bold(T)$，则可以得到变换矩阵$bold(A)$的分解形式，此时字段 #icon("nbt-compound") `transformation` 是复合标签：
 #tree(
   (0, [#icon("nbt-compound") *transformation*: 分解形式。]),
   (1, [#icon("nbt-list")#icon("nbt-compound") *right_rotation*: 模型进行缩放变换前的旋转变换，即初次旋转变换，与奇异值分解中的$bold(V)$相关。拥有两种可用数据形式：轴角式和四元数形式。编写时可以使用轴角式，但是在存储数据时一律转换成四元数形式。]),
@@ -8330,7 +8351,7 @@ $ q = q_3 + t $
         (1, [#icon("nbt-list") *left_rotation*: `[-0.33f, 0.0f, 0.33f, 0.89f]`]),
         (1, [#icon("nbt-list") *right_rotation*: `[0.0f, 0.0f, 0.0f, 1.0f]`]),
         (1, [#icon("nbt-list") *scale*: `[1.0f, 1.0f, 1.0f]`]),
-        (1, [#icon("nbt-list") *scale*: `[0.0f, 0.0f, 0.0f]`])
+        (1, [#icon("nbt-list") *translation*: `[0.0f, 0.0f, 0.0f]`])
       )
       生成这个展示实体所需的命令为：
       #codebox("summon block_display ~ ~ ~ {block_state:{Name:\"minecraft:glass\"},transformation:{left_rotation:[-0.33f,0.0f,0.33f,0.89f],right_rotation:[0.0f,0.0f,0.0f,1.0f],scale:[1.0f,1.0f,1.0f],translation:[0.0f,0.0f,0.0f]}}")
@@ -8398,9 +8419,335 @@ schedule function minecraft:animation/180 20t"
   ]
 )
 == 玩家
+#proper-noun(display: "玩家（Player）", "wan2 jia1")是进行游戏的主体。它也是一种实体，属于生物一类。*玩家的数据无法直接由命令 `/data`、`/execute` 等修改*，而是由 `/attribute`、`/item` 等命令间接、部分地修改。
+=== 游戏档案
+#proper-noun(display: "游戏档案（Game Profile）", "you2 xi4 dang4 an4")，又称#proper-noun(display: "玩家档案（Player Profile）", "wan2 jia1 dang4 an4")，是每一个游戏帐户的凭证，游戏通过这些游戏档案唯一地确定用户，从而分发玩家实体。每一个游戏档案都有以下的信息：
++ #proper-noun(display: "用户名（Username）", "yong4 hu4 ming2")：即玩家名称，长3 \~ 16字符（含）#footnote[部分早期注册的游戏档案会有1 \~ 2个字符。]，每一个用户名都必须不同。
++ 外观：即玩家的皮肤，有宽型和纤细型两种，其手臂宽度分别为4、3个像素。
++ UUID：*游戏档案使用UUID作为标识符。*离线游戏和正版游戏的UUID不同。
+#figure(
+  caption: [玩家用户名：`Mu_xian`，使用的皮肤为纤细型，UUID `654c6848-d79d-4e07-bbf4-0a88e65a57ef`],
+  image("图片/Mu_xian.png", width: 8em)
+)
+命令 `/fetchprofile` 可用于获取玩家档案，结果只会在聊天栏中显示，因此该命令虽然在命令方块和函数中均可用，但只在聊天栏中执行是有效的。它并不是一个自动化的命令。获取得到的文本为：\ #text_component([已解析名称为Mu_xian的玩家档案：[#text(green)[复制组件]] [#text(green)[给予物品]] [#text(green)[召唤玩家模型]] [#text(green)[复制 #icon("sprite-Mu_xian") ]]])\ 其中的四个带方括号的文本均有点击事件，作用依次为复制 `profile` 组件的内容、给予对应玩家的头、生成玩家模型和复制对应文本组件。
 
+命令所需权限等级为2，以下是所有用法：#index(index: "command", "fetchprofile")
+===== 根据UUID获取玩家档案
+#codebox("fetchprofile id <id>")
+#param-desc(
+  [`<id>`（UUID `minecraft:uuid`）], [玩家的UUID，必须为带连字符的十六进制。]
+)
+===== 根据玩家名称获取玩家档案
+#codebox("fetchprofile name <name>")
+#param-desc(
+  [`<name>`（字符串 `brigadier:string`）], [玩家名称。]
+)
+===== 从指定实体获取玩家档案
+#codebox("fetchprofile entity <entity>")
+#param-desc(
+  [`<entity>`（实体 `minecraft:entity`）], [获取玩家档案的实体，由于只有玩家和玩家档案这两种实体有档案数据，因此该命令只对这两种实体有作用。必须为玩家名称、UUID或目标选择器，且不必须只选择一个实体。]
+)
+=== 和玩家有关的命令
+本节讲述一些只对玩家有效的命令。
+==== 命令 `/experience` 和 `/xp`
+该命令用于设置玩家的经验值，所需权限等级为2，两者均可用，且语法完全一致，编写命令时允许将 `/xp` 作为 `/experience` 的简写替代命令。以下是所有用法：#index(index: "command", "experience")#index(index: "command", "xp")
+===== 在原先的经验值上修改经验，语法为
+#codebox("experience add <targets> <amount> [levels|points]")
+#param-desc(
+  [`<targets>`（实体 `minecraft:entity`）], [指定命令作用的目标实体，必须为玩家名称、UUID或目标选择器，且目标选择器必须指定玩家。可以使用目标选择器指定多个玩家。],
+  [`<amount>`（整型 `brigadier:integer`）], [需要是介于 `-2147483648` 和 `2147483647` 之间（含）的整数值，用于指定给予玩家的经验值数量。这个参数可以是负数，以表示在原先经验的基础上减去一定经验值。],
+  [`[levels|points]` ], [用于指定设置的是经验等级 `levels` 还是具体的经验值 `points`。不指定则默认对经验值 `points` 进行操作。]
+)
+===== 设置经验值，语法为
+#codebox("experience set <targets> <amount> [levels|points]")
+#param-desc(
+  [`<amount>`（整型 `brigadier:integer`）], [必须为大于等于0的数。]
+)
+===== 查询目标玩家的经验，语法为
+#codebox("experience query <targets> (levels|points)")
+#param-desc(
+  [`<targets>`（实体 `minecraft:entity`）], [只能指定单个玩家。],
+  [`[levels|points]` ], [必须选择一个填入。]
+)
+注意该命令中使用的经验值 `points` 是*对于当前经验等级的经验值*而不是经验值总量，且设置经验值 `points` 时不能超过当前等级可用的最大经验值。各等级的最大可用经验值按下式计算：
+$ X_"MAX" = cases(
+  2L+6 &"," &0 lt.eq.slant L lt.eq.slant 15,
+  5L-39 &"," &16 lt.eq.slant L lt.eq.slant 30,
+  9L-159 &"," &L gt.eq.slant 31
+) $ <equ:xp_by_level>
+#param-desc(
+  prefix: "式中：",
+  [$X_"MAX"$], [当前等级的最大经验值。],
+  [$L$], [经验等级。]
+)
+当玩家的经验处于某一等级$L$的0经验值时，升到下一等级所需的经验值在@equ:xp_by_level 的基础上加1，即
+$ X(L)=X_"MAX"+1 $
+#param-desc(
+  prefix: "式中：",
+  [$X(L)$], [从等级$L$升到等级$L+1$所需的经验值。]
+)
+则升到等级$L$所需经验值总量可推导得到：
+$ f(L) = sum_(i=1)^(L-1) X(i) = cases(
+  L^2 + 6L &"," &0 lt.eq.slant L lt.eq.slant 16,
+  display(5/2) L^2 - display(81/2) L + 360 &"," &17 lt.eq.slant L lt.eq.slant 31,
+  display(9/2) L^2 - display(325/2) L + 2220 &"," &L gt.eq.slant 32
+) $ <equ:xp_total>
+#param-desc(
+  prefix: "式中：",
+  [$L$], [升到等级$L$所需经验值总量。]
+)
+#example(
+  [为玩家 `Mu_xian` 设置总量为1246的经验值。],
+  [
+    这里需要使用@equ:xp_total，先计算第一个分段点$L=16$处的经验值总量，$f(16)=352$，则1246的经验值总量不处于区间$0 lt.eq.slant L lt.eq.slant 16$内。再计算第二个分段点$L = 31$处的经验值总量，$f(31)=1507$，则1246的经验值总量处于区间$17 lt.eq.slant L lt.eq.slant 31$内。此时令#box(baseline: 30%, inset: (y: 0.5em))[$f(L) = display(5/2) L^2 - display(81/2) L + 360 = 1246$]，解得$L approx 28.59$或$-12.39$（舍），知1246的经验值总量所属的等级为28。升到28级所需的经验值总量为$f(28)=1106$，因此需要在28级内的经验值设为$1246-1186=60$。综上所述，此时玩家的经验等级为28，经验值为60。可以依次执行下面的命令：
+    #codebox("xp set Mu_xian 28 levels")
+    #codebox("xp set Mu_xian 60 points")
+  ]
+)
+==== 命令 `/waypoint`
+#wrap-content(
+  tips(
+    [
+      不仅玩家可以被定位，任何的生物都可以被定位。
+    ],
+    width: 8em
+  ),
+  [
+
+    这条命令用于处理路径点。#proper-noun(display: "路径点（Waypoint）", "lu4 jing4 dian3")是会将其他生物的位置投射到玩家定位栏中的一项功能。@tab:attributes 中有两项属性与之有关：路径点传输距离 `minecraft:waypoint_transmit_range` 和路径点接收距离 `waypoint_receive_range`。顾名思义，路径点传输距离是向接收者发送路径点信息的属性，因此它可以用于所有生物；而路径点接收距离只能用于玩家，因为只有玩家能接收路径点信息。
+  ],
+  align: right
+)
+*记传输路径点的生物为A，接收路径点的玩家为B。只有当B位于A的路径点传输距离以内且A位于B的路径点接收距离以内时，路径点才会被接收并显示在定位栏中。*例如，一个玩家模型的路径点传输距离为10，玩家 `Mu_xian` 的路径点接收距离为5，则它们之间的距离为8时，由于此距离大于 `Mu_xian` 的路径点接收距离，因此该路径点不会被 `Mu_xian` 接收。
+
+当一个生物的路径点传输距离不为0时，即创建了一个路径点；再次重置为0时此路径点被去除。因而*路径点的创建与去除与属性有关，需要使用 `/attribute` 或修改NBT，`/waypoint` 不能创建路径点，只能修改其样式。*
+#example(
+  [为最近的玩家模型创建一个路径点。],
+  [
+    命令为
+    #codebox("attribute @n[type=mannequin] minecraft:waypoint_transmit_range base set 60000000")
+  ]
+)
+`/waypoint` 需要的权限等级为2，以下是所有用法：
+===== 列出路径点，即列出所有路径点传输距离不为0的生物
+#codebox("waypoint list")
+===== 修改路径点的颜色
+#codebox("waypoint modify <waypoint> color <color>")
+#param-desc(
+  [`<waypoint>`（实体 `minecraft:entity`）], [需要修改的路径点，必须为玩家名称、UUID或目标选择器，且必须指定一个实体。],
+  [`<color>`（颜色 `minecraft:color`）], [必须为 `reset` 或十六种基本颜色值之一，可用值见@tab:color。]
+)
+#codebox("waypoint modify <waypoint> color hex <color>")
+#param-desc(
+  [`<color>`（十六进制颜色 `minecraft:hex_color`）], [用十六进制指定颜色，如 `FF0000`，此参数不需要使用引号括起。]
+)
+===== 修改路径点的样式
+#codebox("waypoint modify <waypoint> style set <style>")
+#param-desc(
+  [`<style>`（命名空间ID `minecraft:resource_location`）], [路径点样式的命名空间ID，要求是在资源包 #icon("folder") `assets > <命名空间> > waypoint_style` 内定义的路径点样式，否则显示为丢失的纹理。]
+)
+===== 将路径点样式重置为默认样式
+#codebox("waypoint modify <waypoint> style reset")
+#example(
+  [将最近玩家模型的路径点颜色修改为黄色 #color_block(yellow)，并使用路径点样式 `tutorial:mannequin`。],
+  [
+    命令为
+    #codebox("waypoint modify @n[type=mannequin] color yellow")
+    #codebox("waypoint modify @n[type=mannequin] style set tutorial:mannequin")
+  ]
+)
+=== 玩家数据格式 \*
+玩家虽然属于实体一类，但是其数据并不存储在 #icon("folder") `entities` 文件夹的Anvil文件中。而是在 #icon("nbt") `players` 中，这个文件夹存储了玩家达成进度、基本数据和统计信息的内容。
+==== 进度
+#icon("folder") `players > advancements` 文件夹内以玩家UUID的名义存放了各玩家进度的完成情况，包括了玩家完成该进度所触发的准则以及触发这些准则的时间。#icon("json") `<玩家UUID>.json` 文件的数据格式为：
+#tree(
+  (0, [#icon("json-object") 文件封装]),
+  (1, [#icon("json-object") *\<进度命名空间ID>*: 一项已达成的进度。]),
+  (2, [#icon("json-object") *criteria*: 达成此进度所触发的准则及达成的时间。]),
+  (3, [#icon("json-string") *\<准则名称>*: 触发该准则的时间，格式为 `yyyy-MM-dd HH:mm:ss Z`。]),
+  (2, [#icon("json-bool") *done*: 此进度是否已经完成。不存在则默认进度已完成。]),
+  (1, [#icon("json-number") *DataVersion*: 游戏数据版本。])
+)
+例如：
+#codefile(
+  lang: "json",
+  title: "<存档名称> > players > advancement > 654c6848-d79d-4e07-bbf4-0a88e65a57ef.json",
+  "{
+  \"minecraft:story/smelt_iron\": {
+    \"criteria\": {
+      \"iron\": \"2026-03-01 14:36:42 +0800\"
+    },
+    \"done\": true
+  },
+  \"DataVersion\": 4777
+}"
+)
+该文件指明了拥有此UUID `654c6848-d79d-4e07-bbf4-0a88e65a57ef` 的玩家完成了进度 #icon("smelt_iron") 来硬的（`minecraft:story/smelt_iron`），并且完成该进度所触发的条件为获得铁锭（即键名 `iron`），触发时间为东八区时间2026年3月1日14时36分42秒。
+==== 基础数据
+在单人游戏存档中，玩家的数据被存储在 #icon("nbt") `saves > <存档名称> > level.dat` 中。此时玩家数据存储于标签 #icon("nbt-compound") `Player`。服务端的玩家数据被存储在 #icon("nbt") `players > data > <玩家UUID>.dat` 文件中，其中 `<玩家UUID>` 是该玩家的UUID。#icon("nbt") `level.dat` 中按照存档信息为准存储的玩家信息比 #icon("nbt") `<玩家UUID>.dat` 存储的玩家信息优先级高，若 #icon("nbt") `level.dat` 和 #icon("nbt") `<玩家UUID>.dat` 中的玩家信息不匹配，则以 #icon("nbt") `level.dat` 中的玩家信息为主，#icon("nbt") `<玩家UUID>.dat` 中的玩家信息会被 #icon("nbt") `level.dat` 中的玩家信息所覆盖。
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [实体共通标签]),
+  (1, [生物共通标签]),
+  (1, [#icon("nbt-compound") *abilities*: 玩家拥有的能力。]),
+  (2, [#icon("nbt-bool") *#underline[flying]*: 玩家是否正在飞行。]),
+  (2, [#icon("nbt-float") *flySpeed*: 玩家的飞行速度。]),
+  (2, [#icon("nbt-bool") *#underline[instabuild]*: 玩家是否可以立即摧毁方块、选取方块时是否允许保存方块实体数据、使用铁砧时是否不消耗经验且不会显示过于昂贵、是否可以立即破坏载具等。]),
+  (2, [#icon("nbt-bool") *#underline[invulnerable]*: 玩家是否免疫除带有 `#bypasses_invulnerability` 标签的所有伤害。]),
+  (2, [#icon("nbt-bool") *#underline[mayBuild]*: 玩家是否可以摧毁、放置和调整方块和盔甲架。]),
+  (2, [#icon("nbt-bool") *#underline[mayfly]*: 玩家是否能飞行。]),
+  (2, [#icon("nbt-float") *walkSpeed*: 玩家的步行速度。]),
+  (1, [#icon("nbt-int") *DataVersion*: 游戏数据版本。]),
+  (1, [#icon("nbt-string") *Dimension*: 玩家所处的维度，使用维度的命名空间ID。]),
+  (1, [#icon("nbt-list") *ender_pearls*: 与该玩家绑定的末影珍珠数据。]),
+  (2, [#icon("nbt-compound") 一个末影珍珠。]),
+  (3, [#icon("nbt-string") *ender_pearl_dimension*: 末影珍珠所在的维度，使用维度的命名空间ID。]),
+  (3, [末影珍珠实体格式]),
+  (1, [#icon("nbt-list") *EnderItems*: 该玩家末影箱中的物品。]),
+  (2, [#icon("nbt-compound") 一个物品。]),
+  (3, [物品格式]),
+  (1, [#icon("nbt-list") *entered_nether_pos*: 玩家进入下界前在主世界的位置。]),
+  (2, [#icon("nbt-double") 一个物品。]),
+  (1, [#icon("nbt-float") *foodExhaustionLevel*: 该玩家的消耗度。]),
+  (1, [#icon("nbt-int") *foodLevel*: 该玩家的饥饿值。]),
+  (1, [#icon("nbt-float") *foodSaturationLevel*: 该玩家的饱和度。]),
+  (1, [#icon("nbt-int") *foodTickTimer*: 该玩家的食物计刻器。]),
+  (1, [#icon("nbt-list") *#underline[Inventory]*: 该玩家的物品栏。一共有27个物品存储槽和9个快捷槽。盔甲槽、主副手槽及其他装备槽位的物品不在此处存储。对于27个物品存储槽，用 `9b` \~ `35b` 的数字分别给他们定位，顺序是从左到右、从上到下，左上角的物品槽编号为 `9b`。对于9个快捷槽，从左至右分别用 `0b` \~ `8b` 作为其编号。总体的编号如@fig:player_inventory_slot 所示。]),
+  (2, [#icon("nbt-compound") 一个物品。]),
+  (3, [#h(-2em)物品格式
+  #figure(
+    caption: "玩家物品栏的编号",
+    image("图片/玩家物品栏的编号.png", width: 12em)
+  ) <fig:player_inventory_slot>
+  ]),
+  (1, [#icon("nbt-compound") *LastDeathLocation*: 该玩家上次死亡的地点。]),
+  (2, [#icon("nbt-string") *#underline[dimension]*: 此死亡地点所在的维度，使用维度的命名空间ID。]),
+  (2, [#icon("nbt-int_array") *#underline[pos]*: 死亡地点的坐标，三个元素依次为$x$坐标、$y$坐标、$z$坐标。]),
+  (1, [#icon("nbt-int") *playerGameType*: 该玩家的游戏模式，可用值有 `0`（生存模式）、`1`（创造模式）、`2`（冒险模式）和 `3`（旁观模式）。]),
+  (1, [#icon("nbt-int") *previousPlayerGameType*: 该玩家上次使用的游戏模式。]),
+  (1, [#icon("nbt-int_array") *raid_omen_position*: 玩家触发袭击之兆的位置，三个元素依次为$x$坐标、$y$坐标、$z$坐标。]),
+  (1, [#icon("nbt-compound") *recipeBook*: 该玩家已解锁的配方。]),
+  (2, [#icon("nbt-bool") *isBlastingFurnaceFilteringCraftable*: 玩家是否在高炉烧炼配方书中启用“仅显示可烧炼”功能。]),
+  (2, [#icon("nbt-bool") *isBlastingFurnaceGuiOpen*: 玩家是否打开高炉烧炼配方书GUI。]),
+  (2, [#icon("nbt-bool") *isFilteringCraftable*: 玩家是否在合成配方书中启用“仅显示可合成”功能。]),
+  (2, [#icon("nbt-bool") *isFurnaceFilteringCraftable*: 玩家是否在熔炉烧炼配方书中启用“仅显示可烧炼”功能。]),
+  (2, [#icon("nbt-bool") *isFurnaceGuiOpen*: 玩家是否打开熔炉烧炼配方书GUI。]),
+  (2, [#icon("nbt-bool") *isGuiOpen*: 玩家是否打开合成配方书GUI。]),
+  (2, [#icon("nbt-bool") *isSmokerFilteringCraftable*: 玩家是否在烟熏炉烧炼配方书中启用“仅显示可烧炼”功能。]),
+  (2, [#icon("nbt-bool") *isSmokerGuiOpen*: 玩家是否打开烟熏炉烧炼配方书GUI。]),
+  (2, [#icon("nbt-list") *recipes*: 玩家解锁的所有配方。]),
+  (3, [#icon("nbt-string") 一个配方的命名空间ID。]),
+  (2, [#icon("nbt-list") *toBeDisplayed*: 玩家能看到的所有配方。]),
+  (3, [#icon("nbt-string") 一个配方的命名空间ID。]),
+  (1, [#icon("nbt-compound") *respawn*: 玩家的重生数据。]),
+  (2, [#icon("nbt-string") *#underline[dimension]*: 玩家重生所在的维度，使用维度的命名空间ID。]),
+  (2, [#icon("nbt-bool") *forced*: 玩家是否被强制重生在出生点上，默认为 `false`。]),
+  (2, [#icon("nbt-float") *pitch*: 玩家重生时的俯仰角，默认为 `0.0f`。]),
+  (2, [#icon("nbt-int_array") *pos*: 玩家重生点所处的方块位置。]),
+  (2, [#icon("nbt-float") *yaw*: 玩家重生时的偏航角，默认为 `0.0f`。]),
+  (1, [#icon("nbt-compound") *RootVehicle*: 玩家骑乘实体的数据。]),
+  (2, [#icon("nbt-int_array") *#underline[Attach]*: 玩家直接骑乘的实体的UUID。]),
+  (2, [#icon("nbt-compound") *#underline[Entity]*: 玩家所骑乘实体的数据，骑乘该实体的实体也可以被其他实体所骑乘，可嵌套实体格式。]),
+  (3, [#icon("nbt-compound") 实体格式]),
+  (1, [#icon("nbt-int") *#underline[Score]*: 玩家在死亡画面中显示的分数。]),
+  (1, [#icon("nbt-bool") *#underline[seenCredits]*: 玩家是否看过终末之诗。]),
+  (1, [#icon("nbt-compound") *SelectedItem*: 玩家手持的物品。]),
+  (2, [物品格式]),
+  (1, [#icon("nbt-int") *#underline[SelectedItemSlot]*: 玩家正在选择的快捷栏编号。]),
+  (1, [#icon("nbt-compound") *ShoulderEntityLeft*: 该玩家左肩上的实体。]),
+  (2, [实体格式]),
+  (1, [#icon("nbt-compound") *ShoulderEntityRight*: 该玩家右肩上的实体。]),
+  (2, [实体格式]),
+  (1, [#icon("nbt-short") *#underline[SleepTimer]*: 自玩家开始睡觉之后经过的时间。]),
+  (1, [#icon("nbt-bool") *spawn_extra_particles_on_fall*: 玩家落地时是否产生大范围的额外粒子。]),
+  (1, [#icon("nbt-compound") *warden_spawn_tracker*: 追踪该玩家在监守者生成机制中的进程。]),
+  (2, [#icon("nbt-int") *cooldown_ticks*: 警告等级能够再次增加前的冷却时间。每游戏刻减少1。警告等级增加后会被重置为200 gt。]),
+  (2, [#icon("nbt-int") *ticks_since_last_warning*: 距玩家上次被监守者生成机制警告后的时间。每游戏刻增加1。12000 gt后会被重置为 `0`，并将警告等级减少1。]),
+  (2, [#icon("nbt-int") *warning_level*: 警告等级。值为 `4` 时生成监守者。]),
+  (1, [#icon("nbt-int") *#underline[XpLevel]*: 该玩家的经验等级。]),
+  (1, [#icon("nbt-float") *#underline[XpP]*: 提升到下一经验等级的进度。]),
+  (1, [#icon("nbt-int") *XpSeed*: 附魔台选取附魔使用的随机数种子。]),
+  (1, [#icon("nbt-int") *#underline[XpTotal]*: 玩家的经验值总数。])
+)
+==== 统计信息
+原版的统计信息被分成若干种类，它们以命名空间ID的格式被命制成诸如 `minecraft:custom`、`minecraft:mined` 这样的名称。在种类之下又有不同的统计细则，这些单独的统计又有其各自的命名空间ID。一条统计的命名空间ID采用如下的写法：
+#codebox("<统计类别命名空间>.<统计类别ID>:<统计细则命名空间>.<统计细则ID>")
+例如，玩家捡起铁胸甲的统计细则的命名空间ID为 `minecraft:iron_chestplate`，其所属的统计大类为 `minecraft:picked_up`，因此完整的统计信息为
+#codebox("minecraft.iron_chestplate:minecraft.picked_up")
+统计信息文件位于 `<存档名称> > players > stats > <玩家UUID>.json`，数据格式为
+#tree(
+  (0, [#icon("json-object") 文件封装]),
+  (1, [#icon("json-number") *DataVersion*: 游戏数据版本。]),
+  (1, [#icon("json-object") *#underline[stats]*: 统计信息。]),
+  (2, [#icon("json-object") *\<统计类别命名空间ID>*: 统计类别的信息。]),
+  (3, [#icon("json-number") *\<统计细则命名空间ID>*: 统计细则的信息，一般是统计次数。])
+)
+下面是一个典型的 `<玩家UUID>.json` 文件示例：
+#codefile(
+  lang: "json",
+  title: "<存档名称> > players > stats > 654c6848-d79d-4e07-bbf4-0a88e65a57ef",
+  "{
+  \"stats\":{
+    \"minecraft:picked_up\":{
+      \"minecraft:shulker_shell\":21,
+      \"minecraft:iron_chestplate\":1
+    },
+    \"minecraft:broken\":{
+      \"minecraft:golden_sword\":1
+    }
+  },
+  \"DataVersion\":4777
+}"
+)
 == 物品堆叠<sec:item_stack>
+Minecraft中的“物品”是一个多义词，它可以指掉落物形式的物品，由于掉落物形式的物品本质上是实体，所以主要使用实体格式。同时，“物品”一词也可以指在物品栏中的物品。无论对于上述哪种物品而言，物品的数据均无法单独存在，它们要么作为实体格式的一部分，要么作为方块实体格式的一部分。而不管它们作为哪种数据的一部分，这些物品使用统一的数据格式，即#proper-noun(display: "物品堆叠（Item stack）", "wu4 pin3 dui1 die2")。
+
+结构化的物品堆叠于24w09a加入，替换了原先的非结构化物品格式，旧的物品格式如下：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-string") *id*: 物品的命名空间ID。]),
+  (1, [#icon("nbt-byte") *Count*: 该物品堆叠的数量。]),
+  (1, [#icon("nbt-byte") *Slot*: 物品所在的槽位。若此物品为某个属性类的数据或配置项，则不存在该标签。]),
+  (1, [#icon("nbt-compound") *tag*: 该物品的额外信息，此标签不一定存在。])
+)
+上述物品格式已于24w09a弃用，在当前版本编写物品数据时，不要再使用这种格式。新的物品格式依然以NBT的形式存储，因此直接使用命令 `/data` 等对物品数据进行编辑是可行的，但相比旧格式而言更结构化，这使得自定义物品更方便灵活。
+
+通常而言，物品拥有堆叠数量、命名空间ID和附加信息这些属性。特别地，一些物品被存储在实体或方块实体的特定槽位中，则它们使用带槽位的物品格式。如果一个物品为某个属性类的数据或配置项，如实体物品中的物品，则使用不带槽位的物品格式。
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-string") *id*: 物品的命名空间ID。]),
+  (1, [#icon("nbt-int") *count*: 该物品堆叠的数量。]),
+  (1, [#icon("nbt-byte") *Slot*: 物品所在的槽位。若此物品为某个属性类的数据或配置项，则不存在该标签。]),
+  (1, [#icon("nbt-compound") *components*: 可选，存储该物品的额外信息，使用#proper-noun(display: "数据组件（Data Component）", "shu4 ju4 zu3 jian4")。]),
+  (2, [一个特定的数据组件，使用与之匹配的数据类型])
+)
+
 == 数据组件<sec:data_components>
+==== 命令参数格式
+类似于方块状态，*数据组件也分为不同的种类，它们用于确定物品某一方面的附加信息，每种组件使用各自可用的值*。同样，数据组件是硬编码的，不可随意使用未注册的组件。数据组件是一种硬编码的注册表对象，具有命名空间ID。注意，省略命名空间前缀的写法仅在原版注册的数据组件中有效，一些模组注册的数据组件仍需要其使用的命名空间前缀。附录@sec:data_components_type 列举了所有物品可用的数据组件。
+
+在 `/give`、`/item` 和 `/clear` 等命令的格式中为了确认一个物品及其使用的组件，使用参数类型 `minecraft:item_stack`，其语法为
+#codebox("<命名空间>:<ID>[<组件名称>=<值>,<组件名称>=<值>,…]") <code:item_components_command_format>
+#h(-2em)这样就可以不直接通过修改SNBT来确定一个物品的附加信息。例如，当指定一个损坏值为10的钻石镐时，查阅附录@sec:data_components_type，知物品此项性质由组件 `minecraft:damage` 控制，该组件使用 #icon("nbt-int") 整型，则相应的命令参数应写为
+#codebox("minecraft:diamond_pickaxe[damage=10]")
+对于方括号中组件的值，应参照附录@sec:data_components_type 中各组件的数据树，写为对应类型的SNBT格式。若值类型为字符串，则需要单引号 `'` 或双引号 `"` 定义。若值类型为复合标签，则花括号必不可少，且标签之间需有严格的层级关系。如
+#codebox("minecraft:golden_apple[
+  max_stack_size=99,
+  rarity=\"epic\",
+  food={can_always_eat:false}
+]")
+#h(-2em)其中组件 `max_stack_size` 使用整型数据，`rarity` 使用字符串，`food` 使用复合标签。
+
+原版中每一个物品都具有其默认的组件，默认组件的定义是：*使用 `/give` 命令且不指定数据组件时所获物品的组件。*例如，原版所有的食物类物品都默认具有 `minecraft:food` 这个组件。这些默认组件不会被序列化成物品数据，因此也无法用 `/data` 等命令获取它们的数据，存档也不会存储它们的数据。
+
+参数类型 `minecraft:item_stack` 另有一种写法，即
+#codebox("<命名空间>:<ID>[!<组件名称>,…]")
+#h(-2em)这样可以用于指定不含有某个组件的物品，因此可用于移除的物品默认组件。例如，参数
+#codebox("minecraft:apple[!minecraft:food]")
+#h(-2em)指定了一个不具有组件 `minecraft:food` 的苹果，这个苹果无法被食用。
+==== SNBT格式
+语法@code:item_components_command_format 中方括号内的信息被专门存储在标签 #icon("nbt-compound") `components` 中，形成如下所示的数据结构：
+== 粒子
 == 教程：NBT Studio的使用 \*
 = 记分板
 == 队伍与标签<sec:team_and_tag>
@@ -9277,6 +9624,7 @@ schedule function minecraft:animation/180 20t"
 == 方块状态<sec:block_state>
 == 方块实体数据<sec:block_entity_data>
 == 实体数据<sec:entity_data>
+== 数据组件类型<sec:data_components_type>
 == 数据包标签<sec:tag_in_datapack>
 = 索引
 == 本书命令
