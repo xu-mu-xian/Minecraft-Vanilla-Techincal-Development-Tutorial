@@ -7118,7 +7118,7 @@ $scoreboard players set #system_time_second var $(second)"
 #param-desc(
   [`<targets>`（实体 `minecraft:entity`）], [可选，不指定则清除命令执行者自身。]
 )
-==== 命令` /ride`
+==== 命令 `/ride`
 命令 `/ride` 用于控制实体的骑乘关系，它需要的权限等级为2，以下是所有用法：#index(index: "command", "ride")
 ===== 让指定骑手骑乘指定坐骑，语法为
 #codebox("ride <target> mount <vehicle>")
@@ -7422,7 +7422,7 @@ $scoreboard players set #system_time_second var $(second)"
 #example(
   [有一个位于坐标$(0,70,0)$的朝向为南、左内角形状的橡木楼梯，将这个橡木楼梯变成受到重力影响的下落方块，要求石头每多下落一格，就对下方的实体多造成2点伤害。],
   [
-    有一类实体被称作#proper-noun(display: "下落的方块（Falling block）", "xia4 luo4 de fang1 kuai4")，顾名思义，这类实体由方块转化而来，受到重力的影响。一般下落的方块可由游戏中原本受重力影响的方块，如沙子、沙砾、铁砧等转化，使用NBT可以让其他不受重力影响的方块也转化为下落的方块。不过，下落的方块并不能直接由命令 `/summon` 凭空生成。只有当下落的方块生成的位置有命名空间ID与之代表的方块命名空间ID相同的方块时，该下落的方块才会正常生成。在其他情况下，下落的方块会在其生成之后1gt内被删除。因此生成这个下落的石头方块时，一定要在原石头方块的位置生成。
+    有一类实体被称作#proper-noun(display: "下落的方块（Falling block）", "xia4 luo4 de fang1 kuai4")，顾名思义，这类实体由方块转化而来，受到重力的影响。一般下落的方块可由游戏中原本受重力影响的方块，如沙子、沙砾、铁砧等转化，使用NBT可以让其他不受重力影响的方块也转化为下落的方块。
 
     在这个题设中，需要用到的下落的方块的标签如下：
     #tree(
@@ -7434,13 +7434,9 @@ $scoreboard players set #system_time_second var $(second)"
       (1, [#icon("nbt-list") *FallHurtAmount*: 下落的方块每多下落一格对下方实体造成伤害的增量，仅当 #icon("nbt-bool") `HurtEntities` 存在时有效。]),
       (1, [#icon("nbt-bool") *#underline[HurtEntities]*: 是否对砸中的实体造成伤害。])
     )
-    首先指定一个朝向为南、左内角形状的橡木楼梯：
-    #codebox("minecraft:oak_stairs[facing=south,shape=inner_left]")
-    现在使这个橡木楼梯变成下落的方块，则标签 #icon("nbt-compound") `BlockState` 为
+    首先指定一个朝向为南、左内角形状的橡木楼梯，使这个橡木楼梯变成下落的方块，则标签 #icon("nbt-compound") `BlockState` 为
     #codebox("BlockState:{Name:\"minecraft:oak_stairs\",Properties:{facing:\"south\",shape:\"inner_left\"}}")
-    综上所述，首先放置这个橡木楼梯：
-    #codebox("setblock 0 70 0 minecraft:oak_stairs[facing=south,shape=inner_left]")
-    其次将它变为下落的方块：
+    将它变为下落的方块：
     #codebox("summon falling_block 0 70 0 {
   BlockState:{
     Name:\"minecraft:oak_stairs\",
@@ -8528,7 +8524,7 @@ $ f(L) = sum_(i=1)^(L-1) X(i) = cases(
     #codebox("attribute @n[type=mannequin] minecraft:waypoint_transmit_range base set 60000000")
   ]
 )
-`/waypoint` 需要的权限等级为2，以下是所有用法：
+`/waypoint` 需要的权限等级为2，以下是所有用法：#index(index: "command", "waypoint")
 ===== 列出路径点，即列出所有路径点传输距离不为0的生物
 #codebox("waypoint list")
 ===== 修改路径点的颜色
@@ -8721,9 +8717,80 @@ Minecraft中的“物品”是一个多义词，它可以指掉落物形式的�
   (1, [#icon("nbt-compound") *components*: 可选，存储该物品的额外信息，使用#proper-noun(display: "数据组件（Data Component）", "shu4 ju4 zu3 jian4")。]),
   (2, [一个特定的数据组件，使用与之匹配的数据类型])
 )
-=== 槽位
-大多数能存储物品的方块实体或实体都会按#proper-noun(display: "槽位（Slot）", "cao2 wei4")存放单个物品堆叠。游戏内部会使用一个索引值映射到一个特定的槽位，在命令中则以槽位类型和槽位编号映射到槽位索引，即参数类型 `minecraft:item_slot`，格式为 `<slot_type>.<slot_number>` 或 `<slot_type>`。
+=== 适用于物品的命令
+下面介绍一些适用于物品格式的命令，这些命令所需的权限等级均为2。
+==== 命令 `/clear`
+命令 `/clear` 用于清除且只能用于清除*玩家物品栏*中的物品，无法清除其他实体或容器物品栏中的物品。语法为：#index(index: "command", "clear")
+#codebox("clear [<targets>] [<item>] [<maxCount>]")
+#param-desc(
+  [`<targets>`（实体 `minecraft:entity`）], [可选，用于选择被清除物品的目标实体，可以为玩家名、UUID或目标选择器，但必须选择玩家。如果这个参数不指定，则默认清除命令执行者自身的物品，且由于后面的参数均不能指定，所以不指定 `[<targets>]` 的命令写法只有一种：即 `clear`，这条命令等效于 `clear @s`。],
+  [`[<item>]`（物品谓词 `minecraft:item_predicate`）], [可选，用于指定需要被清除的物品，无论该物品所在的槽位。若不指定这个参数，则会清除目标玩家物品栏中的所有物品。因此 `clear`、`clear @s` 均用于清除命令执行者自身的所有物品。个参数所使用的类型 `minecraft:item_predicate` 的语法较为复杂，其格式将在小节@subsec:item_predicate 中详细说明。],
+  [`[<maxCount>]`（整型 `brigadier:integer`）], [可选，用于指定被清除物品可被清除的最大数量，必须为整数。若该参数小于被清除物品的数量，则被清除物品被清除的数量就为该参数指定的数量；若该参数大于或等于被清除物品的数量，则被清除物品会被全部清除；若该参数为0，则没有任何物品会被清除，且返回被清除物品的数量。例如，有命令 `clear @s stone 10`，这时如果命令执行者自身有20个石头，则该命令会清除10个石头；如果命令执行者自身有5个石头，则该命令会清除5个石头。]
+)
+==== 命令 `/give`
+命令 `/give` 的作用是：给予且只能用于给予玩家物品，无法给予其他实体或容器物品。语法为：#index(index: "command", "give")
+#codebox("give <target> <item> [<count>]")
+#param-desc(
+  [`<targets>`（实体 `minecraft:entity`）], [被给予物品的玩家，可以为玩家名、UUID或目标选择器，但必须选择玩家。],
+  [`<item>`（物品堆叠 `minecraft:item_stack`）], [给予的物品及其使用的组件。],
+  [`[<count>]`（整型 `brigadier:integer`）], [可选，给予物品的数量，若不指定则默认给予该物品1个。该参数必须小于此物品的最大堆叠数量$ times 100$。]
+)
+使用命令 `/give` 给予玩家物品时，若物品栏内存在同种可堆叠且未达到堆叠上限的物品，则给予的物品会在同类物品上进行堆叠；若同类可堆叠物品已达到堆叠上限，则会使物品被放置到空白的物品栏。空白物品栏的放置顺序为：先是快捷栏 `0` \~ `8`，其次为物品存储栏 `9` \~ `35`。
+#example(
+  [给予命令执行者命令方块],
+  [
+    命令为
+    #codebox("give @s command_block")
+  ]
+)
+==== 命令 `/item`
+命令 `/item` 的前身是于20w46a移除的命令 `/replaceitem`，现在使用的 `/item` 语法是于24w09a更改后的语法。与命令 `/give` 的不同之处在于，命令 `/item` 需要指定物品放入的槽位，且会对该槽位上原本的物品进行覆盖。此外，命令 `/item` 不仅可以修改玩家的物品栏，还可以修改其他方块实体和实体的物品栏。
 
+类似于命令 `/data`，命令 `/item` 也有子命令。相较 `/data` 而言，其语法树比较简单。子命令一共有两条：`modify` 和 `replace`。#index(index: "command", "item")
+===== 子命令 `modify`
+该子命令用于修改物品栏中物品的信息，其语法如下：
+#codebox("item modify (block <pos>|entity <targets>) <slot> <modifier>")
+#param-desc(
+  [`<pos>`（方块坐标 `minecraft:block_pos`）], [进行操作的方块的方块坐标。],
+  [`<targets>`（实体 `minecraft:entity`）], [被给予物品的玩家，可以为玩家名、UUID或目标选择器。],
+  [`<slot>`（物品栏槽位 `minecraft:item_slot`）], [需要修改的物品栏槽位，格式见小节@subsec:slot 的说明。],
+  [`<modifier>`（物品修饰器 `minecraft:loot_modifier`）], [修改物品所使用的物品修饰器，具体的物品修饰器在数据包中使用，故详见《数据包》教程。可以直接指定一个修饰器的命名空间ID，也可以使用SNBT形式的内联物品修饰器。]
+)
+===== 子命令 `replace`
+该子命令语法较复杂，它用于将物品直接覆盖指定槽位并替换原先的物品。其中物品的来源可以有两种声明方式：`with` 和 `from`。声明方式 `with` 用于直接将自定义的物品覆盖指定槽位，语法为
+#codebox("item replace (block <pos>|entity <targets>) <slot> with <item> [<count>]")
+声明方式 `from` 可用于指定物品的来源，并可以指定物品修饰器以对来源物品进行修饰，语法为
+#codebox("item replace (block <pos>|entity <targets>) <slot> from (block <pos>|entity <targets>) <slot> [<modifier>]")
+#param-desc(
+  [`<item>`（物品堆叠 `minecraft:item_stack`）], [指定要在指定槽位中放置的物品及其使用的组件。特别地，*从指定槽位移除物品时，一般使用空气 `minecraft:air`*。],
+  [`[<count>]`（整型 `brigadier:integer`）], [可选，放置物品的堆叠数量。]
+)
+#example(
+  [
+    尝试执行下列命令：
+    + 将一把钻石剑替换当前玩家主手上的物品；
+    + 将这把钻石剑从该玩家主手上移除。
+  ],
+  [
+    主手的槽位为 `weapon.mainhand`，因此命令分别为
+    #codebox("item replace entity @s weapon.mainhand with diamond_sword")
+    #codebox("item replace entity @s weapon.mainhand with air")
+  ]
+)
+=== 槽位<subsec:slot>
+#wrap-content(
+  tips(
+    [
+      雪球实体没有槽位。
+    ],
+    width: 8em
+  ),
+  [
+
+    大多数能存储物品的方块实体或实体都会按#proper-noun(display: "槽位（Slot）", "cao2 wei4")存放单个物品堆叠。游戏内部会使用一个索引值映射到一个特定的槽位，在命令中则以槽位类型和槽位编号映射到槽位索引，即参数类型 `minecraft:item_slot`，格式为 `<slot_type>.<slot_number>` 或 `<slot_type>`。
+  ],
+  align: right
+)
 其中的 `<slot_type>` 是槽位类别，能够容纳物品的各种器件使用相应的槽位类别，`<slot_number>` 是该槽位类别下的槽位编号。各种槽位类别、适用的对象及其可用的槽位编号列于下表：
 #general-table(
   caption: "槽位信息",
@@ -8754,10 +8821,10 @@ Minecraft中的“物品”是一个多义词，它可以指掉落物形式的�
   [`inventory`], [`0` \~ `26`], [物品栏，对应 `container.9` \~ `container.35`],
   [`enderchest`], [`0` \~ `26`], [末影箱左上角槽位编号为 `0`，编号增大的顺序同箱子一致],
   table.cell(rowspan: 2)[`player`], [`cursor`], [创造模式物品栏外玩家的鼠标所持的物品槽位],
-  [`crafting.<槽位编号>`], [`<槽位编号>` 可用范围为 `0` \~ `3`，表示玩家物品栏中的四个合成槽位。],
+  [`crafting.<槽位编号>`], [`<槽位编号>` 可用范围为 `0` \~ `3`，表示玩家物品栏中的四个合成槽位],
   [`villager`], [村民、流浪商人、掠夺者], [`0` \~ `7`], [村民、流浪商人、掠夺者的物品栏],
   [`piglin`], [猪灵], [`0` \~ `7`], [猪灵的物品栏]
-)
+) <tab:slots>
 #example(
   [
     写出以下槽位在命令中的映射方式。
@@ -8771,11 +8838,73 @@ Minecraft中的“物品”是一个多义词，它可以指掉落物形式的�
     )
   ],
   [
-    
+    + 这是玩家的头盔槽，槽位 `armor.head`。
+    + 这是玩家的副手槽，槽位 `weapon.offhand`。
+    + 这是玩家的物品栏，槽位可以为 `container.21` 或 `inventory.12`。
+    + 这是箱子的物品栏，槽位为 `container.11`。
+    + 虽然这是一个大箱子，但下半部分的槽位算在第二个方块实体中，因此槽位为 `container.16`。
+    + 这是羊驼的地毯槽位，即 `armor.body`。
+    + 这是羊驼箱子的存储槽，即 `horse.2`。
   ]
 )
-=== 适用于物品的命令
+#tips(
+  [
+    有一些槽位在正常手段下仅被部分生物使用，但实际上所有生物都拥有这个槽位，如 `armor_body` 和 `saddle`。玩家也拥有这些槽位，也能在这些槽位中放入物品，如果物品具有一定效果，在此槽位上也能生效。但由于常规方法无法在玩家或其他不使用鞍生物的鞍槽位放入物品，因此需要使用 `/item` 并在物品中搭配 `equippable` 组件。这个技巧可以结合自定义魔咒使用以实现特定的事件监听。#cite(<custom_enchantment_application>, form: none)
+  ]
+)
+物品NBT格式中的 #icon("nbt-byte") `Slot` 字段存储的是槽位，但它是字节型数据，它实际上是该槽位所属槽位类别下的槽位编号，这些数字编号在@tab:slots 中已全部列出。对玩家而言，其槽位使用的是 `container` 类的 `0` \~ `35` 编号，如@fig:player_inventory_slot 所示。数字编号的槽位物品数据均存储于各自方块实体或实体的专门字段中，如箱子的 #icon("nbt-list") `Items`，玩家的 #icon("nbt-list") `Inventory` 等。
 
+对于非数字编号的槽位，如 `weapon`、`armor` 和 `saddle` 类的槽位，使用*装备槽位*，装备槽位字符串对槽位的索引如下表所示：
+#general-table(
+  caption: "装备槽位的索引",
+  colspan: 2,
+  columns: (auto, auto),
+  header: ([装备槽位字符串], [映射到的槽位]),
+  [`mainhand`], [`weapon` 和 `weapon.mainhand`],
+  [`offhand`], [`weapon.offhand`],
+  [`head`], [`armor.head`],
+  [`chest`], [`armor.chest`],
+  [`legs`], [`armor.legs`],
+  [`feet`], [`armor.feet`],
+  [`body`], [`armor.body`],
+  [`saddle`], [`saddle`],
+) <tab:equipment_slot>
+这些装备槽位的数据均存储在生物共同标签 #icon("nbt-compound") `equipment` 中：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-compound") *equipment*: 生物的装备。]),
+  (2, [#icon("nbt-compound") *\<槽位>*: 在此槽位上装备的物品。有效的槽位有 `mainhand`、`offhand`、`feet`、`legs`、`chest`、​`head`、`body` 和 `saddle`。]),
+  (3, [#icon("nbt-string") *id*: 物品的命名空间ID。]),
+  (3, [#icon("nbt-int") *count*: 该物品堆叠的数量。]),
+  (3, [#icon("nbt-compound") *components*: 可选，存储该物品的额外信息，使用#proper-noun(display: "数据组件（Data Component）", "shu4 ju4 zu3 jian4")。]),
+  (4, [一个特定的数据组件，使用与之匹配的数据类型])
+)
+#h(-2em)@tab:equipment_slot 的字符串即作为 #icon("nbt-compound") `<槽位>` 的标签名。但也有例外，比如玩家主手的物品实际上存储于 #icon("nbt-compound") `SelectedItem` 而非 `equipment.mainhand`。
+#example(
+  [
+    获取命令执行者（玩家）以下槽位内物品的命名空间ID：
+    + `container.2`；
+    + 头盔槽；
+    + 主手。
+  ],
+  [
+    首先可以确认的是，命名空间ID位于每一个物品堆叠的 #icon("nbt-string") `id` 字段中。
+    + `container.2` 是有数字编号槽位，存储于 #icon("nbt-list") `Inventory`，槽内物品的 #icon("nbt-byte") `Slot` 值为 `2b`。命令为
+      #codebox("data get entity @s Inventory[{Slot:2b}].id")
+    + 头盔槽是装备槽位，因此存储于 #icon("nbt-compound") `equipment`。命令为
+      #codebox("data get entity @s equipment.head.id")
+    + 主手的物品存储于 #icon("nbt-compound") `SelectedItem`。命令为
+      #codebox("data get entity @s SelectedItem.id")
+  ]
+)
+#example(
+  [生成一个小僵尸，使之装备全套的钻石盔甲，主手持有钻石矛。],
+  [
+
+  ]
+)
+=== 物品谓词<subsec:item_predicate>
+物品谓词是一种用于匹配物品的命令参数，其类型为 `minecraft:item_predicate`，它在 `/clear`、`/execute if items` 中都有使用。
 == 数据组件<sec:data_components>
 ==== 命令参数格式
 类似于方块状态，*数据组件也分为不同的种类，它们用于确定物品某一方面的附加信息，每种组件使用各自可用的值*。同样，数据组件是硬编码的，不可随意使用未注册的组件。数据组件是一种硬编码的注册表对象，具有命名空间ID。注意，省略命名空间前缀的写法仅在原版注册的数据组件中有效，一些模组注册的数据组件仍需要其使用的命名空间前缀。附录@sec:data_components_type 列举了所有物品可用的数据组件。
@@ -8793,7 +8922,13 @@ Minecraft中的“物品”是一个多义词，它可以指掉落物形式的�
 #h(-2em)其中组件 `max_stack_size` 使用整型数据，`rarity` 使用字符串，`food` 使用复合标签。
 
 原版中每一个物品都具有其默认的组件，默认组件的定义是：*使用 `/give` 命令且不指定数据组件时所获物品的组件。*例如，原版所有的食物类物品都默认具有 `minecraft:food` 这个组件。这些默认组件不会被序列化成物品数据，因此也无法用 `/data` 等命令获取它们的数据，存档也不会存储它们的数据。
-
+#example(
+  [清除所有玩家物品栏中所有能被食用的物品。],
+  [
+    能被食用的物品拥有组件 `food`，因此在物品谓词中只需要匹配存在组件 `food` 的物品即可，命令为
+    #codebox("clear @a *[food]")
+  ]
+)
 参数类型 `minecraft:item_stack` 另有一种写法，即
 #codebox("<命名空间>:<ID>[!<组件名称>,…]")
 #h(-2em)这样可以用于指定不含有某个组件的物品，因此可用于移除的物品默认组件。例如，参数
