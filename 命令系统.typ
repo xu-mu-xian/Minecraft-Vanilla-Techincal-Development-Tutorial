@@ -8721,6 +8721,60 @@ Minecraft中的“物品”是一个多义词，它可以指掉落物形式的�
   (1, [#icon("nbt-compound") *components*: 可选，存储该物品的额外信息，使用#proper-noun(display: "数据组件（Data Component）", "shu4 ju4 zu3 jian4")。]),
   (2, [一个特定的数据组件，使用与之匹配的数据类型])
 )
+=== 槽位
+大多数能存储物品的方块实体或实体都会按#proper-noun(display: "槽位（Slot）", "cao2 wei4")存放单个物品堆叠。游戏内部会使用一个索引值映射到一个特定的槽位，在命令中则以槽位类型和槽位编号映射到槽位索引，即参数类型 `minecraft:item_slot`，格式为 `<slot_type>.<slot_number>` 或 `<slot_type>`。
+
+其中的 `<slot_type>` 是槽位类别，能够容纳物品的各种器件使用相应的槽位类别，`<slot_number>` 是该槽位类别下的槽位编号。各种槽位类别、适用的对象及其可用的槽位编号列于下表：
+#general-table(
+  caption: "槽位信息",
+  colspan: 4,
+  columns: (auto, 12em, auto, auto),
+  header: ([槽位类别], [适用对象], [可用槽位编号], [适用范围]),
+  table.cell(rowspan: 8)[`container`], [（大）箱子、（大）陷阱箱、所有种类潜影盒、木桶、运输矿车、所有种类运输船], [`0` \~ `26`], [左上角槽位编号为 `0`，且槽位编号增大的顺序为从左到右、从上到下。大箱子和大陷阱箱的情况比较特殊，虽然它们的GUI显示了一共54个槽位，但由于它们分属两个方块，因此两个方块的槽位是分开计算的。即上面三行为 `container.0` \~ `container.26`，下面三行是属于另一个方块的 `container.0` \~ `container.26`],
+	table.cell(rowspan: 2)[玩家], [`0` \~ `8`],
+  [快捷栏],
+  [`9` \~ `35`], [物品栏],
+  [发射器、投掷器], [`0` \~ `8`], [左上角槽位编号为 `0`，编号增大顺序与上述一致],
+  [漏斗、漏斗矿车], [`0` \~ `4`], [最左边槽位编号为 `0`，编号沿右方向增大],
+  [熔炉、烟熏炉、高炉], [`0` \~ `2`], [#box(image("图片/熔炉槽位.png", width: 12em))],
+  [酿造台], [`0` \~ `4`], [#box(image("图片/酿造台槽位.png", width: 12em))],
+  [物品实体、物品展示框、物品展示实体、唱片机、箭、光灵箭、火球、小火球], [`0`], [],
+  table.cell(rowspan: 3)[`weapon`], table.cell(rowspan: 8)[所有生物（并非所有生物都实际使用这些槽位）], [-], table.cell(rowspan: 2)[主手槽],
+  [`mainhand`], 
+  [`offhand`], [副手槽],
+  table.cell(rowspan: 5)[`armor`], [`head`], [头盔槽],
+  [`chest`], [胸甲槽],
+  [`legs`], [护腿槽],
+  [`feet`], [靴子槽],
+  [`body`], [马铠、地毯、狼铠、挽具或鹦鹉螺铠],
+  table.cell(rowspan: 2)[`horse`], table.cell(rowspan: 2)[带箱子的驴、骡、羊驼], [`chest`], [箱子],
+  [`0` \~ `14`], [箱子内的存储槽],
+  [`saddle`], [所有生物（并非所有生物都实际使用这些槽位）], [-], [马、驴、骡、羊驼、猪、鹦鹉螺的鞍槽位，铜傀儡的虞美人槽位],
+  [`hotbar`], table.cell(rowspan: 5)[玩家], [`0` \~ `8`], [快捷栏，对应 `container.0` \~ `container.8`],
+  [`inventory`], [`0` \~ `26`], [物品栏，对应 `container.9` \~ `container.35`],
+  [`enderchest`], [`0` \~ `26`], [末影箱左上角槽位编号为 `0`，编号增大的顺序同箱子一致],
+  table.cell(rowspan: 2)[`player`], [`cursor`], [创造模式物品栏外玩家的鼠标所持的物品槽位],
+  [`crafting.<槽位编号>`], [`<槽位编号>` 可用范围为 `0` \~ `3`，表示玩家物品栏中的四个合成槽位。],
+  [`villager`], [村民、流浪商人、掠夺者], [`0` \~ `7`], [村民、流浪商人、掠夺者的物品栏],
+  [`piglin`], [猪灵], [`0` \~ `7`], [猪灵的物品栏]
+)
+#example(
+  [
+    写出以下槽位在命令中的映射方式。
+    #figure(
+      caption: "",
+      [
+        #box(image("图片/槽位例题1.png", height: 12em))
+        #box(image("图片/槽位例题2.png", height: 12em))
+        #box(image("图片/槽位例题3.png", height: 12em))
+      ]
+    )
+  ],
+  [
+    
+  ]
+)
+=== 适用于物品的命令
 
 == 数据组件<sec:data_components>
 ==== 命令参数格式
