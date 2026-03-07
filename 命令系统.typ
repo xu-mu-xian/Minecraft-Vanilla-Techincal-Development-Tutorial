@@ -45,8 +45,8 @@
 
 #import "模板.typ": *
 #show: template-style
-#theme.update(dark_blue)
-#let theme_basic = dark_blue
+#theme.update(dark_purple)
+#let theme_basic = dark_purple
 
 #heading(level: 1, numbering: none, outlined: false, [第一版序言])
 Minecraft拥有多种多样的玩法，生存、PVP、PVE、模组、建筑、红石电路这些为众多玩家所熟知的玩法自成体系，玩家可以自由选择其中的某一方面深入研究。在这些玩法中，比较默默无闻的一种玩法可能便是广义上的命令，即包含了MC-CMD（命令）、资源包和数据包的系统。
@@ -7330,9 +7330,9 @@ $scoreboard players set #system_time_second var $(second)"
       ]
     }
   ]
-}")
+}") <code:summon_amr_bot>
   ]
-)
+) <exa:amr_bot>
 #example(
   [
     生成一个潜行的Mu_xian玩家模型。
@@ -9016,7 +9016,7 @@ item replace entity @s weapon.mainhand with diamond_spear"
   max_stack_size=99,
   rarity=\"epic\",
   food={can_always_eat:false}
-]")
+]") <code:item_components_command_format_example>
 #h(-2em)其中组件 `max_stack_size` 使用整型数据，`rarity` 使用字符串，`food` 使用复合标签。
 #example(
   [
@@ -9050,9 +9050,229 @@ item replace entity @s weapon.mainhand with diamond_spear"
 #h(-2em)指定了一个不具有组件 `minecraft:food` 的苹果，这个苹果无法被食用。
 ==== SNBT格式
 语法@code:item_components_command_format 中方括号内的信息被专门存储在标签 #icon("nbt-compound") `components` 中，形成如下所示的数据结构：
+#tree(
+  (0, [#icon("nbt-compound") *components*]),
+  (1, [*\<组件名称>*: `<值>`]),
+  (1, [*\<组件名称>*: `<值>`])
+)
+组件名称被存储在NBT中时带有命名空间前缀。例如，@code:item_components_command_format_example 所示的参数写成树状图的格式为：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-string") *id*: `minecraft:golden_apple`]),
+  (1, [#icon("nbt-compound") *components*]),
+  (2, [#icon("nbt-int") *minecraft:max_stack_size*: `99`]),
+  (2, [#icon("nbt-string") *minecraft:rarity*: `epic`]),
+  (2, [#icon("nbt-compound") *minecraft:food*]),
+  (3, [#icon("nbt-bool") *can_always_eat*: `false`])
+)
+由于命名空间ID中带有冒号 `:`，使用SNBT格式时难免与标签中的冒号 `:` 冲突。因此在使用SNBT指定原版的数据组件时，允许不书写命名空间前缀，游戏在存入数据时会自动补上命名空间前缀，如：
+#codebox("{id:\"minecraft:golden_apple\",components:{max_stack_size=99,rarity:\"epic\",food:{can_always_eat:false}}}")
+在不省略命名空间前缀的写法中，为了解决命名空间ID和NBT的冒号冲突，一般给作为标签名的组件命名空间ID套上引号 `"`，如：
+#codebox("{id:\"minecraft:golden_apple\",components:{\"minecraft:max_stack_size\"=99,\"minecraft:rarity\":\"epic\",\"minecraft:food\":{can_always_eat:false}}}")
+#example(
+  [现有一个命令存储 `tutorial:player`，其有两个标签 #icon("nbt-int") `mining_times` 和 #icon("nbt-int") `minerals`。随机选取一个物品栏中同时拥有铁镐和钻石的玩家，将其铁镐挖掘的次数存入存储的 #icon("nbt-int") `mining_times` 标签，并将其钻石的数量存入 #icon("nbt-int") `minerals` 标签。],
+  [
+    将数据存入标记这个动作由命令 `/data` 完成，可以注意到玩家作为数据的来源，被修改数据的对象是命令存储。在选择玩家时，随机玩家的目标选择器变量 `@r` 只选择唯一的玩家，因此不需要 `limit=1` 这个参数。这个例子中对玩家还有进一步的限定：要求目标玩家在物品栏中同时拥有铁镐和钻石。于是玩家的 #icon("nbt-list") `Inventory` 标签值需要为
+    #codebox("[{id:\"minecraft:iron_pickaxe\"},{id:\"minecraft:diamond\"}]")
+    由于只需选择在物品栏中拥有铁镐和钻石的玩家，忽视这些物品的堆叠数量、所在槽位或附加的标签，所以在目标选择器中不需要使用 #icon("nbt-int") `count`、#icon("nbt-byte") `Slot` 和 #icon("nbt-compound") `components` 这些标签。然后就可以选择这个玩家：
+    #codebox("@r[nbt={Inventory:[{id:\"minecraft:iron_pickaxe\"},{id:\"minecraft:diamond\"}]}]")
+    在确定目标选择器后，下一步需要确定的是NBT的来源。对于第一个节点，在确定了来源是玩家的物品栏后，其次需要确定的是铁镐和钻石所在的物品栏，由于列表中的元素在确定物品所在槽位的时候使用 #icon("nbt-byte") `Slot` 标签而不是通过元素在列表中的位置，所以列表 #icon("nbt-list") `Inventory` 中元素的位置显得不那么重要，命名列表标签的复合元素这种节点类型不使用索引值，用元素中包含的标签来确定元素。明显铁镐所处的元素可以由节点表示为
+    #codebox("Inventory[{id:\"minecraft:iron_pickaxe\"}]")
+    #h(-2em)钻石为
+    #codebox("Inventory[{id:\"minecraft:diamond\"}]")
+    #h(-2em)上面这些节点只是第一个节点，因为它们只指向了拥有这些子标签的复合标签，因此还需要进一步指向复合标签中的子标签。铁镐这类武器或工具的挖掘次数即物品的损坏值，由组件 `minecraft:damage` 存储，这个组件使用整型数据，是 #icon("nbt-compound") `components` 的子标签，所以指向铁镐挖掘次数的完整路径为
+    #codebox("Inventory[{id:\"minecraft:iron_pickaxe\"}].components.minecraft:damage")
+    #h(-2em)钻石的数量由 #icon("nbt-int") `count` 存储，完整路径为
+    #codebox("Inventory[{id:\"minecraft:diamond\"}].count")
+    最终可以得到将铁镐挖掘次数存入存储 #icon("nbt-int") `mining_times` 标签的命令为
+    #codebox("data modify entity @e[type=marker,name=Marker,limit=1] data.mining_times set from entity @r[nbt={Inventory:[{id:\"minecraft:iron_pickaxe\"},{id:\"minecraft:diamond\"}]}] Inventory[{id:\"minecraft:iron_pickaxe\"}].components.minecraft:damage")
+    #h(-2em)将钻石数量存入 #icon("nbt-int") `mining_times` 标签的命令为
+    #codebox("data modify entity @e[type=marker,name=Marker,limit=1] data.minerals set from entity @r[nbt={Inventory:[{id:\"minecraft:iron_pickaxe\"},{id:\"minecraft:diamond\"}]}] Inventory[{id:\"minecraft:diamond\"}].count")
+  ]
+)
 === 方块实体组件
+方块实体部分采用数据组件：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-compound") *components*: 使用此方块实体对应的物品放置此方块实体时，如果物品带有非默认的且不会被继承处理的数据组件，则数据会被复制存储入此标签内。]),
+  (2, [一个特定的物品堆叠组件，使用与之匹配的数据类型。]),
+)
+当方块被放置时，不会被继承处理的数据组件会按原样存入 #icon("nbt-compound") `components`，并在方块被破坏时完整地将数据返还给掉落的物品。而对于那些会被继承处理的组件，则会将它们转换为方块实体特有的数据，是为#proper-noun(display: "隐式组件（Implicit component）", "yin3 shi4 zu3 jian4")。当方块被破坏时，方块实体内的隐式组件会被获取存入掉落物品的数据组件中。
+
+例如，当旗帜物品被放置为旗帜方块时，物品的 `banner_patterns` 组件会被继承为方块实体的 #icon("nbt-list") `patterns` 字段，`banner_patterns` 组件就不再存储于方块实体的 #icon("nbt-compound") `components` 字段内。而当旗帜方块被破坏后，方块实体的 #icon("nbt-list") `patterns` 数据会转换为掉落物品的 `banner_patterns` 组件。参考以下的物品格式：
+#codebox("{
+  id:\"minecraft:white_banner\",
+  components:{
+    \"minecraft:banner_patterns\":[
+      {color:\"cyan\",pattern:\"minecraft:rhombus\"}
+    ],
+    \"minecraft:custom_data\":{tutorial:true}
+  }
+}")
+#h(-2em)放置为方块后的方块实体数据：
+#codebox("{
+  components:{
+    \"minecraft:custom_data\":{tutorial:true}
+  },
+  patterns:[
+    {color:\"cyan\",pattern:\"minecraft:rhombus\"}
+  ],
+  id:\"minecraft:banner\"
+}")
+下表列出了所有能在方块实体中被继承为隐式组件的数据组件及其对应的方块实体字段。
+#general-table(
+  caption: "方块实体隐式组件",
+  colspan: 3,
+  columns: (auto, auto, auto),
+  header: ([数据组件], [适用方块], [对应方块实体的字段]),
+  [`banner_patterns`], [所有种类旗帜], [#icon("nbt-list") `patterns`],
+  [`bee`], [蜂巢、蜂箱], [#icon("nbt-list") `bees`],
+  table.cell(rowspan: 2)[`container`], [箱子、陷阱箱、铜箱子、木桶、所有种类潜影盒、熔炉、烟熏炉、高炉、发射器、投掷器、合成器、酿造台、漏斗、营火、灵魂营火、雕纹书架、所有种类展示架], [#icon("nbt-list") `Items`],
+  [饰纹陶罐], [#icon("nbt-compound") `Item`],
+  [`container_loot`], [箱子、陷阱箱、铜箱子、木桶、所有种类潜影盒、发射器、投掷器、合成器], [#icon("nbt-string") `LootTable`\ #icon("nbt-long") `LootTableSeed`],
+  table.cell(rowspan: 2)[`custom_name`], [箱子、陷阱箱、铜箱子、木桶、所有种类潜影盒、熔炉、烟熏炉、高炉、发射器、投掷器、合成器、酿造台、漏斗、所有种类旗帜、附魔台、信标、所有种类命令方块], [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") `CustomName`],
+  [生物头颅], [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") `custom_name`],
+  [`lock`], [箱子、陷阱箱、铜箱子、木桶、所有种类潜影盒、熔炉、烟熏炉、高炉、发射器、投掷器、合成器、酿造台、漏斗、信标], [#icon("nbt-compound") `lock`],
+  [`note_block_sound`], [生物头颅], [#icon("nbt-string") `note_block_sound`],
+  [`pot_decorations`], [饰纹陶罐], [#icon("nbt-list") `sherds`],
+  [`profile`], [生物头颅], [#icon("nbt-string")#icon("nbt-compound") `profile`]
+) <tab:block_entity_component>
+下文补充一些特殊的方块组件：
+===== 组件 `block_entity_data` 的行为
+#tree(
+  (0, [#icon("nbt-string")#icon("nbt-compound") *minecraft:block_entity_data*: 方块被放置时的方块实体数据，可以使用 #icon("nbt-string") 字符串和 #icon("nbt-compound") 复合标签两种形式。当使用 #icon("nbt-string") 字符串形式时，字符串被视为SNBT。游戏在存储时一律使用 #icon("nbt-compound") 复合标签形式。]),
+  (1, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (1, [#icon("nbt-string") *#underline[id]*: 方块实体的命名空间ID。]),
+  (1, [该方块实体的其他数据])
+)
+组件 `block_entity_data` 可用于直接设置被放置的方块实体数据，*但是@tab:block_entity_component 中除了 `container_loot` 以外的所有数据都不能通过 `block_entity_data` 设置，只能通过表中特定的组件转换。#icon("nbt-compound") `components` 也无法通过 `block_entity_data` 设置，其中的数据应直接写在对应的组件中而不是在 `block_entity_data` 组件内定义。*参考以下的物品格式：
+#codebox("{
+  id:\"minecraft:white_banner\",
+  components:{
+    \"minecraft:block_entity_data\":{
+      id:\"minecraft:banner\",
+      components:{
+        \"minecraft:custom_data\":{type:\"block_entity_data组件内的components\"}
+      },
+      patterns:[
+        {color:\"cyan\",pattern:\"minecraft:rhombus\"}
+      ]
+    },
+    \"minecraft:custom_data\":{type:\"custom_data组件\"}
+  }
+}")
+#h(-2em)放置为方块后的方块实体数据：
+#codebox("{
+  components:{
+    \"minecraft:custom_data\":{type:\"custom_data组件\"}
+  },
+  id:\"minecraft:banner\"
+}")
+#h(-2em)此处 `block_entity_data` 组件中的 #icon("nbt-compound") `components` 和 #icon("nbt-list") `patterns` 被直接忽略。
+
+如果放置的方块是有额外数据的任意种类的命令方块、讲台、任意种类的告示牌、任意种类的悬挂式告示牌、刷怪笼或试炼刷怪笼，只有当玩家拥有不小于2的权限等级时，放置方块时才会将组件数据转换为方块实体数据。
+
+此外，物品被放置为方块时，`block_entity_data` 组件会被尽量转换为方块实体数据，不能转换的数据会被丢弃，方块实体的 #icon("nbt-compound") `components` 不会包含 `block_entity_data` 组件。
+===== 组件 `block_state` 的行为
+#tree(
+  (0, [#icon("nbt-compound") *minecraft:block_state*: 方块被放置时的方块状态。]),
+  (1, [#icon("nbt-string") *\<方块属性>*: 一项方块属性的值，数值也使用字符串形式。])
+)
+组件 `block_state` 用于定义方块状态，放置拥有此组件的方块能够保持固定的方块状态。与 `block_entity_data` 组件类似，物品被放置为方块时，`block_state` 组件会被尽量转换为方块状态数据，方块实体的 #icon("nbt-compound") `components` 不会包含 `block_state` 组件。
+#example(
+  [给予执行者一个橡木楼梯，使之放置为方块后总是朝向为南、形状为左内角。],
+  [
+    命令为
+    #codebox("give @s oak_stairs[block_state={facing:\"south\",shape:\"inner_left\"}]")
+  ]
+)
 === 实体组件
-=== 数据组件谓词
+当物品放置为实体时，物品内的组件也会转换为实体可用的数据，实体组件均为隐式组件，实体数据中也没有相应的 #icon("nbt-compound") `components` 来存放组件数据。
+#general-table(
+  caption: "实体隐式组件",
+  colspan: 3,
+  columns: (auto, auto, auto),
+  header: ([数据组件], [适用实体], [对应实体的字段]),
+  [`axolotl/variant`], [美西螈], [#icon("nbt-int") `Variant`],
+  [`cat/collar`], table.cell(rowspan: 3)[猫], [#icon("nbt-byte") `CollarColor`],
+  [`cat/sound_variant`], [#icon("nbt-string") `sound_variant`],
+  [`cat/variant`], [#icon("nbt-string") `variant`],
+  [`chicken/variant`],  table.cell(rowspan: 2)[鸡], [#icon("nbt-string") `variant`],
+  [`chicken/sound_variant`], [#icon("nbt-string") `sound_variant`],
+  [`cow/variant`],  table.cell(rowspan: 2)[牛], [#icon("nbt-string") `variant`],
+  [`cow/sound_variant`], [#icon("nbt-string") `sound_variant`],
+  [`custom_data`], table.cell(rowspan: 2)[所有实体], [#icon("nbt-string")#icon("nbt-compound") `data`],
+  [`custom_name`], [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") `custom_name`],
+  [`fox/variant`], [狐狸], [#icon("nbt-string") `Type`],
+  [`frog/variant`], [青蛙], [#icon("nbt-string") `variant`],
+  [`horse/variant`], [马], [#icon("nbt-int") `Variant` 后8位],
+  [`llama/variant`], [羊驼、行商羊驼], [#icon("nbt-int") `Variant`],
+  [`mooshroom/variant`], [哞菇], [#icon("nbt-string") `Type`],
+  [`painting/variant`], [画], [#icon("nbt-string") `variant`],
+  [`parrot/variant`], [鹦鹉], [#icon("nbt-int") `Variant`],
+  [`pig/variant`],  table.cell(rowspan: 2)[猪], [#icon("nbt-string") `variant`],
+  [`pig/sound_variant`], [#icon("nbt-string") `sound_variant`],
+  [`potion_contents`],  table.cell(rowspan: 2)[区域效果云], [#icon("nbt-string")#icon("nbt-compound") `potion_contents`],
+  [`potion_duration_scale`], [#icon("nbt-float") `potion_duration_scale`],
+  [`profile`], [玩家模型], [#icon("nbt-string")#icon("nbt-compound") `profile`],
+  [`rabbit/variant`], [兔子], [#icon("nbt-int") `RabbitType`],
+  [`salmon/size`], [鲑鱼], [#icon("nbt-string") `type`],
+  [`sheep/color`], [绵羊], [#icon("nbt-byte") `Color`],
+  [`shulker/color`], [潜影贝], [#icon("nbt-byte") `Color`],
+  [`tropical_fish/base_color`], table.cell(rowspan: 3)[热带鱼], table.cell(rowspan: 3)[#icon("nbt-int") `Variant`],
+  [`tropical_fish/pattern`],
+  [`tropical_fish/pattern_color`],
+  [`villager/variant`], [村民、僵尸村民], [#icon("nbt-string") `VillagerData.type`],
+  [`wolf/collar`], table.cell(rowspan: 3)[狼], [#icon("nbt-byte") `CollarColor`],
+  [`wolf/sound_variant`], [#icon("nbt-string") `sound_variant`],
+  [`wolf/variant`], [#icon("nbt-string") `variant`]
+) <tab:entity_component>
+如果物品同时拥有 `bucket_entity_data`、`entity_data` 和@tab:entity_component 列出的组件，则放出实体时优先转换 `bucket_entity_data` 组件，再应用 `entity_data` 组件，最后应用@tab:entity_component 列出的组件。
+#tree(
+  (0, [#icon("nbt-string")#icon("nbt-compound") *minecraft:entity_data*: 实体被生成时的实体数据，可以使用 #icon("nbt-string") 字符串和 #icon("nbt-compound") 复合标签两种形式。当使用 #icon("nbt-string") 字符串形式时，字符串被视为SNBT。游戏在存储时一律使用 #icon("nbt-compound") 复合标签形式。]),
+  (1, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (1, [#icon("nbt-string") *#underline[id]*: 实体的命名空间ID。]),
+  (1, [该实体的其他数据])
+)
+#example(
+  [给与执行者一个牛刷怪蛋，使之生成马。],
+  [
+    命令为
+    #codebox("give @s cow_spawn_egg[entity_data={id:\"minecraft:horse\"}]")
+  ]
+)
+#example(
+  [制作一个刷怪蛋，使之生成@exa:amr_bot 所制作的组合实体。],
+  [
+    这个组合实体的全部数据已经在命令@code:summon_amr_bot 中写出来了，现在可以将其整合至刷怪蛋中：
+    #codebox("give @s wolf_spawn_egg[entity_data={
+  id:\"minecraft:wolf\",
+  active_effects:[
+    {
+      id:\"minecraft:invisibility\",
+      duration:-1,
+      show_particles:false
+    }
+  ],
+  Silent:true,
+  Invulnerable:true,
+  Passengers:[
+    {
+      id:\"minecraft:item_display\",
+      Passengers:[
+        {
+          id:\"minecraft:interaction\"
+        }
+      ]
+    }
+  ]
+}]")
+  ]
+)
+=== 数据组件的应用实例
+数据组件的一大作用就是自定义物品，冒险地图、原版模组的制作需要使用大量的自定义物品。
+== 数据组件谓词
+
 == 粒子
 == 教程：NBT Studio的使用 \*
 = 记分板
