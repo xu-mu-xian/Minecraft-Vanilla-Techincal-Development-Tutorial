@@ -25,6 +25,9 @@
 #let light_purple = rgb("ff55ff")
 #let yellow = rgb("ffff55")
 
+// 主题色
+#let theme = state("theme_basic", gray)
+
 // 颜色块
 #let color_block(color, stroke: 0.5pt + black) = box(
   fill: color,
@@ -45,17 +48,17 @@
 #let codebox(body, label: none, supplement: none) = figure(
   supplement: supplement,
   kind: "codebox",
-  {
+  context {
     set align(left)
     set par(justify: false)
     block(
       clip: true,
       fill: white,
       height: auto,
-      stroke: 1pt + red,
+      stroke: 1pt + theme.get(),
       radius: 6pt,
       width: 100%,
-      grid(
+      context grid(
         columns: (1fr, auto),
         column-gutter: 16pt,
         block(
@@ -74,7 +77,7 @@
         ),
         grid.cell(
           align: horizon,
-          fill: rgb("#ff6565"),
+          fill: theme.get().lighten(20%),
           inset: 8pt,
           {
             set text(
@@ -83,10 +86,7 @@
               size: 0.85em,
               weight: "bold"
             )
-            context {
-              let it = query(selector(figure).before(here())).last()
-              numbering(it.numbering, ..counter(figure.where(kind: "codebox")).at(here()))
-            }
+            context counter(figure.where(kind: "codebox")).display()
           }
         )
       )
@@ -126,145 +126,148 @@
   caption: [表格标题],
   columns: auto,
   colspan: 1,
+  even_color: none,
+  gutter: 0.2em,
   header: (),
+  header_color: none,
+  odd_color: none,
+  row-gutter: 0.2em,
   seperator: (),
   ..content,
 ) = {
   figure(
     caption: caption,
     numbering: tab_numbering,
-    table(
-      align: center + horizon,
-      columns: columns,
-      fill: (x, y) => {
-        if x in seperator {red}
-        else if y == 0 { rgb("#ffffff00") }
-        else if y == 1 { rgb("#ff6565") }
-        else if calc.rem(y, 2) == 1 {rgb("#fde9e9")}
-        else {rgb("#fff8f8")}
-      },
-      gutter: 0.2em,
-      stroke: none,
-      table.header(
-        table.cell(
-          colspan: colspan,
-          {
-            context if xubiao.get() {
-              align(right)[
-                #set text(
-                  font: "FZKaiTi GB18030L2"
-                )
-                （续表）
-              ]
-            } else {
-              v(-0.9em)
-              xubiao.update(true)
+    kind: table,
+    context {
+      let header_color_ = {
+        if header_color == none { theme.get().lighten(20%) }
+        else { header_color }
+      }
+      let odd_color_ = {
+        if odd_color == none { theme.get().lighten(96%) }
+        else { odd_color }
+      }
+      let even_color_ = {
+        if even_color == none { theme.get().lighten(90%) }
+        else { even_color }
+      }
+      table(
+        align: center + horizon,
+        columns: columns,
+        fill: (x, y) => {
+          if y == 0 { rgb("#ffffff00") }
+          else if y == 1 { header_color_ }
+          else if calc.rem(y, 2) == 1 { even_color_ }
+          else { odd_color_ }
+        },
+        gutter: gutter,
+        row-gutter: row-gutter,
+        stroke: none,
+        table.header(
+          table.cell(
+            colspan: colspan,
+            {
+              context if xubiao.get() {
+                align(right)[
+                  #set text(
+                    font: "Source Han Sans SC",
+                    weight: "bold"
+                  )
+                  （续表）
+                ]
+              } else {
+                v(-0.9em)
+                xubiao.update(true)
+              }
             }
-          }
+          ),
+          ..header
         ),
-        ..header
-      ),
-      ..content
-    )
+        ..content
+      )
+    }
   )
 }
 #let split-table(
   caption: [分栏表格标题],
   label: none,
   original-cols: 3,
-  gutter-width: 3pt,
+  gutter-width: 0.5em,
   header: (),
   seperator: (),
   data: (),
 ) = {
-  let col-widths = if type(original-cols) == array {
+ let col-widths = if type(original-cols) == array {
     original-cols
   } else {
     (1fr,) * original-cols
   }
   let col-count = col-widths.len()
-  let missing = calc.rem(data.len(), col-count)
-  let padded-data = data
-  if missing > 0 {
-    padded-data += ([],) * (col-count - missing)
+  let half-idx = calc.ceil(data.len() / (col-count * 2))
+  let left-part = data.slice(0, half-idx * col-count)
+  let right-part = data.slice(half-idx * col-count)
+  if right-part.len() < left-part.len() {
+    right-part += ([],) * (left-part.len() - right-part.len())
   }
-  let rows = padded-data.chunks(col-count)
-  let half-idx = calc.ceil(rows.len() / 2)
-  let left-part = rows.slice(0, half-idx)
-  let right-part = rows.slice(half-idx)
   let combined-content = ()
   for i in range(half-idx) {
-    combined-content += left-part.at(i)
-    combined-content += ([],)
-    if i < right-part.len() {
-      combined-content += right-part.at(i)
-    } else {
-      combined-content += ([],) * col-count
-    }
+    combined-content += left-part.slice(i * col-count, (i + 1) * col-count)
+    combined-content += right-part.slice(i * col-count, (i + 1) * col-count)
   }
-  let auto-columns = col-widths + (gutter-width,) + col-widths
-  let total-cols-count = col-count * 2 + 1
-  let dual-header = header + ([],) + header
-  let new-seperator = seperator
-  for s in seperator {
-    new-seperator.push(s + col-count + 1)
-  }
+  let total-cols = col-widths + col-widths
+  let inner-gutters = (0.2em,) * (col-count - 1) 
+  let gutters = inner-gutters + (gutter-width,) + inner-gutters
   general-table(
     caption: caption,
-    columns: auto-columns,
-    colspan: total-cols-count,
-    header: dual-header,
-    seperator: new-seperator,
+    columns: total-cols,
+    colspan: col-count * 2, 
+    header: header + header,
+    gutter: gutters,
     ..combined-content
   )
 }
 #let triple-split-table(
   caption: [三栏表格标题],
   original-cols: 2,
-  gutter-width: 3pt,
+  gutter-width: 0.5em,
   seperator: (),
   header: (),
   data: (),
 ) = {
   let col-widths = if type(original-cols) == array { original-cols } else { (1fr,) * original-cols }
   let col-count = col-widths.len()
-  let missing = calc.rem(data.len(), col-count)
-  let padded-data = data + (([],) * (if missing > 0 { col-count - missing } else { 0 }))
-  let rows = padded-data.chunks(col-count)
-  let total-rows = rows.len()
-  let part-size = calc.ceil(total-rows / 3)
-  let left-part = rows.slice(0, part-size)
-  let mid-part  = rows.slice(part-size, calc.min(part-size * 2, total-rows))
-  let right-part = rows.slice(calc.min(part-size * 2, total-rows))
+  let total-items = data.len()
+  let rows-per-part = calc.ceil(total-items / (col-count * 3))
+  let items-per-part = rows-per-part * col-count
   let combined-content = ()
-  for i in range(part-size) {
-    combined-content += left-part.at(i)
-    combined-content += ([],)
-    if i < mid-part.len() {
-      combined-content += mid-part.at(i)
+  for i in range(rows-per-part) {
+    let idx-l = i * col-count
+    let idx-m = idx-l + items-per-part
+    let idx-r = idx-m + items-per-part
+    combined-content += data.slice(idx-l, calc.min(idx-l + col-count, data.len()))
+    if idx-m < data.len() {
+      combined-content += data.slice(idx-m, calc.min(idx-m + col-count, data.len()))
     } else {
       combined-content += ([],) * col-count
     }
-    combined-content += ([],) 
-    if i < right-part.len() {
-      combined-content += right-part.at(i)
+    if idx-r < data.len() {
+      combined-content += data.slice(idx-r, calc.min(idx-r + col-count, data.len()))
     } else {
       combined-content += ([],) * col-count
     }
   }
-  let triple-columns = col-widths + (gutter-width,) + col-widths + (gutter-width,) + col-widths
-  let triple-header = header + ([],) + header + ([],) + header
-  let total-span = col-count * 3 + 2
-  let new-seperator = seperator
-  for s in seperator {
-    new-seperator.push(s + col-count + 1)
-  }
+  let inner-gutter = (0.2em,) * (col-count - 1)
+  let full-gutter = inner-gutter + (gutter-width,) + inner-gutter + (gutter-width,) + inner-gutter
+  let triple-columns = col-widths * 3
+  let triple-header = header * 3
+  let total-span = col-count * 3
   general-table(
     caption: caption,
     columns: triple-columns,
     colspan: total-span,
+    gutter: full-gutter,
     header: triple-header,
-    seperator: new-seperator,
     ..combined-content
   )
 }
@@ -276,7 +279,7 @@
   {
     block(
       {
-        showybox(
+        context showybox(
           breakable: true,
           footer: [
             #set enum(
@@ -296,7 +299,7 @@
             #h(-1em)
             #box[
               #box(
-                fill: rgb("#ffcece"),
+                fill: theme.get().lighten(70%),
                 inset: (
                   x: 0.5em,
                   y: 0.5em
@@ -305,9 +308,9 @@
                 [解]
               )
               #h(-2.4em)
-              #box(
+              #context box(
                 baseline: -2pt,
-                fill: rgb("#d71d1d"),
+                fill: theme.get().saturate(100%).darken(10%),
                 inset: (
                   x: 0.5em,
                   y: 0.5em
@@ -330,14 +333,14 @@
             sep-thickness: 0pt
           ),
           frame: (
-            body-color: rgb("#ffcece"),
-            border-color: rgb("#d71d1d"),
+            body-color: theme.get().lighten(70%),
+            border-color: theme.get().saturate(100%).darken(10%),
             footer-color: white,
-            title-color: rgb("#d71d1d"),
+            title-color: theme.get().saturate(100%).darken(10%),
             title-inset: (x: 0.6em, y: 0.5em)
           ),
           shadow: (
-            color: rgb("#ff6565"),
+            color: theme.get().lighten(20%),
             offset: 3pt
           ),
           title: "",
@@ -376,14 +379,11 @@
                 {
                   let title-text = {
                     set text(fill: white, font: "Minecraft")
-                    [例] + context {
-                      let it = query(selector(figure).before(here())).last()
-                      numbering(it.numbering, ..counter(figure.where(kind: "example")).at(here()))
-                    }
+                    [例] + context context counter(figure.where(kind: "example")).display()
                   }
                   place(dx: 2pt, dy: 2pt)[
                     #box(
-                      fill: rgb("#ff6565"),
+                      fill: theme.get().lighten(20%),
                       inset: (x: 0.6em, y: 0.5em),
                       radius: 5pt,
                       hide(title-text)
@@ -391,7 +391,7 @@
                   ]
                   h(-2em)
                   box(
-                    fill: rgb("#d71d1d"),
+                    fill: theme.get().saturate(100%).darken(10%),
                     inset: (x: 0.6em, y: 0.5em),
                     radius: 5pt,
                     title-text
@@ -478,23 +478,23 @@
 
 // 序号接续
 #let fake_h4 = counter("fake_heading_4")
-#let continue-h5(title) = {
-  set text(fill: rgb("#d71d1d"), weight: "bold", font: "Source Han Sans SC", size: 1.1em)
+#let continue-h5(title) = context {
+  set text(fill: theme.get().saturate(100%).darken(10%), weight: "bold", font: "Source Han Sans SC", size: 1.1em)
   fake_h4.step()
   block(v(0.6em) + h(-2em) + context fake_h4.display("一、 ") + title + v(0.6em))
 }
 
 // 提示
-#let tips(width: 100%, content) = {
+#let tips(width: 100%, content) = context {
   h(0.5em)
   block(
     width: width,
     showybox(
       breakable: true,
       frame: (
-        body-color: rgb("#ffcece"),
-        border-color: rgb("#d71d1d"),
-        title-color: rgb("#d71d1d"),
+        body-color: theme.get().lighten(70%),
+        border-color: theme.get().saturate(100%).darken(10%),
+        title-color: theme.get().saturate(100%).darken(10%),
         title-inset: (x: 0.6em, y: 0.5em)
       ),
       title-style: (
@@ -523,7 +523,7 @@
                 }
                 place(dx: 2pt, dy: 2pt)[
                   #box(
-                    fill: rgb("#ff6565"),
+                    fill: theme.get().lighten(20%),
                     inset: (x: 0.6em, y: 0.5em),
                     radius: 5pt,
                     hide(title-text)
@@ -531,7 +531,7 @@
                 ]
                 h(-2em)
                 box(
-                  fill: rgb("#d71d1d"),
+                  fill: theme.get().saturate(100%).darken(10%),
                   inset: (x: 0.6em, y: 0.5em),
                   radius: 5pt,
                   title-text
@@ -597,10 +597,10 @@
 }
 
 // 文件
-#let codefile(title: "", body, lang: "file") = {
+#let codefile(title: "", body, lang: "file") = context {
   codly(
     display-name: false,
-    fill: rgb("#fff8f8"),
+    fill: theme.get().lighten(96%),
     header: [
       #set text(
         fill: white,
@@ -614,7 +614,7 @@
       #title
     ],
     header-cell-args: (
-      fill: rgb("#ff6565")
+      fill: theme.get().lighten(20%)
     ),
     languages: (
       json: (
@@ -650,17 +650,17 @@
         name: "file"
       )
     ),
-    number-format: n => text(fill: red, weight: "bold")[#h(0.5em)#n#h(0.5em)],
+    number-format: n => text(fill: theme.get(), weight: "bold")[#h(0.5em)#n#h(0.5em)],
     radius: 5pt,
-    stroke: 1pt + rgb("#d71d1d"),
-    zebra-fill: rgb("#fde9e9")
+    stroke: 1pt + theme.get().saturate(100%).darken(10%),
+    zebra-fill: theme.get().lighten(90%)
   )
   show raw: set text(font: ("Consolas", "Source Han Serif"))
   raw(body, block: true, lang: lang)
 }
 
 // 树状图
-#let tree(..items) = stringtree(line_color: red, ..items)
+#let tree(..items) = context stringtree(line_color: theme.get(), ..items)
 
 // 填空空格
 #let blank = underline("                ")
@@ -689,42 +689,46 @@
 )
 
 // 文本组件
-#let text_component(background: rgb("#ffcece"), baseline: 25%, content, font: ("Minecraft", "Unifont"), shadow-offset: (0.1em, 0.1em), shadow-color: rgb("3F3F3F")) = [
-  #show regex("[\u4E00-\u9FFF]"): it => text(
-    font: "Unifont",
-    size: 0.8em,
-    it
-  )
-  #text(
-    fill: white,
-    font: font,
-    box(
-      baseline: baseline,
-      fill: background,
-      inset: 0.5em,
-      radius: 4pt,
-      stroke: 1pt + red,
+#let text_component(background: none, baseline: 25%, content, font: ("Minecraft", "Unifont"), shadow-offset: (0.1em, 0.1em), shadow-color: rgb("3F3F3F")) = [
+  #context {
+    let theme = theme.get()
+    let default_background = if background == none { theme.lighten(70%) } else { background }
+    show regex("[\u4E00-\u9FFF]"): it => text(
+      font: "Unifont",
+      size: 0.8em,
+      it
+    )
+    text(
+      fill: white,
+      font: font,
       box(
-        stack(
-          dir: ltr,
-          spacing: 0pt,
-          place(
-            dx: shadow-offset.at(0),
-            dy: shadow-offset.at(1),
-            {
-              show text: set text(fill: rgb(shadow-color))
-              set par(leading: 0.5em, spacing: 0.5em)
-              content
-            },
+        baseline: baseline,
+        fill: default_background,
+        inset: 0.5em,
+        radius: 4pt,
+        stroke: 1pt + theme,
+        box(
+          stack(
+            dir: ltr,
+            spacing: 0pt,
+            place(
+              dx: shadow-offset.at(0),
+              dy: shadow-offset.at(1),
+              {
+                show text: set text(fill: rgb(shadow-color))
+                set par(leading: 0.5em, spacing: 0.5em)
+                content
+              },
+            ),
+            text[
+              #set par(leading: 0.5em, spacing: 0.5em)
+              #content
+            ],
           ),
-          text[
-            #set par(leading: 0.5em, spacing: 0.5em)
-            #content
-          ],
-        ),
+        )
       )
     )
-  )
+  }
 ]
 
 // 样式
@@ -746,7 +750,7 @@
   show strong: it => {
     set text(
       font: ("Roboto", "Source Han Sans SC"),
-      fill: red,
+      fill: theme.get(),
     )
     it 
   }
@@ -838,8 +842,8 @@
       h(0.25em) + box(
         baseline: -1pt,
         outset: (x: 2pt, y: 3pt),
-        fill: rgb("#fef2f2"),
-        stroke: 0.5pt + red,
+        fill: theme.get().lighten(85%),
+        stroke: 0.5pt + theme.get(),
         radius: 2pt,
         text(font: ("Consolas","Source Han Serif"), size: 0.9em, it)
       ) + h(0.25em)
@@ -934,17 +938,17 @@
     block(v(5em) + it + v(2em))
   }
   show heading.where(level: 2): it => {
-    set text(fill: rgb("#d71d1d"), font: ("Minecraft", "Unifont"), size: 1.8em)
+    set text(fill: theme.get().saturate(100%).darken(10%), font: ("Minecraft", "Unifont"), size: 1.8em)
     block(v(1em) + it + v(1em))
   }
   show heading.where(level: 3): it => {
     set align(left)
-    set text(fill: rgb("#d71d1d"), size: 1.4em)
+    set text(fill: theme.get().saturate(100%).darken(10%), size: 1.4em)
     block(v(0.2em) + it + v(0.6em))
   }
   show heading.where(level: 4): it => {
     set align(left)
-    set text(fill: rgb("#d71d1d"), font: "Source Han Sans SC", size: 1.1em)
+    set text(fill: theme.get().saturate(100%).darken(10%), font: "Source Han Sans SC", size: 1.1em)
     block(v(0.2em) + it + v(0.6em))
   }
   show heading.where(level: 5): it => {

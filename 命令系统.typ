@@ -45,6 +45,8 @@
 
 #import "模板.typ": *
 #show: template-style
+#theme.update(dark_blue)
+#let theme_basic = dark_blue
 
 #heading(level: 1, numbering: none, outlined: false, [第一版序言])
 Minecraft拥有多种多样的玩法，生存、PVP、PVE、模组、建筑、红石电路这些为众多玩家所熟知的玩法自成体系，玩家可以自由选择其中的某一方面深入研究。在这些玩法中，比较默默无闻的一种玩法可能便是广义上的命令，即包含了MC-CMD（命令）、资源包和数据包的系统。
@@ -289,7 +291,7 @@ Minecraft有许多不同的游戏资源，如草方块、石头、箭、铁锹�
   header: ([类别], [游戏资源], [说明]),
   table.cell(rowspan: 2)[数据包内容], [函数], [可写，`function` 路径下的内容],
   [结构模板], [可写，`structure` 路径下的内容],
-  table.cell(fill: rgb("#fde9e9"), rowspan: 11)[资源包内容], [纹理图集], [位于资源包内路径 `atlases`],
+  table.cell(rowspan: 11)[资源包内容], [纹理图集], [位于资源包内路径 `atlases`],
   [方块状态], [位于 `blockstates`],
   [纹饰图案], [位于 `equipment`],
   [字体], [可写，位于 `font`],
@@ -726,7 +728,7 @@ JSON格式键值对的基本语法为：
 #wrap-content(
   tips(
     [键名的两侧必须是*英文引号*，且不接受单引号！],
-    width: 15em
+    width: 12em
   ),
   [
     
@@ -735,7 +737,7 @@ JSON格式键值对的基本语法为：
   align: right
 )
 #codebox("\"<键>\":<值>,\"<键>\":<值>")
-在一个`.json`文件中，须使用花括号 `{}` 将所有的键值对封装包裹在一起，如：
+在一个 `.json` 文件中，须使用花括号 `{}` 将所有的键值对封装包裹在一起，如：
 #codebox("{\"<键>\":<值>,\"<键>\":<值>}")
 对于值而言，每一个不同的键都需的值的类型不尽相同，比如键 `color` 可能需要的是颜色值，`bold` 可能需要的是布尔值，`text` 可能需要的是字符串，等等。JSON一共使用六种不同的数据类型：
 ===== #icon("json-string") #proper-noun(display: "字符串（String）", "zi4 fu2 chuan4")
@@ -832,7 +834,7 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
 #codebox("\"text\":\"\"Hello World!\"\"") <code:json_escape_error>
 这样通常会产生报错，这是由于用于定义字符串的引号和值中的英文引号发生了配对从而导致了错误，因此需要使用#proper-noun(display: "转义字符（Escape character）", "zhuan3 yi4 zi4 fu2")`\` 对文本引号进行转义。转义的作用为：将被转义的字符转换成字符，被转换的引号便不再与用于定义字符串的引号发生配对。除用于转义英文引号外，反斜杠还可以用于转义反斜杠以及创造一些特定的转义序列。JSON中可用的转义序列如下：
 #wrap-content(
-  tips([`\b`、`\f`、`\n`、`\r`、`\t` 这些特殊的转义序列能在JSON中使用，但这不代表这些转义序列能在相应的游戏实例中真正起作用。例如，在物品修饰器中定义物品名称时，虽然JSON支持输入换行符 `\n`，但物品名称本身不支持换行。], width: 11em),
+  tips([`\b`、`\f`、`\n`、`\r`、`\t` 这些特殊的转义序列能在JSON中使用，但这不代表这些转义序列能在相应的游戏实例中真正起作用。例如，在物品修饰器中定义物品名称时，虽然JSON支持输入换行符 `\n`，但物品名称本身不支持换行。], width: 14em),
   [
 + `\"`，是半角双引号（英文引号） `"` 的转义方式（中文引号不需要转义）；
 + `\\`，是反斜杠 `\` 的转义方式，已被转义的反斜杠被视为普通字符，不再具有转义作用；
@@ -2165,8 +2167,8 @@ $ L_"s" = max{0, 31-d_"s"} $ <equ:player_simulation_level>
   caption: "加载标签",
   colspan: 6,
   columns: (auto, auto, auto, auto, auto, auto),
-  header: (table.cell(rowspan: 2)[标签类型], table.cell(rowspan: 2)[注册名称], table.cell(colspan: 2)[基础等级], table.cell(rowspan: 2)[存活时间], table.cell(rowspan: 2)[持久化], table.cell(fill: rgb("#ff6565"))[#set text(fill: white, font: "Source Han Sans SC")
-  加载等级], table.cell(fill: rgb("#ff6565"))[#set text(fill: white, font: "Source Han Sans SC")
+  header: (table.cell(rowspan: 2)[标签类型], table.cell(rowspan: 2)[注册名称], table.cell(colspan: 2)[基础等级], table.cell(rowspan: 2)[存活时间], table.cell(rowspan: 2)[持久化], table.cell(fill: theme_basic.lighten(20%))[#set text(fill: white, font: "Source Han Sans SC", weight: "bold")
+  加载等级], table.cell(fill: theme_basic.lighten(20%))[#set text(fill: white, font: "Source Han Sans SC", weight: "bold")
   计算等级]),
   [玩家加载标签], [`player_loading`], [31], [无], table.cell(rowspan: 2)[永久], table.cell(rowspan: 2)[否],
   [玩家计算标签], [`player_simulation`], [无], [$max{0,31-d_"s"}$],
@@ -4329,10 +4331,10 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
     column-gutter: 2pt,
     columns: (auto, 6em, auto),
     row-gutter: 4pt,
-    [], [#place(dx: -2em, box(width: 10em, text(fill: rgb("#ff6565"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", align(center)[语法中指定的标签\ ▼])))\ \ ], [],
-    [根标签: {], box(baseline: 25%, fill: rgb("#ff6565"), inset: 0.4em, text(white)[子标签: 值 #place(dx: -5.8em, dy: -1.4em, box(height: 2em, radius: 5pt, stroke: 1pt + rgb("#d71d1d"), width: 18em))]), [, 子标签: 值 }]
+    [], [#place(dx: -2em, box(width: 10em, text(fill: theme_basic.lighten(20%), font: "Source Han Sans SC", size: 0.8em, weight: "bold", align(center)[语法中指定的标签\ ▼])))\ \ ], [],
+    [根标签: {], box(baseline: 25%, fill: theme_basic.lighten(20%), inset: 0.4em, text(white)[子标签: 值 #place(dx: -5.8em, dy: -1.4em, box(height: 2em, radius: 5pt, stroke: 1pt + theme_basic.saturate(100%).darken(10%), width: 18em))]), [, 子标签: 值 }]
   )
-  #text(fill: rgb("#d71d1d"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", [指向的根标签])
+  #text(fill: theme_basic.saturate(100%).darken(10%), font: "Source Han Sans SC", size: 0.8em, weight: "bold", [指向的根标签])
 ]
 `标签` 处应为一个测试NBT标签，它的写法在节@sec:testing_nbt 中已讲过，需要匹配的标签必须为根标签的子标签，也可以为空。若标签处为空或指定的数据与标签的实际数据匹配时，则指向根标签；若不匹配则不指向任何标签。例如，标签处为一只绵羊的某一个标签 #icon("nbt-compound") `Brain`，这个标签为绵羊标签的子标签，则指向的是绵羊这个根标签。
 
@@ -4351,10 +4353,10 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
     column-gutter: 2pt,
     columns: (3em, auto),
     row-gutter: 4pt,
-    [#place(dx: -3.5em, box(width: 10em, text(fill: rgb("#ff6565"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", align(center)[语法中指定的标签名\ ▼])))\ \ ], [],
-    box(baseline: 25%, fill: rgb("#ff6565"), inset: 0.4em, text(white)[标签#place(dx: -1em, dy: -1.4em, box(height: 2em, radius: 5pt, stroke: 1pt + rgb("#d71d1d"), width: 6em))]), [: 值]
+    [#place(dx: -3.5em, box(width: 10em, text(fill: theme_basic.lighten(20%), font: "Source Han Sans SC", size: 0.8em, weight: "bold", align(center)[语法中指定的标签名\ ▼])))\ \ ], [],
+    box(baseline: 25%, fill: theme_basic.lighten(20%), inset: 0.4em, text(white)[标签#place(dx: -1em, dy: -1.4em, box(height: 2em, radius: 5pt, stroke: 1pt + theme_basic.saturate(100%).darken(10%), width: 6em))]), [: 值]
   )
-  #text(fill: rgb("#d71d1d"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", [指向的标签])
+  #text(fill: theme_basic.saturate(100%).darken(10%), font: "Source Han Sans SC", size: 0.8em, weight: "bold", [指向的标签])
 ]
 这种节点会直接指向拥有该标签名的标签，无论该标签的数据类型。如果标签名中带有单引号 `'`、双引号 `"`和空格，则这个节点需要被引号包裹，带有汉字和反斜杠则不需要。
 
@@ -4370,10 +4372,10 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
     column-gutter: 2pt,
     columns: (auto, 6em, auto),
     row-gutter: 4pt,
-    [], [#place(dx: -2em, box(width: 10em, text(fill: rgb("#ff6565"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", align(center)[语法中指定的标签\ ▼])))\ \ ], [],
-    [标签: {], box(baseline: 25%, fill: rgb("#ff6565"), inset: 0.4em, text(white)[子标签: 值 #place(dx: -4.8em, dy: -1.4em, box(height: 2em, radius: 5pt, stroke: 1pt + rgb("#d71d1d"), width: 17em))]), [, 子标签: 值 }]
+    [], [#place(dx: -2em, box(width: 10em, text(fill: theme_basic.lighten(20%), font: "Source Han Sans SC", size: 0.8em, weight: "bold", align(center)[语法中指定的标签\ ▼])))\ \ ], [],
+    [标签: {], box(baseline: 25%, fill: theme_basic.lighten(20%), inset: 0.4em, text(white)[子标签: 值 #place(dx: -4.8em, dy: -1.4em, box(height: 2em, radius: 5pt, stroke: 1pt + theme_basic.saturate(100%).darken(10%), width: 17em))]), [, 子标签: 值 }]
   )
-  #text(fill: rgb("#d71d1d"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", [指向的标签])
+  #text(fill: theme_basic.saturate(100%).darken(10%), font: "Source Han Sans SC", size: 0.8em, weight: "bold", [指向的标签])
 ]
 用法与根复合标签类似，`子标签` 是一个测试NBT标签，可选填，指向不必为根标签的标签，且指向的标签必须为复合标签。注意，`标签名` 和 `{子标签}` 之间不能添加冒号。
 用法举例：
@@ -4398,8 +4400,8 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
     column-gutter: 2pt,
     columns: (auto, auto, auto),
     row-gutter: 4pt,
-    [], [#place(dx: -3.5em, box(width: 10em, text(fill: rgb("#d71d1d"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", align(center)[`标签名[索引]` 指向的元素\ ▼])))\ \ ], [],
-    [标签: \[], box(baseline: 25%, inset: 0.4em, radius: 5pt, stroke: 1pt + rgb("#d71d1d"), [元素]), [, 元素, 元素 \]]
+    [], [#place(dx: -3.5em, box(width: 10em, text(fill: theme_basic.saturate(100%).darken(10%), font: "Source Han Sans SC", size: 0.8em, weight: "bold", align(center)[`标签名[索引]` 指向的元素\ ▼])))\ \ ], [],
+    [标签: \[], box(baseline: 25%, inset: 0.4em, radius: 5pt, stroke: 1pt + theme_basic.saturate(100%).darken(10%), [元素]), [, 元素, 元素 \]]
   )
 ]
 用于指向数组类标签中某个元素，`索引` 指名为 `标签名` 的列表或数组中的第几个元素，需要是一个整数值。
@@ -4432,8 +4434,8 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
     column-gutter: 2pt,
     columns: (auto, auto, auto),
     row-gutter: 4pt,
-    [], [#place(dx: -1em, box(width: 10em, text(fill: rgb("#d71d1d"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", align(center)[`标签名[]` 指向的元素\ ▼])))\ \ ], [],
-    [标签: \[], box(baseline: 25%, inset: 0.4em, radius: 5pt, stroke: 1pt + rgb("#d71d1d"), [元素, 元素, 元素]), [\]]
+    [], [#place(dx: -1em, box(width: 10em, text(fill: theme_basic.saturate(100%).darken(10%), font: "Source Han Sans SC", size: 0.8em, weight: "bold", align(center)[`标签名[]` 指向的元素\ ▼])))\ \ ], [],
+    [标签: \[], box(baseline: 25%, inset: 0.4em, radius: 5pt, stroke: 1pt + theme_basic.saturate(100%).darken(10%), [元素, 元素, 元素]), [\]]
   )
 ]
 指向具有该标签名的列表或数组中的所有元素，此标签必须为数组类标签。如果该列表或数组有多个元素，则指向的是多个元素。
@@ -4451,8 +4453,8 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
     column-gutter: 2pt,
     columns: (auto, auto, auto),
     row-gutter: 4pt,
-    [], [#place(dx: -2.5em, box(width: 10em, text(fill: rgb("#d71d1d"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", align(center)[`标签名[{标签}]` 指向的元素\ ▼])))\ \ ], [],
-    [标签: \[], box(baseline: 25%, inset: 0.4em, radius: 5pt, stroke: 1pt + rgb("#d71d1d"), [{ 标签: 值 }]), [, { 标签: 值 } \]]
+    [], [#place(dx: -2.5em, box(width: 10em, text(fill: theme_basic.saturate(100%).darken(10%), font: "Source Han Sans SC", size: 0.8em, weight: "bold", align(center)[`标签名[{标签}]` 指向的元素\ ▼])))\ \ ], [],
+    [标签: \[], box(baseline: 25%, inset: 0.4em, radius: 5pt, stroke: 1pt + theme_basic.saturate(100%).darken(10%), [{ 标签: 值 }]), [, { 标签: 值 } \]]
   )
 ]
 `{标签}` 处为选填内容，使用测试NBT标签，可以为空。为空时，则会指向具有该标签名的列表或数组中所有为 `{}` 的复合标签；不为空时，会先检查标签的数据是否匹配，若匹配则指向具有该标签名的列表或数组中所有与之匹配的复合标签，若不匹配则不指向任何内容。
@@ -4630,7 +4632,7 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
 #[
   #set align(center)
   #v(0.5em)
-  #text(fill: rgb("#d71d1d"), font: "Source Han Sans SC", size: 0.8em, weight: "bold", [#h(11em) 字符串切片])
+  #text(fill: theme_basic.saturate(100%).darken(10%), font: "Source Han Sans SC", size: 0.8em, weight: "bold", [#h(11em) 字符串切片])
   #v(0.5em)
   #grid(
     align: center,
@@ -4647,7 +4649,7 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
     box(
       height: 5.5em,
       radius: 4pt,
-      stroke: 1pt + rgb("#d71d1d"),
+      stroke: 1pt + theme_basic.saturate(100%).darken(10%),
       width: 10.2em
     )
   )
@@ -5147,7 +5149,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
         columns: (auto, 2em, auto, 2em, auto, 2em, auto),
         row-gutter: 4pt,
         [], text(0.9em)[#place(dx: -1.5em, box(width: 5em, [第1个参数]))\ ▼], [], text(0.9em)[#place(dx: -1.5em, box(width: 5em, [第2个参数]))\ ▼], [], text(0.9em)[#place(dx: -1.5em, box(width: 5em, [第3个参数]))\ ▼], [],
-        [前缀，], box(inset: 0.4em, radius: 4pt, stroke: 1pt + rgb("#d71d1d"), [%s]), [%2\$s 然后是 ], box(inset: 0.4em, radius: 4pt, stroke: 1pt + rgb("#d71d1d"), [%s]), [ 和 %1\$s 最后是 ], box(inset: 0.4em, radius: 4pt, stroke: 1pt + rgb("#d71d1d"), [%s]), [ 还有 %1\$s！]
+        [前缀，], box(inset: 0.4em, radius: 4pt, stroke: 1pt + theme_basic.saturate(100%).darken(10%), [%s]), [%2\$s 然后是 ], box(inset: 0.4em, radius: 4pt, stroke: 1pt + theme_basic.saturate(100%).darken(10%), [%s]), [ 和 %1\$s 最后是 ], box(inset: 0.4em, radius: 4pt, stroke: 1pt + theme_basic.saturate(100%).darken(10%), [%s]), [ 还有 %1\$s！]
       )
     ]
     对于 `%n$s`，给它们强制分配参数列表中第$n$个参数：
@@ -5159,7 +5161,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
         columns: (auto, 3em, auto, 3em, auto, 3em, auto),
         row-gutter: 4pt,
         [], text(0.9em)[#place(dx: -1em, box(width: 5em, [第2个参数]))\ ▼], [], text(0.9em)[#place(dx: -1em, box(width: 5em, [第1个参数]))\ ▼], [], text(0.9em)[#place(dx: -1em, box(width: 5em, [第1个参数]))\ ▼], [],
-        [前缀，%s], box(inset: 0.4em, radius: 4pt, stroke: 1pt + rgb("#d71d1d"), [%2\$s]), [ 然后是 %s 和 ], box(inset: 0.4em, radius: 4pt, stroke: 1pt + rgb("#d71d1d"), [%1\$s]), [ 最后是 %s 还有 ], box(inset: 0.4em, radius: 4pt, stroke: 1pt + rgb("#d71d1d"), [%1\$s]), [！]
+        [前缀，%s], box(inset: 0.4em, radius: 4pt, stroke: 1pt + theme_basic.saturate(100%).darken(10%), [%2\$s]), [ 然后是 %s 和 ], box(inset: 0.4em, radius: 4pt, stroke: 1pt + theme_basic.saturate(100%).darken(10%), [%1\$s]), [ 最后是 %s 还有 ], box(inset: 0.4em, radius: 4pt, stroke: 1pt + theme_basic.saturate(100%).darken(10%), [%1\$s]), [！]
       )
     ]
     于是返回的内容为#text_component([前缀，12 然后是 2 和 1 最后是 #[#set text(weight: "bold")
@@ -8177,7 +8179,7 @@ $ bold(B)^"T"=bold(V)bold(Sigma)bold(U)^"T" $
 $ bold(B)bold(B)^"T"=bold(U)bold(Sigma)bold(V)^"T"bold(V)bold(Sigma)bold(U)^"T"=bold(U)bold(Sigma)^2 bold(U)^"T" $
 #h(-2em)对上式进行变形：
 $ bold(U)(bold(B)bold(B)^"T")bold(U)^"T"=bold(Sigma)^2 $
-方阵$bold(B)bold(B)^"T"$是一个实对称阵，显然上式描述的是将$bold(B)bold(B)^"T"$相似对角化的过程，其中#box(baseline: 30%, inset: (y: 0.5em))[$display(bold(Sigma)=mat(sigma_1, , ; , sigma_2, ; , , sigma_3))$]，使用的正交阵便为左奇异向量矩阵$bold(U)$。如果记$lambda_1$、$lambda_2$、$lambda_3$是$bold(B)bold(B)^"T"$的三个特征值，这些特征值是非负的，读者可自行证明，于是有
+方阵$bold(B)bold(B)^"T"$是一个实对称阵，显然上式描述的是将$bold(B)bold(B)^"T"$相似对角化的过程，其中#box(baseline: 43%, inset: (y: 0.5em))[$display(bold(Sigma)=mat(sigma_1, , ; , sigma_2, ; , , sigma_3))$]，使用的正交阵便为左奇异向量矩阵$bold(U)$。如果记$lambda_1$、$lambda_2$、$lambda_3$是$bold(B)bold(B)^"T"$的三个特征值，这些特征值是非负的，读者可自行证明，于是有
 $ bold(Sigma)^2=mat(lambda_1, , ; , lambda_2, ; , , lambda_3)=mat(sigma^2_1, , ; , sigma^2_2, ; , , sigma^2_3) $
 于是求出$bold(B)bold(B)^"T"$的三个特征值即可求出对角阵$bold(Sigma)$。因此，$bold(Sigma)$和$bold(U)$的求解步骤如下：
 ======= 由特征方程$abs(lambda bold(E) - bold(B)bold(B)^"T") = 0$求$bold(B)bold(B)^"T"$的全部特征值$lambda_i$，然后求出对角阵
@@ -8711,8 +8713,8 @@ Minecraft中的“物品”是一个多义词，它可以指掉落物形式的�
 通常而言，物品拥有堆叠数量、命名空间ID和附加信息这些属性。特别地，一些物品被存储在实体或方块实体的特定槽位中，则它们使用带槽位的物品格式。如果一个物品为某个属性类的数据或配置项，如实体物品中的物品，则使用不带槽位的物品格式。
 #tree(
   (0, [#icon("nbt-compound") 根标签]),
-  (1, [#icon("nbt-string") *id*: 物品的命名空间ID。]),
-  (1, [#icon("nbt-int") *count*: 该物品堆叠的数量。]),
+  (1, [#icon("nbt-string") *#underline[id]*: 物品的命名空间ID。]),
+  (1, [#icon("nbt-int") *count*: 该物品堆叠的数量，是介于1到该物品最大堆叠数（含）的值，不会大于99。]),
   (1, [#icon("nbt-byte") *Slot*: 物品所在的槽位。若此物品为某个属性类的数据或配置项，则不存在该标签。]),
   (1, [#icon("nbt-compound") *components*: 可选，存储该物品的额外信息，使用#proper-noun(display: "数据组件（Data Component）", "shu4 ju4 zu3 jian4")。]),
   (2, [一个特定的数据组件，使用与之匹配的数据类型])
@@ -8737,7 +8739,7 @@ Minecraft中的“物品”是一个多义词，它可以指掉落物形式的�
 )
 使用命令 `/give` 给予玩家物品时，若物品栏内存在同种可堆叠且未达到堆叠上限的物品，则给予的物品会在同类物品上进行堆叠；若同类可堆叠物品已达到堆叠上限，则会使物品被放置到空白的物品栏。空白物品栏的放置顺序为：先是快捷栏 `0` \~ `8`，其次为物品存储栏 `9` \~ `35`。
 #example(
-  [给予命令执行者命令方块],
+  [给予命令执行者命令方块。],
   [
     命令为
     #codebox("give @s command_block")
@@ -8806,8 +8808,8 @@ Minecraft中的“物品”是一个多义词，它可以指掉落物形式的�
   [熔炉、烟熏炉、高炉], [`0` \~ `2`], [#box(image("图片/熔炉槽位.png", width: 12em))],
   [酿造台], [`0` \~ `4`], [#box(image("图片/酿造台槽位.png", width: 12em))],
   [物品实体、物品展示框、物品展示实体、唱片机、箭、光灵箭、火球、小火球], [`0`], [],
-  table.cell(rowspan: 3)[`weapon`], table.cell(rowspan: 8)[所有生物（并非所有生物都实际使用这些槽位）], [-], table.cell(rowspan: 2)[主手槽],
-  [`mainhand`], 
+  table.cell(rowspan: 3)[`weapon`], table.cell(rowspan: 8)[所有生物（并非所有生物都实际使用这些槽位）], [-], [主手槽],
+  [`mainhand`], [主手槽], 
   [`offhand`], [副手槽],
   table.cell(rowspan: 5)[`armor`], [`head`], [头盔槽],
   [`chest`], [胸甲槽],
@@ -8876,7 +8878,7 @@ Minecraft中的“物品”是一个多义词，它可以指掉落物形式的�
   (2, [#icon("nbt-compound") *\<槽位>*: 在此槽位上装备的物品。有效的槽位有 `mainhand`、`offhand`、`feet`、`legs`、`chest`、​`head`、`body` 和 `saddle`。]),
   (3, [#icon("nbt-string") *id*: 物品的命名空间ID。]),
   (3, [#icon("nbt-int") *count*: 该物品堆叠的数量。]),
-  (3, [#icon("nbt-compound") *components*: 可选，存储该物品的额外信息，使用#proper-noun(display: "数据组件（Data Component）", "shu4 ju4 zu3 jian4")。]),
+  (3, [#icon("nbt-compound") *components*: 可选，存储该物品的额外信息，使用数据组件。]),
   (4, [一个特定的数据组件，使用与之匹配的数据类型])
 )
 #h(-2em)@tab:equipment_slot 的字符串即作为 #icon("nbt-compound") `<槽位>` 的标签名。但也有例外，比如玩家主手的物品实际上存储于 #icon("nbt-compound") `SelectedItem` 而非 `equipment.mainhand`。
@@ -8900,14 +8902,110 @@ Minecraft中的“物品”是一个多义词，它可以指掉落物形式的�
 #example(
   [生成一个小僵尸，使之装备全套的钻石盔甲，主手持有钻石矛。],
   [
-
+    小僵尸并不是一种独立的实体类型，而是僵尸的一个种类，使用标签 #icon("nbt-bool") `IsBaby` 定义该僵尸为小僵尸。此外这些装备物品全部位于装备槽位，故应写在 #icon("nbt-compound") `equipment` 中。命令为
+    #codebox("summon zombie ~ ~ ~ {
+  IsBaby:true,
+  equipment:{
+    head:{id:\"minecraft:diamond_helmet\"},
+    chest:{id:\"minecraft:diamond_chestplate\"},
+    legs:{id:\"minecraft:diamond_leggings\"},
+    feet:{id:\"minecraft:diamond_boots\"},
+    mainhand:{id:\"minecraft:diamond_spear\"}
+  }
+}")
+    或者可以先生成这个僵尸，再用 `/item` 修改其特定槽位上的物品：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > summon.mcfunction",
+      "execute summon zombie run function tutorial:item"
+    )
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > item.mcfunction",
+      "data modify entity @s IsBaby set value true
+item replace entity @s armor.head with diamond_helmet
+item replace entity @s armor.chest with diamond_chestplate
+item replace entity @s armor.legs with diamond_leggings
+item replace entity @s armor.feet with diamond_boots
+item replace entity @s weapon.mainhand with diamond_spear"
+    )
   ]
 )
 === 物品谓词<subsec:item_predicate>
-物品谓词是一种用于匹配物品的命令参数，其类型为 `minecraft:item_predicate`，它在 `/clear`、`/execute if items` 中都有使用。
+物品谓词是一种用于匹配物品的命令参数，其类型为 `minecraft:item_predicate`，它在 `/clear`、`/execute if items` 中都有使用。其格式为
+#codebox("<type>[<test>,<test>,…]") <code:item_predicate_and>
+#h(-2em)或
+#codebox("<type>[<test>|<test>|…]") <code:item_predicate_or>
+#h(-2em)其中 `[<test>,<test>,…]` 和 `[<test>|<test>|…]` 在不需要时可以省略。例如，匹配任意的苹果时，此参数应写为 `minecraft:apple`。在语法@code:item_predicate_and、@code:item_predicate_or 中，物品满足方括号内的条件时才会被选中，每一个 `<test>`（测试项）均为一个条件，需要所有测试项均满足，即取“与”时，使用语法@code:item_predicate_and；只需任一测试项满足，即取“或”时，使用语法@code:item_predicate_or。*每一个 `<test>` 项都可以在其前面添加 `!` 以表示对此项取反。*
+
+例如，一个 `minecraft:item_predicate` 参数的内容为：
+#codebox("<type>[<test1>|!<test2>]") <code:item_predicate_example_1>
+#h(-2em)由方括号中的内容知此参数对两项条件取或，两个条件分别为满足 `<test1>` 、不满足 `<test2>`，列表可得：
+#general-table(
+  caption: [参数@code:item_predicate_example_1 所述物品能否被选中的情况],
+  colspan: 3,
+  columns: (auto, auto, auto),
+  header: (table.cell(fill: none)[], table.cell(fill: dark_green)[满足 #text(black)[`<test1>`]], table.cell(fill: dark_red)[不满足 #text(black)[`<test1>`]]),
+  table.cell(fill: dark_red)[#text(fill: white, font: "Source Han Sans SC", weight: "bold")[满足] `<test2>`], table.cell(fill: green)[是], table.cell(fill: red)[否],
+  table.cell(fill: dark_green)[#text(fill: white, font: "Source Han Sans SC", weight: "bold")[不满足] `<test2>`], table.cell(fill: green)[是], table.cell(fill: green)[是]
+)
+如果这个参数的形式改为
+#codebox("<type>[<test1>,!<test2>]") <code:item_predicate_example_2>
+#h(-2em)则是对两项条件与，此时物品必须同时满足 `<test1>`、不满足 `<test2>` 才能被选中，列表如下：
+#general-table(
+  caption: [参数@code:item_predicate_example_2 所述物品能否被选中的情况],
+  colspan: 3,
+  columns: (auto, auto, auto),
+  header_color: black,
+  even_color: black,
+  header: (table.cell(fill: none)[], table.cell(fill: dark_green)[满足 #text(black)[`<test1>`]], table.cell(fill: dark_red)[不满足 #text(black)[`<test1>`]]),
+  table.cell(fill: dark_red)[#text(fill: white, font: "Source Han Sans SC", weight: "bold")[满足] `<test2>`], table.cell(fill: red)[否], table.cell(fill: red)[否],
+  table.cell(fill: dark_green)[#text(fill: white, font: "Source Han Sans SC", weight: "bold")[不满足] `<test2>`], table.cell(fill: green)[是], table.cell(fill: red)[否]
+)
+对于语法@code:item_predicate_and、@code:item_predicate_or 中的 `<type>`，它可以是物品的命名空间ID，如 `minecraft:apple`；也可以是物品数据包标签，如 `#minecraft:planks`；也可以是 `*`，用于指定任意物品。
+
+对于语法@code:item_predicate_and、@code:item_predicate_or 中的 `<test>`，它可以使用以下几种语法：
++ `<component_id>=<value>`：*精确匹配*物品拥有的组件及组件的值，其中 `<component_id>` 为组件名，`<value>` 是SNBT形式的值。例如，一个物品 `custom_data` 组件的内容为
+  #codebox("\"minecraft:custom_data\": {field_1: true, field_2: true}") <code:item_predicate_custom_data_example>
+  那么这种测试项能匹配它的必须是：`custom_data={field_1:true,field_2:true}` #text(green)[☑]\ 以下测试项均因缺失部分子标签而无法匹配：\ `custom_data={field_1:true}` #text(red)[☒]\ `custom_data={field_2:true}` #text(red)[☒]\ \
++ `<component_id>`：匹配存在该组件的物品，无论组件的值为何。\ \
++ `<predicate_id>~<value>`：匹配数据组件谓词，其中 `<predicate_id>` 是数据组件谓词的命名空间ID，`<value>` 是SNBT形式的数据组件谓词。\ \
++ `minecraft:count=<positive_int>`：精确匹配物品的堆叠数量，其中 `count` 的命名空间前缀可省略，`<positive_int>` 必须为正整数。\ \
++ `minecraft:count`：匹配存在堆叠属性的物品，总是匹配成功。\ \
++ `minecraft:count~{min:<value>,max:<value>}`：匹配指定范围堆叠数量的物品，其中 `min` 和 `max` 均可不指定。
+#example(
+  [
+    分别指出下列物品谓词参数匹配的物品：
+    #codebox("minecraft:carrot_on_a_stick[custom_data={gun:true}]") <code:item_predicate_example_3>
+    #codebox("#minecraft:axes[!damage|damage=0]") <code:item_predicate_example_4>
+    #codebox("*[!count=3,count~{min:2}]") <code:item_predicate_example_5>
+    #codebox("*[enchantments~[{levels:{min:4}}]]") <code:item_predicate_example_6>
+  ],
+  [
+    参数@code:item_predicate_example_3：显然匹配拥有组件 `"minecraft:custom_data":{gun:true}` 的胡萝卜钓竿。
+    
+    参数@code:item_predicate_example_4：匹配没有组件 `damage` 或组件 `damage` 的值为 `0` 的拥有数据包标签 `#minecraft:axes` 的物品，即未损坏的所有种类的斧。
+    
+    参数@code:item_predicate_example_5：`*` 匹配所有物品，条件 `!count=3` 匹配堆叠数量不为3的物品，条件 `count~{min:2}` 匹最小配堆叠数量为2的物品，对此两个条件取“与”，即匹配所有堆叠数量大于等于2而不等于3的物品。
+    
+    参数@code:item_predicate_example_6：`enchantments` 是一个数据组件谓词，用于检查物品的魔咒，`[{levels:{min:4}}]` 匹配等级至少为IV的魔咒，因此该参数匹配拥有等级大于等于IV魔咒的物品，无论该物品的魔咒为何，且无论该物品的其他魔咒是否大于等于IV。
+  ]
+)
+#example(
+  [清除执行者自身所有堆叠数量为16的倍数的物品。],
+  [
+    原版可用的堆叠数量是不大于99的值，不妨遍历所有符合要求的堆叠数，对这些测试项取“或”。命令为
+    #codebox("clear @s *[count=16|count=32|count=48|count=64|count=80|count=96]")
+  ]
+)
 == 数据组件<sec:data_components>
+#proper-noun(display: "数据组件（Data Component）", "shu4 ju4 zu3 jian4")是游戏中用于定义各项属性的结构化数据，由于它主要被用于物品，因此也被称为#proper-noun(display: "物品堆叠组件（Item stack component）", "wu4 pin3 dui1 die2 zu3 jian4")，或#proper-noun(display: "物品组件（Item component）", "wu4 pin3 zu3 jian4")。数据组件在物品格式、方块实体和实体格式中均有使用。
+
+所有种类的数据组件于附录@sec:data_components_type 中列出，可供查阅。
+=== 物品组件
+物品格式全部使用数据组件。
 ==== 命令参数格式
-类似于方块状态，*数据组件也分为不同的种类，它们用于确定物品某一方面的附加信息，每种组件使用各自可用的值*。同样，数据组件是硬编码的，不可随意使用未注册的组件。数据组件是一种硬编码的注册表对象，具有命名空间ID。注意，省略命名空间前缀的写法仅在原版注册的数据组件中有效，一些模组注册的数据组件仍需要其使用的命名空间前缀。附录@sec:data_components_type 列举了所有物品可用的数据组件。
+类似于方块状态，*数据组件也分为不同的种类，它们用于确定物品某一方面的附加信息，每种组件使用各自可用的值*。同样，数据组件是硬编码的，不可随意使用未注册的组件。数据组件是一种硬编码的注册表对象，具有命名空间ID。注意，省略命名空间前缀的写法仅在原版注册的数据组件中有效，一些模组注册的数据组件仍需要其使用的命名空间前缀。
 
 在 `/give`、`/item` 和 `/clear` 等命令的格式中为了确认一个物品及其使用的组件，使用参数类型 `minecraft:item_stack`，其语法为
 #codebox("<命名空间>:<ID>[<组件名称>=<值>,<组件名称>=<值>,…]") <code:item_components_command_format>
@@ -8920,7 +9018,23 @@ Minecraft中的“物品”是一个多义词，它可以指掉落物形式的�
   food={can_always_eat:false}
 ]")
 #h(-2em)其中组件 `max_stack_size` 使用整型数据，`rarity` 使用字符串，`food` 使用复合标签。
-
+#example(
+  [
+    在冒险模式的情况下，将下列物品给予附近的玩家：
+    + 一把不会损坏耐久值的铁镐，使之可以用于破坏铁矿石和钻石矿石； <enu:unbreakable_iron_pickaxe>
+    + 一个可以放置在金块上的拉杆。 <enu:level_place_on_gold_block>
+  ],
+  [
+    冒险模式的玩家无法破坏任何方块，即使他们持有普通的工具。在物品组件中可以为工具添加允许破坏的方块种类，具体由组件 #icon("nbt-list")#icon("nbt-compound") `minecraft:can_break` 定义，查阅附录@sec:data_components_type 知需要在 #icon("nbt-string")#icon("nbt-list") `blocks` 中填写允许破坏的方块命名空间ID。于是可以得到如下的命令：
+    #codebox("give @p iron_pickaxe[can_break={blocks:[\"minecraft:iron_ore\",\"minecraft:diamond_ore\"]}]")
+    #h(-2em)这条命令在冒险地图的制作过程中几乎是必要的。
+    
+    不会损坏这个特征由组件 #icon("nbt-compound") `unbreakable` 定义，只要存在这个组件，无论使用多少次工具均不会减少耐久值。第@enu:unbreakable_iron_pickaxe 小题完整的命令为：
+    #codebox("give @p iron_pickaxe[unbreakable={},can_break={blocks:[\"minecraft:iron_ore\",\"minecraft:diamond_ore\"]}]")
+    如果给物品添加了 #icon("nbt-list")#icon("nbt-compound") `can_place_on` 组件，则该组件会允许冒险模式的玩家将该物品（一般是方块）放置在指定的方块上。组件 #icon("nbt-list")#icon("nbt-compound") `can_place_on` 的语法与 #icon("nbt-list")#icon("nbt-compound") `minecraft:can_break` 类似，只是 #icon("nbt-string")#icon("nbt-list") `blocks` 中填写的可放置于其上的方块的命名空间ID。于是可以得到第@enu:level_place_on_gold_block 小题的命令，该命令在冒险地图的制作中也几乎是必须的。\
+    #codebox("give @p level[can_place_on={blocks:[\"minecraft:gold_block\"]}]")
+  ]
+)
 原版中每一个物品都具有其默认的组件，默认组件的定义是：*使用 `/give` 命令且不指定数据组件时所获物品的组件。*例如，原版所有的食物类物品都默认具有 `minecraft:food` 这个组件。这些默认组件不会被序列化成物品数据，因此也无法用 `/data` 等命令获取它们的数据，存档也不会存储它们的数据。
 #example(
   [清除所有玩家物品栏中所有能被食用的物品。],
@@ -9004,7 +9118,7 @@ Minecraft中的“物品”是一个多义词，它可以指掉落物形式的�
   caption: "测重压力板信号强度表",
   colspan: 3,
   columns: (auto, auto, auto),
-  header: (table.cell(rowspan: 2)[信号强度], table.cell(colspan: 2)[需要的实体数量], table.cell(fill: rgb("#ff6565"))[#text(fill:white,font:"Source Han Sans SC",weight:"bold")[轻质]], table.cell(fill: rgb("#ff6565"))[#text(fill:white,font:"Source Han Sans SC",weight:"bold")[重质]]),
+  header: (table.cell(rowspan: 2)[信号强度], table.cell(colspan: 2)[需要的实体数量], table.cell(fill: theme_basic.lighten(20%))[#text(fill:white,font:"Source Han Sans SC",weight:"bold")[轻质]], table.cell(fill: theme_basic.lighten(20%))[#text(fill:white,font:"Source Han Sans SC",weight:"bold")[重质]]),
   [0], [0], [0],
   [1], [1], [1 \~ 10],
   [2], [2], [11 \~ 20],
