@@ -9050,6 +9050,9 @@ item replace entity @s weapon.mainhand with diamond_spear"
 #h(-2em)指定了一个不具有组件 `minecraft:food` 的苹果，这个苹果无法被食用。
 ==== SNBT格式
 语法@code:item_components_command_format 中方括号内的信息被专门存储在标签 #icon("nbt-compound") `components` 中，形成如下所示的数据结构：
+=== 方块实体组件
+=== 实体组件
+=== 数据组件谓词
 == 粒子
 == 教程：NBT Studio的使用 \*
 = 记分板
