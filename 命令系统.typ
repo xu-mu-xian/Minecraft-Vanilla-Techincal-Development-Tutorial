@@ -45,8 +45,8 @@
 
 #import "模板.typ": *
 #show: template-style
-#theme.update(dark_purple)
-#let theme_basic = dark_purple
+#theme.update(dark_green)
+#let theme_basic = dark_green
 
 #heading(level: 1, numbering: none, outlined: false, [第一版序言])
 Minecraft拥有多种多样的玩法，生存、PVP、PVE、模组、建筑、红石电路这些为众多玩家所熟知的玩法自成体系，玩家可以自由选择其中的某一方面深入研究。在这些玩法中，比较默默无闻的一种玩法可能便是广义上的命令，即包含了MC-CMD（命令）、资源包和数据包的系统。
@@ -2064,8 +2064,8 @@ Minecraft的游戏计算内容繁多，在同一个线程中的计算不可能�
   + 更新游戏刻计数器。
   + 若此时正在使用 `/tick step` 步进游戏刻，则计算剩余需步进游戏刻。
   + 关闭与客户端的网络自动发送队列的刷新。
-  + 如果游戏世界被重新加载（如使用 `/reload`），则调用 `#minecraft:load` 中的函数，调用顺序与列表 #icon("json-array") `value` 中的函数顺序一致。一个函数被调用时按 `.mcfunction` 文件内的命令顺序依次执行命令。<enu:gametick_order_reload> 
-  + \*调用一次 `#minecraft:tick` 中的函数，顺序与@enu:gametick_order_reload 中所述一致。
+  + *如果游戏世界被重新加载（如使用 `/reload`），则调用 `#minecraft:load` 中的函数，调用顺序与列表 #icon("json-array") `value` 中的函数顺序一致。*一个函数被调用时按 `.mcfunction` 文件内的命令顺序依次执行命令。<enu:gametick_order_reload> 
+  + \**调用一次 `#minecraft:tick` 中的函数*，顺序与@enu:gametick_order_reload 中所述一致。
   + 遍历所有维度，遍历顺序为：主世界、下界、末地、有先后顺序的自定义维度。遍历到某个维度时，按以下流程计算：
     + 每隔20 gt对玩家同步一次该维度的时间。
     + 运行维度游戏刻逻辑，若计算出现异常，则游戏崩溃。游戏刻逻辑按以下流程计算：
@@ -7451,7 +7451,7 @@ $scoreboard players set #system_time_second var $(second)"
   HurtEntities:true
 }")
   ]
-)
+) <exa:falling_block>
 #example(
   [生成一个掉落物钻石，使之永远不会自行消失。],
   [
@@ -7879,7 +7879,7 @@ $ phi = (B + "Op0")("Op1" + 1)"Op2" $ <equ:modifier_caculation>
   (1, [#icon("nbt-int") *interpolation_duration*: 实体动画渲染意义上的插值持续的时长，单位为游戏刻。插值会在第 #icon("nbt-int") `start_interpolation`$+$#icon("nbt-int") `interpolation_duration` 游戏刻终止。在插值过程中，所有标记为可插值的字段都作为单个#proper-noun(display: "插值集（Interpolation set）", "cha1 zhi2 ji2")的一部分。当插值集内的任意值被修改时，修改后可插值字段的*所有*值都会被视作*当前值*，修改前的值被视作*先前值*。在插值的持续时间内，*实体会由先前值定义的外观过渡至当前值定义的外观*。若同一游戏刻内出现值的多次变更，则只会计算一次变更。下面标注了所有的可插值字段。]),
   (1, [#icon("nbt-float") *shadow_strength*: 可插值，控制实体阴影的透明度，默认值为 `1.0f`。]),
   (1, [#icon("nbt-int") *teleport_duration*: 应用于实体本身位置和朝向的插值。例如，若更改了某展示实体的位置（如使用 `/tp` 命令），定义 #icon("nbt-int") `teleport_duration` 插值可制造展示实体从原本位置移动到新位置的动画而非突然的传送。若该标签的值设为 `0`，则为突然移动。大于 `0` 的值可制造移动动画。此值必须介于 `0` 和 `59` 之间（含）。]),
-  (1, [#icon("nbt-list")#icon("nbt-compound") *transformation*: 可插值。此字段数据结构较为复杂，用于表示模型的渲染变换。变换仅在渲染上有意义，实体本身的位置和朝向不作变换，因此只受 #icon("nbt-int") `interpolation_duration` 插值作用，不受 #icon("nbt-int") `teleport_duration` 插值的影响。所有渲染变换一律以展示实体的实际位置为变换的原点。]),
+  (1, [#icon("nbt-list")#icon("nbt-compound") *transformation*: 可插值。此字段数据结构较为复杂，用于表示模型的渲染变换。变换仅在渲染上有意义，实体本身的位置和朝向不作变换，因此只受 #icon("nbt-int") `interpolation_duration` 插值作用，不受 #icon("nbt-int") `teleport_duration` 插值的影响。所有渲染变换一律以展示实体的*实际位置*为变换的原点。]),
   (2, [渲染变换的数据]),
   (1, [#icon("nbt-float") *view_range*: 展示实体的最大可视范围。记该值为$v$，在选项中设置的实体渲染距离的最大值为$e$，若玩家与该实体的距离超过$64v e$，则该实体不会被渲染。默认值为 `1.0f`。])
 )
@@ -7913,7 +7913,11 @@ data modify entity @n[type=item_display,x=0.5,y=70,z=0.5] start_interpolation se
 #cite(<display_camera>, form: none)
 ==== 各类展示实体特有标签
 ===== 方块展示实体
-方块展示实体用于展示一个方块，被展示的方块仅有渲染意义，不具备具体使用价值。默认的实体锚点位于被展示方块的西北下角，若在 `/summon` 中使用整数形式的坐标，因为命令中坐标参数使用中心点校准，因此生成的方块展示实体不会贴合方格；贴合方格应使用小数坐标。下面是方块展示实体的特有字段：
+方块展示实体用于展示一个方块，被展示的方块仅有渲染意义，不具备具体使用价值。默认的实体锚点位于被展示方块的西北下角，若在 `/summon` 中使用整数形式的坐标，因为命令中坐标参数使用中心点校准，因此生成的方块展示实体不会贴合方格；贴合方格应使用小数坐标。
+
+对方块展示实体进行插值时，若当前插值未完成，则上次设置的值为先前值，本次设置的值为当前值，在此基础上重新开始插值。#cite(<display_tips>, form: none)
+
+下面是方块展示实体的特有字段：
 #tree(
   (0, [#icon("nbt-compound") 根标签]),
   (1, [#icon("nbt-compound") *#underline[block_state]*]),
@@ -7929,7 +7933,11 @@ data modify entity @n[type=item_display,x=0.5,y=70,z=0.5] start_interpolation se
   ]
 )
 ===== 物品展示实体
-物品展示用于展示一个物品，同样，被展示的物品仅有渲染意义。被展示的物品可以带有特定的堆叠组件，拥有自定义物品模型的物品也可以被渲染。允许使用 `/item` 或 `/loot` 变更和获取其中的物品数据。下面是物品展示特有的字段：
+物品展示用于展示一个物品，同样，被展示的物品仅有渲染意义。被展示的物品可以带有特定的堆叠组件，拥有自定义物品模型的物品也可以被渲染。允许使用 `/item` 或 `/loot` 变更和获取其中的物品数据。
+
+对物品展示实体进行插值时，若当前插值未完成，则当前的状态为先前值，本次设置的值为当前值，在此基础上重新开始插值。
+
+下面是物品展示特有的字段：
 #tree(
   (0, [#icon("nbt-compound") 根标签]),
   (1, [#icon("nbt-compound") *item*: 一个要展示的物品，使用物品格式，见节@sec:item_stack。默认为空气。]),
@@ -9034,7 +9042,7 @@ item replace entity @s weapon.mainhand with diamond_spear"
     如果给物品添加了 #icon("nbt-list")#icon("nbt-compound") `can_place_on` 组件，则该组件会允许冒险模式的玩家将该物品（一般是方块）放置在指定的方块上。组件 #icon("nbt-list")#icon("nbt-compound") `can_place_on` 的语法与 #icon("nbt-list")#icon("nbt-compound") `minecraft:can_break` 类似，只是 #icon("nbt-string")#icon("nbt-list") `blocks` 中填写的可放置于其上的方块的命名空间ID。于是可以得到第@enu:level_place_on_gold_block 小题的命令，该命令在冒险地图的制作中也几乎是必须的。\
     #codebox("give @p level[can_place_on={blocks:[\"minecraft:gold_block\"]}]")
   ]
-)
+) <exa:can_break_and_can_place_on>
 原版中每一个物品都具有其默认的组件，默认组件的定义是：*使用 `/give` 命令且不指定数据组件时所获物品的组件。*例如，原版所有的食物类物品都默认具有 `minecraft:food` 这个组件。这些默认组件不会被序列化成物品数据，因此也无法用 `/data` 等命令获取它们的数据，存档也不会存储它们的数据。
 #example(
   [清除所有玩家物品栏中所有能被食用的物品。],
@@ -9270,7 +9278,388 @@ item replace entity @s weapon.mainhand with diamond_spear"
   ]
 )
 === 数据组件的应用实例
-数据组件的一大作用就是自定义物品，冒险地图、原版模组的制作需要使用大量的自定义物品。
+冒险地图、原版模组的制作需要使用大量的自定义物品。由于物品注册表不是可写注册表，因此自定义物品是通过数据组件实现的，同时也需要确定“原型物品”。“原型物品”的要求是：尽量对自定义的物品有较少的非功能性作用。追溯指针非常适合用作原型物品，因为它没有任何的交互事件, 也不能参与到任何物品的合成中去, 而且也完全没有任何的附加数据。#cite(<custom_item>, form: none)原型物品不一定必须是追溯指针，也可以巧用原型物品的默认组件。例如，想要自定义食物，可以使用原版的食物作为原型物品。
+#example(
+  [
+    在地图中制作麦当劳薯条，使之：
+    + 拥有翻译名称；
+    + 使用以下的纹理
+      #figure(
+        caption: "",
+        image("图片/fries.png", width: 5em)
+      ) <fig:fries>
+    + 能够被食用，无论玩家的饥饿值是否已满，食用后最多可恢复8点饥饿值、6点饱和度。
+  ],
+  [
+    此处使用烤马铃薯作为原型物品。
+    + 首先确定物品的翻译名称，美式英文的名称为“Fries”，简体中文的名称为“薯条”。在资源包内创建以下语言文件：
+      #codefile(
+        lang: "json",
+        title: "assets > mcdonalds > lang > en_us.json",
+        "{
+    \"item.mcdonalds.fries\": \"Fries\"
+  }"
+      )
+      #codefile(
+        lang: "json",
+        title: "assets > mcdonalds > lang > zh_cn.json",
+        "{
+    \"item.mcdonalds.fries\": \"薯条\"
+  }"
+      )
+      翻译键名被定义为 `item.mcdonalds.fries`，这是因为原版的物品翻译键的格式都是 `item.<命名空间>.<ID>`，此处可标准化。相应地，物品名称使用 `item_name` 这个组件，将此翻译键写入本地化文本组件：
+      #codebox("\"minecraft:item_name\":{translate:\"item.mcdonalds.fries\"}")
+    + 接下来制作薯条的纹理，需要使用 `item_model` 这个组件，组件的值需要是物品模型映射，此知识点将在《资源包》教程的模型一章重点讲述，此处直接给出模型映射文件，这个文件需要被放置在命名空间下的 `items` 目录：
+      #codefile(
+        lang: "json",
+        title: "assets > mcdonalds > items > fries.json",
+        "{
+  \"model\": {
+    \"type\": \"model\",
+    \"model\": \"mcdonalds:fries\"
+  }
+}"
+      )
+      需要映射到 `mcdonalds:fries` 这个物品模型，因此在资源包 `models` 目录下创建模型文件。薯条使用的是一个平面纹理，因此可以直接应用父模型 `minecraft:item/generated`：
+      #codefile(
+        lang: "json",
+        title: "assets > mcdonalds > models > fries.json",
+        "{
+  \"parent\": \"minecraft:item/generated\",
+  \"textures\": {
+    \"layer0\": \"mcdonalds:item/fries\"
+  }
+}"
+      )
+      然后将@fig:fries 放置在路径 `assets > mcdonalds > textures > item > fries.png`。最后在物品的组件中确定使用 `mcdonalds:fries` 这个物品模型映射：
+      #codebox("\"minecraft:item_model\":\"mcdonalds:fries\"")
+    + 要求物品能够被食用，无论玩家的饥饿值是否已满，食用后最多可恢复8点饥饿值、6点饱和度。此需求应使用 `food` 组件来实现：
+      #codebox("\"minecraft:food\":{can_always_eat:true,nutrition:8,saturation:6.0f}")
+    将以上组件组合起来，用 `/give` 给予玩家这个自定义物品：
+    #codebox("give @s baked_potato[
+  minecraft:item_name={translate:\"item.mcdonalds.fries\"},
+  minecraft:item_model=\"mcdonalds:fries\",
+  minecraft:food={can_always_eat:true,nutrition:8,saturation:6.0f}
+]")
+    也可以使用战利品表统一存储自定义物品。将这个麦当劳薯条写在战利品表中：
+    #codefile(
+      lang: "json",
+      title: "data > mcdonalds > loot_table > fries.json",
+      "{
+  \"pools\": [
+    {
+      \"entries\": [
+        {
+          \"name\": \"minecraft:baked_potato\",
+          \"type\": \"minecraft:item\"
+        }
+      ],
+      \"functions\": [
+        {
+          \"function\": \"minecraft:set_name\",
+          \"name\": {
+            \"translate\": \"item.mcdonalds.fries\"
+          }
+        },
+        {
+          \"function\": \"minecraft:set_components\",
+          \"components\": {
+            \"minecraft:food\": {
+              \"can_always_eat\": true,
+              \"nutrition\": 8,
+              \"saturation\": 6
+            },
+            \"minecraft:item_model\": \"mcdonalds:fries\"
+          }
+        }
+      ],
+      \"rolls\": 1.0
+    }
+  ]
+}"
+    )
+  ]
+)
+战利品表可用于统一存储和管理自定义的物品，如此就能通过 `/loot` 或其他战利品表很方便地引用这个自定义物品。
+#example(
+  [
+    将附近玩家的胸甲栏中放入一个附魔的青色皮革外套，将光标移至这个皮革外套上时呈现如下所示的文本。\ 
+    #text_component(text(gray)[#text(aqua)[超级保护]\ 保护 IV\ 爆炸保护 IV\ 火焰保护 IV\ 弹射物保护 IV\ 颜色：\#409DA0\ #text(gold)[这个外套将互斥的保护魔咒组合到了一起]], background: black, shadow-color: black.transparentize(100%))
+  ],
+  [
+    这段文本主要显示了以下几种信息：第一行为物品的名称#text_component(text(aqua)[超级保护], background: black, shadow-color: black.transparentize(100%))，第二至第五行是这件皮革外套的魔咒信息，第六行是这件皮革外套的颜色，第七行是物品的描述信息。由于四种保护类魔咒是互斥的，因此只能用命令将这四种魔咒叠加到一起。
+
+    查阅附录@sec:data_components_type，物品的名称由组件 #icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") `minecraft:item_name` 定义，值需要为一个文本组件。如果物品被附魔，则名称会显示为青色。因此直接写字符串即可：
+    #codebox("custom_name=\"超级保护\"")
+    物品的魔咒由组件 #icon("nbt-compound") `minecraft:enchantments` 定义，根据附录@sec:data_components_type 的说明，此处可使用简化形式，标签名为各魔咒的命名空间ID，值为该魔咒的等级。保护、爆炸保护、火焰保护和弹射物保护的命名空间ID分别为 `minecraft:protection`、`minecraft:blast_protection`、`minecraft:fire_protection` 和 `minecraft:projectile_protection`，故组件为
+    #codebox("enchantments={
+  \"minecraft:protection\":4,
+  \"minecraft:blast_protection\":4,
+  \"minecraft:fire_protection\":4,
+  \"minecraft:projectile_protection\":4
+}")
+    对于皮革外套的颜色，由于皮革外套是可染色物品，故适用组件 #icon("nbt-int")#icon("nbt-list") `minecraft:dyed_color`，根据附录@sec:data_components_type 的说明，此处可直接采用十六进制的 #icon("nbt-int") 整型表示颜色值。该组件为
+    #codebox("dyed_color=0x409da0")
+    物品的描述信息则由组件 #icon("nbt-list") `minecraft:lore` 定义，列表中每一个元素的值类型都是字符串，且每个值都需要为一个文本组件。描述信息默认为紫色斜体，列表中一个元素的文本占据一行。所以这个组件应写为
+    #codebox("lore=[{text:\"这个外套将互斥的保护魔咒组合到了一起\",italic:false}]")
+    将上面的所有标签整合起来，可得到命令
+    #codebox("item replace entity @p armor.chest with leather_chestplate[
+  custom_name=\"超级保护\",
+  enchantments={
+    \"minecraft:protection\":4,
+    \"minecraft:blast_protection\":4,
+    \"minecraft:fire_protection\":4,
+    \"minecraft:projectile_protection\":4
+  },
+  dyed_color=0x409da0,
+  lore=[{text:\"这个外套将互斥的保护魔咒组合到了一起\",color:\"gold\",italic:false}]
+]")
+  ]
+) <exa:custom_leather_chestplate>
+#example(
+  [给予附近的玩家一本由 `unknown` 写的名为 `Hello` 的成书，这本书第1页的内容为：#text_component(text(black)[跳转至第2页], shadow-color: black.transparentize(100%))，点击第1页的文本会跳转至第2页，第2页的内容为：#text_component(text(black)[Hello\ World], shadow-color: black.transparentize(100%))。],
+  [
+    成书的内容由组件 #icon("nbt-compound") `minecraft:written_book_content` 定义，由附录@sec:data_components_type，在不使用内容过滤的情况下，这个组件的格式如下：
+    #tree(
+      (0, [#icon("nbt-compound") *minecraft:written_book_content*]),
+      (1, [#icon("nbt-string") *#underline[title]*: 成书的标题，必须指定该标签的值，否则无论成书的内容，打开成书后一律显示“无效的书本标签”。]),
+      (1, [#icon("nbt-string") *#underline[author]*: 成书的作者，必须指定该标签的值，否则判定书本标签无效。]),
+      (1, [#icon("nbt-byte") *resolved*: 该成书内的文本是否已被解析。]),
+      (1, [#icon("nbt-int") *generation*: 该成书的性质，用 `0` 表示“原作”，用 `1` 表示“原作的副本”，用 `2` 表示“副本的副本”，用 `3` 表示“破烂不堪”。]),
+      (1, [#icon("nbt-list") *pages*: 该成书每一页的内容，列表中所有元素都是字符串，字符串中使用文本组件。列表第一个元素存储成书第1页的内容，第二个元素存储成书第2页的内容，以此类推。]),
+      (2, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") 一页的内容，使用文本组件。])
+    )
+    首先指定成书的作者和标题：
+    #codebox("{title:\"Hello\",author:\"unknown\"}")
+    接下来为列表 #icon("nbt-list") `pages` 中的元素添加内容。由于第1页有跳转页数这个动作，因此不得不在第一个元素中使用 #icon("nbt-compound") 复合标签，字段 #icon("nbt-compound") `click_event` 中 #icon("nbt-string") `action` 的值设置为 `change_page`，#icon("nbt-int") `page` 设为 `2` 以表示页数：
+    #codebox("{text:\"跳转至第2页\",click_event:{action:\"change_page\",page:2}}")
+    第2页中没有特殊的文本类型与动作事件，可以考虑直接使用纯文本：
+    #codebox("\"Hello\\nWorld\"")
+    综上所述，可得命令
+    #codebox("give @p written_book[written_book_content={title:\"Hello\",author:\"unknown\",pages:[{text:\"跳转至第2页\",click_event:{action:\"change_page\",page:2}},\"Hello\\nWorld\"]}]")
+  ]
+)
+#example(
+  [
+    有一个箱子存放有@exa:can_break_and_can_place_on 第@enu:unbreakable_iron_pickaxe 小题所述的铁镐和@exa:custom_leather_chestplate 所述的皮革外套，但它通常是上锁的，只能被手持名为 `Key` 的物品打开。箱子的GUI如@fig:item_component_and_chest 所示，则：
+    #figure(
+      caption: "",
+      image("图片/箱子与物品堆叠组件例题.png", width: 15em)
+    ) <fig:item_component_and_chest>
+    + 用命令 `/setblock` 在$(0,56,0)$放置这个箱子； <enu:setblock_chest>
+    + 用命令 `/give` 将这个箱子给予附近的玩家；
+    + 用命令 `/summon` 使这个箱子变成下落的方块，生成位置为$(0,70,0)$。 <enu:summon_chest>
+  ],
+  [
+    本例题总结了物品格式和组件在三大格式中的应用：第@enu:setblock_chest 小题至第@enu:summon_chest 小题分别对应了其在方块实体格式、物品格式和实体格式中的应用。
+    + 在方块实体格式中的应用
+
+      箱子是为数不多的拥有方块实体的方块，查阅附录@sec:block_entity_data，在本题中需要用到的方块实体标签有：
+      #tree(
+        (0, [#icon("nbt-compound") 根标签]),
+        (1, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *CustomName*: 该方块实体的名称，即该容器在GUI上显示的名称。使用文本组件。]),
+        (1, [#icon("nbt-compound") *Lock*: 玩家可以用于打开该容器的物品，使用物品堆叠谓词来判断。]),
+        (2, [#icon("nbt-compound") *components*: 检查物品的堆叠组件，只有当物品堆叠组件完全相同时才匹配成功。]),
+        (3, [*\<组件名称>*: 一项组件及匹配的内容。]),
+        (2, [#icon("nbt-int")#icon("nbt-compound") *count*: 检查物品的堆叠数量，可以使用 #icon("nbt-int") 整数匹配一个精确值，也可以使用 #icon("nbt-compound") 复合标签匹配一个数量区间。]),
+        (3, [*若使用 #icon("nbt-compound") 复合标签形式，则包含以下字段：*], false),
+        (3, [#icon("nbt-int") *max*: 最大值。]),
+        (3, [#icon("nbt-int") *min*: 最小值。]),
+        (2, [#icon("nbt-string")#icon("nbt-compound") *items*: 匹配的物品，可以是 #icon("nbt-string") 命名空间ID或物品数据包标签。也可以使用 #icon("nbt-list") 列表形式以尝试匹配列表中任意物品。]),
+        (3, [若使用 #icon("nbt-list") 列表形式，则有以下字段：], false),
+        (3, [#icon("nbt-string") 一项物品，可以是命名空间ID或物品数据包标签。]),
+        (2, [#icon("nbt-compound") *predicates*: 检查该物品是否匹配指定的数据组件谓词。]),
+        (3, [*\<数据组件谓词ID>*: 一项数据组件谓词及匹配的内容。]),
+        (1, [#icon("nbt-list") *Items*: 箱子内的物品。列表中每个元素都是一个物品堆叠。]),
+        (2, [带槽位物品格式])
+      )
+      注意到@fig:item_component_and_chest 的箱子GUI有“补给”这个自定义名称，故标签 #icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") `CustomName` 为
+      #codebox("CustomName:\"补给\"")
+      标签 #icon("nbt-compound") `Lock` 不仅存在于箱子的方块实体，还存在于其他所有的容器，故熔炉、酿造台都是可以被上锁的。这里需要匹配物品的名称 `Key`，而题目并没有要求匹配物品的命名空间ID，因此只需要匹配组件 `minecraft:item_name`。在本题中该标签应写为
+      #codebox("Lock:{components:{\"minecraft:item_name\":\"Key\"}}")
+      本题中皮革外套位于槽位 `container.2`，铁镐位于 `container.14`，取 `2b`、`14b` 作为物品格式中标签 #icon("nbt-byte") `Slot` 的值。将@exa:can_break_and_can_place_on 和@exa:custom_leather_chestplate 中的组件转换为SNBT后再写入标签 #icon("nbt-compound") `components`。由此可以得到标签 #icon("nbt-list") `Items` 的全部内容：
+      #tree(
+        (0, [#icon("nbt-list") *Items*]),
+        (1, [#icon("nbt-compound")]),
+        (2, [#icon("nbt-compound") *components*]),
+        (3, [#icon("nbt-compound") *minecraft:can_break*]),
+        (4, [#icon("nbt-list") *blocks*]),
+        (5, [#icon("nbt-string") `minecraft:diamond_ore`]),
+        (5, [#icon("nbt-string") `minecraft:iron_ore`]),
+        (3, [#icon("nbt-compound") *minecraft:unbreakable*]),
+        (2, [#icon("nbt-int") *count*: `1`]),
+        (2, [#icon("nbt-string") *id*: `minecraft:iron_pickaxe`]),
+        (2, [#icon("nbt-byte") *Slot*: `14b`]),
+        (1, [#icon("nbt-compound")]),
+        (2, [#icon("nbt-compound") *components*]),
+        (3, [#icon("nbt-compound") *minecraft:enchantments*]),
+        (4, [#icon("nbt-int") *minecraft:blast_protection*: `4`]),
+        (4, [#icon("nbt-int") *minecraft:fire_protection*: `4`]),
+        (4, [#icon("nbt-int") *minecraft:projectile_protection*: `4`]),
+        (4, [#icon("nbt-int") *minecraft:protection*: `4`]),
+        (3, [#icon("nbt-int") *minecraft:dyed_color*: `0x409da0`]),
+        (3, [#icon("nbt-string") *minecraft:item_name*: `超级保护`]),
+        (3, [#icon("nbt-list") *minecraft:lore*]),
+        (4, [#icon("nbt-compound")]),
+        (5, [#icon("nbt-string") *color*: `gold`]),
+        (5, [#icon("nbt-bool") *italic*: `false`]),
+        (5, [#icon("nbt-string") *text*: `这个外套将互斥的保护魔咒组合到了一起`]),
+        (2, [#icon("nbt-int") *count*: `1`]),
+        (2, [#icon("nbt-string") *id*: `minecraft:leather_chestplate`]),
+        (2, [#icon("nbt-byte") *Slot*: `2b`])
+      )
+      综上所述，命令 `/setblock` 的完整写法为
+      #codebox("setblock 0 56 0 chest{
+  CustomName:\"补给\",
+  Item:[
+    {
+      components:{
+        \"minecraft:can_break\":{
+          blocks:[
+            \"minecraft:diamond_ore\",
+            \"minecraft:iron_ore\"
+          ]
+        },
+        \"minecraft:unbreakable\":{}
+      },
+      count:1,
+      id:\"minecraft:iron_pickaxe\",
+      Slot:14b,
+    },
+    {
+      components:{
+        \"minecraft:enchantments\":{
+          \"minecraft:blast_protection\":4,
+          \"minecraft:fire_protection\":4,
+          \"minecraft:projectile_protection\":4,
+          \"minecraft:protection\":4,
+        },
+        \"minecraft:dyed_color\":0x409da0,
+        \"minecraft:item_name\":\"超级保护\",
+        \"minecraft:lore\":[
+          {
+            color:\"gold\",
+            italic:false,
+            text:\"这个外套将互斥的保护魔咒组合到了一起\"
+          }
+        ]
+      },
+      count:1,
+      id:\"minecraft:leather_chestplate\",
+      Slot:2b,
+    }
+  ],
+  Lock:{
+    components:{
+      \"minecraft:item_name\":\"Key\"
+    }
+  }
+}")
+    + 在物品格式中的应用
+
+      命令 `/give` 使用的参数可直接指定组件。物品形式的箱子本质上是一个物品，但是它放置以后会成为一个箱子，且拥有方块实体。根据@tab:block_entity_component，可以使用方块实体组件 `minecraft:container`、`minecraft:custon_name` 和 `minecraft:lock`，得到命令 `/give`：
+      #codebox("give @p chest[
+  minecraft:container=[
+    {
+      components:{
+        \"minecraft:can_break\":{
+          blocks:[
+            \"minecraft:diamond_ore\",
+            \"minecraft:iron_ore\"
+          ]
+        },
+        \"minecraft:unbreakable\":{}
+      },
+      count:1,
+      id:\"minecraft:iron_pickaxe\",
+      Slot:14b,
+    },
+    {
+      components:{
+        \"minecraft:enchantments\":{
+          \"minecraft:blast_protection\":4,
+          \"minecraft:fire_protection\":4,
+          \"minecraft:projectile_protection\":4,
+          \"minecraft:protection\":4,
+        },
+        \"minecraft:dyed_color\":0x409da0,
+        \"minecraft:item_name\":\"超级保护\",
+        \"minecraft:lore\":[
+          {
+            color:\"gold\",
+            italic:false,
+            text:\"这个外套将互斥的保护魔咒组合到了一起\"
+          }
+        ]
+      },
+      count:1,
+      id:\"minecraft:leather_chestplate\",
+      Slot:2b,
+    }
+  ],
+  minecraft:custom_name=\"补给\",
+  minecraft:lock={
+    components:{
+      \"minecraft:item_name\":\"Key\"
+    }
+  }
+]")
+    + 在实体格式中的应用
+
+      本题所需的下落的方块的标签，除了节@sec:entity @exa:falling_block 的 #icon("nbt-compound") `BlockState` 外，还有 #icon("nbt-compound") `TileEntityData`，该标签用于存储下落的方块所代表方块的方块实体数据。直接使用第@enu:setblock_chest 小题的方块实体格式，不包含 #icon("nbt-string") `id` 字段，得到
+      #codebox("summon falling_block 0 70 0 {
+  BlockState:{
+    Name:\"minecraft:chest\"
+  },
+  TileEntityData:{
+    CustomName:\"补给\",
+    Item:[
+      {
+        components:{
+          \"minecraft:can_break\":{
+            blocks:[
+              \"minecraft:diamond_ore\",
+              \"minecraft:iron_ore\"
+            ]
+          },
+          \"minecraft:unbreakable\":{}
+        },
+        count:1,
+        id:\"minecraft:iron_pickaxe\",
+        Slot:14b,
+      },
+      {
+        components:{
+          \"minecraft:enchantments\":{
+            \"minecraft:blast_protection\":4,
+            \"minecraft:fire_protection\":4,
+            \"minecraft:projectile_protection\":4,
+            \"minecraft:protection\":4,
+          },
+          \"minecraft:dyed_color\":0x409da0,
+          \"minecraft:item_name\":\"超级保护\",
+          \"minecraft:lore\":[
+            {
+              color:\"gold\",
+              italic:false,
+              text:\"这个外套将互斥的保护魔咒组合到了一起\"
+            }
+          ]
+        },
+        count:1,
+        id:\"minecraft:leather_chestplate\",
+        Slot:2b,
+      }
+    ],
+    Lock:{
+      components:{
+        \"minecraft:item_name\":\"Key\"
+      }
+    }
+  }
+}")
+  ]
+)
 == 数据组件谓词
 
 == 粒子
@@ -10164,6 +10553,7 @@ item replace entity @s weapon.mainhand with diamond_spear"
 ]
 #pagebreak()
 == 重要方法
+#set par(justify: false)
 #columns(1)[
   #make-index(entry-casing: k => k, indexes: ("method",), use-page-counter: true)
 ]
