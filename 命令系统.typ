@@ -10050,6 +10050,94 @@ item replace entity @s weapon.mainhand with diamond_spear"
   caption: "使用命令生成的水粒子效果",
   image("图片/使用命令生成的水粒子效果.png", width: 20em)
 )
+命令 `/particle` 用于在指定位置显示指定粒子效果，它需要的权限等级为2，语法为：#index(index: "command", "particle")
+#codebox("particle <name> [<pos>]") <code:particle_name_pos>
+#h(-2em)或
+#codebox("particle <name> <pos> <delta> <speed> <count> [force|normal] [<viewers>]")
+#param-desc(
+  [`<name>`（粒子 `minecraft:particle`）], [需要生成的粒子，必须为粒子的命名空间ID，必要时需要带有粒子参数。],
+  [`<pos>`（三维坐标 `minecraft:vec3`）], [粒子显示的位置，在语法@code:particle_name_pos 中可选，若不定义参数，则使用命令执行位置。],
+  [`<delta>`（三维坐标 `minecraft:vec3`）], [#h(-2em)指定粒子显示的范围。粒子以显示位置为中心，按照各坐标增量参数的2至4倍向外扩展相应的格数，最终大致呈现一个较粒子原始尺寸4至8倍的长方体。#figure(caption: [粒子的显示范围，其中$"d"x'$约等于2至4倍的 `<dx>` 参数], image("图片/粒子的显示范围，其中dx'约等于2至4倍的dx参数.png", width: 10em))],
+  [`<speed>`（浮点数 `brigadier:float`）], [粒子的速度，必须大于或等于 `0`。],
+  [`<count>`（整型 `brigadier:integer`）], [粒子的数量，必须大于或等于 `0`。*若为 `0`，则颗粒会从 `<pos>` 往 `<delta>` 规定的坐标移动。*],
+  [`[force|normal]` ], [可选，粒子显示的模式，其中 `force` 使粒子可以被512格以内的玩家看到，`normal` 使粒子仅能被32格以内的玩家看到，默认为 `normal`。],
+  [`[<viewers>]`（实体 `minecraft:entity`）], [可选，指定粒子可以被哪些玩家看到，需要 玩家名、UUID或目标选择器，必须指定玩家。]
+)
+粒子分为简单粒子和带选项粒子两种，前者只需指定粒子的命名空间ID即可使用，后者需要附带一些参数以进行自定义。例如，
+#codebox("particle ash")
+#h(-2em)显示的是一个简单粒子，而
+#codebox("particle item{item:\"minecraft:apple\"}")
+#h(-2em)显示的就是一个带选项粒子，`{item:"minecraft:apple"}` 即是附带数据。
+
+原版所有可用的简单粒子如下表所示，各粒子的命名空间前缀 `minecraft` 已省略：
+#general-table(
+  caption: "简单粒子效果表",
+  colspan: 3,
+  columns: (auto, auto, auto),
+  header: ([ID], [外观], [描述]),
+  [`angry_villager`], [#image("图标/particle/angry_villager.png", width: 3em)], [村民的愤怒粒子。],
+  [`ash`], [#image("图标/particle/ash.png", width: 1em)], [灵魂沙峡谷的环境颗粒。],
+  [`bubble`], table.cell(rowspan: 2)[#image("图标/particle/bubble.png", width: 3em)], [灵魂沙产生的气泡柱，若粒子所在位置不是水，此粒子会立即消失。],
+  [`bubble_column_up`], [气泡，若粒子所在位置不是水，此粒子会立即消失。],
+  [`bubble_pop`], [#image("图标/particle/bubble_pop.png", width: 3em)], [气泡柱顶部。],
+  [`campfire_cosy_smoke`], table.cell(rowspan: 2)[#image("图标/particle/campfire_cosy_smoke.png", width: 3em)], [营火产生的烟雾，寿命为80到129 gt。],
+  [`campfire_signal_smoke`], [放置在干草捆上的营火产生的烟雾，寿命为280到329 gt。],
+  [`cherry_leaves`], [#image("图标/particle/cherry_leaves.png", width: 2em)], [落樱花瓣粒子。],
+  [`cloud`], table.cell(fill: black)[#image("图标/particle/generic_7.png", width: 3em)], [生物死亡时产生的烟雾。],
+  [`composter`], [#image("图标/particle/glint.png", width: 3em)], [堆肥桶堆肥时产生的粒子。],
+  [`copper_fire_flame`], [#image("图标/particle/copper_fire_flame.png", width: 3em)], [铜火把粒子。],
+  [`crimson_spore`], [#image("图标/particle/crimson_spore.png", width: 1em)], [绯红森林的环境颗粒。],
+  [`crit`], [#image("图标/particle/critical_hit.png", width: 3em)], [暴击、尖牙、蓄满的弓和填装完的弩发射的箭造成伤害时产生的粒子。],
+  [`current_down`], [#image("图标/particle/bubble.png", width: 3em)], [岩浆块产生的气泡柱。],
+  [`damage_indicator`], [#image("图标/particle/damage_indicator.png", width: 3em)], [近战攻击产生的粒子。],
+  [`dolphin`], [#image("图标/particle/dolphin.png", width: 1em)], [海豚游泳产生的轨迹。],
+  [`dripping_dripstone_lava`], [#image("图标/particle/dripping_lava.png", width: 1em)], [滴水石锥渗出未滴落的熔岩粒子。],
+  [`dripping_dripstone_water`], [#image("图标/particle/dripping_water.png", width: 1em)], [滴水石锥渗出未滴落的水粒子。],
+  [`dripping_honey`], [#image("图标/particle/dripping_honey.png", width: 1em)], [蜂巢或蜂箱渗出未滴落的蜂蜜粒子。],
+  [`dripping_lava`], [#image("图标/particle/dripping_lava.png", width: 1em)], [方块渗出的熔岩粒子。],
+  [`dripping_obsidian_tear`], [#image("图标/particle/dripping_obsidian_tear.png", width: 1em)], [哭泣的黑曜石产生的粒子。],
+  [`dripping_water`], [#image("图标/particle/dripping_water.png", width: 1em)], [方块渗出的水粒子。],
+  [`dust_plume`], [#image("图标/particle/dust_plume.png", width: 3em)], [向饰纹陶罐放入物品产生的粒子。],
+  [`egg_crack`], [#image("图标/particle/glint.png", width: 3em)], [嗅探兽蛋放置在苔藓快或孵化时产生的粒子。],
+  [`elder_guardian`], [], [远古守卫者施加挖掘疲劳效果时产生的鬼影，直接使用远古守卫者的模型，无对应粒子纹理。],
+  [`electric_spark`], [#image("图标/particle/electric_spark.png", width: 3em)], [闪电击中氧化变种的未涂蜡铜块时产生的粒子。],
+  [`enchant`], table.cell(fill: black)[#image("图标/particle/sga_a.png", width: 2em)], [附魔台周围的漂浮字符。],
+  [`enchanted_hit`], [#image("图标/particle/enchanted_hit.png", width: 3em)], [附有锋利、亡灵杀手和节肢杀手的武器攻击实体时产生的粒子。],
+  [`end_rod`], table.cell(fill: black)[#image("图标/particle/end_rod.png", width: 2em)], [末地烛的粒子、潜影贝导弹的轨迹。],
+  [`explosion`], table.cell(fill: black, rowspan: 2)[#image("图标/particle/explosion.png", width: 3em)], [爆炸产生的粒子。],
+  [`explosion_emitter`], [本身不渲染，但每游戏刻会在其周围生成6个 `explosion` 粒子。],
+  [`falling_dripstone_lava`], [#image("图标/particle/dripping_lava.png", width: 1em)], [滴水石锥滴落的熔岩。],
+  [`falling_dripstone_water`], [#image("图标/particle/dripping_water.png", width: 1em)], [滴水石锥滴落的水。],
+  [`falling_honey`], [#image("图标/particle/dripping_honey.png", width: 1em)], [滴落的蜂蜜。],
+  [`falling_lava`], [#image("图标/particle/dripping_lava.png", width: 1em)], [滴落的熔岩。],
+  [`falling_nectar`], [#image("图标/particle/falling_nectar.png", width: 1em)], [蜜蜂滴落的花粉。],
+  [`falling_obsidian_tear`], [#image("图标/particle/dripping_obsidian_tear.png", width: 1em)], [滴落的哭泣的黑曜石的粒子。],
+  [`falling_spore_blossom`], [#image("图标/particle/falling_spore_blossom.png", width: 1em)], [孢子花滴落的孢子粒子。],
+  [`falling_water`], [#image("图标/particle/dripping_water.png", width: 1em)], [滴落的水。],
+  [`firefly`], [#image("图标/particle/firefly.png", width: 1em)], [萤火虫粒子。],
+  [`firework`], table.cell(fill: black)[#image("图标/particle/firework.png", width: 3em)], [烟花火箭的尾迹。],
+  [`fishing`], [#image("图标/particle/fishing.png", width: 1em)], [钓鱼产生的水花。],
+  [`flame`], [#image("图标/particle/flame.png", width: 3em)], [火焰粒子。],
+  [`glow`], [#image("图标/particle/glow.png", width: 3em)], [发光鱿鱼产生的荧光粒子。],
+  [`glow_squid_ink`], [#image("图标/particle/glow_squid_ink.png", width: 3em)], [发光鱿鱼被攻击时产生的墨汁。],
+  [`gust`], table.cell(rowspan: 3)[#image("图标/particle/gust.png", width: 3em)], [狂风粒子。],
+  [`gust_emitter_large`], [寿命为7 gt，本身不渲染，但每游戏刻会在其周围生成3个 `gust` 粒子。],
+  [`gust_emitter_small`], [寿命为3 gt，本身不渲染，但每游戏刻会在其周围生成3个 `gust` 粒子。],
+  [`happy_villager`], [#image("图标/particle/glint.png", width: 3em)], [村民产生的粒子。],
+  [`heart`], [#image("图标/particle/heart.png", width: 3em)], [生物繁殖产生的爱心。],
+  [`infested`], [#image("图标/particle/infested.png", width: 3em)], [寄生效果产生的粒子。],
+  [`item_cobweb`], [#image("图标/particle/item_cobweb.png", width: 3em)], [盘丝效果产生的粒子。],
+  [`item_slime`], [#image("图标/particle/item_slime.png", width: 3em)], [渗浆效果产生的粒子。],
+  [`item_snowball`], [#image("图标/particle/item_snowball.png", width: 3em)], [雪球击中物体产生的粒子。],
+  [`landing_honey`], [#image("图标/particle/landing_honey.png", width: 3em)], [渗出的蜂蜜着地的粒子。],
+  [`landing_lava`], [#image("图标/particle/landing_lava.png", width: 3em)], [渗出的熔岩着地的粒子。],
+  [`landing_obsidian_tear`], [#image("图标/particle/landing_obsidian_tear.png", width: 3em)], [哭泣的黑曜石渗出的着地的粒子。],
+  [`large_smoke`], [#image("图标/particle/large_smoke.png", width: 3em)], [火焰燃烧产生的烟雾。],
+  [`lava`], [#image("图标/particle/lava.png", width: 2em)], [熔岩粒子。],
+  [`mycelium`], [#image("图标/particle/mycelium.png", width: 1em)], [菌丝产生的孢子粒子。],
+  [`nautilus`], [#image("图标/particle/nautilus.png", width: 3em)], [激活的潮涌核心产生的粒子。],
+  [`note`], [#image("图标/particle/note.png", width: 3em)], [音符。]
+)
 == 教程：NBT Studio的使用 \*
 = 记分板
 == 队伍与标签<sec:team_and_tag>
