@@ -45,8 +45,8 @@
 
 #import "模板.typ": *
 #show: template-style
-#theme.update(dark_green)
-#let theme_basic = dark_green
+#theme.update(dark_red)
+#let theme_basic = dark_red
 
 #heading(level: 1, numbering: none, outlined: false, [第一版序言])
 Minecraft拥有多种多样的玩法，生存、PVP、PVE、模组、建筑、红石电路这些为众多玩家所熟知的玩法自成体系，玩家可以自由选择其中的某一方面深入研究。在这些玩法中，比较默默无闻的一种玩法可能便是广义上的命令，即包含了MC-CMD（命令）、资源包和数据包的系统。
@@ -5364,6 +5364,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 #tree(
   (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
   (1, [#icon("nbt-string")#icon("json-string") *type*: `object`]),
+  (1, [#icon("nbt-string")#icon("json-string")#icon("nbt-list")#icon("json-array")#icon("nbt-compound")#icon("json-object") *fallback*: 若该精灵图渲染失败，则使用此文本组件作为替代内容。]),
   (1, [#icon("nbt-string")#icon("json-string") *object*: `atlas`]),
   (1, [#icon("nbt-string")#icon("json-string") *atlas*: 使用的纹理图集，默认为 `blocks`。]),
   (1, [#icon("nbt-string")#icon("json-string") *#underline[sprite]*: 精灵图在纹理图集中的命名空间ID。])
@@ -5424,6 +5425,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 #tree(
   (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
   (1, [#icon("nbt-string")#icon("json-string") *type*: `object`]),
+  (1, [#icon("nbt-string")#icon("json-string")#icon("nbt-list")#icon("json-array")#icon("nbt-compound")#icon("json-object") *fallback*: 若该精灵图渲染失败，则使用此文本组件作为替代内容。]),
   (1, [#icon("nbt-string")#icon("json-string") *object*: `player`]),
   (1, [#icon("nbt-bool")#icon("json-bool") *hat*: 是否渲染皮肤的帽子，默认为 `true`。]),
   (1, [#icon("nbt-string")#icon("json-string")#icon("nbt-compound")#icon("json-object") *#underline[player]*: 要显示的玩家皮肤。有 #icon("nbt-string")#icon("json-string") 字符串和 #icon("nbt-compound") 复合标签/ #icon("json-object") 对象两种格式。]),
@@ -8939,6 +8941,24 @@ item replace entity @s weapon.mainhand with diamond_spear"
     )
   ]
 )
+判断物品可放置于什么槽位时，有时需要允许物品能够放置于多个槽位内，因此需要使用*装备槽位组*，这是一个或多个装备槽位的集合。游戏中可用的装备槽位组如下表所示：
+#general-table(
+  caption: "装备槽位组",
+  colspan: 2,
+  columns: (auto, auto),
+  header: ([装备槽位组], [包含的装备槽位]),
+  [`any`], [所有装备槽位],
+  [`hand`], [`mainhand`、`offhand`],
+  [`armor`], [`body`、`chest`、`feet`、`head`、`legs`],
+  [`mainhand`], [`mainhand`],
+  [`offhand`], [`offhand`],
+  [`head`], [`head`],
+  [`chest`], [`chest`],
+  [`legs`], [`legs`],
+  [`feet`], [`feet`],
+  [`body`], [`body`],
+  [`saddle`], [`saddle`],
+) <tab:equipment_slot_group>
 === 物品谓词<subsec:item_predicate>
 物品谓词是一种用于匹配物品的命令参数，其类型为 `minecraft:item_predicate`，它在 `/clear`、`/execute if items` 中都有使用。其格式为
 #codebox("<type>[<test>,<test>,…]") <code:item_predicate_and>
@@ -8977,7 +8997,7 @@ item replace entity @s weapon.mainhand with diamond_spear"
   #codebox("\"minecraft:custom_data\": {field_1: true, field_2: true}") <code:item_predicate_custom_data_example>
   那么这种测试项能匹配它的必须是：`custom_data={field_1:true,field_2:true}` #text(green)[☑]\ 以下测试项均因缺失部分子标签而无法匹配：\ `custom_data={field_1:true}` #text(red)[☒]\ `custom_data={field_2:true}` #text(red)[☒]\ \
 + `<component_id>`：匹配存在该组件的物品，无论组件的值为何。\ \
-+ `<predicate_id>~<value>`：匹配数据组件谓词，其中 `<predicate_id>` 是数据组件谓词的命名空间ID，`<value>` 是SNBT形式的数据组件谓词。\ \
++ `<predicate_id>~<value>`：匹配数据组件谓词，其中 `<predicate_id>` 是数据组件谓词的命名空间ID，`<value>` 是SNBT形式的数据组件谓词。具体写法见节@sec:data_component_prodicate 的例题。\ \
 + `minecraft:count=<positive_int>`：精确匹配物品的堆叠数量，其中 `count` 的命名空间前缀可省略，`<positive_int>` 必须为正整数。\ \
 + `minecraft:count`：匹配存在堆叠属性的物品，总是匹配成功。\ \
 + `minecraft:count~{min:<value>,max:<value>}`：匹配指定范围堆叠数量的物品，其中 `min` 和 `max` 均可不指定。
@@ -9050,7 +9070,7 @@ item replace entity @s weapon.mainhand with diamond_spear"
     能被食用的物品拥有组件 `food`，因此在物品谓词中只需要匹配存在组件 `food` 的物品即可，命令为
     #codebox("clear @a *[food]")
   ]
-)
+) <exa:clear_food>
 参数类型 `minecraft:item_stack` 另有一种写法，即
 #codebox("<命名空间>:<ID>[!<组件名称>,…]")
 #h(-2em)这样可以用于指定不含有某个组件的物品，因此可用于移除的物品默认组件。例如，参数
@@ -9382,6 +9402,23 @@ item replace entity @s weapon.mainhand with diamond_spear"
 )
 战利品表可用于统一存储和管理自定义的物品，如此就能通过 `/loot` 或其他战利品表很方便地引用这个自定义物品。
 #example(
+  [给予玩家一把钻石剑，手持能够提升20点的攻击伤害。],
+  [
+    显然需要使用 `attribute_modifiers` 这个组件，查阅附录@sec:data_components_type 及节@sec:attribute，攻击伤害的属性ID为 `attack_damage`，属性修饰符生效的装备槽位组应为主手 `mainhand`，运算模式为属性增量。完整的命令为
+    #codebox("give @s diamond_sword[
+  attribute_modifiers=[
+    {
+      amount:20.0d,
+      id:\"add_attack_damage\",
+      operation:\"add_value\",
+      slot:\"mainhand\",
+      type:\"minecraft:attack_damage\"
+    }
+  ]
+]")
+  ]
+)
+#example(
   [
     将附近玩家的胸甲栏中放入一个附魔的青色皮革外套，将光标移至这个皮革外套上时呈现如下所示的文本。\ 
     #text_component(text(gray)[#text(aqua)[超级保护]\ 保护 IV\ 爆炸保护 IV\ 火焰保护 IV\ 弹射物保护 IV\ 颜色：\#409DA0\ #text(gold)[这个外套将互斥的保护魔咒组合到了一起]], background: black, shadow-color: black.transparentize(100%))
@@ -9458,7 +9495,7 @@ item replace entity @s weapon.mainhand with diamond_spear"
       #tree(
         (0, [#icon("nbt-compound") 根标签]),
         (1, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *CustomName*: 该方块实体的名称，即该容器在GUI上显示的名称。使用文本组件。]),
-        (1, [#icon("nbt-compound") *Lock*: 玩家可以用于打开该容器的物品，使用物品堆叠谓词来判断。]),
+        (1, [#icon("nbt-compound") *Lock*: 玩家可以用于打开该容器的物品，使用*物品堆叠谓词*来判断。]),
         (2, [#icon("nbt-compound") *components*: 检查物品的堆叠组件，只有当物品堆叠组件完全相同时才匹配成功。]),
         (3, [*\<组件名称>*: 一项组件及匹配的内容。]),
         (2, [#icon("nbt-int")#icon("nbt-compound") *count*: 检查物品的堆叠数量，可以使用 #icon("nbt-int") 整数匹配一个精确值，也可以使用 #icon("nbt-compound") 复合标签匹配一个数量区间。]),
@@ -9466,7 +9503,7 @@ item replace entity @s weapon.mainhand with diamond_spear"
         (3, [#icon("nbt-int") *max*: 最大值。]),
         (3, [#icon("nbt-int") *min*: 最小值。]),
         (2, [#icon("nbt-string")#icon("nbt-compound") *items*: 匹配的物品，可以是 #icon("nbt-string") 命名空间ID或物品数据包标签。也可以使用 #icon("nbt-list") 列表形式以尝试匹配列表中任意物品。]),
-        (3, [若使用 #icon("nbt-list") 列表形式，则有以下字段：], false),
+        (3, [*若使用 #icon("nbt-list") 列表形式，则有以下字段：*], false),
         (3, [#icon("nbt-string") 一项物品，可以是命名空间ID或物品数据包标签。]),
         (2, [#icon("nbt-compound") *predicates*: 检查该物品是否匹配指定的数据组件谓词。]),
         (3, [*\<数据组件谓词ID>*: 一项数据组件谓词及匹配的内容。]),
@@ -9660,9 +9697,359 @@ item replace entity @s weapon.mainhand with diamond_spear"
 }")
   ]
 )
-== 数据组件谓词
+== 数据组件谓词<sec:data_component_prodicate>
+在部分情况下需要判断数据组件是否满足某种条件，这时就需要使用#proper-noun(display: "数据组件谓词（Data Component Predicate）", "shu4 ju4 zu3 jian4 wei4 ci2")。所谓谓词，就是检查目标是否符合其所描述特征的过程，若否则检查不通过，如此可以筛选掉一批不符合要求的目标。数据组件谓词可在命令参数 `item_predicate`、实体谓词和物品堆叠谓词中使用，进而在 `/clear`、`/execute if items`、进度、战利品表谓词和物品模型映射等地方发挥作用。
 
+数据组件谓词分为存在性谓词和条件判断型谓词两类。
+=== 存在性谓词
+存在性谓词可用于判断目标是否存在相应的数据组件，格式为
+#tree(
+  (0, [#icon("nbt-compound") *\<数据组件名称>*: 空标签，用于检测该数据组件是否存在。])
+)
+例如，要检测一个物品是否有 `food` 组件，谓词可以写为 `{"minecraft:food":{}}`，将它用在物品堆叠谓词中：`{predicates:{"minecraft:food":{}}}`；或者将它写在命令参数 `item_predicate` 中，理论上应写为 `*[food~{}]`，但是 `item_predicate` 参数本身就有直接匹配组件是否存在的测试项类型，所以只需写成 `*[food]`，见@exa:clear_food。
+
+所有数据组件谓词的键名都和对应数据组件的ID一致，游戏在判定时会遵循以下逻辑：
++ 如果ID对应一个已注册的条件判断型谓词，游戏会尝试解析其内部条件，且这个谓词必须使用该条件判断型谓词接受的数据类型。这个规则造成了部分数据组件谓词不能用于检测存在性。例如，`potion_contents` 是一个已注册的条件判断型谓词，使用的数据类型为 #icon("nbt-string") 字符串或 #icon("nbt-list") 列表，因此不接受空复合标签，从而不能用 `{potion_contents:{}}` 判断其存在性。
++ 只有当ID不属于已注册的谓词时，才会将其视为存在性谓词。
+=== 条件判断型谓词
+条件判断型谓词用于检查相应数据组件是否符合特定的要求。游戏中存在以下已注册的条件判断型谓词：
+==== #icon("nbt-compound") `attribute_modifiers`
+此谓词用于检查数据组件 `attribute_modifiers` 所定义的属性修饰符。
+#tree(
+  (0, [#icon("nbt-compound") *minecraft:attribute_modifiers*]),
+  (1, [#icon("nbt-compound") *modifiers*: 检查属性修饰符。]),
+  (2, [#icon("nbt-list") *contains*: 要求列表内所有的项每个都必须至少有一个符合的属性修饰符，若否则谓词检查不通过。实际的属性修饰符不必匹配列表内所有的项。]),
+  (3, [#icon("nbt-compound") 一个属性修饰符集合内容谓词。]),
+  (4, [#icon("nbt-double")#icon("nbt-compound") *amount*: 若使用 #icon("nbt-double") 双精度浮点数形式，则匹配一个精确的修饰值。若使用 #icon("nbt-compound") 复合标签形式，则修饰值位于此区间内就能匹配。]),
+  (5, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (5, [#icon("nbt-double") *max*: 允许匹配的最大值。]),
+  (5, [#icon("nbt-double") *mix*: 允许匹配的最小值。]),
+  (4, [#icon("nbt-string")#icon("nbt-list") *attribute*: 匹配的属性，可以是一个属性ID、在数据包内定义的属性标签，也可以是多个属性ID组成的列表。]),
+  (4, [#icon("nbt-string") *id*: 匹配的属性修饰符，需要是属性修饰符的命名空间ID。]),
+  (4, [#icon("nbt-string") *operation*: 匹配的属性修饰符运算模式，有效值 `add_value`（属性增量）、`add_multiplied_base`（倍率增量）和 `add_multiplied_total`（最终倍乘）。]),
+  (4, [#icon("nbt-string") *slot*: 匹配属性修饰符生效的装备槽位组，有效值见@tab:equipment_slot_group。]),
+  (1, [#icon("nbt-int")#icon("nbt-compound") *size*: 检查属性修饰符的数量。若使用 #icon("nbt-int") 整型，则匹配一个精确的数量。若使用 #icon("nbt-compound") 复合标签形式，则数量位于此区间内就能匹配。]),
+  (2, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (2, [#icon("nbt-int") *max*: 允许匹配的最大值。]),
+  (2, [#icon("nbt-int") *mix*: 允许匹配的最小值。]),
+  (1, [#icon("nbt-list") *count*: 统计符合要求的属性修饰符并检查其数量。]),
+  (2, [#icon("nbt-compound") 一个统计项。]),
+  (3, [#icon("nbt-int")#icon("nbt-compound") *count*: 检查属性修饰符的数量。若使用 #icon("nbt-int") 整型，则匹配一个精确的数量。若使用 #icon("nbt-compound") 复合标签形式，则数量位于此区间内就能匹配。]),
+  (4, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (4, [#icon("nbt-int") *max*: 允许匹配的最大值。]),
+  (4, [#icon("nbt-int") *mix*: 允许匹配的最小值。]),
+  (3, [#icon("nbt-compound") *test*: 属性修饰符集合内容谓词，即需要检查数量的属性修饰符。]),
+  (4, [#icon("nbt-double")#icon("nbt-compound") *amount*: 若使用 #icon("nbt-double") 双精度浮点数形式，则匹配一个精确的修饰值。若使用 #icon("nbt-compound") 复合标签形式，则修饰值位于此区间内就能匹配。]),
+  (5, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (5, [#icon("nbt-double") *max*: 允许匹配的最大值。]),
+  (5, [#icon("nbt-double") *mix*: 允许匹配的最小值。]),
+  (4, [#icon("nbt-string")#icon("nbt-list") *attribute*: 匹配的属性，可以是一个属性ID、在数据包内定义的属性标签，也可以是多个属性ID组成的列表。]),
+  (4, [#icon("nbt-string") *id*: 匹配的属性修饰符，需要是属性修饰符的命名空间ID。]),
+  (4, [#icon("nbt-string") *operation*: 匹配的属性修饰符运算模式，有效值 `add_value`（属性增量）、`add_multiplied_base`（倍率增量）和 `add_multiplied_total`（最终倍乘）。]),
+  (4, [#icon("nbt-string") *slot*: 匹配属性修饰符生效的装备槽位组，有效值见@tab:equipment_slot_group。])
+)
+#example(
+  [清除执行者（玩家）身上所有修饰攻击伤害的物品。],
+  [
+    `clear` 命令使用 `item_predicate` 参数，其中物品组件谓词应写为
+    #codebox("{modifiers:{contains:[{id:\"minecraft:attack_damage\"}]}}")
+    将它写入完整的命令：
+    #codebox("clear @s *[attribute_modifiers~{modifiers:{contains:[{id:\"minecraft:attack_damage\"}]}}]")
+  ]
+)
+==== #icon("nbt-compound") `bundle_contents`
+此谓词用于检查数据组件 `bundle_contents` 中的物品堆叠。
+#tree(
+  (0, [#icon("nbt-compound") *minecraft:bundle_contents*]),
+  (1, [#icon("nbt-compound") *items*: 检查物品堆叠。]),
+  (2, [#icon("nbt-list") *contains*: 要求列表内所有的项每个都必须至少有一个符合的物品堆叠，若否则谓词检查不通过。实际的物品堆叠不必匹配列表内所有的项。]),
+  (3, [#icon("nbt-compound") 一个物品堆叠谓词。]),
+  (4, [#icon("nbt-compound") *components*: 检查物品的堆叠组件，只有当物品堆叠组件完全相同时才匹配成功。]),
+  (5, [*\<组件名称>*: 一项组件及匹配的内容。]),
+  (4, [#icon("nbt-int")#icon("nbt-compound") *count*: 检查物品的堆叠数量，可以使用 #icon("nbt-int") 整数匹配一个精确值，也可以使用 #icon("nbt-compound") 复合标签匹配一个数量区间。]),
+  (5, [*若使用 #icon("nbt-compound") 复合标签形式，则包含以下字段：*], false),
+  (5, [#icon("nbt-int") *max*: 最大值。]),
+  (5, [#icon("nbt-int") *min*: 最小值。]),
+  (4, [#icon("nbt-string")#icon("nbt-compound") *items*: 匹配的物品，可以是 #icon("nbt-string") 命名空间ID或物品数据包标签。也可以使用 #icon("nbt-list") 列表形式以尝试匹配列表中任意物品。]),
+  (5, [*若使用 #icon("nbt-list") 列表形式，则有以下字段：*], false),
+  (5, [#icon("nbt-string") 一项物品，可以是命名空间ID或物品数据包标签。]),
+  (4, [#icon("nbt-compound") *predicates*: 检查该物品是否匹配指定的数据组件谓词。]),
+  (5, [*\<数据组件谓词ID>*: 一项数据组件谓词及匹配的内容。]),
+  (1, [#icon("nbt-int")#icon("nbt-compound") *size*: 检查物品堆叠的数量。若使用 #icon("nbt-int") 整型，则匹配一个精确的数量。若使用 #icon("nbt-compound") 复合标签形式，则数量位于此区间内就能匹配。]),
+  (2, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (2, [#icon("nbt-int") *max*: 允许匹配的最大值。]),
+  (2, [#icon("nbt-int") *mix*: 允许匹配的最小值。]),
+  (1, [#icon("nbt-list") *count*: 统计符合要求的物品堆叠并检查其数量。]),
+  (2, [#icon("nbt-compound") 一个统计项。]),
+  (3, [#icon("nbt-int")#icon("nbt-compound") *count*: 检查物品堆叠的数量。若使用 #icon("nbt-int") 整型，则匹配一个精确的数量。若使用 #icon("nbt-compound") 复合标签形式，则数量位于此区间内就能匹配。]),
+  (4, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (4, [#icon("nbt-int") *max*: 允许匹配的最大值。]),
+  (4, [#icon("nbt-int") *mix*: 允许匹配的最小值。]),
+  (3, [#icon("nbt-compound") *test*: 物品堆叠谓词，即需要检查数量的物品堆叠。]),
+  (4, [#icon("nbt-compound") *components*: 检查物品的堆叠组件，只有当物品堆叠组件完全相同时才匹配成功。]),
+  (5, [*\<组件名称>*: 一项组件及匹配的内容。]),
+  (4, [#icon("nbt-int")#icon("nbt-compound") *count*: 检查物品的堆叠数量，可以使用 #icon("nbt-int") 整数匹配一个精确值，也可以使用 #icon("nbt-compound") 复合标签匹配一个数量区间。]),
+  (5, [*若使用 #icon("nbt-compound") 复合标签形式，则包含以下字段：*], false),
+  (5, [#icon("nbt-int") *max*: 最大值。]),
+  (5, [#icon("nbt-int") *min*: 最小值。]),
+  (4, [#icon("nbt-string")#icon("nbt-compound") *items*: 匹配的物品，可以是 #icon("nbt-string") 命名空间ID或物品数据包标签。也可以使用 #icon("nbt-list") 列表形式以尝试匹配列表中任意物品。]),
+  (5, [*若使用 #icon("nbt-list") 列表形式，则有以下字段：*], false),
+  (5, [#icon("nbt-string") 一项物品，可以是命名空间ID或物品数据包标签。]),
+  (4, [#icon("nbt-compound") *predicates*: 检查该物品是否匹配指定的数据组件谓词。]),
+  (5, [*\<数据组件谓词ID>*: 一项数据组件谓词及匹配的内容。])
+)
+==== #icon("nbt-compound") `container`
+此谓词用于检查数据组件 `container` 中的物品堆叠。
+#tree(
+  (0, [#icon("nbt-compound") *minecraft:container*]),
+  (1, [#icon("nbt-compound") *items*: 检查物品堆叠。]),
+  (2, [#icon("nbt-list") *contains*: 要求列表内所有的项每个都必须至少有一个符合的物品堆叠，若否则谓词检查不通过。实际的物品堆叠不必匹配列表内所有的项。]),
+  (3, [#icon("nbt-compound") 一个物品堆叠谓词。]),
+  (4, [#icon("nbt-compound") *components*: 检查物品的堆叠组件，只有当物品堆叠组件完全相同时才匹配成功。]),
+  (5, [*\<组件名称>*: 一项组件及匹配的内容。]),
+  (4, [#icon("nbt-int")#icon("nbt-compound") *count*: 检查物品的堆叠数量，可以使用 #icon("nbt-int") 整数匹配一个精确值，也可以使用 #icon("nbt-compound") 复合标签匹配一个数量区间。]),
+  (5, [*若使用 #icon("nbt-compound") 复合标签形式，则包含以下字段：*], false),
+  (5, [#icon("nbt-int") *max*: 最大值。]),
+  (5, [#icon("nbt-int") *min*: 最小值。]),
+  (4, [#icon("nbt-string")#icon("nbt-compound") *items*: 匹配的物品，可以是 #icon("nbt-string") 命名空间ID或物品数据包标签。也可以使用 #icon("nbt-list") 列表形式以尝试匹配列表中任意物品。]),
+  (5, [*若使用 #icon("nbt-list") 列表形式，则有以下字段：*], false),
+  (5, [#icon("nbt-string") 一项物品，可以是命名空间ID或物品数据包标签。]),
+  (4, [#icon("nbt-compound") *predicates*: 检查该物品是否匹配指定的数据组件谓词。]),
+  (5, [*\<数据组件谓词ID>*: 一项数据组件谓词及匹配的内容。]),
+  (1, [#icon("nbt-int")#icon("nbt-compound") *size*: 检查物品堆叠的数量。若使用 #icon("nbt-int") 整型，则匹配一个精确的数量。若使用 #icon("nbt-compound") 复合标签形式，则数量位于此区间内就能匹配。]),
+  (2, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (2, [#icon("nbt-int") *max*: 允许匹配的最大值。]),
+  (2, [#icon("nbt-int") *mix*: 允许匹配的最小值。]),
+  (1, [#icon("nbt-list") *count*: 统计符合要求的物品堆叠并检查其数量。]),
+  (2, [#icon("nbt-compound") 一个统计项。]),
+  (3, [#icon("nbt-int")#icon("nbt-compound") *count*: 检查物品堆叠的数量。若使用 #icon("nbt-int") 整型，则匹配一个精确的数量。若使用 #icon("nbt-compound") 复合标签形式，则数量位于此区间内就能匹配。]),
+  (4, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (4, [#icon("nbt-int") *max*: 允许匹配的最大值。]),
+  (4, [#icon("nbt-int") *mix*: 允许匹配的最小值。]),
+  (3, [#icon("nbt-compound") *test*: 物品堆叠谓词，即需要检查数量的物品堆叠。]),
+  (4, [#icon("nbt-compound") *components*: 检查物品的堆叠组件，只有当物品堆叠组件完全相同时才匹配成功。]),
+  (5, [*\<组件名称>*: 一项组件及匹配的内容。]),
+  (4, [#icon("nbt-int")#icon("nbt-compound") *count*: 检查物品的堆叠数量，可以使用 #icon("nbt-int") 整数匹配一个精确值，也可以使用 #icon("nbt-compound") 复合标签匹配一个数量区间。]),
+  (5, [*若使用 #icon("nbt-compound") 复合标签形式，则包含以下字段：*], false),
+  (5, [#icon("nbt-int") *max*: 最大值。]),
+  (5, [#icon("nbt-int") *min*: 最小值。]),
+  (4, [#icon("nbt-string")#icon("nbt-compound") *items*: 匹配的物品，可以是 #icon("nbt-string") 命名空间ID或物品数据包标签。也可以使用 #icon("nbt-list") 列表形式以尝试匹配列表中任意物品。]),
+  (5, [*若使用 #icon("nbt-list") 列表形式，则有以下字段：*], false),
+  (5, [#icon("nbt-string") 一项物品，可以是命名空间ID或物品数据包标签。]),
+  (4, [#icon("nbt-compound") *predicates*: 检查该物品是否匹配指定的数据组件谓词。]),
+  (5, [*\<数据组件谓词ID>*: 一项数据组件谓词及匹配的内容。])
+)
+==== #icon("nbt-string")#icon("nbt-compound") `custom_data`
+此谓词用于检查数据组件 `custom_data` 中的自定义数据。
+#tree(
+  (0, [#icon("nbt-string")#icon("nbt-compound") `minecraft:custom_data`: 需要是一个测试NBT标签，写法见节@sec:testing_nbt。可以是 #icon("nbt-string") 字符串形式，此时整个值被视为一个SNBT，也可以是 #icon("nbt-compound") 复合标签。])
+)
+在命令参数 `item_predicate` 中，`custom_data=` 和 `custom_data~` 这两种测试项有本质区别，前者用于精确匹配谓词，这意味着测试的内容和实际的内容必须完全一致才能匹配；后者是数据组件谓词，由于测试内容需要是测试NBT标签，根据节@sec:testing_nbt 所述测试NBT标签的匹配方式，可以做到部分匹配。
+
+例如，一个物品拥有如下的自定义数据组件：
+#codebox("\"custom_data\":{test:1,test1:2}")
+#h(-2em)则 `*[custom_data={test:1}]` 这个物品谓词无法匹配，组件 `custom_data` 的值是 `{test:1,test1:2}` 而不是谓词中所述的 `{test:1}`。因此能匹配的物品谓词是 `*[custom_data={test:1,test1:2}]`。但是如果写成数据组件谓词，那么 `*[custom_data~{test:1}]` 是可以匹配的。
+#example(
+  [
+    一个作者在他的冒险地图中设计了一个行李箱，并为他地图中的所有物品都设置了如下的自定义数据：
+    #tree(
+      (0, [#icon("nbt-compound") *minecraft:custom_data*]),
+      (1, [#icon("nbt-bool") *can_be_luggaged*: 该物品是否可放入行李箱。]),
+      (1, [#icon("nbt-int") *volume*: 该物品在行李箱中占用的体积，若 #icon("nbt-bool") `can_be_luggaged` 为 `false`，则此项不存在。])
+    )
+    部分物品的设计如下表所示：
+    #general-table(
+      caption: "",
+      colspan: 4,
+      columns: (auto, auto, auto, auto),
+      header: ([物品], [502胶水], [电池], [垃圾桶]),
+      [`can_be_luggaged`], [`true`], [`true`], [`false`],
+      [`volume`], [`2`], [`1`], [-]
+    )
+    + 尝试分别为表中的3样自定义物品编写 `custom_data` 组件。
+    + 在玩家手持物品将其放入行李箱时，使用的命令为：
+      #codebox("execute if items entity @s mainhand <item_predicate>")
+      现需要判断以下情况，分别根据这些情况补全命令中的 `<item_predicate>`：
+      + 判断物品占用的体积是否为1；
+      + 判断物品是否不能放入行李箱。
+  ],
+  [
+    + 以下使用SNBT格式的组件。
+
+      502胶水：`"minecraft:custom_data":{can_be_luggaged:true,volume:2}`
+
+      电池：`"minecraft:custom_data":{can_be_luggaged:true,volume:1}`
+      
+      垃圾桶：`"minecraft:custom_data":{can_be_luggaged:false}`
+    + `<item_predicate>` 即物品谓词参数，此处只需要部分匹配，因此在物品谓词中使用 `custom_data` 这个数据组件谓词。
+      + `*[custom_data~{volume:1}]`
+      + `*[custom_data~{can_be_luggaged:false}]`
+  ]
+)
+==== #icon("nbt-compound") `damage`
+此谓词用于检查 `damage` 和 `max_damage` 这两个组件。
+#tree(
+  (0, [#icon("nbt-compound") *minecraft:damage*]),
+  (1, [#icon("nbt-int")#icon("nbt-compound") *damage*: 检查物品的损坏值，可以使用 #icon("nbt-int") 整数匹配一个精确值，也可以使用 #icon("nbt-compound") 复合标签匹配一个区间。]),
+  (2, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (2, [#icon("nbt-int") *max*: 允许匹配的最大值。]),
+  (2, [#icon("nbt-int") *mix*: 允许匹配的最小值。]),
+  (1, [#icon("nbt-int")#icon("nbt-compound") *durability*: 检查物品的剩余耐久度，可以使用 #icon("nbt-int") 整数匹配一个精确值，也可以使用 #icon("nbt-compound") 复合标签匹配一个区间。]),
+  (2, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (2, [#icon("nbt-int") *max*: 允许匹配的最大值。]),
+  (2, [#icon("nbt-int") *mix*: 允许匹配的最小值。])
+)
+==== #icon("nbt-list") `enchantments`
+此谓词用于检查数据组件 `enchantments` 中的魔咒。
+#tree(
+  (0, [#icon("nbt-list") *minecraft:enchantments*: 此列表中的每一项都必须满足才能匹配。]),
+  (1, [#icon("nbt-compound") 一项魔咒。]),
+  (2, [#icon("nbt-string")#icon("nbt-list") *enchantments*: 匹配的魔咒，可以是一个魔咒ID、在数据包内定义的魔咒标签，也可以是多个魔咒ID组成的列表。]),
+  (2, [#icon("nbt-int")#icon("nbt-compound") *levels*: 检查此魔咒的等级，可以使用 #icon("nbt-int") 整数匹配一个精确值，也可以使用 #icon("nbt-compound") 复合标签匹配一个等级区间。若 #icon("nbt-string")#icon("nbt-list") `enchantments` 不存在，则只要有任意魔咒的等级在此字段指定范围内，就匹配成功。]),
+  (3, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (3, [#icon("nbt-int") *max*: 允许匹配的最大值。]),
+  (3, [#icon("nbt-int") *mix*: 允许匹配的最小值。])
+)
+==== #icon("nbt-compound") `firework_explosion`
+此谓词用于检查数据组件 `firework_explosion` 的烟火数据。
+#tree(
+  (0, [#icon("nbt-compound") *minecraft:firework_explosion*]),
+  (1, [#icon("nbt-compound") *modifiers*: 检查烟火数据。]),
+  (2, [#icon("nbt-list") *contains*: 要求列表内所有的项每个都必须至少有一个符合的烟火爆裂效果，若否则谓词检查不通过。实际的烟火爆裂效果不必匹配列表内所有的项。]),
+  (3, [#icon("nbt-compound") 一个烟火谓词。]),
+  (4, [#icon("nbt-bool") *has_trail*: 此烟火是否有尾曳。]),
+  (4, [#icon("nbt-bool") *has_twinkle*: 此烟火是否有闪烁效果。]),
+  (4, [#icon("nbt-string") *shape*: 匹配烟火的形状，有效值 `small_ball`、`large_ball`、`star`、`creeper` 和 `burst`。]),
+  (1, [#icon("nbt-int")#icon("nbt-compound") *size*: 检查烟火爆裂效果的数量。若使用 #icon("nbt-int") 整型，则匹配一个精确的数量。若使用 #icon("nbt-compound") 复合标签形式，则数量位于此区间内就能匹配。]),
+  (2, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (2, [#icon("nbt-int") *max*: 允许匹配的最大值。]),
+  (2, [#icon("nbt-int") *mix*: 允许匹配的最小值。]),
+  (1, [#icon("nbt-list") *count*: 统计符合要求的烟火爆裂效果并检查其数量。]),
+  (2, [#icon("nbt-compound") 一个统计项。]),
+  (3, [#icon("nbt-int")#icon("nbt-compound") *count*: 检查烟火爆裂效果的数量。若使用 #icon("nbt-int") 整型，则匹配一个精确的数量。若使用 #icon("nbt-compound") 复合标签形式，则数量位于此区间内就能匹配。]),
+  (4, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (4, [#icon("nbt-int") *max*: 允许匹配的最大值。]),
+  (4, [#icon("nbt-int") *mix*: 允许匹配的最小值。]),
+  (3, [#icon("nbt-compound") *test*: 烟火谓词，即需要检查数量的烟火爆裂效果。]),
+  (4, [#icon("nbt-bool") *has_trail*: 此烟火是否有尾曳。]),
+  (4, [#icon("nbt-bool") *has_twinkle*: 此烟火是否有闪烁效果。]),
+  (4, [#icon("nbt-string") *shape*: 匹配烟火的形状，有效值 `small_ball`、`large_ball`、`star`、`creeper` 和 `burst`。])
+)
+==== #icon("nbt-compound") `firework`
+此谓词用于检查数据组件 `firework` 的烟花火箭数据。
+#tree(
+  (0, [#icon("nbt-compound") *minecraft:firework*]),
+  (1, [#icon("nbt-compound") *explosions*: 检查烟火爆裂效果]),
+  (2, [#icon("nbt-compound") *modifiers*: 检查烟火数据。]),
+  (3, [#icon("nbt-list") *contains*: 要求列表内所有的项每个都必须至少有一个符合的烟火爆裂效果，若否则谓词检查不通过。实际的烟火爆裂效果不必匹配列表内所有的项。]),
+  (4, [#icon("nbt-compound") 一个烟火谓词。]),
+  (5, [#icon("nbt-bool") *has_trail*: 此烟火是否有尾曳。]),
+  (5, [#icon("nbt-bool") *has_twinkle*: 此烟火是否有闪烁效果。]),
+  (5, [#icon("nbt-string") *shape*: 匹配烟火的形状，有效值 `small_ball`、`large_ball`、`star`、`creeper` 和 `burst`。]),
+  (2, [#icon("nbt-int")#icon("nbt-compound") *size*: 检查烟火爆裂效果的数量。若使用 #icon("nbt-int") 整型，则匹配一个精确的数量。若使用 #icon("nbt-compound") 复合标签形式，则数量位于此区间内就能匹配。]),
+  (3, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (3, [#icon("nbt-int") *max*: 允许匹配的最大值。]),
+  (3, [#icon("nbt-int") *mix*: 允许匹配的最小值。]),
+  (2, [#icon("nbt-list") *count*: 统计符合要求的烟火爆裂效果并检查其数量。]),
+  (3, [#icon("nbt-compound") 一个统计项。]),
+  (4, [#icon("nbt-int")#icon("nbt-compound") *count*: 检查烟火爆裂效果的数量。若使用 #icon("nbt-int") 整型，则匹配一个精确的数量。若使用 #icon("nbt-compound") 复合标签形式，则数量位于此区间内就能匹配。]),
+  (5, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (5, [#icon("nbt-int") *max*: 允许匹配的最大值。]),
+  (5, [#icon("nbt-int") *mix*: 允许匹配的最小值。]),
+  (4, [#icon("nbt-compound") *test*: 烟火谓词，即需要检查数量的烟火爆裂效果。]),
+  (5, [#icon("nbt-bool") *has_trail*: 此烟火是否有尾曳。]),
+  (5, [#icon("nbt-bool") *has_twinkle*: 此烟火是否有闪烁效果。]),
+  (5, [#icon("nbt-string") *shape*: 匹配烟火的形状，有效值 `small_ball`、`large_ball`、`star`、`creeper` 和 `burst`。]),
+  (1, [#icon("nbt-int")#icon("nbt-compound") *flight_duration*: 检查烟花火箭的飞行时间。若使用 #icon("nbt-int") 整型，则匹配一个精确的时间。若使用 #icon("nbt-compound") 复合标签形式，则飞行时间位于此区间内就能匹配。]),
+  (2, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (2, [#icon("nbt-int") *max*: 允许匹配的最大值。]),
+  (2, [#icon("nbt-int") *mix*: 允许匹配的最小值。])
+)
+==== #icon("nbt-compound") `jukebox_playable`
+此谓词用于检查数据组件 `jukebox_playable` 的音乐唱片信息。
+#tree(
+  (0, [#icon("nbt-compound") *minecraft:jukebox_playable*]),
+  (1, [#icon("nbt-string")#icon("nbt-list") *song*: 匹配的唱片机曲目，可以是一个唱片机曲目ID、在数据包内定义的唱片机曲目标签，也可以是多个唱片机曲目ID组成的列表。])
+)
+==== #icon("nbt-string")#icon("nbt-list") `potion_contents`
+此谓词用于检查数据组件 `potion_contents` 的药水效果。
+#tree(
+  (0, [#icon("nbt-string")#icon("nbt-list") *potion_contents*: 匹配的药水效果，可以是一个药水效果ID、在数据包内定义的药水效果标签，也可以是多个药水效果ID组成的列表。])
+)
+==== #icon("nbt-list") `stored_enchantments`
+此谓词用于检查数据组件 `stored_enchantments` 中存储的魔咒。
+#tree(
+  (0, [#icon("nbt-list") *minecraft:stored_enchantments*: 此列表中的每一项都必须满足才能匹配。]),
+  (1, [#icon("nbt-compound") 一项魔咒。]),
+  (2, [#icon("nbt-string")#icon("nbt-list") *enchantments*: 匹配的魔咒，可以是一个魔咒ID、在数据包内定义的魔咒标签，也可以是多个魔咒ID组成的列表。]),
+  (2, [#icon("nbt-int")#icon("nbt-compound") *levels*: 检查此魔咒的等级，可以使用 #icon("nbt-int") 整数匹配一个精确值，也可以使用 #icon("nbt-compound") 复合标签匹配一个等级区间。若 #icon("nbt-string")#icon("nbt-list") `enchantments` 不存在，则只要有任意魔咒的等级在此字段指定范围内，就匹配成功。]),
+  (3, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (3, [#icon("nbt-int") *max*: 允许匹配的最大值。]),
+  (3, [#icon("nbt-int") *mix*: 允许匹配的最小值。])
+)
+==== #icon("nbt-compound") `trim`
+此谓词用于检查数据组件 `trim` 的盔甲纹饰数据。
+#tree(
+  (0, [#icon("nbt-compound") *minecraft:trim*]),
+  (1, [#icon("nbt-string")#icon("nbt-list") *material*: 匹配的盔甲纹饰材料，可以是一个盔甲纹饰材料ID、在数据包内定义的盔甲纹饰材料标签，也可以是多个盔甲纹饰材料ID组成的列表。]),
+  (1, [#icon("nbt-string")#icon("nbt-list") *pattern*: 匹配的盔甲纹饰图案，可以是一个盔甲纹饰图案ID、在数据包内定义的盔甲纹饰图案标签，也可以是多个盔甲纹饰图案ID组成的列表。])
+)
+==== #icon("nbt-string")#icon("nbt-list") `villager/variant`
+此谓词用于检查数据组件 `villager/variant` 使用的村民类型。
+#tree(
+  (0, [#icon("nbt-string")#icon("nbt-list") *villager/variant*: 匹配的村民类型，可以是一个村民类型ID、在数据包内定义的村民类型标签，也可以是多个村民类型ID组成的列表。])
+)
+==== #icon("nbt-compound") `writable_book_content`
+此谓词用于检查数据组件 `writable_book_content` 的书与笔内容。
+#tree(
+  (0, [#icon("nbt-compound") *minecraft:writable_book_content*]),
+  (1, [#icon("nbt-compound") *pages*: 检查书页内容。]),
+  (2, [#icon("nbt-list") *contains*: 要求列表内所有的项每个都必须至少有一个符合的书页，若否则谓词检查不通过。实际的书页不必匹配列表内所有的项。]),
+  (3, [#icon("nbt-string") 一个书页谓词。要求完全匹配一页未过滤的原始文本内容。]),
+  (1, [#icon("nbt-int")#icon("nbt-compound") *size*: 检查页数。若使用 #icon("nbt-int") 整型，则匹配一个精确的页数。若使用 #icon("nbt-compound") 复合标签形式，则页数位于此区间内就能匹配。]),
+  (2, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (2, [#icon("nbt-int") *max*: 允许匹配的最大值。]),
+  (2, [#icon("nbt-int") *mix*: 允许匹配的最小值。]),
+  (1, [#icon("nbt-list") *count*: 统计符合要求的书页并检查其数量。]),
+  (2, [#icon("nbt-compound") 一个统计项。]),
+  (3, [#icon("nbt-int")#icon("nbt-compound") *count*: 检查页数。若使用 #icon("nbt-int") 整型，则匹配一个精确的页数。若使用 #icon("nbt-compound") 复合标签形式，则数量位于此区间内就能匹配。]),
+  (4, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (4, [#icon("nbt-int") *max*: 允许匹配的最大值。]),
+  (4, [#icon("nbt-int") *mix*: 允许匹配的最小值。]),
+  (3, [#icon("nbt-string") *test*: 一个书页谓词。要求完全匹配一页未过滤的原始文本内容。])
+)
+==== #icon("nbt-compound") `written_book_content`
+此谓词用于检查数据组件 `written_book_content` 的成书内容。
+#tree(
+  (0, [#icon("nbt-compound") *minecraft:written_book_content*]),
+  (1, [#icon("nbt-compound") *pages*: 检查书页内容。]),
+  (2, [#icon("nbt-list") *contains*: 要求列表内所有的项每个都必须至少有一个符合的书页，若否则谓词检查不通过。实际的书页不必匹配列表内所有的项。]),
+  (3, [#icon("nbt-string") 一个书页谓词。要求完全匹配一页未过滤的原始文本内容。]),
+  (1, [#icon("nbt-int")#icon("nbt-compound") *size*: 检查页数。若使用 #icon("nbt-int") 整型，则匹配一个精确的页数。若使用 #icon("nbt-compound") 复合标签形式，则页数位于此区间内就能匹配。]),
+  (2, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (2, [#icon("nbt-int") *max*: 允许匹配的最大值。]),
+  (2, [#icon("nbt-int") *mix*: 允许匹配的最小值。]),
+  (1, [#icon("nbt-list") *count*: 统计符合要求的书页并检查其数量。]),
+  (2, [#icon("nbt-compound") 一个统计项。]),
+  (3, [#icon("nbt-int")#icon("nbt-compound") *count*: 检查页数。若使用 #icon("nbt-int") 整型，则匹配一个精确的页数。若使用 #icon("nbt-compound") 复合标签形式，则数量位于此区间内就能匹配。]),
+  (4, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (4, [#icon("nbt-int") *max*: 允许匹配的最大值。]),
+  (4, [#icon("nbt-int") *mix*: 允许匹配的最小值。]),
+  (3, [#icon("nbt-string") *test*: 一个书页谓词。要求完全匹配一页未过滤的原始文本内容。]),
+  (1, [#icon("nbt-string") *author*: 检查成书的作者。]),
+  (1, [#icon("nbt-int")#icon("nbt-compound") *generation*: 检查成书的性质，用 `0` 表示“原作”，用 `1` 表示“原作的副本”，用 `2` 表示“副本的副本”，用 `3` 表示“破烂不堪”。若使用 #icon("nbt-int") 整型，则匹配特定的性质。若使用 #icon("nbt-compound") 复合标签形式，则值位于此区间内就能匹配。]),
+  (2, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (2, [#icon("nbt-int") *max*: 允许匹配的最大值。]),
+  (2, [#icon("nbt-int") *mix*: 允许匹配的最小值。]),
+  (1, [#icon("nbt-byte") *resolved*: 检查成书内的文本是否已被解析。]),
+  (1, [#icon("nbt-string") *title*: 检查成书的标题。]),
+)
 == 粒子
+#proper-noun(display: "粒子（Particles）", "li4 zi3")是一种纯美学的、不会造成任何实质性影响的图形效果。如果设计得当，粒子效果将会为成品增色不少。
+#figure(
+  caption: "使用命令生成的水粒子效果",
+  image("图片/使用命令生成的水粒子效果.png", width: 20em)
+)
 == 教程：NBT Studio的使用 \*
 = 记分板
 == 队伍与标签<sec:team_and_tag>
