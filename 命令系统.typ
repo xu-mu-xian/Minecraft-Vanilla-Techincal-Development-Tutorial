@@ -5387,8 +5387,8 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
   ]
 }"
     )
-    资源包内苹果纹理的地址为 #icon("png") `assets\minecraft\textures\item\apple.png`，它在纹理图集内的命名空间ID为 `minecraft:apple`。故文本组件应写为
-    #codebox("{object:\"atlas\",atlas:\"items\",sprite:\"minecraft:apple\"}")
+    资源包内苹果纹理的地址为 #icon("png") `assets > minecraft > textures > item > apple.png`，它在纹理图集内的命名空间ID为 `minecraft:apple`。故文本组件应写为
+    #codebox("{object:\"atlas\",atlas:\"items\",sprite:\"minecraft:item/apple\"}")
   ]
 )
 #example(
@@ -5396,7 +5396,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
   [
     #icon("sprite-heart_full") 是GUI图集所属的精灵图，此纹理在资源包内的位置为
 
-    #icon("png") `assets\minecraft\textures\gui\sprites\hud\heart\full.png`
+    #icon("png") `assets > minecraft > textures > gui > sprites > hud > heart > full.png`
 
     GUI纹理图集的内容如下所示：
     #codefile(
@@ -10045,7 +10045,7 @@ item replace entity @s weapon.mainhand with diamond_spear"
   (1, [#icon("nbt-string") *title*: 检查成书的标题。]),
 )
 == 粒子
-#proper-noun(display: "粒子（Particles）", "li4 zi3")是一种纯美学的、不会造成任何实质性影响的图形效果。如果设计得当，粒子效果将会为成品增色不少。
+#proper-noun(display: "粒子（Particles）", "li4 zi3")是一种纯美学的、不会造成任何实质性影响的图形效果。如果设计得当，粒子效果将会为作品增色不少。
 #figure(
   caption: "使用命令生成的水粒子效果",
   image("图片/使用命令生成的水粒子效果.png", width: 20em)
@@ -10083,7 +10083,7 @@ item replace entity @s weapon.mainhand with diamond_spear"
   [`campfire_cosy_smoke`], table.cell(rowspan: 2)[#image("图标/particle/campfire_cosy_smoke.png", width: 3em)], [营火产生的烟雾，寿命为80到129 gt。],
   [`campfire_signal_smoke`], [放置在干草捆上的营火产生的烟雾，寿命为280到329 gt。],
   [`cherry_leaves`], [#image("图标/particle/cherry_leaves.png", width: 2em)], [落樱花瓣粒子。],
-  [`cloud`], table.cell(fill: black)[#image("图标/particle/generic_7.png", width: 3em)], [生物死亡时产生的烟雾。],
+  [`cloud`], table.cell(fill: black)[#image("图标/particle/generic_7.png", width: 3em)], [湿海绵在下界干燥的粒子、幻术师隐身粒子。],
   [`composter`], [#image("图标/particle/glint.png", width: 3em)], [堆肥桶堆肥时产生的粒子。],
   [`copper_fire_flame`], [#image("图标/particle/copper_fire_flame.png", width: 3em)], [铜火把粒子。],
   [`crimson_spore`], [#image("图标/particle/crimson_spore.png", width: 1em)], [绯红森林的环境颗粒。],
@@ -10136,8 +10136,53 @@ item replace entity @s weapon.mainhand with diamond_spear"
   [`lava`], [#image("图标/particle/lava.png", width: 2em)], [熔岩粒子。],
   [`mycelium`], [#image("图标/particle/mycelium.png", width: 1em)], [菌丝产生的孢子粒子。],
   [`nautilus`], [#image("图标/particle/nautilus.png", width: 3em)], [激活的潮涌核心产生的粒子。],
-  [`note`], [#image("图标/particle/note.png", width: 3em)], [音符。]
+  [`note`], [#image("图标/particle/note.png", width: 3em)], [音符。],
+  [`ominous_spawning`], table.cell(fill: black)[#image("图标/particle/ominous_spawning.png", width: 1em)], [不祥之物生成器生成物品时释放的粒子。],
+  [`pause_mob_growth`], [#image("图标/particle/glint.png", width: 3em)], [用金蒲公英锁定生物年龄产生的粒子],
+  [`poof`], table.cell(fill: black)[#image("图标/particle/generic_7.png", width: 3em)], [爆炸、生物死亡时出现的烟雾。],
+  [`portal`], [#image("图标/particle/portal.png", width: 3em)], [传送门、末地生物产生的粒子。],
+  [`raid_omen`], [#image("图标/particle/raid_omen.png", width: 2em)], [袭击之兆产生的粒子。],
+  [`rain`], [#image("图标/particle/fishing.png", width: 1em)], [雨。],
+  [`reset_mob_growth`], [#image("图标/particle/glint.png", width: 3em)], [用金蒲公英解锁生物年龄产生的粒子],
+  [`reverse_portal`], [#image("图标/particle/portal.png", width: 3em)], [重生锚上方漂浮的粒子。],
+  [`scrape`], [#image("图标/particle/glow.png", width: 3em)], [未涂蜡氧化变种铜块除锈时产生的粒子。],
+  [`sculk_charge_pop`], [#image("图标/particle/sculk_charge_pop.png", width: 2em)], [幽匿信号丢失时产生的气泡破裂粒子。],
+  [`sculk_soul`], [#image("图标/particle/sculk_soul.png", width: 1em)], [幽匿催发体探测到生物死亡时顶部出现的灵魂粒子。],
+  [`small_flame`], [#image("图标/particle/flame.png", width: 3em)], [蜡烛燃烧的火焰。],
+  [`small_gust`], [#image("图标/particle/small_gust.png", width: 2em)], [蓄风效果产生的粒子。],
+  [`smoke`], [#image("图标/particle/large_smoke.png", width: 3em)], [小型烟雾。],
+  [`sneeze`], [#image("图标/particle/glow_squid_ink.png", width: 3em)], [幼年熊猫的喷嚏粒子。],
+  [`snowflake`], table.cell(fill: black)[#image("图标/particle/snowflake.png", width: 3em)], [玩家在细雪中移动时产生的雪花粒子。],
+  [`sonic_boom`], [#image("图标/particle/sonic_boom.png", width: 3em)], [监守者发射的音波。],
+  [`soul`], [#image("图标/particle/sculk_soul.png", width: 1em)], [穿戴灵魂疾行靴子的生物在灵魂沙或灵魂土上行走时出现的灵魂粒子。],
+  [`soul_fire_flame`], [#image("图标/particle/soul_fire_flame.png", width: 3em)], [灵魂火把的火苗。],
+  [`spit`], table.cell(fill: black)[#image("图标/particle/generic_7.png", width: 3em)], [羊驼唾沫。],
+  [`splash`], [#image("图标/particle/fishing.png", width: 1em)], [水中的实体、离开水后的狼、船产生的水花粒子。],
+  [`spore_blossom_air`], [#image("图标/particle/spore_blossom_air.png", width: 1em)], [孢子花产生的孢子。],
+  [`squid_ink`], [#image("图标/particle/squid_ink.png", width: 3em)], [鱿鱼被攻击时产生的墨汁。],
+  [`sweep_attack`], [#image("图标/particle/sweep_attack.png", width: 3em)], [横扫攻击粒子。],
+  [`totem_of_undying`], [#image("图标/particle/totem_of_undying.png", width: 2em)], [激活不死图腾时出现的粒子。],
+  [`trial_omen`], [#image("图标/particle/trial_omen.png", width: 2em)], [试炼之兆效果产生的粒子。],
+  [`trial_spawner_detection`], [#image("图标/particle/trial_spawner_detection.png", width: 0.5em)], [试炼刷怪笼激活产生的火花粒子。],
+  [`trial_spawner_detection_ominous`], [#image("图标/particle/trial_spawner_detection_ominous.png", width: 0.5em)], [不详试炼刷怪笼激活产生的火花粒子。],
+  [`underwater`], [#image("图标/particle/underwater.png", width: 1em)], [水下颗粒。],
+  [`vault_connection`], [#image("图标/particle/vault_connection.png", width: 1em)], [玩家靠近宝库产生的粒子。],
+  [`warped_spore`], [#image("图标/particle/warped_spore.png", width: 1em)], [诡异森林的环境颗粒。],
+  [`wax_off`], [#image("图标/particle/wax_off.png", width: 3em)], [给涂蜡变种铜块除蜡时出现的粒子。],
+  [`wax_on`], [#image("图标/particle/wax_on.png", width: 3em)], [给铜块、告示牌上蜡时出现的粒子。],
+  [`white_ash`], [#image("图标/particle/white_ash.png", width: 1em)], [玄武岩三角洲的环境颗粒。],
+  [`white_smoke`], [#image("图标/particle/white_smoke.png", width: 3em)], [合成器投掷出物品时出现的粒子。],
+  [`witch`], [#image("图标/particle/witch.png", width: 3em)], [女巫产生的粒子。]
 )
+#example(
+  [在命令执行位置产生一个速度为1、数量为10、呈现点状的熔岩粒子。],
+  [
+    命令如下所示：
+    #codebox("particle lava ~ ~ ~ 0 0 0 1 10")
+  ]
+)
+除此之外的所有粒子均为带选项粒子。原版拥有多种粒子选项类型，可供不同的带选项粒子使用。下文列举了所有的粒子选项类型：
+===== #proper-noun(display: "方块粒子选项（Block particle option）", "fang1 kuai4 li4 zi3 xuan3 xiang4")
 == 教程：NBT Studio的使用 \*
 = 记分板
 == 队伍与标签<sec:team_and_tag>
@@ -10201,27 +10246,28 @@ item replace entity @s weapon.mainhand with diamond_spear"
 压力板能够用于探测位于其上的实体。当压力板上有实体时，压力板被激活，并向其毗邻的位置输出信号，并将它下方的方块强充能。
 
 不同类型的压力板需要不同条件才能开启——木质压力板可以被除了掉落中的方块和投掷物外的所有实体开启，石质压力板只能由玩家和生物开启，测重压力板可用于探测所有实体。同时，不同的压力板输出的信号强度有所不同：木质和石质压力板输出的信号强度总是为15。测重压力板会探测位于其上的实体数量，然后决定输出的信号强度，具体情况列于下表：
-#general-table(
+#split-table(
   caption: "测重压力板信号强度表",
-  colspan: 3,
-  columns: (auto, auto, auto),
-  header: (table.cell(rowspan: 2)[信号强度], table.cell(colspan: 2)[需要的实体数量], table.cell(fill: theme_basic.lighten(20%))[#text(fill:white,font:"Source Han Sans SC",weight:"bold")[轻质]], table.cell(fill: theme_basic.lighten(20%))[#text(fill:white,font:"Source Han Sans SC",weight:"bold")[重质]]),
-  [0], [0], [0],
-  [1], [1], [1 \~ 10],
-  [2], [2], [11 \~ 20],
-  [3], [3], [21 \~ 30],
-  [4], [4], [31 \~ 40],
-  [5], [5], [41 \~ 50],
-  [6], [6], [51 \~ 60],
-  [7], [7], [61 \~ 70],
-  [8], [8], [71 \~ 80],
-  [9], [9], [81 \~ 90],
-  [10], [10], [91 \~ 100],
-  [11], [11], [101 \~ 110],
-  [12], [12], [111 \~ 120],
-  [13], [13], [121 \~ 130],
-  [14], [14], [131 \~ 140],
-  [15], [$gt.eq.slant 15$], [$gt.eq.slant 141$]
+  original-cols: (auto, auto, auto),
+  header: ([信号强度], [轻质所需实体数量], [重质所需实体数量]),
+  data: (
+    [0], [0], [0],
+    [1], [1], [1 \~ 10],
+    [2], [2], [11 \~ 20],
+    [3], [3], [21 \~ 30],
+    [4], [4], [31 \~ 40],
+    [5], [5], [41 \~ 50],
+    [6], [6], [51 \~ 60],
+    [7], [7], [61 \~ 70],
+    [8], [8], [71 \~ 80],
+    [9], [9], [81 \~ 90],
+    [10], [10], [91 \~ 100],
+    [11], [11], [101 \~ 110],
+    [12], [12], [111 \~ 120],
+    [13], [13], [121 \~ 130],
+    [14], [14], [131 \~ 140],
+    [15], [$gt.eq.slant 15$], [$gt.eq.slant 141$]
+  )
 )
 *压力板可以激活所有的毗邻元件，同时强充能其下方的毗邻方块。*
 #figure(
