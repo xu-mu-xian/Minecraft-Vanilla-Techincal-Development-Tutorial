@@ -8565,7 +8565,7 @@ $ f(L) = sum_(i=1)^(L-1) X(i) = cases(
     #codebox("waypoint modify @n[type=mannequin] style set tutorial:mannequin")
   ]
 )
-=== 玩家数据格式 \*
+=== 玩家数据格式 \*<subsec:player_data>
 玩家虽然属于实体一类，但是其数据并不存储在 #icon("folder") `entities` 文件夹的Anvil文件中。而是在 #icon("nbt") `players` 中，这个文件夹存储了玩家达成进度、基本数据和统计信息的内容。
 ==== 进度
 #icon("folder") `players > advancements` 文件夹内以玩家UUID的名义存放了各玩家进度的完成情况，包括了玩家完成该进度所触发的准则以及触发这些准则的时间。#icon("json") `<玩家UUID>.json` 文件的数据格式为：
@@ -8682,7 +8682,107 @@ $ f(L) = sum_(i=1)^(L-1) X(i) = cases(
 原版的统计信息被分成若干种类，它们以命名空间ID的格式被命制成诸如 `minecraft:custom`、`minecraft:mined` 这样的名称。在种类之下又有不同的统计细则，这些单独的统计又有其各自的命名空间ID。一条统计的命名空间ID采用如下的写法：
 #codebox("<统计类别命名空间>.<统计类别ID>:<统计细则命名空间>.<统计细则ID>")
 例如，玩家捡起铁胸甲的统计细则的命名空间ID为 `minecraft:iron_chestplate`，其所属的统计大类为 `minecraft:picked_up`，因此完整的统计信息为
-#codebox("minecraft.iron_chestplate:minecraft.picked_up")
+#codebox("minecraft.picked_up:minecraft.iron_chestplate")
+下表列举了所有的统计类别及其可用的统计细则：
+#general-table(
+  caption: "统计类别及其可用统计细则",
+  colspan: 4,
+  columns: (auto, auto, auto, 15em),
+  header: ([统计类别], [简介], [可用统计细则], [用例]),
+  [`minecraft:custom`], [通用统计信息], [见@tab:custom_stat], [`minecraft.custom:minecraft.animals_bred`],
+  [`minecraft.broken`], [使用指定物品并耗尽其耐久度的次数], [物品], [`minecraft.broken:minecraft:iron_axe`],
+  [`minecraft.crafted`], [合成指定物品的次数], [物品], [`minecraft.crafted:minecraft.acacia_boat`],
+  [`minecraft.dropped`], [丢出指定物品的次数], [物品], [`minecraft.dropped:minecraft:acacia_boat`],
+  [`minecraft.killed`], [杀死指定实体的次数], [实体], [`minecraft.killed:minecraft.zombie`],
+  [`minecraft.killed_by`], [被指定实体杀死的次数], [实体], [`minecraft.killed_by:minecraft.zombie`],
+  [`minecraft.mined`], [挖掘指定方块的次数], [方块], [`minecraft.mined:minecraft.stone`],
+  [`minecraft.picked_up`], [捡起指定物品的次数], [物品], [`minecraft.picked_up:minecraft.apple`],
+  [`minecraft.used`], [使用指定物品的次数], [物品], [`minecraft.used:minecraft.bread`],
+) <tab:stat>
+通用统计信息 `minecraft:custom` 一类所有的细则如下表所示：
+#general-table(
+  caption: "通用统计信息细则",
+  colspan: 2,
+  columns: (auto, auto),
+  header: ([统计细则], [简介]),
+  [`minecraft:animals_bred`], [繁殖动物的次数],
+  [`minecraft:aviate_one_cm`], [用鞘翅滑翔的总路程],
+  [`minecraft:bell_ring`], [敲钟的次数],
+  [`minecraft:boat_one_cm`], [乘船移动的总路程],
+  [`minecraft:clean_armor`], [对炼药锅清洗染色皮革装备的次数],
+  [`minecraft:clean_armor`], [对炼药锅清洗旗帜图案的次数],
+  [`minecraft:clean_shulker_box`], [对炼药锅清洗染色潜影盒的次数],
+  [`minecraft:climb_one_cm`], [向上攀爬的总路程],
+  [`minecraft:crouch_one_cm`], [潜行移动的总路程],
+  [`minecraft:damage_absorbed`], [伤害吸收的总量，单位为#box(baseline: 30%, inset: (y: 0.5em))[$display(1/10)times$]#icon("sprite-heart_half")],
+  [`minecraft:damage_blocked_by_shield`], [用盾牌抵挡的伤害总量，单位为#box(baseline: 30%, inset: (y: 0.5em))[$display(1/10)times$]#icon("sprite-heart_half")],
+  [`minecraft:damage_dealt`], [造成的伤害总量，单位为#box(baseline: 30%, inset: (y: 0.5em))[$display(1/10)times$]#icon("sprite-heart_half")],
+  [`minecraft:damage_dealt_absorbed`], [造成但被吸收的伤害总量，单位为#box(baseline: 30%, inset: (y: 0.5em))[$display(1/10)times$]#icon("sprite-heart_half")],
+  [`minecraft:damage_dealt_resisted`], [造成但被抵挡的伤害总量，单位为#box(baseline: 30%, inset: (y: 0.5em))[$display(1/10)times$]#icon("sprite-heart_half")],
+  [`minecraft:damage_resisted`], [抵挡的伤害总量，单位为#box(baseline: 30%, inset: (y: 0.5em))[$display(1/10)times$]#icon("sprite-heart_half")],
+  [`minecraft:damage_taken`], [承受的伤害总量，单位为#box(baseline: 30%, inset: (y: 0.5em))[$display(1/10)times$]#icon("sprite-heart_half")],
+  [`minecraft:deaths`], [死亡次数],
+  [`minecraft:drop`], [丢弃物品的次数],
+  [`minecraft:eat_cake_slice`], [食用蛋糕片的次数],
+  [`minecraft:enchant_item`], [使用附魔台附魔物品的次数],
+  [`minecraft:fall_one_cm`], [坠落的总路程，不含1格高的跳跃],
+  [`minecraft:fill_cauldron`], [装满炼药锅的次数],
+  [`minecraft:fish_caught`], [捕鱼的总数],
+  [`minecraft:fly_one_cm`], [飞行的总路程],
+  [`minecraft:happy_ghast_one_cm`], [骑乘快乐恶魂移动的总路程],
+  [`minecraft:horse_one_cm`], [骑马移动的总路程],
+  [`minecraft:inspect_dispenser`], [和发射器交互的次数],
+  [`minecraft:inspect_dropper`], [和投掷器交互的次数],
+  [`minecraft:inspect_hopper`], [和漏斗交互的次数],
+  [`minecraft:interact_with_anvil`], [和铁砧交互的次数],
+  [`minecraft:interact_with_beacon`], [和信标交互的次数],
+  [`minecraft:interact_with_blast_furnace`], [和高炉交互的次数],
+  [`minecraft:interact_with_brewingstand`], [和酿造台交互的次数],
+  [`minecraft:interact_with_campfire`], [和营火交互的次数],
+  [`minecraft:interact_with_cartography_table`], [和制图台交互的次数],
+  [`minecraft:interact_with_crafting_table`], [和工作台交互的次数],
+  [`minecraft:interact_with_furnace`], [和熔炉交互的次数],
+  [`minecraft:interact_with_grindstone`], [和砂轮交互的次数],
+  [`minecraft:interact_with_lectern`], [和讲台交互的次数],
+  [`minecraft:interact_with_loom`], [和织布机交互的次数],
+  [`minecraft:interact_with_smithing_table`], [和锻造台交互的次数],
+  [`minecraft:interact_with_smoker`], [和烟熏炉交互的次数],
+  [`minecraft:interact_with_stonecutter`], [和切石机交互的次数],
+  [`minecraft:jump`], [跳跃次数],
+  [`minecraft:leave_game`], [玩家离开服务器的次数],
+  [`minecraft:minecart_one_cm`], [乘矿车移动的总路程],
+  [`minecraft:mob_kills`], [击杀生物的总数],
+  [`minecraft:nautilus_one_cm`], [骑鹦鹉螺移动的总路程],
+  [`minecraft:open_barrel`], [打开木桶的次数],
+  [`minecraft:open_chest`], [打开箱子的次数],
+  [`minecraft:open_enderchest`], [打开末影箱的次数],
+  [`minecraft:open_shulker_box`], [打开潜影盒的次数],
+  [`minecraft:pig_one_cm`], [骑猪移动的总路程],
+  [`minecraft:play_record`], [播放唱片的次数],
+  [`minecraft:play_noteblock`], [击打音符盒的次数],
+  [`minecraft:play_time`], [存档游玩的总时长，不计入游戏暂停的时间],
+  [`minecraft:player_kills`], [击杀玩家的总数],
+  [`minecraft:pot_flower`], [在花盆里种花的次数],
+  [`minecraft:raid_trigger`], [触发袭击的次数],
+  [`minecraft:raid_win`], [赢得袭击的次数],
+  [`minecraft:sleep_in_bed`], [睡觉的次数],
+  [`minecraft:sneak_time`], [潜行的总时长],
+  [`minecraft:strider_one_cm`], [骑炽足兽移动的总路程],
+  [`minecraft:sprint_one_cm`], [疾跑的总路程],
+  [`minecraft:swim_one_cm`], [游泳的总路程],
+  [`minecraft:talked_to_villager`], [和村民交互的次数],
+  [`minecraft:target_hit`], [射中标靶的次数],
+  [`minecraft:time_since_death`], [自上次死亡经历的游戏刻数],
+  [`minecraft:time_since_rest`], [自上次入眠经历的游戏刻数],
+  [`minecraft:total_world_time`], [存档打开的总时长，不计入游戏暂停的时间],
+  [`minecraft:traded_with_villager`], [和村民交易的次数],
+  [`minecraft:trigger_trapped_chest`], [打开陷阱箱的次数],
+  [`minecraft:tune_noteblock`], [为音符盒调音的次数],
+  [`minecraft:use_cauldron`], [从炼药锅装水、熔岩、细雪的次数],
+  [`minecraft:walk_one_cm`], [行走的总路程],
+  [`minecraft:walk_on_water_one_cm`], [在水面行走的总路程],
+  [`minecraft:walk_under_water_one_cm`], [在水下行走的总路程]
+) <tab:custom_stat>
 统计信息文件位于 `<存档名称> > players > stats > <玩家UUID>.json`，数据格式为
 #tree(
   (0, [#icon("json-object") 文件封装]),
@@ -10549,9 +10649,246 @@ particle flame 0 70 0 1 0 -1 1 0"
 你可能会在服务器的小游戏中看到这些内容，这样大家就可以在比赛中拿到他们的分数了。不可否认的是，记分板确实是命令系统的重要内容，数据的统计、处理完全依靠它。
 #pagebreak()
 == 队伍与标签<sec:team_and_tag>
+在正式开始讲解本章重点内容之前，读者需要先了解两个概念——“队伍”和“记分板标签”。
+=== 队伍<subsec:team>
+对于空间内一定数量的实体，可以使用#proper-noun(display:"队伍（Team）", "dui4 wu3")将这些实体分组。把实体添加到不同的队伍后，就可以对这些实体进行分组管理，比如对同一个队伍的实体施加统一的效果或用记分板统计它们的分数。队伍对于服务器小游戏来说几乎是必要的，尤其在竞技类的游戏中发挥非常重要的作用。
+==== 队伍的性质
+一个队伍拥有以下基本属性：
++ 名称：队伍在游戏中的内部名称，相当于ID，用于区分队伍。队伍的名称*不可重复*，一个队伍名称只能用于指定特定的队伍。
++ 显示名称：队伍显示的名称，是一个文本组件，可以指定样式。队伍的显示名称是可选的，不同的队伍允许拥有相同的显示名称。如果一个队伍没有显示名称，则使用名称作为它的显示名称。本教程使用和游戏一致的方式标记一个队伍：若一个队伍名称为 `A`、显示名称为 `B`，则记这个队伍为队伍 `[B]`；若一个队伍名称为 `A` 而没有显示名称，则记这个队伍为队伍 `[A]`。
++ 成员：队伍中的实体。
+
+\
+
+队伍拥有以下性质：
++ 队伍的成员不是固定的，可以任意为队伍添加成员或从队伍中移除成员。
++ 一个实体只能存在于一个队伍中。
++ 处于同一个队伍中的成员与成员之间不会有仇恨，而会对其他队伍中有自然仇恨的成员发动攻击。
+对于第3点，这里举一个例子作为对它的解释：假设队伍 `[A]` 中有一个卫道士和一个村民，队伍 `[B]` 中也有一个卫道士和村民。则队伍 `[A]` 中的卫道士会对队伍 `[B]` 中的村民发动攻击，而不会对同一队伍中的村民发动攻击；同时队伍 `[B]` 中的卫道士会对队伍 `[A]` 中的村民发动攻击，而不会对同一队伍中的村民发动攻击。但是卫道士和卫道士之间、村民和村民之间没有自然仇恨，故处于不同队伍的卫道士不会相互攻击，村民也是如此。
+==== 管理队伍的命令
+命令 `/team` 是用于管理队伍的命令，它包括了添加或删除队伍、为队伍添加或删除成员、编辑队伍等功能。它需要的权限等级为2，以下是所有用法。#index(index: "command", "team")
+===== 添加新队伍，语法为
+#codebox("team add <team> [<displayName>]")
+#param-desc(
+  [`<team>`（字符串 `brigadier:string`）], [参数指定队伍的名称，必须为单个词，允许使用的字符有：数字 `0123456789`、小写字母 `abcdefghijklmnopqrstuvwxyz`、大写字母`ABCDEFGHIJKLMNOPQRSTUVWXYZ`、下划线 `_`、连字符 `-`、加号 `+` 和点 `.`。],
+  [`[<displayName>]`（文本组件 `minecraft:component`）], [可选，指定队伍的显示名称，必须为文本组件。]
+)
+===== 删除队伍，语法为
+#codebox("team remove <team>")
+删除队伍后，队伍中的所有成员都会被从这个队伍中踢出。
+===== 使成员加入队伍，语法为
+#codebox("team join <team> [<members>]")
+#param-desc(
+  [`[<members>]`（分数持有者 `minecraft:score_holder`）], [可以是玩家名、UUID或目标选择器，也可以是 `*` 以指定所有正在被追踪的实体。如果不指定，则使命令执行者本身加入指定队伍。]
+)
+===== 使成员离开其所在的队伍，语法为
+#codebox("team leave <members>")
+===== 列出所有的队伍或队伍中的成员，语法为
+#codebox("team list [<team>]")
+#param-desc(
+  [`[<team>]`（字符串 `brigadier:string`）], [若指定了该参数，则返回该队伍中所有的成员；不指定则返回所有存在的队伍。]
+)
+===== 清空队伍，即使所有成员离开队伍，语法为
+#codebox("team empty <team>")
+===== 编辑队伍，语法为
+#codebox("team modify <team> <option> <value>")
+下表列出了所有可用的 `<option>` 和它对应的 `<value>`：
+#general-table(
+  caption: "队伍属性表",
+  colspan: 4,
+  columns: (auto, auto, 7em, auto),
+  header: (text(black)[`<option>`], [说明], [该 #text(black)[`<option>`] 可用的 #text(black)[`<value>`]], [说明]),
+  table.cell(rowspan: 4)[`collisionRule`#footnote[事实上，队伍间碰撞和队伍内碰撞的效果是完全相反的，也就是启用队伍间碰撞 `pushOtherTeams` 时允许推动同队的成员而无法推动其他队伍的成员；启用队伍内碰撞 `pushOwnTeam` 时允许推动其他队伍的成员而无法推动同队的成员。这个BUG至今未被修复，参见#link("https://bugs.mojang.com/browse/MC/issues/MC-87984")[MC-87984]。]], table.cell(rowspan: 4)[碰撞选项，决定队伍内的成员可以推动的实体。], [`always`], [队伍中的玩家可以推动任何实体。],
+  [`never`], [队伍中的玩家不能推动任何的实体。],
+  [`pushOtherTeams`], [理论上开启队伍间碰撞，即允许推动其他队伍的成员而无法推动同队的成员。根据#link("https://bugs.mojang.com/browse/MC/issues/MC-87984")[MC-87984]，它的效果实际上为队伍内碰撞。],
+  [`pushOwnTeam`], [理论上开启队伍内碰撞，即允许推动同队的成员而无法推动其他队伍的成员。根据#link("https://bugs.mojang.com/browse/MC/issues/MC-87984")[MC-87984]，它的效果实际上为队伍间碰撞。],
+  [`color`], [决定队伍名称（注意不是显示名称）和队伍内成员的名称在聊天栏等处显示的颜色和队伍内成员发光效果的轮廓颜色。该选项不会改变队伍显示名称的颜色。	], [`<value>`], [包含十七个值：`aqua`、`black`、`blue`、`dark_aqua`、`dark_blue`、`dark_gray`、`dark_green`、`dark_purple`、`dark_red`、`gold`、`gray`、`green`、`light_purple`、`red`、`reset`、`yellow` 和 `white`。],
+  table.cell(rowspan: 4)[`deathMessageVisibility`], table.cell(rowspan: 4)[决定何者可以看到队伍中玩家的死亡信息。], [`always`], [所有玩家都可以看到。],
+  [`never`], [没有玩家可以看到。],
+  [`hideForOtherTeams`], [对其他队伍的玩家隐藏。],
+  [`hideForOwnTeam`], [对同队玩家隐藏。],
+  [`displayName`], [队伍的显示名称。], [`<displayName>`], [一段文本组件。],
+  table.cell(rowspan: 2)[`friendlyFire`], table.cell(rowspan: 2)[决定队伍中的玩家是否能相互伤害。], [`true`], [即使为 `true`，具有自然仇恨的生物也不会对同队的其他生物发动攻击。],
+  [`false`], [],
+  table.cell(rowspan: 4)[`nametagVisibility`], table.cell(rowspan: 4)[决定何者可以看到队伍中玩家头上的名字和标签。], [`always`], [所有玩家都可以看到。],
+  [`never`], [没有玩家可以看到。],
+  [`hideForOtherTeams`], [对其他队伍的玩家隐藏。],
+  [`hideForOwnTeam`], [对同队玩家隐藏。],
+  [`prefix`], [在队伍中玩家名称的前面显示的前缀。], [`<perfix>`], [一段文本组件。],
+  table.cell(rowspan: 2)[`seeFriendlyInvisibles`], table.cell(rowspan: 2)[决定玩家是否可以看到同个队伍中隐形的玩家。], [`true`], [],
+  [`false`], [],
+  [`suffix`], [在队伍中玩家名称的后面显示的后缀。], [`<suffix>`], [一段文本组件。]
+)
+例如，#text_component(text(green)[[B组] #text(blue)[Mu_xian]#text(yellow)[ -lvl:10]])是聊天栏中一个名为 `Mu_xian` 的玩家显示的名称，其中#text_component(text(green)[B组])（末尾有空格）是前缀，#text_component(text(yellow)[ -lvl:10])（前端有空格）是后缀。由这个玩家的名称颜色可知，该玩家所在队伍的队伍颜色为蓝色，前缀的文本组件为 `{text:"[B组] ",color:"green"}`，后缀的文本组件为 `{text:" -lvl:10",color:"yellow"}`。
+==== 队伍NBT格式 \*
+标签 #icon("nbt-list") `Teams` 用于存储队伍信息，它是一个复合标签的列表。这个标签位于文件 #icon("nbt") `saves > <存档名称> > data > minecraft > scoreboard.dat` 中，列表 #icon("nbt-list") `Teams` 中的每一个复合标签都存储了一个队伍的信息。以下是队伍数据的结构：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-compound") *data*]),
+  (2, [#icon("nbt-list") *Teams*: 存储所有队伍的信息。]),
+  (3, [#icon("nbt-compound") 一个队伍。]),
+  (4, [#icon("nbt-bool") *AllowFriendlyFire*: 队伍中的玩家是否能相互伤害。]),
+  (4, [#icon("nbt-string") *CollisionRule*: 碰撞规则，有效值 `always`、`never`、`pushOtherTeams`、`pushOwnTeam`。]),
+  (4, [#icon("nbt-string") *DeathMessageVisibility*: 决定何者可以看到队伍中玩家的死亡信息，有效值 `always`、`never`、`hideForOtherTeams`、`hideForOwnTeam`。]),
+  (4, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *DisplayName*: 队伍的显示名称，为一个文本组件。]),
+  (4, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *MemberNamePrefix*: 显示名称前缀，为一个文本组件。]),
+  (4, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *MemberNameSuffix*: 显示名称后缀，为一个文本组件。]),
+  (4, [#icon("nbt-string") *Name*: 队伍名称。]),
+  (4, [#icon("nbt-string") *NameTagVisibility*: 决定何者可以看到队伍中玩家头上的名字和标签。有效值 `always`、`never`、`hideForOtherTeams`、`hideForOwnTeam`。]),
+  (4, [#icon("nbt-list") *Players*: 队伍成员。]),
+  (5, [#icon("nbt-string") 一个队伍成员，若为带名称的实体则使用该实体的名称，若为不带名称的实体则使用UUID。]),
+  (4, [#icon("nbt-bool") *SeeFriendlyInvisibles*: 玩家是否可以看到同个队伍中隐形的玩家。]),
+  (4, [#icon("nbt-string") *TeamColor*: 队伍颜色。])
+)
+=== 记分板标签
+为了与数据包标签和NBT中标签的概念作区分，在记分板体系中使用的标签被称为#proper-noun(display: "记分板标签（Scoreboard tags）", "ji4 fen1 ban3 biao1 qian1")。记分板标签是一个字符串，只有标签名称，与NBT中的标签不同，它不需要定义数据类型。标签名称可以由大小写英文字母、数字、下划线 `_`、点 `.`、加号 `+` 或减号 `-` 构成。
+
+记分板标签的主要作用是标记实体，当一个实体拥有一个记分板标签时，可以说这个实体被这个记分板标签所标记了。通过指定记分板标签可以很方便地指定到特定的实体。记分板标签主要被应用于目标选择器参数，如 `[tag=A]` 或 `[tag=!A]`，一般的思路可以是选择被标记过的或没有被标记过的实体。
+
+一个实体可以拥有多个记分板标签，在目标选择器中指定有多个记分板标签的实体可以让选择的范围更小、选择更精确。一个实体的记分板标签的数量有上限，最大为1024。
+==== 记分板标签命令
+命令 `/tag` 用于处理实体的记分板标签，它需要的权限等级为2，以下是所有用法。#index(index: "command", "tag")
+===== 为目标添加一个标签，语法为
+#codebox("tag <targets> add <name>")
+#param-desc(
+  [`<targets>`（实体 `minecraft:entity`）], [指定的目标实体，必须为玩家名称、UUID或目标选择器。],
+  [`<name>`（字符串 `brigadier:string`）], [要添加的标签。]
+)
+===== 从目标上移除一个记分板标签
+#codebox("tag <targets> remove <name>")
+===== 列出目标身上的所有记分板标签
+#codebox("tag <targets> list")
+==== 记分板标签NBT格式
+记分板标签的实质是存储在实体数据中的字符串列表。以玩家格式为例，玩家的记分板标签存储在标签 #icon("nbt-list") `Tags` 中，它是玩家根标签  #icon("nbt-compound") `Player` 的子标签。数据结构为：
+#tree(
+  (0, [#icon("nbt-list") *Tags*]),
+  (1, [#icon("nbt-string") 一个记分板标签。])
+)
+假设有一个实体的记分板标签NBT数据如下所示：
+#codebox("{Tags:[\"a\",\"b\"]}")
+#h(-2em)于是可以用目标选择器 `@e[tag=a]`、`@e[tag=b]` 或 `@a[tag=a,tag=b]` 对这个玩家进行选择，`@a[tag=!c]` 这个选择器也是可行的，但是 `@a[tag=!a]` 就不能用于选择这个玩家了。
+
+使用命令 `/summon` 也可以生成带有记分板标签的实体，例如命令
+#codebox("summon minecraft:zombie ~ ~ ~ {Tags:[\"a\",\"b\"]}")
+#h(-2em)可生成一个带有记分板标签 `a` 和 `b` 的僵尸。
 == 记分板的基本概念
+上一章的内容主要是数据存储的方式。而对于数据的处理，例如统计和计算数据，则需要用到命令系统中一个非常重要的体系——#proper-noun(display: "记分板（Scoreboard）", "ji4 fen1 ban3")。记分板处理数据的原理是：*将数据通过命令转换为对象的分数，对分数进行一定的处理后返回相应的数据。*
+
+记分板的基本单位是#proper-noun(display: "记分项（Objective）", "ji4 fen1 xiang4")，而记分项中又含有记分项名称、记分项显示名称、准则等基本组成元素。对这些基本概念的讲解是本节的主要内容。
+=== 记分项的基本属性
+“记分项”概念的英文原文为Objective。那什么是“记分项”？先来举一个例子，假设教务处安排某本科专业的一个学期有高等数学A、理论力学B和大学物理C三门学科，则可以说，在该专业本学期这个“系统”中，存在高等数学A、理论力学B和大学物理C三个“记分项”。
+
+一个记分板系统可以存在多个不同的记分项，正如上面的例子：有三门不同的学科，高等数学A、理论力学B和大学物理C是三个不同的记分项。观察这些记分项，不难发现，这些记分项都有自己的名称，即#proper-noun(display: "记分项名称（Objective's name）", "ji4 fen1 xiang4 ming2 cheng1")。记分项名称通常在系统内部使用，相当于记分项的“身份证”，其主要作用是区分不同的记分项，因此不同记分项的名称不能相同。记分项名称中允许包含大小写英文字母、数字、下划线 `_`、点 `.`、加号 `+` 或减号 `-`。
+
+和队伍一样，记分项也有#proper-noun(display: "显示名称（Display name）", "xian3 shi4 ming2 cheng1")，记分项的显示名称不必存在，若不存在，则会使记分项名称作为默认的显示名称；若存在，则必须使用文本组件指定显示名称。和记分项名称不一样，不同记分项的显示名称可以有重复。和队伍的表示方法一样，规定若一个记分项的名称为 `A`、显示名称为 `B`，记这个记分项为记分项 `[B]`；若一个记分项的名称为 `A` 而没有显示名称，则记这个记分项为记分项 `[A]`。
+=== 分数持有者及其分数
+引用上面的例子：该专业本学期有高等数学A、理论力学B和大学物理C三门学科。现在有三个同学的考试成绩记录在教务系统中：同学1的高等数学A考了76分，理论力学B考了82分，而对于大学物理C申请了缓考，故该科暂时没有成绩；同学2的高等数学A考了85分，理论力学B考了90分，大学物理C考了81分；同学3的高等数学A考了62分，理论力学B考了71分，大学物理C考了83分。可以看到，除缓考外，每个同学在相应的学科中都取得了一定的成绩。在记分板系统中，称每一个在各学科中获得分数的同学为#proper-noun(display: "分数持有者（Score holder）", "fen1 shu4 chi2 you3 zhe3")。分数持有者能够在任意记分板中获得自身在该记分项上的#proper-noun(display: "分数（Score）", "fen1 shu3")，即分数持有者被该记分项追踪，也可以说该记分项对分数持有者进行追踪并记录其分数。
+
+熟悉了这些概念后，可以不难列出如下所示的表格：
+#general-table(
+  caption: "",
+  colspan: 4,
+  columns: (auto, auto, auto, auto),
+  header: ([记分项], [高等数学A], [理论力学B], [大学物理C]),
+  [同学1], [76], [82], [],
+  [同学2], [85], [90], [81],
+  [同学3], [62], [71], [83]
+)
+从这张表格可以很清晰地看到记分项与分数持有者之间的关系。其中 `[高等数学A]` 这个记分项追踪了 `同学1`、`同学2` 和 `同学3` 三个分数持有者；而 `同学1` 这个分数持有者只被 `[高等数学A]` 和 `[理论力学B]` 两个记分项追踪，没有被记分项 `[大学物理C]` 所追踪，具体表现在 `同学1` 在记分项 `[大学物理C]` 上没有分数（注意没有分数不能等同于0分）。*任意一个分数持有者不一定被所有的记分项追踪，任意一个记分项也不一定追踪所有的分数持有者。若一个分数持有者不被某记分项追踪，则该分数持有者在此记分项上没有分数，该结论的逆命题同样成立。*
+
+分数持有者记录的是玩家的玩家名称或其他实体的UUID。*当一个非玩家实体被清除时，其UUID也不复存在，故一个非玩家实体被杀死后，先前追踪它的记分项将不再对其进行追踪。但是对于玩家而言，无论其是否存活、是否存在于游戏中，记分项始终会追踪其分数，直到使用命令 `/scoreboard players reset` 重制分数持有者的分数。*
+
+根据这个原理，读者可以任意设置一些玩家名称作为分数持有者使用，这些玩家名称所属的玩家甚至不必存在。一般称这类对象的名称为#proper-noun(display: "假名（Fake name）", "jia3 ming2")。假名的使用在记分板系统中很常见，比如在上面的例子中，计算 `[高等数学A]`、`[理论力学B]` 和 `[大学物理C]` 三个记分项在三个分数持有者上的平均分，并存入分数持有者 `Ave` 中：
+#general-table(
+  caption: "",
+  colspan: 4,
+  columns: (auto, auto, auto, auto),
+  header: ([记分项], [高等数学A], [理论力学B], [大学物理C]),
+  [Ave], [74], [81], [82]
+)
+这里的计算方法先不讲。很明显 `Ave` 不是一个实际存在的同学名称，用记分板体系的表述方式为，分数持有者 `Ave` 指代的玩家不一定必须存在，但它依旧记录了一些数据。不过由于假名的实质是玩家名称，一旦拥有和假名相同名称的玩家进入游戏后，他的分数则会不可避免地受到影响。因此可以在假名前加一个 `#` 以作为假名和真实存在的玩家名称的区分。例如 `Ave` 和 `#Ave` 是两个完全不同的分数持有者，使用 `#Ave` 可以有效防止名为 `Ave` 的玩家的分数与假名分数持有者的分数起冲突。不过在社区中也有部分开发者会使用 `$` 作为假名前缀，如 `$Ave`。
+
+对象分数是*介于$-2147483648$和$2147483647$之间（含）的整数*，因此上述分数持有者 `Ave` 在记分项 `[高等数学A]` 上的分数并不严格等于三位同学的 `[高等数学A]` 分数的平均分，此处去除了实际平均分的小数部分。读者在制作记分板系统时，务必要注意分数的溢出情况。
+
+接下来再说明一个特殊的机制：假设学校在期末考试过程中通过学生的学号识别每一个学生，无论该学生在试卷上填写的姓名为何。因此 `同学2` 在考 `[高等数学A]` 时将自己的名字填写为#text_component([高数有手就行])，在考 `[理论力学B]` 时将自己的名字填写为#text_component([理力有手就行])，在考 `[大学物理C]` 时将自己的名字填写为#text_component([大物有手就行])。因此产生了如下所示的成绩单：
+#general-table(
+  caption: "",
+  colspan: 3,
+  columns: (auto, auto, auto),
+  header: ([分数持有者], [学科], [分数]),
+  [高数有手就行], [高等数学A], [85],
+  [理力有手就行], [理论力学B], [90],
+  [大物有手就行], [大学物理C], [81]
+)
+但由于该同学的学号是固定的，因此这三门课的分数在教务系统中都被记录在同学2的名字下，但成绩公示后却显示了该同学在试卷上填写的自定义名字。而在记分板系统中，*分数持有者的显示名称是可以以文本组件的形式修改的，修改过后的显示名称不会影响分数持有者原本的名称和其他属性，只会在记分项经由显示区公示时展示。*
+
+同学3在高等数学A一科仅得了62分，他觉得这个分数很低，因此在成绩单打印下来后，手动涂抹了这个分数，将这个分数改为了82。但是同学3记录在教务系统的高等数学A成绩必定为62，无论同学3纂改的分数为何。在记分板系统中，分数的数字格式也可以自由指定，游戏提供了以下三种类型的数字格式：
+#param-desc(
+  prefix: "",
+  [`blank`], [无论分数为何，均不显示分数。],
+  [`fixed`], [无论分数为何，均显式指定的内容，这些内容可以不一定是数字，也可以是其他文字，并使用这些内容的样式。一般使用文本组件定义显示的内容。没有分数的分数持有者会被赋予0分后再显示固定的文本。],
+  [`styled`（在NBT数据中名为 `result`）], [修饰分数显示的样式，一般使用文本组件样式，不修改分数本身。]
+)
+*这些数字格式不会影响分数持有者原本的分数。*
+
+教务处为突出高等数学A这一门课的重要性，在公示分数时将所有学生的高等数学A成绩标红显示，然而同学2不喜欢自己的分数使用红色的样式，因此他将成绩单上的分数样式改为了蓝色。反映到记分板系统中，*每一个记分项都有其默认的分数数字格式，若一个分数持有者没有其特定的分数数字格式，则显示为记分项默认的数字格式，否则使用分数持有者已有的数字格式。*注意，上述内容仍仅在渲染层面有意义，不会对分数持有者原本的分数造成影响。
+=== 显示位置
+记分项除了在记分板系统内部作为数据处理的工具外，还可以将数据显示出来。记分项所显示的位置，被称为#proper-noun(display: "显示位置（Display slot）", "xian3 shi4 wei4 zhi4")。一个显示位置最多只能显示一个记分项，但是一个记分项可以显示在不同的显示位置中。一旦记分项规定了显示位置，除非该记分项不复存在或该显示位置被规定显示了其他的记分项，则该记分项会一直显示在该显示位置中。显示位置一共有以下几种：
+#general-table(
+  caption: "显示位置",
+  colspan: 3,
+  columns: (auto, auto, auto),
+  header: ([显示位置], [简介], [图例]),
+  [`sidebar`（侧边栏）], [在屏幕的右侧显示。显示名称会显示在最上方。只会显示有分数对象的分数，若为玩家则显示玩家名，若为其他实体则显示UUID，带 `#` 号假名的分数不会出现在侧边栏。如果玩家不在线，其分数依然会被显示。], [#image("图片/显示位置侧边栏.png", width: 10em)],
+  [`list`（列表）], [按住 `Tag` 键呼出。显示名称不会显示，仅显示分数。只显示在线玩家的分数。], [#image("图片/显示位置列表.png", width: 12em)],
+  [`below_name`（名称下方）], [只在多人游戏中显示在玩家名称牌的下方，显示该玩家的分数。显示格式为 `<显示名称>:<分数>`。], [],
+  [`siderbar.team.<颜色>`], [显示方式和侧边栏基本相同，但只有位于指定颜色队伍的玩家才可以看见拥有此颜色队伍中成员的分数。颜色一共有十六种不同的值，详见节@subsec:team。]
+)
+=== 准则
+在上面的例子中，高等数学A、理论力学B和大学物理C这三门学科的分数是怎么得出的？在实际情况中，一门学科总评分数可能依据学生的平时表现，或是该生在期末考试中的成绩，又或者是两者的综合，比如平时成绩占40%、期末考试成绩占60%，这些便是对于一门学科总评分数的“判分依据”。对于每一个记分项，当它们追踪分数持有者并记录其分数时，一定需要一个判分依据，即记分项的#proper-noun(display: "准则（Criteria）", "zhun3 ze2")。准则的主要作用是*决定跟踪的分数持有者行为，并为记分项中分数的改变提供依据*。同时，对于一门学科而言，其判分依据必须是确切的、统一的，不能存在多个不同的判分依据，否则在分数的评定上会有非公平的、有冲突的后果。因此，在记分板系统中，*一个记分项必须拥有且只能拥有一种准则。*
+
+根据准则名称的长度，可以将准则分为两类：单一准则和复合准则；如果根据变量的分数能否被修改，则准则又可以分为*只读型准则*和*可修改型准则*。只读型准则是指：*变量中分数的改变由系统中数据的改变而发生改变，无法对其进行修改；*可修改型准则是指可由命令修改的准则，一些可修改型准则只能由命令修改，一些可能受到系统内部数据的影响。下面使用单一准则和复合准则的分类方式，同时会说明每种准则是只读型或者是可修改型。
+==== 单一准则
+#proper-noun(display: "单一准则（Single criteria）", "dan1 yi1 zhun3 ze2")是较为简单的、准则名称只由单一字符串组成的准则。
+#general-table(
+  caption: "单一准则表",
+  colspan: 3,
+  columns: (auto, auto, auto),
+  header: ([准则名], [简介], [类型]),
+  [`dummy`], [虚拟型准则，分数只能由命令修改。被广泛应用于各种自定义的记分板中。], [可修改型],
+  [`trigger`], [触发器，分数只能由命令修改。可使用命令 `/trigger` 对分数进行修改，具体内容见下一节触发器相关内容。], [可修改型],
+  [`deathCount`], [死亡计数：玩家每死亡一次，分数自动加一。], [可修改型],
+  [`playerKillCount`], [杀死玩家计数：每杀死其他玩家一次，分数自动加一。], [可修改型],
+  [`totalKillCount`], [杀死生物计数：每杀死其他生物（包括玩家）一次，分数自动加一。], [可修改型],
+  [`health`], [显示玩家的生命值。], [只读型],
+  [`xp`], [显示玩家的经验值。], [只读型],
+  [`level`], [显示玩家的经验等级。], [只读型],
+  [`food`], [显示玩家的饥饿值。], [只读型],
+  [`air`], [显示玩家的氧气值。], [只读型],
+  [`armor`], [显示玩家的盔甲值。], [只读型]
+)
+==== 复合准则
+#proper-noun(display: "复合准则（Compound criteria）", "fu4 he2 zhun3 ze2")是较为精细的、准则名称分成多个部分的准则。一个复合准则由基础准则和次级准则组成。所有的统计信息都可作为复合准则使用，格式见节@subsec:player_data 的@tab:stat 和@tab:custom_stat，其中统计大类为基础准则，统计细则为次级准则。
+
+除统计信息外，另有如下表所示的复合准则，这些复合准则的基础准则和次级准则使用 `.` 隔开：
+#general-table(
+  caption: "复合准则表",
+  colspan: 4,
+  columns: (auto, auto, auto, auto),
+  header: ([基础准则], [次级准则], [简介], [用例]),
+  [`teamkill`], table.cell(rowspan: 2)[从下列参数中选择：`aqua`、`black`、`blue`、`dark_aqua`、`dark_blue`、`dark_gray`、`dark_green`、`dark_purple`、`dark_red`、`gold`、`gray`、`green`、`light_purple`、`red`、`yellow` 和 `white`。], [杀死指定颜色队伍中的一个玩家时，分数自动加一。], [`teamkill.aqua`],
+  [`killedByTeam`], [被指定颜色队伍中的玩家杀死一次时，分数自动加一。], [`killedByTeam.aqua`]
+)
+所有的复合准则都是可修改型准则。
+#example(
+  [自定义冒险地图的运作经常需要检测玩家使用胡萝卜钓竿的次数，常试写出所需的准则。],
+  [
+    胡萝卜钓竿使用次数是一项统计信息，基础准则（统计大类）为 `minecraft.used`，次级准则（统计细则）为 `minecraft.carrot_on_a_stick`，因此复合准则为 `minecraft.used:minecraft.carrot_on_a_stick`。
+    
+  ]
+)
 === 记分板NBT格式<subsec:scoreboard_data>
-== 记分板命令 触发器
+== 记分板命令#h(1em)触发器
 === 触发器<subsec:trigger>
 = 命令/execute<chap:command_execute>
 #appendix

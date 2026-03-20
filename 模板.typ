@@ -589,6 +589,7 @@
     "smelt_iron": box(image("图标/advancement/来硬的.png", height:auto), baseline: 1em, height:3em),
     "sprite-apple": box(image("图标/sprite/apple.png", height:auto), baseline: 1em, height:3em),
     "sprite-heart_full": box(image("图标/sprite/full.png", height:auto), baseline: 0.2em, height:1em),
+    "sprite-heart_half": box(image("图标/sprite/half.png", height:auto), baseline: 0.2em, height:1em),
     "sprite-Mu_xian": box(image("图标/sprite/Mu_xian.png", height:auto), baseline: 0.2em, height:1em),
     "nbtstudio-add_snbt": box(image("图标/NbtStudio/action_add_snbt.png", height:1em), baseline: 0pt, height:0.85em),
     "nbtstudio-copy": box(image("图标/NbtStudio/action_copy.png", height:1em), baseline: 0pt, height:0.85em),
