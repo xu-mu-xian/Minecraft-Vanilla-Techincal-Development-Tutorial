@@ -45,8 +45,8 @@
 
 #import "模板.typ": *
 #show: template-style
-#theme.update(dark_red)
-#let theme_basic = dark_red
+#theme.update(red)
+#let theme_basic = red
 
 #heading(level: 1, numbering: none, outlined: false, [第一版序言])
 Minecraft拥有多种多样的玩法，生存、PVP、PVE、模组、建筑、红石电路这些为众多玩家所熟知的玩法自成体系，玩家可以自由选择其中的某一方面深入研究。在这些玩法中，比较默默无闻的一种玩法可能便是广义上的命令，即包含了MC-CMD（命令）、资源包和数据包的系统。
@@ -5490,6 +5490,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
 #h(-2em)此时苹果的名称显示为 #text_component([_\@s_])，它并没有发生解析。
 ===== 对话框
 对话框中的所有记分板分数组件、实体名称组件和NBT组件都不能解析，要想显示这些数据，只能用宏函数将数据传递进去。
+===== 进度的标题和描述
 == 文本组件样式
 文本组件样式，包括文字的样式、字体和交互事件，主要用于修饰文字。
 === 样式与字体
@@ -5640,7 +5641,7 @@ Minecraft中的字体本质上是图像，如果设计巧妙，则可以将任�
     [`§o`], [斜体], [-],
     [`§r`], [重制文字样式], [-]
   )
-)
+) <tab:formatting_code>
 当想要对一段文本应用样式时，只需在文本前添加相应的格式化代码。例如，下面的命令也可用于输出深红色的#text_component(text(dark_red)[Hello World!])文本，其与应用了文本组件相应键的命令效果相同：
 #codebox("§4Hello World!")
 *在一段文本中间使用的颜色代码会使从此处起至下一个颜色代码之前的文本应用相应的颜色。*例如，在下面的文本中，#text_component(text(dark_red)[World!])为深红色，而前面的文本为默认颜色（聊天栏中为白色）。
@@ -7234,7 +7235,7 @@ $scoreboard players set #system_time_second var $(second)"
   (1, [#icon("nbt-int") *last_hurt_by_player_memory_time*: 生物被玩家攻击后该值为 `100`（单位为游戏刻），每游戏刻减少1，此值降到 `0` 以下后清除 #icon("nbt-int_array") `last_hurt_by_player` 的数据，并删除此字段。]),
   (1, [#icon("nbt-compound") *locator_bar_icon*: 生物的路径点图标。]),
   (2, [#icon("nbt-int")#icon("nbt-list") *color*: 此生物路径点的图标颜色，可以用 #icon("nbt-int") 整型指定RGB颜色，对二进制而言，每八位表示一个通道，从高到低依次为R、G、B通道。也可以用 #icon("nbt-list") 列表分别指定每个通道。游戏在存储时一律存储为 #icon("nbt-int") 整型。]),
-  (3, [*若使用 #icon("nbt-list")列表形式，则包含以下字段：*], false),
+  (3, [*若使用 #icon("nbt-list") 列表形式，则包含以下字段：*], false),
   (3, [#icon("nbt-float") R通道分量，表示红色值。]),
   (3, [#icon("nbt-float") G通道分量，表示绿色值。]),
   (3, [#icon("nbt-float") B通道分量，表示蓝色值。]),
@@ -7378,7 +7379,7 @@ $scoreboard players set #system_time_second var $(second)"
   Fixed:1b
 }")
   ]
-)
+) <exa:item_frame>
 #example(
   [
     为标签 #icon("nbt-int") `DisabledSlots` 编写数据，使之禁用盔甲架如下部位的特定交互事件：
@@ -10049,7 +10050,7 @@ item replace entity @s weapon.mainhand with diamond_spear"
 #figure(
   caption: "使用命令生成的水粒子效果",
   image("图片/使用命令生成的水粒子效果.png", width: 20em)
-)
+) <fig:particle_example>
 命令 `/particle` 用于在指定位置显示指定粒子效果，它需要的权限等级为2，语法为：#index(index: "command", "particle")
 #codebox("particle <name> [<pos>]") <code:particle_name_pos>
 #h(-2em)或
@@ -10181,10 +10182,372 @@ item replace entity @s weapon.mainhand with diamond_spear"
     #codebox("particle lava ~ ~ ~ 0 0 0 1 10")
   ]
 )
+#example(
+  [
+    高频生成火焰粒子，使之同时从坐标$(0,70,0)$处朝如图所示的八个正方向运动。
+    #figure(
+      caption: "",
+      image("图片/由命令生成的火焰粒子动态效果.png", width: 10em)
+    )
+  ],
+  [
+    当 `/particle` 的 `<count>` 为0时，粒子可以从 `<pos>` 移动至 `<delta>`。由此可以编写如下高频运行的函数：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > flame_particle.mcfunction",
+      "particle flame 0 70 0 1 0 0 1 0
+particle flame 0 70 0 1 0 1 1 0
+particle flame 0 70 0 0 0 1 1 0
+particle flame 0 70 0 -1 0 1 1 0
+particle flame 0 70 0 -1 0 0 1 0
+particle flame 0 70 0 -1 0 -1 1 0
+particle flame 0 70 0 0 0 -1 1 0
+particle flame 0 70 0 1 0 -1 1 0"
+    )
+  ]
+)
 除此之外的所有粒子均为带选项粒子。原版拥有多种粒子选项类型，可供不同的带选项粒子使用。下文列举了所有的粒子选项类型：
 ===== #proper-noun(display: "方块粒子选项（Block particle option）", "fang1 kuai4 li4 zi3 xuan3 xiang4")
+以下粒子类型使用方块粒子选项：
+
+`block`：生物与方块接触或交互产生的粒子。
+
+`block_crumble`：嘎吱之心被破坏时相应的嘎吱消失产生的粒子。
+
+`block_marker`：光源方块或屏障的贴图。
+
+`dust_pillar`：重锤猛击产生的粒子。
+
+`falling_dust`：浮空的受重力影响的方块下方产生的飘落粒子。
+
+方块粒子选项使用以下的字段：
+#tree(
+  (0, [#icon("nbt-compound") 粒子选项]),
+  (1, [#icon("nbt-string")#icon("nbt-compound") *#underline[block_state]*: 粒子使用的方块及其方块状态。如果使用 #icon("nbt-string") 字符串形式，则值是一个方块的命名空间ID，此时该方块使用其默认属性。如果使用 #icon("nbt-compound") 复合标签形式，可以指定方块的各项属性。]),
+  (2, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (2, [#icon("nbt-string") *#underline[Name]*: 方块的命名空间ID。]),
+  (2, [#icon("nbt-compound") *Properties*: 可选，由若干方块属性组成的方块状态。]),
+  (3, [#icon("nbt-string") *\<方块属性>*: 标签名为方块状态的属性，值使用字符串表示。])
+)
+#example(
+  [生成一个覆雪草方块的粒子。],
+  [
+    命令为
+    #codebox("particle block{block_state:{Name:\"minecraft:grass_block\",Properties:{snowy:\"true\"}}")
+  ]
+)
+===== #proper-noun(display: "颜色粒子选项（Color particle option）", "yan2 se4 li4 zi3 xuan3 xiang4")
+以下粒子类型使用颜色粒子选项：
+
+`entity_effect`：药水效果的粒子。
+
+`flash`：烟花火箭爆炸的闪烁效果。
+
+`tinted_leaves`：落叶粒子。
+
+这些粒子除了RGB通道外，还可以指定一个透明通道A，字段如下：
+#tree(
+  (0, [#icon("nbt-compound") 粒子选项]),
+  (1, [#icon("nbt-int")#icon("nbt-list") *#underline[color]*: 粒子颜色，可以用 #icon("nbt-int") 整型指定RGB颜色，对二进制而言，每八位表示一个通道，从高到低依次为A、R、G、B通道。也可以用 #icon("nbt-list") 列表分别指定每个通道。游戏在存储时一律存储为 #icon("nbt-int") 整型。]),
+  (2, [*若使用 #icon("nbt-list") 列表形式，则包含以下字段：*], false),
+  (2, [#icon("nbt-float") R通道分量，表示红色值。]),
+  (2, [#icon("nbt-float") G通道分量，表示绿色值。]),
+  (2, [#icon("nbt-float") B通道分量，表示蓝色值。]),
+  (2, [#icon("nbt-float") A通道分量，表示透明度。])
+)
+#example(
+  [生成一个黑色不透明（RGBA通道为：0、0、0、1）的 `entity_effect` 粒子。],
+  [
+    命令为
+    #codebox("particle entity_effect{color:[0.0f,0.0f,0.0f,1.0f]}")
+    #h(-2em)如果使用整数形式，将上述RGBA颜色转换为十进制的结果为0，则命令又可以是
+    #codebox("particle entity_effect{color:0}")
+  ]
+)
+===== #proper-noun(display: "粉末粒子选项（Dust particle options）", "fen3 mo4 li4 zi3 xuan3 xiang4")
+`dust` 粒子使用这种选项类型，可以指定粒子颜色，还可以指定粒子大小，同时大小会影响粒子寿命。它使用以下字段：
+#tree(
+  (0, [#icon("nbt-compound") 粒子选项]),
+  (1, [#icon("nbt-int")#icon("nbt-list") *#underline[color]*: 粒子颜色，可以用 #icon("nbt-int") 整型指定RGB颜色，对二进制而言，每八位表示一个通道，从高到低依次为R、G、B通道。也可以用 #icon("nbt-list") 列表分别指定每个通道。游戏在存储时一律存储为 #icon("nbt-int") 整型。]),
+  (2, [*若使用 #icon("nbt-list") 列表形式，则包含以下字段：*], false),
+  (2, [#icon("nbt-float") R通道分量，表示红色值。]),
+  (2, [#icon("nbt-float") G通道分量，表示绿色值。]),
+  (2, [#icon("nbt-float") B通道分量，表示蓝色值。]),
+  (1, [#icon("nbt-float") *scale*: 该粒子的大小，有效值区间为$[0.01,4]$。粒子的寿命为8到40 gt的随机时长乘以此值。])
+)
+#example(
+  [生成一个正红色（RGB值：255，0，0）、大小为1的粉末粒子。],
+  [
+    命令为
+    #codebox("particle dust{color:[1.0f,0.0f,0.0f],scale:1.0f}")
+  ]
+)
+===== #proper-noun(display: "粉末颜色过渡选项（Dust color transition options）", "fen3 mo4 yan2 se4 guo4 du4 xuan3 xiang4")
+`dust_color_transition` 粒子使用这种选项类型，可以指定颜色的渐变。
+#tree(
+  (0, [#icon("nbt-compound") 粒子选项]),
+  (1, [#icon("nbt-int")#icon("nbt-list") *#underline[from_color]*: 起始粒子颜色，可以用 #icon("nbt-int") 整型指定RGB颜色，对二进制而言，每八位表示一个通道，从高到低依次为R、G、B通道。也可以用 #icon("nbt-list") 列表分别指定每个通道。游戏在存储时一律存储为 #icon("nbt-int") 整型。]),
+  (2, [*若使用 #icon("nbt-list") 列表形式，则包含以下字段：*], false),
+  (2, [#icon("nbt-float") R通道分量，表示红色值。]),
+  (2, [#icon("nbt-float") G通道分量，表示绿色值。]),
+  (2, [#icon("nbt-float") B通道分量，表示蓝色值。]),
+  (1, [#icon("nbt-int")#icon("nbt-list") *#underline[to_color]*: 目标粒子颜色，可以用 #icon("nbt-int") 整型指定RGB颜色，对二进制而言，每八位表示一个通道，从高到低依次为R、G、B通道。也可以用 #icon("nbt-list") 列表分别指定每个通道。游戏在存储时一律存储为 #icon("nbt-int") 整型。]),
+  (2, [*若使用 #icon("nbt-list") 列表形式，则包含以下字段：*], false),
+  (2, [#icon("nbt-float") R通道分量，表示红色值。]),
+  (2, [#icon("nbt-float") G通道分量，表示绿色值。]),
+  (2, [#icon("nbt-float") B通道分量，表示蓝色值。]),
+  (1, [#icon("nbt-float") *scale*: 该粒子的大小，有效值区间为$[0.01,4]$。粒子的寿命为8到40 gt的随机时长乘以此值。])
+)
+#example(
+  [生成一个由正红色（RGB值：255，0，0）变换至正蓝色（RGB值：0，0，255）、大小为1的粉末粒子。],
+  [
+    命令为
+    #codebox("particle dust_color_transition{from_color:[1.0f,0.0f,0.0f],scale:1.0f,to_color:[0.0f,0.0f,1.0f]}")
+  ]
+)
+===== #proper-noun(display: "物品粒子选项（Item particle option）", "wu4 pin3 li4 zi3 xuan3 xiang4")
+`item` 粒子使用这种选项类型，是物品碎片，字段为：
+#tree(
+  (0, [#icon("nbt-compound") 粒子选项]),
+  (1, [#icon("nbt-string")#icon("nbt-compound") *#underline[item]*: 一个物品堆叠。可以使用 #icon("nbt-string") 字符串形式指定物品的命名空间ID，此时默认物品的堆叠数为1，使用默认组件。也可以使用 #icon("nbt-compound") 复合标签形式以指定完整的堆叠数据。]),
+  (2, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
+  (2, [#icon("nbt-string") *#underline[id]*: 物品的命名空间ID。]),
+  (2, [#icon("nbt-compound") *components*: 物品的数据组件。]),
+  (3, [*\<数据组件>*: 一项数据组件]),
+  (3, [*!\<数据组件>*: 一项需要被移除的数据组件。]),
+  (2, [#icon("nbt-int") *count*: 该物品堆叠的数量，是介于1到该物品最大堆叠数（含）的值，不会大于99。])
+)
+#example(
+  [生成苹果的物品粒子。],
+  [
+    命令为
+    #codebox("particle item{item:\"minecraft:apple\"}")
+    #h(-2em)或
+    #codebox("particle item{item:{id:\"minecraft:apple\"}}")
+  ]
+)
+===== #proper-noun("Power particle option")
+`dragon_breath` 粒子使用这种选项类型，可指定速度，字段为：
+#tree(
+  (0, [#icon("nbt-compound") 粒子选项]),
+  (1, [#icon("nbt-float") *power*: 粒子的速度，默认为 `1.0f`。])
+)
+===== #proper-noun(display: "幽匿块充能粒子选项（Sculk charge particle options）", "you1 ni4 kuai4 chong1 neng2 li4 zi3 xuan3 xiang4")
+`sculk_charge` 粒子使用这种选项类型，可指定粒子在摄像机尺度下的显示角度，字段为：
+#tree(
+  (0, [#icon("nbt-compound") 粒子选项]),
+  (1, [#icon("nbt-float") *#underline[roll]*: 该粒子显示的角度，使用*弧度制*。])
+)
+===== #proper-noun(display: "尖啸粒子选项（Shriek particle option）", "jian1 xiao4 li4 zi3 xuan3 xiang4")
+`shriek` 粒子使用这种选项类型，可指定粒子延迟出现的时间，字段为：
+#tree(
+  (0, [#icon("nbt-compound") 粒子选项]),
+  (1, [#icon("nbt-float") *#underline[delay]*: 该粒子延迟的时长，单位为*秒*。])
+)
+===== #proper-noun(display: "药水粒子选项（Spell particle option）", "yao4 shui3 li4 zi3 xuan3 xiang4")
+以下粒子类型使用药水粒子选项：
+
+`effect`：喷溅药水、滞留药水、附魔之瓶破碎时产生的粒子。
+
+`instant_effect`：喷溅型或滞留型的治疗药水或伤害药水破碎时产生的粒子。
+
+药水粒子选项使用以下的字段：
+#tree(
+  (0, [#icon("nbt-compound") 粒子选项]),
+  (1, [#icon("nbt-int")#icon("nbt-list") *color*: 粒子颜色，可以用 #icon("nbt-int") 整型指定RGB颜色，对二进制而言，每八位表示一个通道，从高到低依次为R、G、B通道。也可以用 #icon("nbt-list") 列表分别指定每个通道。游戏在存储时一律存储为 #icon("nbt-int") 整型。]),
+  (2, [*若使用 #icon("nbt-list") 列表形式，则包含以下字段：*], false),
+  (2, [#icon("nbt-float") R通道分量，表示红色值。]),
+  (2, [#icon("nbt-float") G通道分量，表示绿色值。]),
+  (2, [#icon("nbt-float") B通道分量，表示蓝色值。]),
+  (1, [#icon("nbt-float") *power*: 粒子的速度，默认为 `1.0f`。])
+)
+===== #proper-noun(display: "目标颜色粒子选项（Target color particle option）", "mu4 biao1 yan2 se4 li4 zi3 xuan3 xiang4")
+`trail` 粒子使用这种选项类型，可指定粒子移动的目标位置，在移动过程中还会出现尾迹，字段为：
+#tree(
+  (0, [#icon("nbt-compound") 粒子选项]),
+  (1, [#icon("nbt-int")#icon("nbt-list") *#underline[color]*: 粒子颜色，可以用 #icon("nbt-int") 整型指定RGB颜色，对二进制而言，每八位表示一个通道，从高到低依次为A、R、G、B通道。也可以用 #icon("nbt-list") 列表分别指定每个通道。游戏在存储时一律存储为 #icon("nbt-int") 整型。]),
+  (2, [*若使用 #icon("nbt-list") 列表形式，则包含以下字段：*], false),
+  (2, [#icon("nbt-float") R通道分量，表示红色值。]),
+  (2, [#icon("nbt-float") G通道分量，表示绿色值。]),
+  (2, [#icon("nbt-float") B通道分量，表示蓝色值。]),
+  (2, [#icon("nbt-float") A通道分量，表示透明度。]),
+  (1, [#icon("nbt-int") *#underline[duration]*: 粒子移动到目标位置所需的时间，单位为*游戏刻*。]),
+  (1, [#icon("nbt-list") *#underline[target]*: 粒子的目标位置，需要是一个坐标。列表内为三个双精度浮点数，依次为$x$、$y$、$z$坐标。])
+)
+===== #proper-noun(display: "振动粒子选项（Vibration particle option）", "zhen4 dong4 li4 zi3 xuan3 xiang4")
+`vibration` 粒子使用这种选项类型，可指定粒子移动的目标位置，字段为：
+#tree(
+  (0, [#icon("nbt-compound") 粒子选项]),
+  (1, [#icon("nbt-int") *#underline[arrival_in_ticks]*: 粒子移动的时间，单位为*游戏刻*。]),
+  (1, [#icon("nbt-compound") *#underline[destination]*: 粒子移动的终点位置。]),
+  (2, [#icon("nbt-string") *type*: 终点位置的类型，可用值 `block`（方块源）和 `entity`（实体源）。#footnote[当前 `entity` 实体源不可用。]]),
+  (2, [*若 #icon("nbt-string") `type` 值为 `block`，则有以下字段：*], false),
+  (2, [#icon("nbt-list") *#underline[pos]*: 包含3个整数的列表，依次为$x$、$y$、$z$坐标，用于表示粒子移动终点位置的方块坐标。]),
+  (2, [*若 #icon("nbt-string") `type` 值为 `entity`，则有以下字段：*], false),
+  (2, [#icon("nbt-list") *#underline[source_entity]*: 目标实体的UUID。]),
+  (2, [#icon("nbt-float") *y_offset*: 相对于实体脚部的$y$方向的偏移，默认为 `0.0f`。])
+)
+#example(
+  [显示一个从初始位置移动到(0,70,0)、耗时100gt的 `vibration` 粒子],
+  [
+    命令为
+    #codebox("particle vibration{destination:{type:\"block\",pos:[0,70,0]},arrival_in_ticks:100}")
+  ]
+)
 == 教程：NBT Studio的使用 \*
+游戏中的命令只能访问方块实体、实体和命令存储的数据，对于其他的一些存档数据，就需要使用第三方辅助程序来修改。#icon("nbtstudio") NBT Studio是一款图形化的NBT编辑程序，能用于自由查询、编辑各NBT文件中的数据。从网址 https://github.com/tryashtar/nbt-studio 选择合适的版本下载后，按照指引选择合适的文件夹安装程序。#icon("nbtstudio") NBT Studio不必安装在游戏文件夹中，任意文件夹均是可接受的。
+
+程序下载安装完毕后，找到 `NBTStudio.exe`，打开程序，选择File → Open File或Open Folder。或者对任意的 `.dat` 或 `.nbt` 文件选择打开方式，使用 #icon("nbtstudio") NBT Studio打开。从窗口可以完整地看到每一个文件夹的结构和NBT文件的结构，这些结构都是树形的。#icon("nbtstudio") NBT Studio显示了完整的数据树，读者可以从这些数据数上查询所有的标签。
+
+@fig:nbtstudio_interface 为 #icon("nbtstudio") NBT Studio的界面，从上往下依次为四个选项卡（File、Edit、Search和Help）、工具栏和操作界面。
+#figure(
+  caption: "NBT Studio的界面",
+  image("图片/NBT Studio的界面.png", width: 30em)
+) <fig:nbtstudio_interface>
+#icon("nbtstudio") NBT Studio提供的工具分布在四个选项卡和工具栏中，选项卡中的大部分功能都被移植到工具栏上了，因此可以直接在工具栏上选择我们需要的工具。在操作界面选中标签后，可以由这些工具进行编辑。下面对工具栏中各工具的用途作逐一介绍：
+#param-desc(
+  prefix: "",
+  [#icon("nbtstudio-new_file")], [创建新文件。],
+  [#icon("nbtstudio-open_file")], [打开已有文件。],
+  [#icon("nbtstudio-open_folder")], [打开已有文件夹。],
+  [#icon("nbtstudio-save")], [存储当前对数据做出的修改，数据修改完成后一定要记得保存。],
+  [#icon("nbtstudio-refresh")], [刷新数据。若 #icon("nbtstudio") NBT Studio运行的过程中游戏对数据做出了修改，则可以使用这个工具刷新在 #icon("nbtstudio") NBT Studio显示的数据。],
+  [#icon("nbtstudio-cut")], [剪切一个标签。],
+  [#icon("nbtstudio-copy")], [复制一个标签。],
+  [#icon("nbtstudio-paste")], [粘贴一个标签。],
+  [#icon("nbtstudio-rename")], [对选定标签的标签名进行重命名。],
+  [#icon("nbtstudio-edit")], [对选定标签的数据进行修改，双击一个标签也可以对其数据进行修改。],
+  [#icon("nbtstudio-edit_snbt")], [以SNBT的形式编辑标签。],
+  [#icon("nbtstudio-delete")], [删除选定的标签。],
+  [#icon("nbtstudio-sort")], [在视图中对各标签做首字母排序，不会影响标签存储的数据。],
+  [#icon("nbt-byte")#icon("nbt-short")#icon("nbt-int")#icon("nbt-long")#icon("nbt-float")#icon("nbt-double")#icon("nbt-string")#icon("nbt-byte_array")#icon("nbt-int_array")#icon("nbt-long_array")#icon("nbt-compound")#icon("nbt-list")], [添加一个特定数据类型的标签。],
+  [#icon("nbtstudio-add_snbt")], [以SNBT的形式添加标签。],
+  [#icon("nbtstudio-search")], [#h(-2em)搜索特定的标签，其对话框如下图所示：#figure(caption: "Find对话框",image("图片/Find对话框.png",width:80%))#h(-2em)在对话框中输入想要查询标签的标签名或数据，就会在页面中显示目标标签的位置。如果满足要求的标签不止一个，则可以再次点击Find Previous、Find Next或Find All以搜寻前一个、后一个或所有匹配的标签。勾选Regex为启用正则表达式的搜寻方法。]
+)
+以下是使用 #icon("nbtstudio") NBT Studio修改数据的一个例子：
+
+制作冒险地图的时候，为了给地图添加点缀，一些作者会选择在地图的名称上做一些花样。点击进入单人游戏，可以看到一个存档是这样显示的：
+#figure(
+  caption: "",
+  image("图片/NBT Studio例子.png", width: 25em)
+)
+最上方的白色文本是这个存档的存档名称，它存储在 #icon("nbt") `level.dat` 中的字段 #icon("nbt-string") `LevelName`。第二行的灰色文本是存档文件夹的名称和最后一次修改文件夹（即对游玩该存档）的时间。存档名称和存档文件夹名称都是可以修改、添加样式的。其中对文件夹名称的修改不需要使用第三方程序，只要在游戏文件中直接修改文件夹名称。存档名称、最后一次游戏进行的时间都可以借助 #icon("nbtstudio") NBT Studio修改。下面是实现步骤：
+
+首先在 #icon("nbtstudio") NBT Studio中打开相应的存档，找到文件 #icon("nbt") `level.dat`，展开其数据树，找到 #icon("nbt-long") `LastPlayed` 和 #icon("nbt-string") `LevelName` 这两个标签，它们分别存储了最后一次游戏进行的Unix时间戳和存档名称。具体的数据格式已于节@sec:saves 中列出。
+#figure(
+  caption: "",
+  image("图片/NBT Studio例子2.png", width: 30em)
+)
+接下来修改存档名称，使之模糊化，并将最后一次游戏进行的时间修改为1970年1月1日8:00（UTC+8），使之贴合该冒险地图的主题。直接在数据树中双击这两个标签或点击工具栏中的 #icon("nbtstudio-edit")，将 #icon("nbt-long") `LastPlayed` 的值修改为 `0l`，将 #icon("nbt-string") `LevelName` 的值修改为带格式化代码的文本，使用@tab:formatting_code 中的 `§k` 进行模糊化字体，值为 `§kBackrooms地图测试`。如此便操作完成了。下面进入游戏中查看，可以看到修改后的结果如@fig:nbtstudio_example_3 所示。
+#figure(
+  caption: "",
+  image("图片/NBT Studio例子3.png", width: 25em)
+) <fig:nbtstudio_example_3>
+#heading(level: 2, numbering: none, [第六章思考题与习题])
++ 分别计算下列二维坐标所在的相对区块坐标、绝对区块坐标和区域坐标。
+  + $(1375,-688)$
+  + $(201,330)$
+  + $(-13,832)$
+  + $(-3250,-94)$
++ 尝试编写一个简短的教程帮助想要下载冒险地图的玩家将存档安装到他们的游戏上。
++ \*一个成就JSON文件内容如下所示，从中可以获取到什么信息？
+  #codefile(
+    lang: "json",
+    title: "654c6848-d79d-4e07-bbf4-0a88e65a57ef.json",
+    "{
+  \"minecraft:recipes/decorations/crafting_table\": {
+    \"criteria\": {
+      \"unlock_right_away\": \"2025-01-02 19:19:39 +0800\"
+    },
+    \"done\": true
+  },
+  \"DataVersion\": 4189
+}"
+  )
++ 尝试赋予玩家 `Waterman12345` 总量为43267的经验值。
++ 编写命令以获取范围在0和99之间（含）的随机数。
++ 回答下列问题。
+  + 创建一个ID为 `main:a` 的Boss栏，显示名称为粗体、黄色的#text_component(text(fill: yellow, weight: "bold")[A])；
+  + 将 `main:a` 的最大值设为200、当前值设为180，写出需要的命令；
+  + 先将 `main:a` 的最大值设为150，再输入下面的命令：
+    #codebox("bossbar get main:a value")
+    写出该命令返回的值。
++ 下界的区块数据存储于什么文件夹内？
++ 自定义维度 `the_backrooms:level_0` 的区块数据存储于什么文件夹内？
++ \*假设坐标$(3370,-662)$处生成了大量实体导致游戏崩溃，现需要使用 #icon("nbtstudio") NBT Studio删除这个区块内的所有实体，则需要找到哪个文件？
++ 给出下列方块坐标，分别求存储该方块的数据的Anvil文件名、方块所在的区块标签名和方块在区段内的局部坐标。
+  + $(8327,23,2194)$
+  + $(-1399,-23,214)$
+  + $(3985,300,-18560)$
+  + $(0,0,0)$
++ 使用命令放置一个4级信标，其主效果为速度，辅助效果为生命恢复。
++ 对于一个条件制约、保持开启的脉冲型命令方块（该方块位于$(0,56,0)$）：
+  + 更改该位置的命令方块为不受制约、红石控制。
+  + 为该命令方块添加控制台命令：
+    #codebox([tellraw \@a {text:\"test\",click_event:{action:\"run_command\",command:'tellraw \@a {text:\"Hello World!\",color:\"#color_block(red)red\"}'}}])
++ 放置一个结构方块，使其GUI如@fig:chapter_6_exercise_structure_block 所示。
+  #figure(
+    caption: "",
+    image("图片/第六章思考题与习题结构方块.png", width: 28em)
+  ) <fig:chapter_6_exercise_structure_block>
++ 生成一个尺寸值为7的超大型史莱姆。
++ 生成一个“僵尸堆”，使得一个僵尸骑在下面的僵尸身上，下面的僵尸又骑在它下面的僵尸身上，要求“僵尸堆”一共有5只僵尸。
++ 生成一个闪电苦力怕，使它的爆炸半径变为40，并且爆炸计时缩短为1 gt，即“立即爆炸”。
++ 生成一个不会在主世界转化为僵尸猪灵的猪灵。
++ 生成一个幻术师，使之一次攻击可以造成20点伤害，且每5秒钟释放一次法术。
++ 使位于坐标$(0,70,0)$的石头方块变成下落的方块后对下方的实体造成的伤害与铁砧相同。
++ 生成一个盔甲架，使之呈现走路的姿势，并且右手持有一个红石火把，该部位不能与玩家产生任何互动。
++ 生成一个掉落物形式的钻石，使其拥有自定义名称只有合适的玩家才能捡起这个钻石，并设定UUID为 `[I;123456789,123456789,123456789,123456789]` 的玩家才能捡起该钻石，在钻石被捡起之前该钻石不会自行消失。
++ 生成一个名为 #text_component([奸商])的村民，要求其职业为农民，交易项中有一项为用64个绿宝石交换1个土块，土块名称为奸商的土块。
++ 对于手持钻石的所有玩家，删除其物品栏中的所有钻石。
++ 将一面灾厄旗帜戴到附近玩家的头上。
++ 给予当前玩家一个村民刷怪蛋，使用该刷怪蛋时生成一个苦力怕。
++ 生成@exa:item_frame 的物品展示框，其中的铁镐拥有@exa:can_break_and_can_place_on 第@enu:unbreakable_iron_pickaxe 小题的物品数据。
++ 设计一串命令，使得玩家物品存储槽位编号 `9` \~ `35` 的物品按顺序存储在位于$(0,56,0)$的箱子的 `0` \~ `26` 号槽位中。
++ 判断下列与属性有关的说法是否正确。
+  + 在任何情况下，属性的值属性基值属性修饰符的值。
+  + 属性的基值不能被修改，只能通过修饰符更改属性的值。
+  + 使用修饰符对属性的值进行修改时，属性的基值也一定会被更改。
+  + 如果属性的最终值和基值相同，则该属性一定没有添加修饰符。
++ 按要求写出下列命令：
+  + 为所有的僵尸修改属性：将它们设置为完全抵抗击退。 <enu:zombie_attribute>
+  + 直接生成具有第@enu:zombie_attribute 小题所指定属性的僵尸。
++ 一个属性的基值为2，已知该属性拥有修饰量分别为4和6的两个属性增量修饰符，修饰量为0.4的一个倍率增量修饰符和两个修饰量分别为7和0.2的最终倍乘修饰符，求该属性的最终值。
++ 设计一套锁链盔甲，使头盔提供3点护甲值、1点盔甲韧性；胸甲提供7点护甲值、2点盔甲韧性；护腿提供6点护甲值、2点盔甲韧性；靴子提供3点护甲值、1点盔甲韧性。
++ 制作一个如图所示的绕西北方向的轴旋转$180 degree$的方块展示实体，展示内容为海晶灯。要求2秒内完成旋转。
+  #figure(
+    caption: "",
+    image("图片/展示实体习题1.png", width: 4em)
+  )
+  + 生成该实体，使其位置正好贴合方块坐标为$(0,70,0)$的方块。写出NBT中不含仿射变换和插值的命令。
+  + 求需要的仿射矩阵和定义插值时长所需字段 #icon("nbt-int") `interpolation_duration` 的值。
++ 如图所示是一个方块展示实体在$x O z$平面上的投影，虚线表示该展示实体原先的投影，经仿射变换后的大小、形状、位置如实线所示。该方块实体在$y$轴方向不做任何变换。
+  #figure(
+    caption: "",
+    image("图片/展示实体习题2.png", width: 20em)
+  )
+  + 求所需的仿射矩阵。
+  + 以分解形式写出对应的 #icon("nbt-compound") `transformation` 字段。
++ 用命令 `/data` 修改一块告示牌上第一行的文本，使正面的文本为#text_component([\"\\Hello World\\\"])。 <enu:chapter_6_sign_text>
++ 用命令 `/give` 将第@enu:chapter_6_sign_text 题中修改文本后的告示牌放入附近玩家的物品栏。
++ 用命令 `/give` 给予附近的玩家一本由 `B` 写的名为 `A` 的成书，书中第一页内容与第@enu:chapter_6_sign_text 题修改后的告示牌第二行内容相同。
++ 给予所有玩家一个村民刷怪蛋，要求这个村民刷怪蛋：
+  + 拥有自定义名称#text_component([MMD召唤物])；
+  + 能够被放置在钻石块和下界合金块上；
+  + 使用时召唤一只僵尸，使其拥有自定义名称#text_component([MMD召唤物])，该实体的主手持有一把石斧，石斧名称为#text_component([MMD的石斧])。
++ 已知位于$(0,56,0)$的箱子中有一颗被命名为#text_component([money])的金粒，金粒在箱子中的槽位未知，在不打开箱子的情况下，将金粒的自定义名称更改为#text_component([coin])。
++ \*已知玩家 `Mu_xian` 在存档新的世界中已观看过终末之诗一次，为了使 `Mu_xian` 能够在该存档内再次观看终末之诗，使用 #icon("nbtstudio") NBT Studio给出解决办法。
++ 参考@fig:particle_example，设计该粒子效果。
++ 当玩家与一些容器类方块进行交互、将物品放置在这些容器内时需要先打开它们的UI，可能比较繁琐。现在不妨考虑如何让玩家减少打开UI这一操作，使得玩家手持相应物品时可以将手中的物品直接存入容器。如图所示是熔炉去UI化的示意图，熔炉的正面有一个拥有记分板标签 `item` 的交互实体。玩家以 `@p` 指代，需要操作的熔炉位于$(-60,56,92)$，尝试以命令方块电路或数据包函数的方式编写以下所需的命令：
+  #figure(
+    caption: "",
+    image("图片/熔炉去UI化.png", width: 8em)
+  )
+  + 当玩家手持物品与该交互实体产生交互时，会将玩家手持物品的所有数据存入熔炉的被烧炼物品栏位，并去除玩家原本手持的物品。
+  + 当熔炉内原本有物品时，若此时玩家手持物品与该交互实体产生交互，则将熔炉内物品弹出为掉落物，将玩家的手持物品存入熔炉的被烧炼物品栏位。
 = 记分板
+你可能会在服务器的小游戏中看到这些内容，这样大家就可以在比赛中拿到他们的分数了。不可否认的是，记分板确实是命令系统的重要内容，数据的统计、处理完全依靠它。
+#pagebreak()
 == 队伍与标签<sec:team_and_tag>
 == 记分板的基本概念
 === 记分板NBT格式<subsec:scoreboard_data>

@@ -589,7 +589,22 @@
     "smelt_iron": box(image("图标/advancement/来硬的.png", height:auto), baseline: 1em, height:3em),
     "sprite-apple": box(image("图标/sprite/apple.png", height:auto), baseline: 1em, height:3em),
     "sprite-heart_full": box(image("图标/sprite/full.png", height:auto), baseline: 0.2em, height:1em),
-    "sprite-Mu_xian": box(image("图标/sprite/Mu_xian.png", height:auto), baseline: 0.2em, height:1em)
+    "sprite-Mu_xian": box(image("图标/sprite/Mu_xian.png", height:auto), baseline: 0.2em, height:1em),
+    "nbtstudio-add_snbt": box(image("图标/NbtStudio/action_add_snbt.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbtstudio-copy": box(image("图标/NbtStudio/action_copy.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbtstudio-cut": box(image("图标/NbtStudio/action_cut.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbtstudio-delete": box(image("图标/NbtStudio/action_delete.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbtstudio-edit_snbt": box(image("图标/NbtStudio/action_edit_snbt.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbtstudio-edit": box(image("图标/NbtStudio/action_edit.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbtstudio-new_file": box(image("图标/NbtStudio/action_new_file.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbtstudio-open_file": box(image("图标/NbtStudio/action_open_file.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbtstudio-open_folder": box(image("图标/NbtStudio/action_open_folder.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbtstudio-paste": box(image("图标/NbtStudio/action_paste.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbtstudio-refresh": box(image("图标/NbtStudio/action_refresh.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbtstudio-rename": box(image("图标/NbtStudio/action_rename.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbtstudio-save": box(image("图标/NbtStudio/action_save.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbtstudio-search": box(image("图标/NbtStudio/action_search.png", height:1em), baseline: 0pt, height:0.85em),
+    "nbtstudio-sort": box(image("图标/NbtStudio/action_sort.png", height:1em), baseline: 0pt, height:0.85em)
   )
   if name in icon_map {
     icon_map.at(name)
