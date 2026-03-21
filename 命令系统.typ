@@ -10825,8 +10825,8 @@ particle flame 0 70 0 1 0 -1 1 0"
 同学3在高等数学A一科仅得了62分，他觉得这个分数很低，因此在成绩单打印下来后，手动涂抹了这个分数，将这个分数改为了82。但是同学3记录在教务系统的高等数学A成绩必定为62，无论同学3纂改的分数为何。在记分板系统中，分数的数字格式也可以自由指定，游戏提供了以下三种类型的数字格式：
 #param-desc(
   prefix: "",
-  [`blank`], [无论分数为何，均不显示分数。],
-  [`fixed`], [无论分数为何，均显式指定的内容，这些内容可以不一定是数字，也可以是其他文字，并使用这些内容的样式。一般使用文本组件定义显示的内容。没有分数的分数持有者会被赋予0分后再显示固定的文本。],
+  [`blank` ], [无论分数为何，均不显示分数。],
+  [`fixed` ], [无论分数为何，均显式指定的内容，这些内容可以不一定是数字，也可以是其他文字，并使用这些内容的样式。一般使用文本组件定义显示的内容。没有分数的分数持有者会被赋予0分后再显示固定的文本。],
   [`styled`（在NBT数据中名为 `result`）], [修饰分数显示的样式，一般使用文本组件样式，不修改分数本身。]
 )
 *这些数字格式不会影响分数持有者原本的分数。*
@@ -10847,7 +10847,7 @@ particle flame 0 70 0 1 0 -1 1 0"
 === 准则
 在上面的例子中，高等数学A、理论力学B和大学物理C这三门学科的分数是怎么得出的？在实际情况中，一门学科总评分数可能依据学生的平时表现，或是该生在期末考试中的成绩，又或者是两者的综合，比如平时成绩占40%、期末考试成绩占60%，这些便是对于一门学科总评分数的“判分依据”。对于每一个记分项，当它们追踪分数持有者并记录其分数时，一定需要一个判分依据，即记分项的#proper-noun(display: "准则（Criteria）", "zhun3 ze2")。准则的主要作用是*决定跟踪的分数持有者行为，并为记分项中分数的改变提供依据*。同时，对于一门学科而言，其判分依据必须是确切的、统一的，不能存在多个不同的判分依据，否则在分数的评定上会有非公平的、有冲突的后果。因此，在记分板系统中，*一个记分项必须拥有且只能拥有一种准则。*
 
-根据准则名称的长度，可以将准则分为两类：单一准则和复合准则；如果根据变量的分数能否被修改，则准则又可以分为*只读型准则*和*可修改型准则*。只读型准则是指：*变量中分数的改变由系统中数据的改变而发生改变，无法对其进行修改；*可修改型准则是指可由命令修改的准则，一些可修改型准则只能由命令修改，一些可能受到系统内部数据的影响。下面使用单一准则和复合准则的分类方式，同时会说明每种准则是只读型或者是可修改型。
+根据准则名称的长度，可以将准则分为两类：单一准则和复合准则；如果根据记分项的分数能否被修改，则准则又可以分为*只读型准则*和*可修改型准则*。只读型准则是指：*记分项中分数的改变由系统中数据的改变而发生改变，无法对其进行修改；*可修改型准则是指可由命令修改的准则，一些可修改型准则只能由命令修改，一些可能受到系统内部数据的影响。下面使用单一准则和复合准则的分类方式，同时会说明每种准则是只读型或者是可修改型。
 ==== 单一准则
 #proper-noun(display: "单一准则（Single criteria）", "dan1 yi1 zhun3 ze2")是较为简单的、准则名称只由单一字符串组成的准则。
 #general-table(
@@ -10866,7 +10866,7 @@ particle flame 0 70 0 1 0 -1 1 0"
   [`food`], [显示玩家的饥饿值。], [只读型],
   [`air`], [显示玩家的氧气值。], [只读型],
   [`armor`], [显示玩家的盔甲值。], [只读型]
-)
+) <tab:single_criteria>
 ==== 复合准则
 #proper-noun(display: "复合准则（Compound criteria）", "fu4 he2 zhun3 ze2")是较为精细的、准则名称分成多个部分的准则。一个复合准则由基础准则和次级准则组成。所有的统计信息都可作为复合准则使用，格式见节@subsec:player_data 的@tab:stat 和@tab:custom_stat，其中统计大类为基础准则，统计细则为次级准则。
 
@@ -10878,17 +10878,71 @@ particle flame 0 70 0 1 0 -1 1 0"
   header: ([基础准则], [次级准则], [简介], [用例]),
   [`teamkill`], table.cell(rowspan: 2)[从下列参数中选择：`aqua`、`black`、`blue`、`dark_aqua`、`dark_blue`、`dark_gray`、`dark_green`、`dark_purple`、`dark_red`、`gold`、`gray`、`green`、`light_purple`、`red`、`yellow` 和 `white`。], [杀死指定颜色队伍中的一个玩家时，分数自动加一。], [`teamkill.aqua`],
   [`killedByTeam`], [被指定颜色队伍中的玩家杀死一次时，分数自动加一。], [`killedByTeam.aqua`]
-)
+) <tab:compound_criteria>
 所有的复合准则都是可修改型准则。
 #example(
   [自定义冒险地图的运作经常需要检测玩家使用胡萝卜钓竿的次数，常试写出所需的准则。],
   [
-    胡萝卜钓竿使用次数是一项统计信息，基础准则（统计大类）为 `minecraft.used`，次级准则（统计细则）为 `minecraft.carrot_on_a_stick`，因此复合准则为 `minecraft.used:minecraft.carrot_on_a_stick`。
+    胡萝卜钓竿使用次数是一项统计信息，参考@tab:stat，基础准则（统计大类）为 `minecraft.used`，次级准则（统计细则）为 `minecraft.carrot_on_a_stick`，因此复合准则为 `minecraft.used:minecraft.carrot_on_a_stick`。
     
   ]
 )
 === 记分板NBT格式<subsec:scoreboard_data>
+记分板的信息以NBT的格式存储在 #icon("nbt") `saves > <存档名称> > data > minecraft > scoreboard.dat` 中。其数据结构如下所示：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-compound") *#underline[data]*]),
+  (2, [#icon("nbt-compound") *DisplaySlots*: 每个显示位置显示的记分项。]),
+  (3, [#icon("nbt-string") *\<显示位置>*: 该显示位置显示的记分项，需要是一个记分项名称。]),
+  (2, [#icon("nbt-list") *#underline[Objectives]*: 存储所有的记分项。]),
+  (3, [#icon("nbt-compound") 一个记分项。]),
+  (4, [#icon("nbt-string") *#underline[CriteriaName]*: 该记分项的准则。]),
+  (4, [#icon("nbt-bool") *#underline[display_auto_update]*: 分数更改时，侧边栏中的显示名称是否自动更新。]),
+  (4, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *#underline[DisplayName]*: 记分项的显示名称，必须为文本组件，如果没有使用命令指定显示名，则以记分项名称作为显示名称。]),
+  (4, [#icon("nbt-compound") *format*: 该记分项默认的分数数字格式。]),
+  (5, [#icon("nbt-string") *#underline[type]*: 数字格式类型，有效值 `blank`、`fixed` 和 `styled`。]),
+  (5, [*若 #icon("nbt-string") `type` 值为 `blank`，则不存在额外字段。*], false),
+  (5, [*若 #icon("nbt-string") `type` 值为 `fixed`，则使用以下字段：*], false),
+  (5, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *#underline[value]*: 一段固定的文本，需要是文本组件。]),
+  (5, [*若 #icon("nbt-string") `type` 值为 `styled`，则使用以下字段：*], false),
+  (5, [文本组件样式]),
+  (4, [#icon("nbt-string") *#underline[Name]*: 记分项名称。]),
+  (4, [#icon("nbt-string") *#underline[RenderType]*: 存储分数的显示方式，有 `integer`（默认值，数字）和 `hearts`（爱心）两种有效值。]),
+  (2, [#icon("nbt-list") *#underline[PlayerScores]*: 存储分数持有者及其分数信息。]),
+  (3, [#icon("nbt-compound") 一个分数持有者及其分数。]),
+  (4, [#icon("nbt-compound") *format*: 该分数持有者在此记分项使用的分数数字格式。]),
+  (5, [#icon("nbt-string") *#underline[type]*: 数字格式类型，有效值 `blank`、`fixed` 和 `styled`。]),
+  (5, [*若 #icon("nbt-string") `type` 值为 `blank`，则不存在额外字段。*], false),
+  (5, [*若 #icon("nbt-string") `type` 值为 `fixed`，则使用以下字段：*], false),
+  (5, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *#underline[value]*: 一段固定的文本，需要是文本组件。]),
+  (5, [*若 #icon("nbt-string") `type` 值为 `styled`，则使用以下字段：*], false),
+  (5, [文本组件样式]),
+  (4, [#icon("nbt-bool") *#underline[Locked]*: 触发器记分项是否对该对象启用，当值为 `true` 时，代表这个记分项是被“锁住”的，即未被启用。该标签对准则为触发器以外的记分项无效。]),
+  (4, [#icon("nbt-string") *#underline[Name]*: 分数持有者的名称。]),
+  (4, [#icon("nbt-string") *#underline[Objective]*: 分数持有者的分数所在的记分项。]),
+  (4, [#icon("nbt-int") *#underline[Score]*: 分数。]),
+  (2, [#icon("nbt-list") *Teams*: 存储所有队伍的信息。数据结构见节@subsec:team。])
+)
 == 记分板命令#h(1em)触发器
+上一节对记分板的概念做出了解释，本节就如何用命令管理记分板进行讲解。
+
+记分板命令大致可以分为三大类：记分项命令、分数持有者命令和触发器。
+=== 记分项命令
+记分项命令，即以 `/scoreboard objectives` 开头的命令。其中 `/scoreboard` 所需的权限等级为2。 `objectives` 是 `/scoreboard` 专门用于处理记分项的子命令，其所有次级子命令如下所示：#index(index: "command", "scoreboard")
+===== 添加一个记分项，并指定其记分项名称和准则。语法为
+#codebox("scoreboard objectives add <objective> <criteria> [<displayName>]")
+#param-desc(
+  [`<objective>`（记分项 `minecraft:objective`）], [被添加的记分项的记分项名称，只允许包含大小写英文字母、数字、下划线 `_`、点 `.`、加号 `+` 或连字符 `-`。],
+  [`<criteria>`（准则 `minecraft:objective_criteria`）], [指定记分项的准则，按@tab:single_criteria、@tab:compound_criteria、@tab:stat 和@tab:custom_stat 使用。],
+  [`[<displayName>]`（文本组件 `minecraft:component`）], [可选，指定记分项的*显示名称*。]
+)
+#example(
+  [添加一个虚拟型记分项 `[a]`。],
+  [
+    命令为
+    #codebox("scoreboard objectives add a dummy")
+  ]
+)
 === 触发器<subsec:trigger>
 = 命令/execute<chap:command_execute>
 #appendix
