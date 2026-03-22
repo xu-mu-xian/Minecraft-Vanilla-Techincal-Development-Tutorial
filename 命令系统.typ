@@ -6670,7 +6670,7 @@ Boss栏数据被存储在 #icon("nbt") `data > minecraft > custom_boss_events.da
 #codebox("weather (clear|rain|thunder) [<duration>]")
 #param-desc(
   [`(clear|rain|thunder)` ], [用于指定天气为晴天、雨天（温度值低于0.15的区域会下雪）或雷暴。],
-  [`[<time>]`（时间 `minecraft:time`）], [可选，指定天气的持续时间，格式为：`<单精度浮点数>[<单位>]`，单位可以为：`t`（游戏刻），`s`（秒）或 `d`（游戏日），无单位默认为游戏刻。如不填写，则按指定的天气随机取值：\ 对于 `clear`：随机取 `12000` 到 `180000` 之间（含）的值。\ 对于 `rain`：随机取 `12000` 到 `24000` 之间（含）的值。\ 对于 `thunder`：随机取 `3600` 到 `15600` 之间（含）的值。]
+  [`[<duration>]`（时间 `minecraft:time`）], [可选，指定天气的持续时间，格式为：`<单精度浮点数>[<单位>]`，单位可以为：`t`（游戏刻），`s`（秒）或 `d`（游戏日），无单位默认为游戏刻。如不填写，则按指定的天气随机取值：\ 对于 `clear`：随机取 `12000` 到 `180000` 之间（含）的值。\ 对于 `rain`：随机取 `12000` 到 `24000` 之间（含）的值。\ 对于 `thunder`：随机取 `3600` 到 `15600` 之间（含）的值。]
 )
 使用 `/weather` 改变天气会导致降雨计时器和雷暴计时器被重置为相同的值，因此晴天过后总是为雷暴。
 
@@ -10843,7 +10843,7 @@ particle flame 0 70 0 1 0 -1 1 0"
   [`list`（列表）], [按住 `Tag` 键呼出。显示名称不会显示，仅显示分数。只显示在线玩家的分数。], [#image("图片/显示位置列表.png", width: 12em)],
   [`below_name`（名称下方）], [只在多人游戏中显示在玩家名称牌的下方，显示该玩家的分数。显示格式为 `<显示名称>:<分数>`。], [],
   [`siderbar.team.<颜色>`], [显示方式和侧边栏基本相同，但只有位于指定颜色队伍的玩家才可以看见拥有此颜色队伍中成员的分数。颜色一共有十六种不同的值，详见节@subsec:team。]
-)
+) <tab:tab:display_slot>
 === 准则
 在上面的例子中，高等数学A、理论力学B和大学物理C这三门学科的分数是怎么得出的？在实际情况中，一门学科总评分数可能依据学生的平时表现，或是该生在期末考试中的成绩，又或者是两者的综合，比如平时成绩占40%、期末考试成绩占60%，这些便是对于一门学科总评分数的“判分依据”。对于每一个记分项，当它们追踪分数持有者并记录其分数时，一定需要一个判分依据，即记分项的#proper-noun(display: "准则（Criteria）", "zhun3 ze2")。准则的主要作用是*决定跟踪的分数持有者行为，并为记分项中分数的改变提供依据*。同时，对于一门学科而言，其判分依据必须是确切的、统一的，不能存在多个不同的判分依据，否则在分数的评定上会有非公平的、有冲突的后果。因此，在记分板系统中，*一个记分项必须拥有且只能拥有一种准则。*
 
@@ -10929,7 +10929,8 @@ particle flame 0 70 0 1 0 -1 1 0"
 记分板命令大致可以分为三大类：记分项命令、分数持有者命令和触发器。
 === 记分项命令
 记分项命令，即以 `/scoreboard objectives` 开头的命令。其中 `/scoreboard` 所需的权限等级为2。 `objectives` 是 `/scoreboard` 专门用于处理记分项的子命令，其所有次级子命令如下所示：#index(index: "command", "scoreboard")
-===== 添加一个记分项，并指定其记分项名称和准则。语法为
+===== `add`
+该子命令用于添加一个记分项，并指定其记分项名称和准则。语法为
 #codebox("scoreboard objectives add <objective> <criteria> [<displayName>]")
 #param-desc(
   [`<objective>`（记分项 `minecraft:objective`）], [被添加的记分项的记分项名称，只允许包含大小写英文字母、数字、下划线 `_`、点 `.`、加号 `+` 或连字符 `-`。],
@@ -10943,6 +10944,135 @@ particle flame 0 70 0 1 0 -1 1 0"
     #codebox("scoreboard objectives add a dummy")
   ]
 )
+===== `list`
+该子命令用于列出所有存在的记分项，返回其记分项名称、准则和显示名称。语法为
+#codebox("scoreboard objectives list")
+===== `modify`
+该子命令用于修改记分项的一些属性，以下是所有用法：
+====== 设置此记分项是否会在分数更新时自动更新用于分数的分数持有者的显示名称，语法为
+#codebox("scoreboard objectives modify <objective> displayautoupdate (true|false)")
+#param-desc(
+  [`(true|false)` ], [默认为 `false`。]
+)
+====== 更改此记分项的显示名称，语法为
+#codebox("scoreboard objectives modify <objective> displayname <displayName>")
+====== 将此记分项的分数数字格式设置为显示位置的默认数字格式，语法为
+#codebox("scoreboard objectives modify <objective> numberformat")
+====== 不显示此记分项的分数，即 `blank` 模式，语法为
+#codebox("scoreboard objectives modify <objective> numberformat blank")
+====== 将此记分项的分数数字格式设置为固定的文本，即 `fixed` 模式，语法为
+#codebox("scoreboard objectives modify <objective> numberformat fixed <component>}")
+#param-desc(
+  [`<component>`（文本组件 `minecraft:component`）], [指定的文本，需要是文本组件，但不必为数字内容。没有分数的分数持有者会被赋予0分后再显示固定的文本。]
+)
+====== 修饰此记分项的分数数字格式，即 `styled` 模式，语法为
+#codebox("scoreboard objectives modify <objective> numberformat styled <style>")
+#param-desc(
+  [`<style>`（文本组件样式 `minecraft:style`）], [需要为文本组件中的样式字段，内容类型相关的字段无效。]
+)
+====== 修改此记分项在显示位置 `list` 的分数显示格式，语法为
+#codebox("scoreboard objectives modify <objective> rendertype (hearts|integer)")
+#param-desc(
+  [`(hearts|integer)` ], [分数的显示方式，`hearts` 为心形血条，`integer` 为数字。]
+)
+===== `remove`
+该子命令用于移除记分项，语法为
+#codebox("scoreboard objectives remove <objective>")
+===== `setdisplay`
+该子命令用于设置显示位置显示的记分项，语法为
+#codebox("scoreboard objectives setdisplay <slot> [<objective>]")
+#param-desc(
+  [`<slot>`（显示位置 `minecraft:scoreboard_slot`）], [合法的显示位置，参照@tab:tab:display_slot 使用。],
+  [`[<objective>]`（记分项 `minecraft:objective`）], [*如不指定该参数，则清空该显示位置。*]
+)
+=== 分数持有者命令
+分数持有者命令，即以 `/scoreboard players` 开头的命令。`players` 是 `/scoreboard` 专门用于处理分数持有者的子命令，若分数持有者原本不被指定的记分项追踪，则这些命令会使分数持有者开始被指定记分项追踪，并在初始分数0的基础上进行修改。其所有次级子命令如下所示：
+===== `add`
+该子命令为对象在指定记分项原本的分数上加上指定的分数，语法为
+#codebox("scoreboard players add <targets> <objective> <score>")
+#param-desc(
+  [`<targets>`（分数持有者 `minecraft:score_holder`）], [需要修改分数的分数持有者，可以是玩家名、UUID或目标选择器，也可以是 `*` 以指定所有正在被追踪的实体。允许使用假名。],
+  [`<score>`（整型 `brigadier:integer`）], [增加的分数，*必须为非负整数*。]
+)
+#example(
+  [使玩家 `Mu_xian` 在记分项 `[score]` 上的分数增加5。],
+  [
+    命令为
+    #codebox("scoreboard players add Mu_xian score 5")
+    若 `Mu_xian` 在记分项 `[score]` 上原本的分数为5，则执行命令后，`Mu_xian` 在记分项 `[score]` 上的分数变为10。
+  ]
+)
+===== `display`
+该子命令用于设置分数持有者在指定记分项上的显示名称及数字样式。
+====== 修改显示名称时，有如下子命令：
+======= 重置分数持有者在指定记分项上的显示名称为默认名称
+#codebox("scoreboard players display name <targets> <objective>")
+======= 直接修改分数持有者在指定记分项上的显示名称
+#codebox("scoreboard players display name <targets> <objective> <text>")
+#param-desc(
+  [`<text>`（文本组件 `minecraft:component`）], [分数持有者的显示名称。]
+)
+====== 修改数字样式时，有如下子命令：
+======= 重置分数持有者在指定记分项上的数字格式为默认样式
+#codebox("scoreboard players display numberformat <targets> <objective>")
+======= 不显示分数持有者在指定记分项上的分数
+#codebox("scoreboard players display numberformat <targets> <objective> blank")
+======= 设置分数持有者在指定记分项上的数字格式为 `fixed` 类型
+#codebox("scoreboard players display numberformat <targets> <objective> fixed <contents>")
+#param-desc(
+  [`<contents>`（文本组件 `minecraft:component`）], [固定显示的文本样式。]
+)
+======= 设置分数持有者在指定记分项上的数字格式为 `styled` 类型
+#codebox("scoreboard players display numberformat <targets> <objective> styled <style>")
+#param-desc(
+  [`<style>`（文本组件样式 `minecraft:style`）], [需要为文本组件中的样式字段，内容类型相关的字段无效。]
+)
+===== `enable`
+该子命令对指定分数持有者启用一个准则为触发器的记分项，语法为
+#codebox("scoreboard players enable <targets> <objective>")
+===== `get`
+该子命令用于获取分数持有者在记分项上的分数，每次只能选择一个分数持有者，语法为#footnote[`*` 在该命令中失效，对于下文 `list` 子命令也相同，详见#link("https://bugs.mojang.com/browse/MC/issues/MC-136858")[MC-136858]。]
+#codebox("scoreboard players get <target> <objective>")
+#param-desc(
+  [`<targets>`（分数持有者 `minecraft:score_holder`）], [需要获取分数的分数持有者，可以是玩家名、UUID或目标选择器，但必须指定一个实体。]
+)
+===== `list`
+该子命令用于返回指定分数持有者在所有追踪该分数持有者的记分项上的分数，语法为
+#codebox("scoreboard players list [<target>]")
+#param-desc(
+  [`[<targets>]`（分数持有者 `minecraft:score_holder`）], [可选，若不填写该参数，则返回所有正在追踪分数持有者的记分项。]
+)
+===== `operation`
+该子命令提供了更复杂的分数运算处理机制，同时允许多个记分项的分数之间产生互动，是记分板体系的精华部分。*在整个命令系统中，对数值进行的数学运算基本上都要依靠命令 `/scoreboard players operation` 来完成。*语法为
+#codebox("scoreboard players operation <targets> <targetObjective> <operation> <source> <sourceObjective>")
+#param-desc(
+  [`<targets>`（分数持有者 `minecraft:score_holder`）], [*目标分数持有者*，可以是玩家名、UUID或目标选择器，也可以是 `*` 以指定所有正在被追踪的实体。],
+  [`<targetObjective>`（记分项 `minecraft:objective`）], [*目标记分项*。这里称由分数持有者 `<targets>` 在记分项 `<targetObjective>` 上的分数为*目标分数*。],
+  [`<operation>`（操作符 `minecraft:operation`）], [对目标分数和源分数进行的操作。所有可用的操作符列于@tab:operation。],
+  [`<source>`（分数持有者 `minecraft:score_holder`）], [*源分数持有者*，可以是玩家名、UUID或目标选择器，也可以是 `*` 以指定所有正在被追踪的实体。],
+  [`<sourceObjective>`（记分项 `minecraft:objective`）], [*源记分项*。这里称由分数持有者 `<source>` 在记分项 `<sourceObjective>` 上的分数为*源分数*。]
+)
+#general-table(
+  caption: "操作符",
+  colspan: 7,
+  columns: (auto, auto, auto, auto, auto, 5em, 5em),
+  header: (table.cell(rowspan: 2)[操作], table.cell(rowspan: 2)[#text(black)[`<operation>`]], table.cell(rowspan: 2)[说明], table.cell(colspan: 4)[用例], table.cell(fill: theme_basic.lighten(20%))[#text(fill: white, font: "Source Han Sans SC", weight: "bold")[目标分数]], table.cell(fill: theme_basic.lighten(20%))[#text(fill: white, font: "Source Han Sans SC", weight: "bold")[源分数]], table.cell(fill: theme_basic.lighten(20%))[#text(fill: white, font: "Source Han Sans SC", weight: "bold")[操作后的目标分数]], table.cell(fill: theme_basic.lighten(20%))[#text(fill: white, font: "Source Han Sans SC", weight: "bold")[操作后的源分数]]),
+  [求和赋值], [`+=`], [将源分数加到目标分数上，不改变源分数。], [1], [2], [3], [2],
+  [求差赋值], [`-=`], [使目标分数减去源分数，不改变源分数。], [3], [2], [1], [2],
+  [求积赋值], [`*=`], [使目标分数乘以源分数，并将结果存储为目标分数，不改变源分数。], [1], [2], [2], [2],
+  table.cell(rowspan: 3)[求商赋值], table.cell(rowspan: 3)[`/=`], table.cell(rowspan: 3)[使目标分数除以源分数得到整数商，并将结果存储为目标分数，不改变源分数。在大多数情况下，目标分数不能被源分数整除，此时除运算结果会*向负无穷大方向取整*。如果源分数为0，由于任何数除以0无意义，则求商运算不会得到任何结果。], [3], [2], [1], [2],
+  [$-3$], [2], [$-1$], [2],
+  [1], [0], [*1*], [0],
+  table.cell(rowspan: 3)[取模赋值], table.cell(rowspan: 3)[`%=`], table.cell(rowspan: 3)[计算目标分数除以源分数后得到的非负余数，并将结果存储为目标分数。具体的计算过程可以分为两步：已知分数$a$和$b$，计算 `a%=b` 时，先对分数进行求整数商运算，得到#box(baseline: 30%, inset: (y: 0.5em))[$display(c=a/b)$]，其中$c$会*向负无穷大方向取整*；其次计算余数$r=a-c dot.c b$。], [12], [5], [2], [5],
+  [10], [5], [0], [5],
+  [$-12$], [5], [3], [5],
+  [赋值], [`=`], [将源分数赋值给目标分数，不改变源分数。], [2], [3], [3], [3],
+  table.cell(rowspan: 2)[取较小值], table.cell(rowspan: 2)[`<`], table.cell(rowspan: 2)[先比较目标分数$a$和源分数$b$，若$a<b$，则两个分数均不发生变化；若$a>b$，则目标分数变为$b$，源分数不发生改变。], [1], [2], [1], [2],
+  [2], [1], [1], [1],
+  table.cell(rowspan: 2)[取较大值], table.cell(rowspan: 2)[`>`], table.cell(rowspan: 2)[先比较目标分数$a$和源分数$b$，若$a>b$，则两个分数均不发生变化；若$a<b$，则目标分数变为$b$，源分数不发生改变。], [1], [2], [2], [2],
+  [2], [1], [2], [1],
+  [交换], [`><`], [交换目标分数和源分数，这时两个分数都会发生变化，是唯一会改变源分数的操作符。], [3], [4], [*4*], [*3*]
+) <tab:operation>
 === 触发器<subsec:trigger>
 = 命令/execute<chap:command_execute>
 #appendix
