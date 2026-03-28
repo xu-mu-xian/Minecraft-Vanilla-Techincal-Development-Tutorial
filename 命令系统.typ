@@ -5774,7 +5774,7 @@ H])需要这么写：
     若整个文本组件使用JSON格式，则必须使用双引号，此时内部命令中的文本组件可以用单引号规避转义：
     #codebox("{\"text\":\"Minecraft\",\"click_event\":{\"action\":\"run_command\",\"command\":\"title @s title 'Hello Minecraft!'\"}}")
   ]
-)
+) <exa:click_event>
 ===== `show_dialog`：向玩家显示一个对话框，*在 `/tellraw`、告示牌和成书中可用*，数据格式为
 #tree(
   (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
@@ -7121,7 +7121,7 @@ $scoreboard players set #system_time_second var $(second)"
 命令用于清除实体，所需权限等级为2，语法为：#index(index: "command", "kill")
 #codebox("kill [<targets>]")
 #param-desc(
-  [`<targets>`（实体 `minecraft:entity`）], [可选，不指定则清除命令执行者自身。]
+  [`<targets>`（实体 `minecraft:entity`）], [可选，需要是玩家名称、UUID或目标选择器。不指定则清除命令执行者自身。]
 )
 ==== 命令 `/ride`
 命令 `/ride` 用于控制实体的骑乘关系，它需要的权限等级为2，以下是所有用法：#index(index: "command", "ride")
@@ -9529,7 +9529,7 @@ item replace entity @s weapon.mainhand with diamond_spear"
 
     查阅附录@sec:data_components_type，物品的名称由组件 #icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") `minecraft:item_name` 定义，值需要为一个文本组件。如果物品被附魔，则名称会显示为青色。因此直接写字符串即可：
     #codebox("custom_name=\"超级保护\"")
-    物品的魔咒由组件 #icon("nbt-compound") `minecraft:enchantments` 定义，根据附录@sec:data_components_type 的说明，此处可使用简化形式，标签名为各魔咒的命名空间ID，值为该魔咒的等级。保护、爆炸保护、火焰保护和弹射物保护的命名空间ID分别为 `minecraft:protection`、`minecraft:blast_protection`、`minecraft:fire_protection` 和 `minecraft:projectile_protection`，故组件为
+    物品的魔咒由组件 #icon("nbt-compound") `minecraft:enchantments` 定义，根据附录@sec:data_components_type 的说明，此处标签名为各魔咒的命名空间ID，值为该魔咒的等级。保护、爆炸保护、火焰保护和弹射物保护的命名空间ID分别为 `minecraft:protection`、`minecraft:blast_protection`、`minecraft:fire_protection` 和 `minecraft:projectile_protection`，故组件为
     #codebox("enchantments={
   \"minecraft:protection\":4,
   \"minecraft:blast_protection\":4,
@@ -10720,6 +10720,18 @@ particle flame 0 70 0 1 0 -1 1 0"
   [`suffix`], [在队伍中玩家名称的后面显示的后缀。], [`<suffix>`], [一段文本组件。]
 )
 例如，#text_component(text(green)[[B组] #text(blue)[Mu_xian]#text(yellow)[ -lvl:10]])是聊天栏中一个名为 `Mu_xian` 的玩家显示的名称，其中#text_component(text(green)[B组])（末尾有空格）是前缀，#text_component(text(yellow)[ -lvl:10])（前端有空格）是后缀。由这个玩家的名称颜色可知，该玩家所在队伍的队伍颜色为蓝色，前缀的文本组件为 `{text:"[B组] ",color:"green"}`，后缀的文本组件为 `{text:" -lvl:10",color:"yellow"}`。
+#index(index: "method", display: "关闭玩家之间的实体碰撞", "guan1 bi4 wan2 jia1 zhi1 jian1 de shi2 ti3 peng4 zhuang4")
+#example(
+  [关闭所有玩家之间的实体碰撞。],
+  [
+    当前版本暂时没有直接关闭实体碰撞的游戏规则，因此需要使用队伍系统的功能。首先任意添加一个队伍：
+    #codebox("team add turn_off_collision")
+    让所有玩家加入这个队伍：
+    #codebox("team join turn_off_collision @a")
+    随后关闭这个队伍的碰撞：
+    #codebox("team modify turn_off_collision collisionRule never")
+  ]
+)
 ==== 队伍NBT格式 \*
 标签 #icon("nbt-list") `Teams` 用于存储队伍信息，它是一个复合标签的列表。这个标签位于文件 #icon("nbt") `saves > <存档名称> > data > minecraft > scoreboard.dat` 中，列表 #icon("nbt-list") `Teams` 中的每一个复合标签都存储了一个队伍的信息。以下是队伍数据的结构：
 #tree(
@@ -10772,7 +10784,7 @@ particle flame 0 70 0 1 0 -1 1 0"
 #codebox("summon minecraft:zombie ~ ~ ~ {Tags:[\"a\",\"b\"]}")
 #h(-2em)可生成一个带有记分板标签 `a` 和 `b` 的僵尸。
 == 记分板的基本概念
-上一章的内容主要是数据存储的方式。而对于数据的处理，例如统计和计算数据，则需要用到命令系统中一个非常重要的体系——#proper-noun(display: "记分板（Scoreboard）", "ji4 fen1 ban3")。记分板处理数据的原理是：*将数据通过命令转换为对象的分数，对分数进行一定的处理后返回相应的数据。*
+上一章的内容主要是数据存储的方式。而对于数据的处理，例如统计和计算数据，则需要用到命令系统中一个非常重要的体系——#proper-noun(display: "记分板（Scoreboard）", "ji4 fen1 ban3")。记分板处理数据的原理是：*将数据通过命令转换为分数持有者的分数，对分数进行一定的处理后返回相应的数据。*
 
 记分板的基本单位是#proper-noun(display: "记分项（Objective）", "ji4 fen1 xiang4")，而记分项中又含有记分项名称、记分项显示名称、准则等基本组成元素。对这些基本概念的讲解是本节的主要内容。
 === 记分项的基本属性
@@ -10798,7 +10810,7 @@ particle flame 0 70 0 1 0 -1 1 0"
 
 分数持有者记录的是玩家的玩家名称或其他实体的UUID。*当一个非玩家实体被清除时，其UUID也不复存在，故一个非玩家实体被杀死后，先前追踪它的记分项将不再对其进行追踪。但是对于玩家而言，无论其是否存活、是否存在于游戏中，记分项始终会追踪其分数，直到使用命令 `/scoreboard players reset` 重制分数持有者的分数。*
 
-根据这个原理，读者可以任意设置一些玩家名称作为分数持有者使用，这些玩家名称所属的玩家甚至不必存在。一般称这类对象的名称为#proper-noun(display: "假名（Fake name）", "jia3 ming2")。假名的使用在记分板系统中很常见，比如在上面的例子中，计算 `[高等数学A]`、`[理论力学B]` 和 `[大学物理C]` 三个记分项在三个分数持有者上的平均分，并存入分数持有者 `Ave` 中：
+根据这个原理，读者可以任意设置一些玩家名称作为分数持有者使用，这些玩家名称所属的玩家甚至不必存在。一般称这类分数持有者的名称为#proper-noun(display: "假名（Fake name）", "jia3 ming2")。假名的使用在记分板系统中很常见，比如在上面的例子中，计算 `[高等数学A]`、`[理论力学B]` 和 `[大学物理C]` 三个记分项在三个分数持有者上的平均分，并存入分数持有者 `Ave` 中：
 #general-table(
   caption: "",
   colspan: 4,
@@ -10808,7 +10820,7 @@ particle flame 0 70 0 1 0 -1 1 0"
 )
 这里的计算方法先不讲。很明显 `Ave` 不是一个实际存在的同学名称，用记分板体系的表述方式为，分数持有者 `Ave` 指代的玩家不一定必须存在，但它依旧记录了一些数据。不过由于假名的实质是玩家名称，一旦拥有和假名相同名称的玩家进入游戏后，他的分数则会不可避免地受到影响。因此可以在假名前加一个 `#` 以作为假名和真实存在的玩家名称的区分。例如 `Ave` 和 `#Ave` 是两个完全不同的分数持有者，使用 `#Ave` 可以有效防止名为 `Ave` 的玩家的分数与假名分数持有者的分数起冲突。不过在社区中也有部分开发者会使用 `$` 作为假名前缀，如 `$Ave`。
 
-对象分数是*介于$-2147483648$和$2147483647$之间（含）的整数*，因此上述分数持有者 `Ave` 在记分项 `[高等数学A]` 上的分数并不严格等于三位同学的 `[高等数学A]` 分数的平均分，此处去除了实际平均分的小数部分。读者在制作记分板系统时，务必要注意分数的溢出情况。
+分数持有者分数是*介于$-2147483648$和$2147483647$之间（含）的整数*，因此上述分数持有者 `Ave` 在记分项 `[高等数学A]` 上的分数并不严格等于三位同学的 `[高等数学A]` 分数的平均分，此处去除了实际平均分的小数部分。读者在制作记分板系统时，务必要注意分数的溢出情况。
 
 接下来再说明一个特殊的机制：假设学校在期末考试过程中通过学生的学号识别每一个学生，无论该学生在试卷上填写的姓名为何。因此 `同学2` 在考 `[高等数学A]` 时将自己的名字填写为#text_component([高数有手就行])，在考 `[理论力学B]` 时将自己的名字填写为#text_component([理力有手就行])，在考 `[大学物理C]` 时将自己的名字填写为#text_component([大物有手就行])。因此产生了如下所示的成绩单：
 #general-table(
@@ -10839,7 +10851,7 @@ particle flame 0 70 0 1 0 -1 1 0"
   colspan: 3,
   columns: (auto, auto, auto),
   header: ([显示位置], [简介], [图例]),
-  [`sidebar`（侧边栏）], [在屏幕的右侧显示。显示名称会显示在最上方。只会显示有分数对象的分数，若为玩家则显示玩家名，若为其他实体则显示UUID，带 `#` 号假名的分数不会出现在侧边栏。如果玩家不在线，其分数依然会被显示。], [#image("图片/显示位置侧边栏.png", width: 10em)],
+  [`sidebar`（侧边栏）], [在屏幕的右侧显示。显示名称会显示在最上方。只会显示有分数的分数持有者的分数，若为玩家则显示玩家名，若为其他实体则显示UUID，带 `#` 号假名的分数不会出现在侧边栏。如果玩家不在线，其分数依然会被显示。], [#image("图片/显示位置侧边栏.png", width: 10em)],
   [`list`（列表）], [按住 `Tag` 键呼出。显示名称不会显示，仅显示分数。只显示在线玩家的分数。], [#image("图片/显示位置列表.png", width: 12em)],
   [`below_name`（名称下方）], [只在多人游戏中显示在玩家名称牌的下方，显示该玩家的分数。显示格式为 `<显示名称>:<分数>`。], [],
   [`siderbar.team.<颜色>`], [显示方式和侧边栏基本相同，但只有位于指定颜色队伍的玩家才可以看见拥有此颜色队伍中成员的分数。颜色一共有十六种不同的值，详见节@subsec:team。]
@@ -10917,7 +10929,7 @@ particle flame 0 70 0 1 0 -1 1 0"
   (5, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *#underline[value]*: 一段固定的文本，需要是文本组件。]),
   (5, [*若 #icon("nbt-string") `type` 值为 `styled`，则使用以下字段：*], false),
   (5, [文本组件样式]),
-  (4, [#icon("nbt-bool") *#underline[Locked]*: 触发器记分项是否对该对象启用，当值为 `true` 时，代表这个记分项是被“锁住”的，即未被启用。该标签对准则为触发器以外的记分项无效。]),
+  (4, [#icon("nbt-bool") *#underline[Locked]*: 触发器记分项是否对该分数持有者启用，当值为 `true` 时，代表这个记分项是被“锁住”的，即未被启用。该标签对准则为触发器以外的记分项无效。]),
   (4, [#icon("nbt-string") *#underline[Name]*: 分数持有者的名称。]),
   (4, [#icon("nbt-string") *#underline[Objective]*: 分数持有者的分数所在的记分项。]),
   (4, [#icon("nbt-int") *#underline[Score]*: 分数。]),
@@ -10985,10 +10997,19 @@ particle flame 0 70 0 1 0 -1 1 0"
   [`<slot>`（显示位置 `minecraft:scoreboard_slot`）], [合法的显示位置，参照@tab:tab:display_slot 使用。],
   [`[<objective>]`（记分项 `minecraft:objective`）], [*如不指定该参数，则清空该显示位置。*]
 )
+#example(
+  [在侧边栏显示玩家死亡榜。],
+  [
+    首先创建一个准则为 `deathCount` 的记分项 `[death_count]`：
+    #codebox("scoreboard objectives add death_count deathCount \"死亡次数\"")
+    然后在侧边栏显示这个记分项：
+    #codebox("scoreboard objectives setdisplay sidebar death_count")
+  ]
+)
 === 分数持有者命令
 分数持有者命令，即以 `/scoreboard players` 开头的命令。`players` 是 `/scoreboard` 专门用于处理分数持有者的子命令，若分数持有者原本不被指定的记分项追踪，则这些命令会使分数持有者开始被指定记分项追踪，并在初始分数0的基础上进行修改。其所有次级子命令如下所示：
 ===== `add`
-该子命令为对象在指定记分项原本的分数上加上指定的分数，语法为
+该子命令为分数持有者在指定记分项原本的分数上加上指定的分数，语法为
 #codebox("scoreboard players add <targets> <objective> <score>")
 #param-desc(
   [`<targets>`（分数持有者 `minecraft:score_holder`）], [需要修改分数的分数持有者，可以是玩家名、UUID或目标选择器，也可以是 `*` 以指定所有正在被追踪的实体。允许使用假名。],
@@ -11029,7 +11050,7 @@ particle flame 0 70 0 1 0 -1 1 0"
 )
 ===== `enable`
 该子命令对指定分数持有者启用一个准则为触发器的记分项，语法为
-#codebox("scoreboard players enable <targets> <objective>")
+#codebox("scoreboard players enable <targets> <objective>") <code:command_scoreboard_players_enable>
 ===== `get`
 该子命令用于获取分数持有者在记分项上的分数，每次只能选择一个分数持有者，语法为#footnote[`*` 在该命令中失效，对于下文 `list` 子命令也相同，详见#link("https://bugs.mojang.com/browse/MC/issues/MC-136858")[MC-136858]。]
 #codebox("scoreboard players get <target> <objective>")
@@ -11073,7 +11094,195 @@ particle flame 0 70 0 1 0 -1 1 0"
   [2], [1], [2], [1],
   [交换], [`><`], [交换目标分数和源分数，这时两个分数都会发生变化，是唯一会改变源分数的操作符。], [3], [4], [*4*], [*3*]
 ) <tab:operation>
+编程中的一些算法思路都需要依靠操作符来完成，具体可见以下的例子：
+#example(
+  [假设记分项 `[var]` 上 `#result` 的分数是不大于99999的非负整数，输出 `#result` 分数的个位、十位、百位、千位和万位，分别使这些数字存储在同一个记分项 `#ge`、`#shi`、`#bai`、`#qian` 和 `#wan` 的分数中。],
+  [
+    对于一个十进制非负五位整数$N = (b_4 b_3 b_2 b_1 b_0)_(10)$（$b_i in {x divides 0 lt.eq.slant x lt.eq.slant 9,x in ZZ}$），它可以表示为#box(baseline: 40%, inset: (y: 0.5em))[$display(N = sum_(i=0)^4 b_i dot.c 10^i)$]。将$N$除以10，得到#box(baseline: 40%, inset: (y: 0.5em))[$display(N / 10 = b_0 / 10 + sum_(i=0)^3 b_(i+1) dot.c 10^i)$]。其中$display(b_0 / 10)$是小数部分，#box(baseline: 40%, inset: (y: 0.5em))[$display(sum_(i=0)^3 b_(i+1) dot.c 10^i)$]是整数部分。因此，对$N$除以10并取模（`%=`），得到的结果是 $b_0$，这就是个位上的数字。#box(baseline: 40%, inset: (y: 0.5em))[$display(sum_(i=0)^3 b_(i+1) dot.c 10^i)$]则是对$N$除以10的整除（`/=`）结果，得到这个值后，再对其进行一次取模，可得到十位上的数字。如此循环步骤，可提取所有位上的数字。
+
+    运算时需要10这个分数，于是这里有必要建立一个新的记分项 `[constant]` 以存储10这个分数，分数可以由假名 `#10` 所持有以提示其存储的分数：
+    #codebox("scoreboard objectives add constant dummy")
+    #codebox("scoreboard players set #10 constant 10")
+    接下来按顺序执行以下命令，可全部写入函数。如果需要保留 `#result` 的原始分数，那么可以先将 `#result` 的分数赋值给临时的 `#temp`，对 `#temp` 的分数进行运算。
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > digit_number.mcfunction",
+      "scoreboard players operation #temp var = #result var
+
+# 提取个位
+scoreboard players operation #ge var = #temp var
+scoreboard players operation #ge var %= #10 constant
+
+# 提取十位
+scoreboard players operation #temp var /= #10 constant
+scoreboard players operation #shi var = #temp var
+scoreboard players operation #shi var %= #10 constant
+
+# 提取百位
+scoreboard players operation #temp var /= #10 constant
+scoreboard players operation #bai var = #temp var
+scoreboard players operation #bai var %= #10 constant
+
+# 提取千位
+scoreboard players operation #temp var /= #10 constant
+scoreboard players operation #qian var = #temp var
+scoreboard players operation #qian var %= #10 constant
+
+# 提取万位
+scoreboard players operation #temp var /= #10 constant
+scoreboard players operation #wan var = #temp var"
+    )
+  ]
+)
+===== `remove`
+该子命令为分数持有者在指定记分项原本的分数上减去指定的分数，语法为
+#codebox("scoreboard players remove <targets> <objective> <score>")
+#param-desc(
+  [`<score>`（整型 `brigadier:integer`）], [减去的分数，*必须为非负整数。*]
+)
+===== `reset`
+该子命令使指定分数持有者在指定记分项上的分数清零，*并对指定分数持有者禁用准则为触发器的记分项*，同时使记分项不再追踪该分数持有者，语法为
+#codebox("scoreboard players reset <targets> [<objective>]")
+#param-desc(
+  [`[<objective>]`（记分项 `minecraft:objective`）], [可选。若指定该参数，则使指定分数持有者在指定记分项上的分数清零；若不指定该参数，则使指定分数持有者在所有记分项上的分数清零。]
+)
+===== `set`
+该子命令用于设置分数持有者在指定记分项上的分数为指定分数，语法为
+#codebox("scoreboard players set <targets> <objective> <score>")
 === 触发器<subsec:trigger>
+准则为触发器的记分项上的分数可以通过命令 `/trigger` 修改，命令 `/trigger` 的语法为#index(index: "command", "trigger")
+#codebox("trigger <objective> [(add|set) <value>]")
+#param-desc(
+  [`[(add|set) <value>]`], [可选，若省略这个部分，则会使当前分数持有者在记分项 `<objective>` 上的分数加1分。]
+)
+下面的用法会在记分项中当前分数持有者原本的分数上加上指定的分数：
+#codebox("trigger <objective> add <value>")
+下面的命令会设置记分项中当前实体的分数：
+#codebox("trigger <objective> set <value>")
+命令 `/trigger` 需要的权限等级为0，这意味着未启用命令的玩家也能够使用这个命令。但是命令 `/trigger` 只能作用于已启用的触发器记分项，所以需要使用命令@code:command_scoreboard_players_enable 以对指定分数持有者启用指定的触发器记分项。当一个触发器记分项被启用后，可以使用命令 `/trigger` 对当前分数持有者进行分数修改，修改一次后触发器记分项会重新关闭，若要继续修改分数则需重新启用触发器记分项。
+
+由于命令 `/trigger` 只需0级权限等级，读者可以将它与文本组件结合起来使用。文本组件中点击事件执行命令时视点击者为命令执行者，因此点击事件极大地受到点击者的权限等级的限制。*在未启用命令的冒险地图、服务器、或者是扩展游戏玩法的数据包中，所需权限等级超过0级的命令不能在点击事件中使用，此时必须使用 `/trigger`，用法如下：*
+#codebox("click_event:{action:\"...\",command:\"trigger ...\"}")
+#h(-2em)*随后需要高频执行的命令以监听触发器记分项的分数变动。*
+#example(
+  [重写@exa:click_event，使之对0级权限等级的玩家有效。],
+  [
+    建立一个触发器记分项：
+    #codebox("scoreboard objectives add tri trigger")
+    在 `click_event` 里写 `/trigger`：
+    #codebox("{text:\"Minecraft\",click_event:{action:\"run_command\",command:'trigger tri set 1\"'}}")
+    `tri` 的分数为1时执行实际的 `/title` 命令，因此需要高频监听记分项：
+    #codebox("execute as @a if score @s tri matches 1 run title @s title \"Hello Minecraft!\"")
+  ]
+)
+== 记分板的应用实例
+记分板作为命令系统中一个较重要的体系，在服务器、冒险地图或数据包（原版模组）中有着非常广泛的应用。本节将列举记分板的若干应用实例，下面的例子中有些可能会需要使用命令 `/execute` 和数据包函数，读者可阅读后面章节的有关内容。
+
+在使用记分板系统的时候，由于分数是介于$-2147483648$和2147483647之间（含）的整数，因此首先需要注意分数的溢出问题。其次，记分板不接受小数，因此对小数的运算都是模拟运算，通常采取的是缩放倍数的方式，比如计算$1.1+1.2$时会把分数缩放成11、12再计算。
+#example(
+  [
+    在侧边栏中显示如图所示的内容。
+    #figure(
+      caption: "",
+      image("图片/记分板显示例题.png", width: 6em)
+    )
+  ],
+  [
+    在多人游戏中，记分板不仅可用于显示玩家的分数和排名，还可以作为信息展示板使用。其原理是：*在记分板上显示不同的分数持有者名称，为这些分数持有者赋予分数使它们在侧边栏中有特定的位置，分数持有者名称即为记分板展示的信息。被赋予分数越高的分数持有者，它在侧边栏上所显示的位置就越靠上。*
+
+    对于如图所示的侧边栏，不难发现它所显示的记分项其显示名称为粗体的起床战争，记分项名称和准则未知，于是可以自由指定记分项名称 `bed_wars`、判据为虚拟型。在游戏中添加这个记分项的命令为
+    #codebox("scoreboard objectives add bed_wars dummy {text:\"起床战争\",bold:true}")
+    #h(-2em)将这个记分项显示到侧边栏：
+    #codebox("scoreboard objectives setdisplay sidebar bed_wars")
+    #h(-2em)然后依次为各分数持有者赋予分数。注意到分数持有者名称是有样式的，比如分数持有者 `Round.1` 的文本就是红色的。这里介绍两种方法以实现之。
+
+    *方法一（直接指定分数持有者名称的样式）*#h(1em)不妨使用格式化代码为被赋予分数的分数持有者添加名称样式。这里有两点注意事项：一、原版客户端无法输入字符 `§` ；二、除文本组件外的其他命令参数都不支持Unicode，因此不能使用 `\u00a7` 以代替字符 `§`。读者只能在函数中输入格式化代码，客户端内聊天栏和命令方块不能输入字符 `§`。
+
+    创建一个数据包，填写元数据、添加命名空间和函数文件夹后，创建 #icon("mcfunction") `.mcfunction` 文件。在文件 #icon("mcfunction") `data > minecraft > function > display.mcfunction` 中输入下列命令后，用命令 `/function` 执行这个函数：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > minecraft > function > display.mcfunction",
+      "#侧边栏显示内容
+scoreboard objectives modify bed_wars numberformat blank
+scoreboard objectives modify bed_wars displayname {text:\"起床战争\",bold:true}
+scoreboard players set §cRound.1 bed_wars 6
+scoreboard players set ========== bed_wars 5
+scoreboard players set §c红队§r-§2√ bed_wars 4
+scoreboard players set §e黄队§r-§2√ bed_wars 3
+scoreboard players set §a绿队§r-§c× bed_wars 2
+scoreboard players set §9蓝队§r-§2√ bed_wars 1
+scoreboard players set §r========== bed_wars 0"
+    )
+    其中各分数持有者的分数只需满足相对的大小关系即可。注意到侧边栏最后一行的分数持有者名称和从上往下第二个分数持有者的名称是完全一致的，如果最后一条分数持有者命令写成如下的形式：
+    #codebox("scoreboard players set ========== bed_wars 0")
+    则第二个分数持有者的分数被改为1，那么侧边栏#text_component(background: black, text(white)[#text(red)[红队]-#text(green)[√]])及以下的内容都会被往上移一行，设计的两行#text_component(background: black, "==========")内容就会变成一行。当存在两个名称一样的分数持有者时，可以为分数持有者名称添加不会影响其设计样式的格式化代码，游戏会将它们识别成不同的分数持有者，这样就可以显示两行完全一致的内容。这里的最后一个分数持有者名称被设计为 `§r==========`。
+
+    *方法二（修改分数持有者的显示名称）*#h(1em)此方法无需使用分节符 `§`，只需在记分板系统内修改分数持有者显示名称即可。以函数为例：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > minecraft > function > display.mcfunction",
+      "#数字格式
+scoreboard objectives modify bed_wars numberformat blank
+
+#记分项显示名称
+scoreboard objectives modify bed_wars displayname {text:\"起床战争\",bold:true}
+
+#显示内容的上下行关系
+scoreboard players set 游戏轮数 bed_wars 6
+scoreboard players set 分隔行1 bed_wars 5
+scoreboard players set 红队 bed_wars 4
+scoreboard players set 黄队 bed_wars 3"
+    )
+  ]
+)
+#example(
+  [现有 `[red]`、`[blue]`、`[yellow]` 和 `[green]` 四个队伍，其队伍颜色分别为红、蓝、黄和绿，每个队伍各有4名成员（玩家），游戏结束后所有玩家均获得一定的分数。记队伍的总分是队伍内所有成员所得分数之和，在聊天栏中返回排名第一的队伍及其总分（假设不存在总分相同的情况）。],
+  [
+    为了便于统计这四个队伍的分数，这里添加一个记分项 `[score]`，判据视具体游戏内容而定，这里先使用虚拟型：
+    #codebox("scoreboard objectives add score dummy")
+    将同一个队伍中所有玩家的分数加起来，将总和存放到代表各自队伍的假名中：
+    #codebox("scoreboard players operation #red score += @a[team=red] score")
+    #codebox("scoreboard players operation #yellow score += @a[team=yellow] score")
+    #codebox("scoreboard players operation #green score += @a[team=green] score")
+    #codebox("scoreboard players operation #blue score += @a[team=blue] score")
+    #h(-2em)至此，对队伍总分的处理已经完成。
+    
+    侧边栏会自动对分数进行从高到低的排序，但如果要对聊天栏输出分数持有者名称及其分数，则需要将四个队伍按照其分数进行手动排序，在这个例子中仅需要求出最大的分数，可以使用擂台排序法。
+
+    擂台排序法的原理是：假定第一个数是最大的数，将第二个数与第一个数作比较，若第二个数比较大，则第二个数是最大的数；若第二个数比较小，则第一个数仍是最大的数。按照这个方法处理完所有的数，则可以得出最大的数。为此可以在记分项 `[score]` 下添加一个假名 `#top` 以存储最高的得分。根据擂台排序法的原理，先假定红队的分数是最高的，将红队的分数赋值给假名 `#top`：
+    #codebox("scoreboard players operation #top score = #red score")
+    然后将黄队的分数与 `#top` 的分数进行对比，若 `#top` 的分数比黄队的分数高，则红队存储在 `#top` 上的分数得到保留；若 `#top` 的分数没有黄队的分数高，则 `#top` 的分数替换成黄队的分数，这里用运算符 `>` 即可：
+    #codebox("scoreboard players operation #top score > #yellow score")
+    其他队伍的分数处理以此类推：
+    #codebox("scoreboard players operation #top score > #green score")
+    #codebox("scoreboard players operation #top score > #blue score")
+    这样一来假名 `#top` 就存储了四个队伍中的最高分。在聊天栏中返回的内容不仅包括最高分，还包括获得最高分的队伍，因此使用命令 `/execute` 中的条件子命令对分数进行判断：
+    #codebox([execute if score \#top score = \#red score run tellraw \@a {text:\"红队\",color:\"#color_block(red)red\"}])
+    这条命令会对假名 `#top` 的分数进行判断，如果这个分数等于红队的分数，则说明获得最高分的是红队，在聊天栏中返回#text_component(text(red)[红队])；否则不执行 `run` 子命令。其他队伍也按照这个格式处理：
+    #codebox([execute if score \#top score = \#yellow score run tellraw \@a {text:\"黄队\",color:\"#color_block(yellow)yellow\"}])
+    #codebox([execute if score \#top score = \#green score run tellraw \@a {text:\"绿队\",color:\"#color_block(green)green\"}])
+    #codebox([execute if score \#top score = \#blue score run tellraw \@a {text:\"蓝队\",color:\"#color_block(blue)blue\"}])
+    返回最高分可以由文本组件类型中的 `score` 处理：
+    #codebox("tellraw @a {score:{objective:\"score\",name:\"#top\"}}")
+    综上所述，将以上命令整合进一个函数内：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > rank.mcfunction",
+      "scoreboard players operation #red score += @a[team=red] score
+scoreboard players operation #yellow score += @a[team=yellow] score
+scoreboard players operation #green score += @a[team=green] score
+scoreboard players operation #blue score += @a[team=blue] score
+scoreboard players operation #top score = #red score
+scoreboard players operation #top score > #yellow score
+scoreboard players operation #top score > #green score
+scoreboard players operation #top score > #blue score
+execute if score #top score = #red score run tellraw @a [\"\",{text:\"红队\",color:\"red\"}{score:{objective:\"score\",name:\"#top\"}}]
+execute if score #top score = #yellow score run tellraw @a [\"\",{text:\"黄队\",color:\"yellow\"},{score:{objective:\"score\",name:\"#top\"}}]
+execute if score #top score = #green score run tellraw @a [\"\",{text:\"绿队\",color:\"green\"}{score:{objective:\"score\",name:\"#top\"}}]
+execute if score #top score = #blue score run tellraw @a [\"\",{text:\"蓝队\",color:\"blue\"}{score:{objective:\"score\",name:\"#top\"}}]"
+    )
+  ]
+)
 = 命令/execute<chap:command_execute>
 #appendix
 = 命令方块与红石电路
