@@ -621,7 +621,7 @@ Minecraft的命令有很多，可用 `/help` 命令查询任何可用命令的�
     [`/tm`], [0], [],
     [`/tp`], [2], [],
     [`/transfer`], [3], [仅多人游戏],
-    [`/version`], [0], [],
+    [`/trigger`], [0], [],
     [`/version`], [0（单人游戏）或2（多人游戏）], [],
     [`/w`], [0], [],
     [`/waypoint`], [2], [],
@@ -1316,7 +1316,8 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
     [1.21.6], [80],
     [1.21.7 \~ 1.21.8], [81],
     [1.21.9 \~ 1.21.10], [88.0],
-    [1.21.11], [94.1]
+    [1.21.11], [94.1],
+    [26.1], [101.1]
   )
 ) <tab:datapack_format>
 游戏允许编写者在元数据内指定数据包版本号的区间以使数据包兼容多个版本。但由于在不同版本中 #icon("json") `pack.mcmeta` 本身的格式也会发生变化，数据包版本号需要进行校验。不过，*这个校验仅仅作为“门槛”，数据包能否运行取决于其实际内容，而非元数据声明。*在26.1以前，校验失败会现实“已损坏或不兼容”；而在26.1以后，校验失败会直接认为元数据无效，从而不识别此数据包。
@@ -1795,7 +1796,8 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
     [1.21.6], [63],
     [1.21.7 \~ 1.21.8], [64],
     [1.21.9 \~ 1.21.10], [69.0],
-    [1.21.11], [75.0]
+    [1.21.11], [75.0],
+    [26.1], [84.0]
   )
 )
 资源包的版本号同样具有校验规则，也以25w31a（1.21.9）为分水岭实行“新旧双轨制”，以下分类讨论：
@@ -5295,7 +5297,7 @@ Minecraft中有各式各样的文本，它们有不同的内容、不同的样�
   (0, [#icon("nbt-compound")#icon("json-object") 文本组件]),
   (1, [#icon("nbt-string")#icon("json-string") *type*: `score`]),
   (1, [#icon("nbt-compound")#icon("json-object") *#underline[score]*: 需要显示的记分板分数。]),
-  (2, [#icon("nbt-string")#icon("json-string") *#underline[name]*: 可以是一个实体名称，也可以是一个目标选择器。但是一个记分板分数文本组件只能解析一个分数持有者在一个指定记分项上的分数，因此目标选择器必须将选择的目标数量限定为一个，仅使用 `@a`、`@e` 这样的目标选择器变量是不可接受的。除了实体名称和目标选择器外，`name` 还可以接受 `*` 作为它的值。若值为 `*`，则会返回观察者（这里指观察这段文本的实体）自己在指定变量上的分数，这样可以让不同的玩家分别观察到他们自己的分数。]),
+  (2, [#icon("nbt-string")#icon("json-string") *#underline[name]*: 可以是一个实体名称，也可以是一个目标选择器。但是一个记分板分数文本组件只能解析一个分数持有者在一个指定记分项上的分数，因此目标选择器必须将选择的目标数量限定为一个，仅使用 `@a`、`@e` 这样的目标选择器变量是不可接受的。除了实体名称和目标选择器外，`name` 还可以接受 `*` 作为它的值。若值为 `*`，则会返回观察者（这里指观察这段文本的实体）自己在指定记分项上的分数，这样可以让不同的玩家分别观察到他们自己的分数。]),
   (2, [#icon("nbt-string")#icon("json-string") *#underline[objective]*: 指定的记分项。])
 )
 #example(
@@ -11190,7 +11192,7 @@ scoreboard players operation #wan var = #temp var"
   [
     在多人游戏中，记分板不仅可用于显示玩家的分数和排名，还可以作为信息展示板使用。其原理是：*在记分板上显示不同的分数持有者名称，为这些分数持有者赋予分数使它们在侧边栏中有特定的位置，分数持有者名称即为记分板展示的信息。被赋予分数越高的分数持有者，它在侧边栏上所显示的位置就越靠上。*
 
-    对于如图所示的侧边栏，不难发现它所显示的记分项其显示名称为粗体的起床战争，记分项名称和准则未知，于是可以自由指定记分项名称 `bed_wars`、判据为虚拟型。在游戏中添加这个记分项的命令为
+    对于如图所示的侧边栏，不难发现它所显示的记分项其显示名称为粗体的起床战争，记分项名称和准则未知，于是可以自由指定记分项名称 `bed_wars`、准则为虚拟型。在游戏中添加这个记分项的命令为
     #codebox("scoreboard objectives add bed_wars dummy {text:\"起床战争\",bold:true}")
     #h(-2em)将这个记分项显示到侧边栏：
     #codebox("scoreboard objectives setdisplay sidebar bed_wars")
@@ -11234,11 +11236,11 @@ scoreboard players set 红队 bed_wars 4
 scoreboard players set 黄队 bed_wars 3"
     )
   ]
-)
+) <exa:scoreboard_display>
 #example(
   [现有 `[red]`、`[blue]`、`[yellow]` 和 `[green]` 四个队伍，其队伍颜色分别为红、蓝、黄和绿，每个队伍各有4名成员（玩家），游戏结束后所有玩家均获得一定的分数。记队伍的总分是队伍内所有成员所得分数之和，在聊天栏中返回排名第一的队伍及其总分（假设不存在总分相同的情况）。],
   [
-    为了便于统计这四个队伍的分数，这里添加一个记分项 `[score]`，判据视具体游戏内容而定，这里先使用虚拟型：
+    为了便于统计这四个队伍的分数，这里添加一个记分项 `[score]`，准则视具体游戏内容而定，这里先使用虚拟型：
     #codebox("scoreboard objectives add score dummy")
     将同一个队伍中所有玩家的分数加起来，将总和存放到代表各自队伍的假名中：
     #codebox("scoreboard players operation #red score += @a[team=red] score")
@@ -11276,13 +11278,182 @@ scoreboard players operation #top score = #red score
 scoreboard players operation #top score > #yellow score
 scoreboard players operation #top score > #green score
 scoreboard players operation #top score > #blue score
-execute if score #top score = #red score run tellraw @a [\"\",{text:\"红队\",color:\"red\"}{score:{objective:\"score\",name:\"#top\"}}]
+execute if score #top score = #red score run tellraw @a [\"\",{text:\"红队\",color:\"red\"},{score:{objective:\"score\",name:\"#top\"}}]
 execute if score #top score = #yellow score run tellraw @a [\"\",{text:\"黄队\",color:\"yellow\"},{score:{objective:\"score\",name:\"#top\"}}]
-execute if score #top score = #green score run tellraw @a [\"\",{text:\"绿队\",color:\"green\"}{score:{objective:\"score\",name:\"#top\"}}]
-execute if score #top score = #blue score run tellraw @a [\"\",{text:\"蓝队\",color:\"blue\"}{score:{objective:\"score\",name:\"#top\"}}]"
+execute if score #top score = #green score run tellraw @a [\"\",{text:\"绿队\",color:\"green\"},{score:{objective:\"score\",name:\"#top\"}}]
+execute if score #top score = #blue score run tellraw @a [\"\",{text:\"蓝队\",color:\"blue\"},{score:{objective:\"score\",name:\"#top\"}}]"
     )
   ]
 )
+#example(
+  [用记分板建立一个记录游戏时长的秒表系统（从零开始计时），使得时间以#text_component("时 : 分 : 秒")的文本格式显示在动作栏中。],
+  [
+    添加一个记分项 `[time]`，使得假名 `#time` 在记分项 `[time]` 上的分数每秒增加1，于是就可以得到一个最基本的秒表系统。本题要求以#text_component("时 : 分 : 秒")的格式输出时间，因此只计秒数的时间系统是远远不够的，因此还要添加记分项 `[hour]`、`[minute]` 和 `[second]` 以分别存储小时数、分钟数和秒数。此外还需要建立记分项 `[constant]`，把一些需要用到的常数存入其中。
+    #codebox("scoreboard objectives add constant dummy")
+    #codebox("scoreboard players set #60 constant 60")
+    #codebox("scoreboard players set #3600 constant 3600")
+    记分项 `[time]` 存储的是总秒数，这个数字除以3600得到的整数商即为小时数。先将 `[time]` 存储的总秒数存入记分项 `[hour]` 中：
+    #codebox("scoreboard players operation #time hour = #time time")
+    然后求这个数字除以3600的整数商，3600需要作为常数存入记分项 `[constant]` 中：
+    #codebox("scoreboard players operation #time hour /= #3600 constant")
+    接下来计算分钟数和秒数。先计算总秒数除以3600得到的余数，将结果存放在记分项 `[minute]` 和 `[second]` 中：
+    #codebox("scoreboard players operation #time second = #time time")
+    #codebox("scoreboard players operation #time second %= #3600 constant")
+    #codebox("scoreboard players operation #time minute = #time second")
+    计算出来的这个结果即为总秒数去掉小时数后剩余的时间，可由此计算出分钟数和秒数：
+    #codebox("scoreboard players operation #time minute /= #60 constant")
+    #codebox("scoreboard players operation #time second %= #60 constant")
+    整理以上思路。先编写一个初始化函数 #icon("mcfunction") `data > tutorial > function > load.mcfunction`，以建立需要的记分项、存储需要的常数：
+    #codefile(
+      lang: "mcfunction",
+      title: "ata > tutorial > function > load.mcfunction",
+      "#时间
+scoreboard objectives add time dummy
+scoreboard objectives add hour dummy
+scoreboard objectives add minute dummy
+scoreboard objectives add second dummy
+
+#常数
+scoreboard objectives add constant dummy
+scoreboard players set #60 constant 60
+scoreboard players set #3600 constant 3600"
+    )
+    #h(-2em)这个函数可以被 `#minecraft:load` 调用，在每次重新加载数据包时运行以确保记分项和相关数据的存在。
+    然后编写能增加时间刻度并计算时间的函数，每过1秒调用函数自身：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > timing.mcfunction",
+      "#增加时间刻度
+scoreboard players add #time time 1
+
+#计算一次时分秒
+scoreboard players operation #time hour = #time time
+scoreboard players operation #time hour /= #3600 constant
+scoreboard players operation #time second = #time time
+scoreboard players operation #time second %= #3600 constant
+scoreboard players operation #time minute = #time second
+scoreboard players operation #time minute /= #60 constant
+scoreboard players operation #time second %= #60 constant
+
+#输出计算的结果
+tellraw @a \
+[\
+  {score:{objective:\"hour\",name:\"#time\"}},\
+  \" : \",\
+  {score:{objective:\"minute\",name:\"#time\"}},\
+  \" : \",\
+  {score:{objective:\"second\",name:\"#time\"}}\
+]
+
+#1秒后递归
+schedule function tutorial:timing 1s replace"
+    )
+    #h(-2em)如此一套函数编写完毕。
+  ]
+)
+#example(
+  [设计一个可在快捷栏中右击使用的物品，使用后会杀死当前玩家。],
+  [
+    记分板准则中以 `minecraft.used` 开头的复合准则可用于检测玩家使用一个物品的次数，因此基本思路是，将右击使用物品的次数转化为记分板的分数，通过检测记分板的分数以实现设计的效果。而首选的物品是胡萝卜钓竿或诡异菌钓竿，因为这两种物品具有以下的优点：
+    + 耐久度仅在对猪或炽足兽加速时才会发生下降。
+    + 除对猪或炽足兽加速的情况外，使用后不会对游戏造成任何实质性的影响，仅会影响拥有对应准则的记分项分数。
+    \
+
+    这里选择胡萝卜钓竿，创建一个准则为检测胡萝卜钓竿使用次数的记分项：
+    #codebox("scoreboard objectives add test minecraft.used:minecraft.carrot_on_a_stick")
+    #h(-2em)此命令可放在 `#minecraft:load` 初始化调用的函数中。首先在 `#minecraft:tick` 中高频调用下面的函数：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > tick.mcfunction",
+      "#检测胡萝卜钓竿是否被使用
+execute as @a[scores={test=1..}] run function tutorial:kill_player"
+    )
+    然后编写调用的 `tutorial:kill_player` 函数，注意，在这个函数的上下文中，`@s` 指的是函数 `tutorial:tick` 第2行中 `@a[scores={test=1..}]`，即使用了胡萝卜钓竿的玩家：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > kill_player.mcfunction",
+      "#重置分数以等候下一次使用胡萝卜钓竿
+scoreboard players reset @s test
+
+#清除该玩家
+kill @s"
+    )
+  ]
+)
+#heading(level: 2, numbering: none, [第七章思考题与习题])
++ 一个玩家能否存在多个不同的队伍中？一个队伍能否存在多个不同的玩家？
++ 添加一个队伍名为 `[Red]` 的队伍，并使该队伍中玩家的死亡信息对其他队伍的玩家隐藏。
++ 用命令 `/tag` 分别写出添加记分板标签 `gaming` 和移除这个记分板标签的命令。
++ 现有A、B、C、D、E、F、G七个实体，其中A、C、G位于队伍 `[a]`，B、F位于队伍 `[b]`，B、D拥有记分板标签 `1`，A、B、C、E、G拥有标签 `2`，C、D、F拥有标签 `3`。则写出
+  + 目标选择器 `@e[tag=!2,tag=!3,team=!b]` 选择的实体；
+  + 目标选择器 `@e[team=a,tag=1,tag=2]` 选择的实体。
++ 解释下列名词：记分项、记分项名称、分数持有者、分数、显示位置、单一准则、次级准则。
++ 判断下列说法是否正确。
+  + 一个只读型准则一定是一个单一准则。
+  + 如果一个玩家在记分项 `[A]` 上没有分数，则该玩家不被记分项 `[A]` 追踪。
+  + 两个不同的记分项追踪的分数持有者数量一定相同。
+  + 名为 `#FakeName` 分数持有者的分数不会显示在列表中。
++ 分数持有者A ~ D在记分项 `[a]` ~ `[e]` 上的分数如下表所示，写出各记分项追踪的分数持有者数量和各分数持有者被追踪的记分项数。
+  #general-table(
+    caption: "",
+    colspan: 6,
+    columns: (auto, auto, auto, auto, auto, auto),
+    header: ([分数持有者], [a], [b], [c], [d], [e]),
+    [A], [10], [], [$-7$], [0], [],
+    [B], [], [6], [], [1], [5],
+    [C], [0], [], [9], [], [],
+    [D], [$-2$], [], [], [3], [0]
+  ) <tab:exercise_chapter_7_1>
++ 在@tab:exercise_chapter_7_1 中，用 `@a` 代表4个分数持有者，则依次执行命令
+  #codebox("scoreboard players add @a b 5")
+  #codebox("scoreboard players remove C c 2")
+  #codebox("scoreboard objectives remove e")
+  #codebox("scoreboard players reset D")
+  后，仿照上表制作各记分项和各分数持有者的分数关系表，无追踪关系的位置空缺不填。
++ 简述命令 `/trigger tri` 的作用。
++ 判断下列命令能否执行成功，并说明原因。
+  #codebox("/scoreboard players add * score 1")
+  #codebox("/scoreboard players list *")
+  #codebox("/scoreboard objectives add dummy")
+  #codebox("/trigger @s test add 2")
++ 按要求写出下列命令：
+  + 添加一个准则为虚拟型的记分项 `[force]`；
+  + 设置记分项 `[force]` 的显示区为侧边栏；
+  + 将所有玩家在记分项 `[force]` 上的分数设为9；
+  + 将任意玩家在记分项 `[force]` 上的分数减去3。
++ 在命令 `/scoreboard players operation` 中，已知下列目标分数、源分数和运算符，分别求出命令执行之后的目标分数。
+  #split-table(
+    original-cols: (auto, auto, auto, auto),
+    header: ([序号], [目标分数], [操作], [源分数]),
+    data: (
+      [(1)], [25], [`+=`], [13],
+      [(2)], [10], [`+=`], [$-3$],
+      [(3)], [$-3$], [`-=`], [$-9$],
+      [(4)], [$-16$], [`*=`], [3],
+      [(5)], [$-1$], [`*=`}], [$-7$],
+      [(6)], [0], [`/=`], [5],
+      [(7)], [16], [`/=`], [7],
+      [(8)], [$-28$], [`/=`], [5],
+      [(9)], [33], [`%=`], [4],
+      [(10)], [16], [`%=`], [$-7$],
+      [(11)], [$-23$], [`%=`], [$-5$],
+      [(12)], [7], [`=`], [8],
+      [(13)], [$-6$], [`<`], [16],
+      [(14)], [27], [`>`], [45]
+    )
+  )
++ 有记分项 `[a]` 和 `[b]`，依次执行下面的命令后，写出分数持有者A、B和C在各记分项上的分数。
+  #codebox("scoreboard players add A a 10")
+  #codebox("scoreboard players operation B b += A a")
+  #codebox("scoreboard players operation C a -= B b")
+  #codebox("scoreboard players operation A a /= B b")
+  #codebox("scoreboard players operation C b += A a")
+  #codebox("scoreboard players operation C a -= B b")
+  #codebox("scoreboard players operation A b >< C b")
+  #codebox("scoreboard players operation B b %= A a")
+  #codebox("scoreboard players operation C b > B b")
++ 对于@exa:scoreboard_display 的侧边栏，在侧边栏原本内容的基础上，将#text_component(background: black, text(white)[#text(yellow)[黄队]-#text(green)[√]])一行的内容改成#text_component(background: black, text(white)[#text(yellow)[黄队]-#text(red)[×]])，格式参考上下行的内容，且要求所处的行不变。
++ 设计一个能够在除法运算中输出带小数结果的记分板系统，要求精度为小数点后6位。
 = 命令/execute<chap:command_execute>
 #appendix
 = 命令方块与红石电路
@@ -12139,15 +12310,23 @@ execute if score #top score = #blue score run tellraw @a [\"\",{text:\"蓝队\",
     [1.21.11 Release Candidate 3 Unobfuscated], [94.1], [75.0],
     [1.21.11], [94.1], [75.0],
     [1.21.11 Unobfuscated], [94.1], [75.0],
-    [26.1-Snapshot-1], [95.0], [76.0],
-    [26.1-Snapshot-2], [96.0], [77.0],
-    [26.1-Snapshot-3], [97.0], [78.0],
-    [26.1-Snapshot-4], [97.1], [78.1],
-    [26.1-Snapshot-5], [98.0], [79.0],
-    [26.1-Snapshot-6], [99.0], [80.0],
-    [26.1-Snapshot-7], [99.1], [81.0],
-    [26.1-Snapshot-8], [99.2], [81.1],
-    [26.1-Snapshot-9], [99.2], [81.1]
+    [26.1 Snapshot 1], [95.0], [76.0],
+    [26.1 Snapshot 2], [96.0], [77.0],
+    [26.1 Snapshot 3], [97.0], [78.0],
+    [26.1 Snapshot 4], [97.1], [78.1],
+    [26.1 Snapshot 5], [98.0], [79.0],
+    [26.1 Snapshot 6], [99.0], [80.0],
+    [26.1 Snapshot 7], [99.1], [81.0],
+    [26.1 Snapshot 8], [99.2], [81.1],
+    [26.1 Snapshot 9], [99.2], [81.1],
+    [26.1 Snapshot 10], [99.3], [82.0],
+    [26.1 Snapshot 11], [100.0], [83.0],
+    [26.1 Pre-Release 1], [101.0], [84.0],
+    [26.1 Pre-Release 2], [101.0], [84.0],
+    [26.1 Pre-Release 3], [101.1], [84.0],
+    [26.1 Release Candidate 1], [101.0], [84.0],
+    [26.1 Release Candidate 2], [101.0], [84.0],
+    [26.1 Release Candidate 3], [101.1], [84.0]
   )
 )<tab:pack_format>
 == 方块状态<sec:block_state>
