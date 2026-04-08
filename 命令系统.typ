@@ -7298,7 +7298,7 @@ $scoreboard players set #system_time_second var $(second)"
     + 隐形；
     + 静音；
     + 无法受到伤害；
-    + 被一个物品展示实体骑乘，这个物品展示实体又被一个交互实体骑乘。
+    + 被一个物品展示实体骑乘，这个物品展示实体又被一个交互实体骑乘。其中物品展示实体展示的是一个使用物品模型 `astrbot:bot` 的追溯指针，交互实体拥有记分板标签 `astrbot.interaction`。
     #figure(
       caption: "AMR Bot数据包",
       image("图片/AMR Bot数据包.png", width: 5em)
@@ -7313,7 +7313,7 @@ $scoreboard players set #system_time_second var $(second)"
     + 无法受到伤害：由字段 #icon("nbt-bool") `Invulnerable` 定义。
       #codebox("Invulnerable:true")
     + 被一个物品展示实体骑乘，这个物品展示实体又被一个交互实体骑乘：实体的骑乘由实体共通标签 #icon("nbt-list") `Passengers` 存储，内部每一个元素都是一个完整的实体格式，写法如下所示。
-      #codebox("Passengers:[{id:\"minecraft:item_display\",Passengers:[{id:\"minecraft:interaction\"}]}]")
+      #codebox("Passengers: [ { id: \"minecraft:item_display\", item: { components: { \"minecraft:item_model\": \"astrbot:bot\" }, id: \"minecraft:recovery_compass\" }, Passengers: [ { id: \"minecraft:interaction\", Tags: [\"astrbot.interaction\"] } ] } ]")
     将上面的所有标签整合到一起，放在命令 `/summon` 中，可得到
     #codebox("summon wolf ~ ~ ~ {
   active_effects:[
@@ -7328,14 +7328,22 @@ $scoreboard players set #system_time_second var $(second)"
   Passengers:[
     {
       id:\"minecraft:item_display\",
+      item:{
+        components:{
+          \"minecraft:item_model\":\"astrbot:bot\"
+        },
+        id:\"minecraft:recovery_compass\"
+      },
       Passengers:[
         {
-          id:\"minecraft:interaction\"
+          id:\"minecraft:interaction\",
+          Tags: [\"astrbot.interaction\"]
         }
       ]
     }
   ]
 }") <code:summon_amr_bot>
+    关于已生成无人机的具体编辑操作，见@exa:modify_amr_bot。
   ]
 ) <exa:amr_bot>
 #example(
@@ -11648,7 +11656,7 @@ kill @s"
     更改命令执行坐标即可，将命令执行坐标更改为所有玩家所在的坐标，再用相对坐标表示其脚下的方块。完整的命令为：
     #codebox("execute at @a run setblock ~ ~-1 ~ red_concrete")
   ]
-)
+) <exa:subcommand_at_setblock>
 #example(
   [
     判断下面的命令能否清除进入中心为$(0,70,0)$、半径为5格的球体区域的所有玩家。
@@ -11730,7 +11738,7 @@ kill @s"
 
     数据包的自定义维度如果也定义了相关的坐标尺度，则 `in` 子命令也会按照数据包内文件的定义进行坐标坐标。
   ]
-)
+) <exa:subcommand_in_scale>
 === on
 子命令 `on` 会*将命令执行者更改为与当前执行者有指定关系的实体*，此即为“实体指针”，语法为：
 #codebox("on (attacker|controller|leasher|origin|owner|passengers|target|vehicle) -> execute")
@@ -11743,6 +11751,152 @@ kill @s"
   [`passengers` ], [直接骑乘当前命令执行者的实体。],
   [`target` ], [当前命令执行者攻击的实体，若当前执行者为交互实体，则指向最后与之交互的玩家。],
   [`vehicle` ], [被当前命令执行者骑乘的实体。]
+)
+#example(
+  [对所有拥有狗的玩家输出聊天栏文本#text_component([#text(green)[[提示]] 你可以通过狗尾巴的角度判断它的生命值])。],
+  [
+    直接指定拥有狗的玩家似乎并不容易，因为相关的NBT不容易找到，且通过进度来指定玩家的过程很繁琐。不妨先将命令执行者更改为所有的狼，所有已驯服的狼（狗）必有其主人，而对于所有未被驯服的狼，其没有主人，因此不会有任何与之有关系的玩家被选择。这样就可以进一步选择到所有有狗的主人：
+    #codebox("execute as @e[type=wolf] on owner run tellraw @s [\"\",{text:\"[提示]\",color:\"green\"},\" 你可以通过狗尾巴的角度判断它的生命值\"]")
+  ]
+)
+实体指针对原版模组中的自定义组合实体很有用处，下面举一个实例：
+#example(
+  [
+    对于@exa:amr_bot 所述的无人机，编写函数使玩家可以与之产生互动：
+    + 与交互实体产生交互时，将物品展示实体中物品的模型更改为 `astrbot:bot_on`；
+    + 攻击交互实体时，将其中狼的主人设为此玩家。
+  ],
+  [
+    首先整理一下此无人机设计的骑乘关系：交互实体骑乘物品展示实体，物品展示实体骑乘狼。
+    + 本题需要判断交互实体是否有交互数据，这个情境没有说明需要判断特定玩家的交互，故只需要判断交互实体是否存在 `interaction` 这个字段。如果测试成功，就利用实体指针 `vehicle` 将执行者设为交互实体骑乘的物品展示实体，从而修改物品展示实体的数据：
+      #codefile(
+        lang: "mcfunction",
+        title: "data > astrbot > function > bot > interaction.mcfunction",
+        "execute as @e[type=interaction,tag=astrbot.interaction] if data entity @s interaction on vehicle run data modify entity @s item.components.\"minecraft:item_model\" set value \"astrbot:bot_on\""
+      )
+      此函数需要高频运行。
+    + 狼的数据中有一个字段 #icon("nbt-int") `Owner`，它需要的值是玩家的UUID。在判断交互实体是否有攻击数据时，还需要用 `attacker` 指针获取做出攻击行为的玩家的UUID，将其放入临时的存储空间，随后再对交互实体连续使用两次 `vehicle` 指针将执行者设为狼，最后将临时数据存入狼的数据。此处不直接使用玩家数据的原因是过程中玩家的上下文会丢失，因为一套上下文只能有一个执行者，而执行者已经被无人机内的实体占用。
+      #codefile(
+        lang: "mcfunction",
+        title: "data > astrbot > function > bot > attack > .mcfunction",
+        "execute as @e[type=interaction,tag=astrbot.interaction] if data entity @s interaction run function astrbot:bot/attack/_"
+      )
+      #codefile(
+        lang: "mcfunction",
+        title: "data > astrbot > function > bot > attack > _.mcfunction",
+        "execute on attacker run data modify storage astrbot:_ temp.player_uuid set from entity @s UUID
+execute on vehicle on vehicle run data modify entity @s Owner set from storage astrbot:_ temp.player_uuid"
+      )
+      其中 `astrbot:bot/attack/` 这个函数需要高频运行。
+  ]
+) <exa:modify_amr_bot>
+=== positioned
+子命令 `positioned` 会*更改命令执行的位置*，即在指定的坐标执行命令或在指定实体所在的位置执行命令。该子命令不会改变命令执行者和执行朝向，所有用法如下：
+===== 将命令执行位置修饰为指定的坐标，语法为
+#codebox("positioned <pos> -> execute")
+#param-desc(
+  [`<pos>`（三维坐标 `minecraft:vec3`）], [修饰的执行位置，为使用双精度浮点数的精确实际坐标。]
+)
+===== 将命令执行位置修饰为指定实体所在的位置，语法为
+#codebox("positioned as <targets> -> execute")
+#param-desc(
+  [`<targets>`（实体 `minecraft:entity`）], [指定实体。如果同时指定了多个实体，则会以各实体所在位置为命令执行位置分别执行后续的子命令，可以产生分支。]
+)
+===== 将命令执行位置修饰为最高点方块的上表面，语法为
+#codebox("positioned over <heightmap> -> execute")
+#param-desc(
+  [`<heightmap>`（高度图 `minecraft:heightmap`）], [指定的高度图。]
+)
+所谓#proper-noun(display: "高度图（Heightmap）", "gao1 du4 tu2")，就是在一纵列方块中（即由相同$x$、$z$方块坐标的方块构成的长条）按特定规则指定该纵列上的最高点方块。高度图通常使用在地图（物品）中，也用于避雷针的判定。调试屏幕中 `CH`、`SH` 行分别存储了客户端、服务端的高度图信息。其中 `CH` 行的 `S` 指该纵列方块中最高的非空气方块的$y$坐标，`M` 指最高的能阻挡移动的方块。`SH` 行中 `W`、`M`、`ML`、`O` 分别指最高的非空气方块、能阻挡移动的方块、能阻挡移动的非树叶方块和能阻挡移动的非流体方块的$y$坐标。此命令可用的高度图如下：
+#param-desc(
+  prefix: "",
+  [`world_surface` ], [最高的非空气方块。假设一实体站在一个方块上，且位于空气方块中，而其上方若干距离处有其他非空气方块（典型的例子是位于洞穴中），则该实体脚底的方块不是 `world_surface` 的最高点方块。],
+  [`motion_blocking` ], [最高的能阻挡移动的方块，包括流体方块。与 `world_surface` 的区别在于，`motion_blocking` 不包括花、草、树苗等不会阻挡移动的方块。],
+  [`motion_blocking_no_leaves` ], [最高的能阻挡移动的方块，不包括树叶。],
+  [`ocean_floor` ], [最高的能阻挡移动的非流体方块。]
+)
+#example(
+  [给予离当前位置上方5格处最近的玩家一个苹果],
+  [
+    需要先将命令执行位置设为 `~ ~5 ~`，再给予附近的玩家相应物品：
+    #codebox("execute positioned 0 70 0 run give @p apple")
+  ]
+)
+#example(
+  [使用 `positioned` 子命令按照@exa:subcommand_at_setblock 要求编写其他可行命令。],
+  [
+    将命令执行位置更改为所有玩家所在的位置，再放置方块：
+    #codebox("execute positioned as @a run setblock ~ ~-1 ~ red_concrete")
+  ]
+)
+#example(
+  [
+    命令执行者位于主世界$(16,64,16)$的位置，在该位置使用下面的命令，则命令执行者会被传送到下界的什么坐标？
+    #codebox("execute in the_nether positioned as @s run tp ~ ~ ~")
+  ],
+  [
+    与@exa:subcommand_in_scale 有所不同的是，该命令在 `in` 子命令后面增添了一个 `positioned` 子命令，使得命令执行位置在 `in` 子命令中经过坐标尺度换算后，又在 `positioned` 子命令中被强制更改为了$(16,64,16)$。所以在 `run` 子命令中体现为被传送的坐标是位于下界的$(16,64,16)$。
+    
+  ]
+)
+#example(
+  [将所有玩家传送至地表，允许传送至花、草等方块内。],
+  [
+     显然需要使用 `over` 模式，指定高度图 `motion_blocking`，命令为：
+     #codebox("execute as @a positioned over motion_blocking run tp @s ~ ~ ~")
+  ]
+)
+=== rotated
+子命令 `rotated` 会*按照偏转角参数更改命令执行朝向，不改变命令执行者和执行位置*，其概念和用法较子命令 `facing` 而言完全不同。所有用法如下：
+===== 将命令执行朝向修饰为指定的朝向角度，语法为
+#codebox("rotated <rot> -> execute")
+#param-desc(
+  [`<rot>`（朝向 `minecraft:rotation`）], [指定的朝向角度，包含两个参数，偏航角在前，俯仰角在后。允许使用相对朝向角度。]
+)
+===== 将命令执行朝向修饰为*和目标实体相同的朝向*，语法为
+#codebox("rotated as <targets> -> execute")
+#param-desc(
+  [`<targets>`（实体 `minecraft:entity`）], [指定实体。如果同时指定了多个实体，则以各实体的朝向分别执行后续的子命令，可以产生分支。]
+)
+#example(
+  [将所有村民的朝向调整为和当前实体一致。],
+  [
+    要调整朝向，需要使用命令 `/rotate`。现在回顾其语法：
+    #codebox("rotate <target> <rotation>")
+    #h(-2em)不妨分析各个参数：这里 `<targets>` 需要指定为村民，`<rotation>` 是当前实体 `@s` 的朝向。其中后两者均需要用到相对坐标的波浪号。除了修饰执行位置外，还需要更改命令执行者为所有的村民。于是 `run` 子命令中的 `/rotate` 命令可以写为
+    #codebox("rotate @s ~ ~")
+    #h(-2em)其中 `@s` 为所有单个村民，两个波浪号是命令执行朝向（“当前实体”的朝向，但此时命令执行者 `@s` 已被更改为所有村民）。对着这些参数可以依次写出子命令。
+
+    首先修饰执行朝向，这一条子命令一定要放在 `as` 子命令前面，因为此时命令执行者还不是村民，目标选择器变量 `@s` 修饰的是当前实体：
+    #codebox("execute rotated as @s")
+    #h(-2em)其次更改命令执行者：
+    #codebox("execute rotated as @s as @e[type=minecraft:villager]")
+    #h(-2em)最后加上 `/rotate` 命令：
+    #codebox("execute rotated as @s as @e[type=minecraft:villager] run rotate @s ~ ~")
+  ]
+)
+=== summon
+子命令 `summon` *可直接生成一个实体，并将命令执行者设为该实体*。该子命令合并了先使用命令 `/summon` 后更改命令执行者的过程，在命令编写中可减少命令条数。同时，生成的执行者可被直接选中，无论生成位置是否已加载，这意味着在未加载的区块内用子命令 `summon` 生成实体不必再使用 `/forceload` 以加载该实体。语法为：
+#codebox("summon <entity> -> execute")
+#param-desc(
+  [`<entity>`（注册项 `minecraft:resource`）], [需要生成实体的命名空间ID。不能指定实体NBT。]
+)
+#example(
+  [生成一个标记，并为其添加记分板标签 `test`、设其在记分项 `[marker]` 上的分数为2。],
+  [
+    可以使用函数：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > summon > .mcfunction",
+      "execute summon marker run function tutorial:summon/_"
+    )
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > summon > _.mcfunction",
+      "tag @s add test
+scoreboard players set @s marker 2"
+    )
+  ]
 )
 #appendix
 = 命令方块与红石电路
