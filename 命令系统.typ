@@ -3813,7 +3813,7 @@ UUID有以下几种表示方式：
   ),
   [
     
-    目标选择器变量 `@p` 和 `@r` 的数量参数默认为1，即分别选择距命令执行者最近和随机的一个实体。可以定义其他数量参数的值来扩大可选的实体数量，例如：`@p[limt=3]` 可用于选择距命令执行者最近的三个玩家。`@r[limit=5]` 可用于选择随机的五个玩家。
+    目标选择器变量 `@p` 和 `@r` 的数量参数默认为1，即分别选择距命令执行者最近和随机的一个实体。可以定义其他数量参数的值来扩大可选的实体数量，例如：`@p[limt=3]` 可用于选择距命令执行者最近的三个玩家。`@r[limit=5]` 可用于选择随机的五个玩家。#cite(<target_selector>, form: none)
 
     变量 `@a` 和 `@e` 没有默认的数量参数值，因为它们是分别用于选择所有玩家和所有实体的变量。这时候使用数量参数会限制选择的实体数量。
   ],
@@ -8390,13 +8390,13 @@ $ q = q_3 + t $
       #codebox("right_rotation:[0.0f,0.0f,0.0f,1.0f]")
       为将模型的旋转角度平滑过渡至$theta=90 degree$，插值动画的命令为
       #codebox("data merge entity @n[type=block_display] {transformation:{right_rotation:[0.41f,0.41f,0.41f,0.71f]},interpolation_duration:20}") <code:transformation_decomposed_form_loop>
-      该命令执行后，应用命令方块电路或函数计划使20gt后、命令@code:transformation_decomposed_form_loop 定义的插值动画结束时模型的旋转角度开始平滑过渡至$theta=180 degree$：
+      该命令执行后，可以用 `/schedule` 使20 gt后、由命令@code:transformation_decomposed_form_loop 定义的插值动画结束时模型的旋转角度开始平滑过渡至$theta=180 degree$：
       #codebox("data merge entity @n[type=block_display] {transformation:{right_rotation:[0.58f,0.58f,0.58f,0.0f]},interpolation_duration:20}")
       20gt后开始平滑过渡至$theta=270 degree$：
       #codebox("data merge entity @n[type=block_display] {transformation:{right_rotation:[0.41f,0.41f,0.41f,-0.71f]},interpolation_duration:20}")
       20gt后开始平滑过渡至$theta=0 degree$：
       #codebox("data merge entity @n[type=block_display] {transformation:{right_rotation:[0.0f,0.0f,0.0f,1.0f]},interpolation_duration:20}")
-      20gt后开始平滑过渡至$theta=90 degree$，此时循环至命令@code:transformation_decomposed_form_loop。若在命令方块电路中执行命令，则可以制造一个周期为80gt的时钟电路，每个命令方块之间需要有20gt的延迟，至少需要使用5个中继器。若在函数中执行命令，则可以在目录 #icon("folder") `data > minecraft > function > animation` 下创建 #icon("mcfunction") `90.mcfunction`、#icon("mcfunction") `180.mcfunction`、#icon("mcfunction") `270.mcfunction`、#icon("mcfunction") `0.mcfunction` 四个函数。例如，函数 `minecraft:animation/90` 的内容可以如下所示：
+      20gt后开始平滑过渡至$theta=90 degree$，此时循环至命令@code:transformation_decomposed_form_loop。在函数中执行命令时，则可以在目录 #icon("folder") `data > minecraft > function > animation` 下创建 #icon("mcfunction") `90.mcfunction`、#icon("mcfunction") `180.mcfunction`、#icon("mcfunction") `270.mcfunction`、#icon("mcfunction") `0.mcfunction` 四个函数。例如，函数 `minecraft:animation/90` 的内容可以如下所示：
       #codefile(
         lang: "mcfunction",
         title: "data > minecraft > function > animation > 90.mcfunction",
@@ -11185,7 +11185,7 @@ scoreboard players operation #wan var = #temp var"
     #codebox("execute as @a if score @s tri matches 1 run title @s title \"Hello Minecraft!\"")
   ]
 )
-== 记分板的应用实例
+== 记分板的应用实例<sec:scoreboard_example>
 记分板作为命令系统中一个较重要的体系，在服务器、冒险地图或数据包（原版模组）中有着非常广泛的应用。本节将列举记分板的若干应用实例，下面的例子中有些可能会需要使用命令 `/execute` 和数据包函数，读者可阅读后面章节的有关内容。
 
 在使用记分板系统的时候，由于分数是介于$-2147483648$和2147483647之间（含）的整数，因此首先需要注意分数的溢出问题。其次，记分板不接受小数，因此对小数的运算都是模拟运算，通常采取的是缩放倍数的方式，比如计算$1.1+1.2$时会把分数缩放成11、12再计算。
@@ -11388,6 +11388,29 @@ kill @s"
     )
   ]
 )
+#index(index: "method", display: "服务器玩家上线检测", "fu2 wu4 qi4 wan2 jia1 shang4 xian4 jian3 ce4")
+#example(
+  [制作一个玩家上线欢迎系统。具体效果是：只要玩家进入服务器或冒险地图，就给此玩家显示主标题#text_component("欢迎")。],
+  [
+    此处介绍一种常用方法：通过统计信息 `leave_game` 以实现玩家上线检测。`leave_game` 是通用统计信息中的一个细则，用于统计玩家离开服务器。当玩家再次加入服务器时，这个变动就可以由记分板检测到。
+
+    首先添加一个统计 `leave_game` 的记分项：
+    #codebox("scoreboard objectives add enter_game minecraft.custom:minecraft.leave_game")
+    #h(-2em)其次高频检测分数，放入高频运行的函数中：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > tick.mcfunction",
+      "execute as @a if score @s enter_game matches 1.. run function tutorial:welcome"
+    )
+    #h(-2em) `tutorial:welcome` 函数的内容如下：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > welcome.mcfunction",
+      "scoreboard players reset @s enter_game
+title @s title \"欢迎\""
+    )
+  ]
+)
 #heading(level: 2, numbering: none, [第七章思考题与习题])
 + 一个玩家能否存在多个不同的队伍中？一个队伍能否存在多个不同的玩家？
 + 添加一个队伍名为 `[Red]` 的队伍，并使该队伍中玩家的死亡信息对其他队伍的玩家隐藏。
@@ -11480,7 +11503,7 @@ kill @s"
 #codebox("execute @a ~ ~ ~ detect ~ ~-1 ~ minecraft:stained_hardened_clay 14 kill @p")
 这条命令的语法现在已经不适用了，不难注意到1.8往后若干个版本中陶瓦在ID上仍被称为“染色硬化粘土”，而方块的Damage值依然存在。此外，由于目标选择器变量 `@s` 于稍晚些的版本加入，因此只能使用 `@p` 以指代当前玩家。旧语法仅仅体现出更改命令执行者和执行位置、对执行的条件进行判断这两个功能，且这两个功能尚不全面。在上面的命令中，`@a ~ ~ ~` 用于更改命令执行者和命令执行位置，而目标选择器和三维坐标参数是必填的，且在更改命令执行者和命令执行位置时没有提供多种修饰参数以添加其他可能性，故命令的功能有所限制。`detect ~ ~-1 ~ ...` 是对脚底方块的判断，同时也是旧语法中唯一可指定条件的地方，并只能用于判断方块条件，有很大的局限性。
 
-扁平化之前能用于条件判断的命令有：`/testfor`、`/testforblock` 和 `/testforblocks`，它们分别用于判断实体条件、方块条件和区域条件。但由于它们不包含子命令，条件测试通过时必须借助其他方式以输出信号，常用的方法是在命令方块的毗邻位置放置一个红石比较器，将测试通过的信号转化为红石信号以输出。存储命令执行结果的功能在扁平化之前不存在于 `/execute` 的语法中，而是存在于命令 `/stats` 中，命令 `/stats` 是一种记分板命令，主要用于将命令执行结果存储到记分板变量中。出于更改命令执行者和命令执行位置的需要，这些命令通常需要与旧版本的命令 `/execute` 进行联动。
+扁平化之前能用于条件判断的命令有：`/testfor`、`/testforblock` 和 `/testforblocks`，它们分别用于判断实体条件、方块条件和区域条件。但由于它们不包含子命令，条件测试通过时必须借助其他方式以输出信号，常用的方法是在命令方块的毗邻位置放置一个红石比较器，将测试通过的信号转化为红石信号以输出。存储命令执行结果的功能在扁平化之前不存在于 `/execute` 的语法中，而是存在于命令 `/stats` 中，命令 `/stats` 是一种记分板命令，主要用于将命令执行结果存储到记分项中。出于更改命令执行者和命令执行位置的需要，这些命令通常需要与旧版本的命令 `/execute` 进行联动。
 
 由此可见，扁平化之前这些命令执行的功能被分散到多个不同的命令中。为了消除命令功能的分散造成的不便，于2017年年底至2018年上半年进行的扁平化不仅对ID做出了更改，还对整个命令系统进行了一次巨大的改动，几乎所有命令的语法都进行了调整，一些命令的功能被合并至其他命令中。其中命令 `/testfor`、`/testforblock`、`/testforblocks` 和 `/stats` 被移除，其功能被悉数合并至命令 `/execute` 中。为了更好地吸收这些命令执行的功能，命令 `/execute` 的语法被拆分，添加了子命令的概念，对不同的功能进行了区分，同时允许在部分子命令后接入其他子命令。自此命令 `/execute` 的语法基本定型，形成了如今的树状结构。
 === 命令/execute的结构和子命令
@@ -11551,7 +11574,7 @@ kill @s"
 
 *规则3*#h(1em)`/execute` 必须以条件子命令或 `run` 子命令作为结尾。如果以条件子命令为结尾，则命令执行成功后会返回*执行的成功次数*。
 
-以上3条规则都是硬性规则，规则4是社区规范：
+以上3条规则都是代码上的硬性规则，规则4是社区规范：
 
 *规则4*#h(1em)避免使用 `/execute ... run execute ...`。所有的子命令都应串联到一个 `/execute` 命令中而不是在 `run` 子命令内另起一个 `/execute`，后者会增加不必要的命令解析开销。因此，这样的写法不符合规范：
 #codebox("execute as @a run execute at @s run setblock ~ ~ ~ air")
@@ -11874,12 +11897,12 @@ execute on vehicle on vehicle run data modify entity @s Owner set from storage a
     #h(-2em)最后加上 `/rotate` 命令：
     #codebox("execute rotated as @s as @e[type=minecraft:villager] run rotate @s ~ ~")
   ]
-)
+) <exa:subcommand_rotate>
 === summon
-子命令 `summon` *可直接生成一个实体，并将命令执行者设为该实体*。该子命令合并了先使用命令 `/summon` 后更改命令执行者的过程，在命令编写中可减少命令条数。同时，生成的执行者可被直接选中，无论生成位置是否已加载，这意味着在未加载的区块内用子命令 `summon` 生成实体不必再使用 `/forceload` 以加载该实体。语法为：
+子命令 `summon` *可直接生成一个实体，并将命令执行者设为该实体*。该子命令合并了先使用命令 `/summon` 后更改命令执行者的过程，在命令编写中可减少命令条数；此外，生成的执行者可被直接选中，无论生成位置是否已加载。语法为：
 #codebox("summon <entity> -> execute")
 #param-desc(
-  [`<entity>`（注册项 `minecraft:resource`）], [需要生成实体的命名空间ID。不能指定实体NBT。]
+  [`<entity>`（注册项 `minecraft:resource`）], [需要生成实体的命名空间ID。*不能指定实体NBT。*]
 )
 #example(
   [生成一个标记，并为其添加记分板标签 `test`、设其在记分项 `[marker]` 上的分数为2。],
@@ -11896,6 +11919,300 @@ execute on vehicle on vehicle run data modify entity @s Owner set from storage a
       "tag @s add test
 scoreboard players set @s marker 2"
     )
+  ]
+)
+在未加载的区块内用子命令 `summon` 生成实体不必再使用 `/forceload` 以加载该实体。例如，在 `100000 0 100000` 处生成一个标记，无论这个位置是否被加载：
+#codebox("execute positioned 100000 0 100000 summon marker ...")
+相比之下，使用 `summon marker 100000 0 100000` 再对生成的标记进行操作时，还需要考虑 `100000 0 100000` 这个位置是否已被加载：`forceload add 100000 100000`，这其中区块的加载是异步的，实际执行的时候所有操作不一定会在同一游戏刻内完成。故 `/execute` 的 `summon` 子命令是更优解。
+=== 应用实例
+@exa:subcommand_rotate 提供了编写 `/execute` 命令的一种思路，即先写出 `run` 子命令，分析 `run` 子命令中的各种参数得出需要修饰的命令执行上下文，然后按照逻辑顺序用修饰子命令将它们一一修饰。
+
+对于所有的修饰子命令，先列一张表以总结它们各自可修饰的执行上下文：
+#general-table(
+  caption: "修饰子命令对上下文的可修饰性",
+  colspan: 6,
+  columns: (auto, auto, auto, auto, auto, auto),
+  header: ([子命令], [执行者], [执行位置], [执行朝向], [执行维度], [执行锚点]),
+  [align], [否], table.cell(fill: green)[是], [否], [否], [否],
+  [anchored], [否], [否], [否], [否], table.cell(fill: green)[是],
+  [as], table.cell(fill: green)[是], [否], [否], [否], [否],
+  [at], [否], table.cell(fill: green)[是], table.cell(fill: green)[是], table.cell(fill: green)[是], [否],
+  [facing], [否], [否], table.cell(fill: green)[是], [否], [否],
+  [in], [否], [否], [否], table.cell(fill: green)[是], [否],
+  [on], table.cell(fill: green)[是], [否], [否], [否], [否],
+  [positioned], [否], table.cell(fill: green)[是], [否], [否], [否],
+  [rotated], [否], [否], table.cell(fill: green)[是], [否], [否],
+  [summon], table.cell(fill: green)[是], [否], [否], [否], [否]
+) <fig:tab:modify_subcommands>
+编写命令时可按照这张表对号入座。在命令编写完成后还可以进行执行上下文的检查。下面举几个例子：
+#example(
+  [将离随即玩家最近的一只绵羊移动到该玩家眼前三格远的距离。],
+  [
+    先写出 `run` 子命令：
+    #codebox("run tp ^ ^ ^3")
+    #h(-2em)从中可以得到命令执行者为绵羊，命令执行位置为该玩家所在的位置，朝向与该玩家的朝向一致。不妨先将命令执行者设为随即玩家，这时目标选择器变量 `@s` 就会被指定为该玩家，可用 `as` 子命令更改命令执行位置和朝向。然后再将命令执行者改为最近的一只绵羊。完整的命令如下所示：
+    #codebox("execute as @r at @s as @e[type=sheep,sort=random,limit=1] run tp ^ ^ ^3")
+  ]
+)
+#example(
+  [
+    如图，一串正红色的 `dust` 粒子效果表现得像是顺时针绕着点$(0.5,64,0.5)$旋转。尝试实现这个效果。
+    #figure(
+      caption: "",
+      image("图片/execute粒子例题.png", width: 12em)
+    ) <fig:execute_particle>
+  ],
+  [
+    如果直接使用 `/particle` 命令，通过计算得到每一个粒子应处于的位置有些困难。不妨在$(0.5,64,0.5)$放置一个标记，并带有 `center` 的标签：
+    #codebox("summon marker 0.5 64 0.5 {Tags:[\"center\"]}")
+    #h(-2em)或者也可以使用 `summon` 子命令：
+    #codebox("execute positioned 0.5 64 0.5 summon marker run tag @s add center")
+    #h(-2em)接下来可以旋转这个标记。将命令执行者、执行位置和朝向分别改为标记、标记的位置和朝向，然后用 `/rotate` 命令水平旋转这个标记。注意需要改动的是标记的水平偏转角，@fig:execute_particle 的旋转方向为顺时针，因此相对偏转角参数波浪号后应为正：
+    #codebox("rotate @s ~15 ~")
+    #h(-2em)这样随着标记的旋转，每游戏刻都会在标记面前生成一个粒子效果，在视觉上的表现就是粒子绕着该点旋转。
+
+    用函数实现的时候，首先写初始化函数：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > load.mcfunction",
+      "summon marker 0.5 64 0.5 {Tags:[\"center\"]"
+    )
+    #h(-2em)需要被 `#minecraft:tick` 调用的函数为：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > tick.mcfunction",
+      "execute as @e[type=marker,tag=center] at @s run function tutorial:particle"
+    )
+    #h(-2em)其中 `tutorial:particle` 的内容为
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > particle.mcfunction",
+      "rotate @s  ~15 ~
+particle minecraft:dust{color:[1.0,0.0,0.0],scale:1.0} ^ ^ ^1 0 0 0 1 1 force"
+    )
+  ]
+)
+== 条件子命令
+条件子命令是一类用于条件判断的子命令，只有符合条件、或称为*测试通过*时，才会执行后续的子命令。条件子命令不会更改命令执行者和执行位置等上下文，也不会对其他因素造成影响，它的作用仅限于判断条件。
+
+命令 `/execute` 一共存在两种条件判断的子命令：`if` ——*只有条件满足时测试通过*；`unless` ——*只有条件不满足时测试通过*。这两种子命令构成了基本的“是”和“否”的判断方式。在语法上，除了 `if` 和 `unless` 的命令名，这两种判断方式其余部分的参数结构均相同。条件子命令可以多个随意堆叠，一个 `/execute` 命令中一个条件符合（满足条件或不满足条件）时，测试才会通过，后续子命令才会被执行；若不符合则测试失败，命令执行中断，后续的子命令不再被执行。这意味着只要子命令中有一个条件不符合，命令就无法完整执行。在逻辑上，同一条 `/execute` 命令中的条件子命令进行的是“与”运算；如果要进行“或”运算，则必须在不同的 `/execute` 命令中使用条件子命令。*执行条件子命令后，总会返回“测试通过”或“测试失败”，若存在多个满足条件的分支，则还会返回一个测试计数值。*
+
+大部分条件子命令后面不必接入其他子命令，因此本节的语法展示使用 `-> [execute]` 这样的写法。
+=== 生物群系条件：biome
+判断给定坐标的位置是否为指定的生物群系，语法为：
+#codebox("(if|unless) biome <pos> <biome> -> [execute]")
+#param-desc(
+  [`<pos>`（方块坐标 `minecraft:block_pos`）], [需要检测的位置，使用方块坐标。],
+  [`<biome>`（注册项命名空间ID或标签 `minecraft:resource_or_tag`）], [指定生物群系的命名空间ID或生物群系的数据包标签。]
+)
+#example(
+  [判断$(0,70,0)$的位置是否为平原生物群系。如果是则测试通过。],
+  [
+    在这个情境中很明显需要用到 `if` 子命令：
+    #codebox("execute if biome 0 70 0 minecraft:plains")
+  ]
+)
+=== 方块条件：block
+判断给定坐标上的方块是否为指定的方块，语法为：
+#codebox("(if|unless) block <pos> <block> -> [execute]")
+#param-desc(
+  [`<pos>`（方块坐标 `minecraft:block_pos`）], [需要检测的位置，使用方块坐标。],
+  [`<block>`（方块谓 `minecraft:block_predicate`）], [指定方块的命名空间ID或方块标签，允许指定方块状态或方块实体NBT，格式为\ `<命名空间ID>[<方块状态>=<值>,…]{<方块实体数据>}`\ 其中 `[<方块状态>=<值>,…]` 和 `{<方块实体数据>}` 在不需要时可以省略。检查方块时只会检查此参数指定的方块状态是否匹配。]
+)
+#example(
+  [判断坐标$(0,70,0)$处的方块是否为朝向东面的铁活板门，如果是则测试通过。],
+  [
+    命令为
+    #codebox("execute if block 0 70 0 iron_trapdoor[facing=east]")
+  ]
+)
+通常将条件子命令与修饰子命令放在一起使用。下面再举一个例子：
+#example(
+  [在一张跑酷地图中，所有踩到红色混凝土的玩家都会被立即杀死，用命令实现这个效果。],
+  [
+    将命令执行者更改为所有玩家，命令执行位置更改为命令执行者所在的位置，这样每个玩家能作为一个单独的命令执行者以执行后面的子命令。然后判断每个玩家脚下的方块，即命令执行位置下方毗邻的方块是否为红色混凝土，如果是则清除命令执行者（该玩家），很明显需要使用 `if` 子命令。完整的命令为
+    #codebox("execute as @a positioned as @s if block ~ ~-1 ~ red_concrete run kill @s")
+    #h(-2em)将这个命令放在 `tick` 函数中高频执行。这类情境在冒险地图中极为常见，因此这种命令需要读者掌握。
+  ]
+)
+=== 区域条件：blocks
+判断给定区域的方块是否与相同形状、大小指定区域的方块完全相同，这里的完全相同不仅指方块的ID和数量一致，每个被探测方块在区域内的相对位置都需要一致。语法为：
+#codebox("(if|unless) blocks <start> <end> <destination> (all|masked) -> [execute]")
+#param-desc(
+  [`<start>` 和 `<end>`（方块坐标 `minecraft:block_pos`）], [类似于命令 `/fill` 和 `/clone` 决定源区域的方式，由这两个方块坐标参数决定源区域所处的位置及其大小。],
+  [`<destination>`（方块坐标 `minecraft:block_pos`）], [对照区域西北下角的方块坐标。对照区域的大小与源区域完全相同，由源区域的参数决定，因此无需其他的参数。],
+  [`(all|masked)` ], [检测模式，有 `all` 和 `masked` 两种有效值，用于决定区域内哪些方块会被探测。`all` 指区域内所有的方块；`masked` 指区域内所有非空气方块，忽略所有空气方块。]
+)
+#example(
+  [在小游戏“建筑超市”中，玩家需要搜集建筑材料将模板建筑复刻到指定区域内。已知模板建筑位于方块坐标$(360,175,243)$和$(370,185,233)$围成的区域内，玩家需要在$(340,175,243)$和$(350,185,233)$围成的区域内建造。当两个区域内的建筑完全相同时，对所有玩家显示粗体的黄色大标题#text_component(text(fill: yellow, weight: "bold")[Building Completed])。],
+  [
+    将由$(340,175,243)$和$(350,185,233)$围成的区域当作源区域，则由$(360,175,243)$和$(370,185,233)$围成的区域为对照区域，注意对照区域西北下角的方块坐标取区域内所有坐标轴上坐标的最小值，即$(360,175,233)$。命令为：
+    #codebox("execute if blocks 340 175 243 350 185 233 360 175 233 all run title @a title {text:\"Building Completed\",color:\"yellow\",bold:true}")
+    当然，也可以把由$(360,175,243)$和$(370,185,233)$围成的区域当作源区域，由$(340,175,243)$和$(350,185,233)$围成的区域为对照区域，则命令也可以写成：
+    #codebox("execute if blocks 360 175 243 370 185 233 340 175 233 all run title @a title {text:\"Building Completed\",color:\"yellow\",bold:true}")
+  ]
+)
+=== NBT条件：data
+判断目标方块实体、实体或命令存储是否有指定的NBT，所有用法如下：
+===== 判断方块实体数据，语法为
+#codebox("(if|unless) data block <sourcePos> <path> -> [execute]")
+#param-desc(
+  [`<sourcePos>`（方块坐标 `minecraft:block_pos`）], [需要检测的方块坐标。],
+  [`<path>`（NBT路径 `minecraft:nbt_path`）], [需要检测的NBT路径。]
+)
+===== 判断实体数据，语法为
+#codebox("(if|unless) data entity <source> <path> -> [execute]")
+#param-desc(
+  [`<source>`（实体 `minecraft:entity`）], [需要检测的实体，可以为玩家名、UUID或目标选择器，但必须只能选定一个实体。]
+)
+===== 判断命令存储数据，语法为
+#codebox("(if|unless) data storage <source> <path> -> [execute]")
+#param-desc(
+  [`<source>`（命名空间ID `minecraft:resource_location`）], [指定命令存储的命名空间ID。]
+)
+#example(
+  [判断$(0,70,0)$的箱子是否有自定义名称#text_component(shadow-color: black.transparentize(100%), text(black)[奖励箱])，如果是则在该箱子最中间的槽位 `container.13` 放入一颗钻石。],
+  [
+    判断NBT时不免要使用NBT路径，于是可以先写出符合要求的箱子拥有的NBT。下面是箱子根标签拥有的值：
+    #tree(
+      (0, [#icon("nbt-compound") 根标签]),
+      (1, [#icon("nbt-string") *CustomName*: `奖励箱`])
+    )
+    则符合要求的箱子必须拥有如下的NBT路径，这里使用带子标签的根复合标签节点以指向拥有特定值的标签：
+    #codebox("{CustomName:\"奖励箱\"}")
+    接下来使用 `if` 子命令进行判断，得到完整的命令：
+    #codebox("execute if data block 0 70 0 {CustomName:\"奖励箱\"} run item replace block 0 70 0 container.13 with diamond")
+  ]
+)
+=== 维度条件：dimension
+判断命令执行位置是否在特定的维度，语法为
+#codebox("(if|unless) dimension <dimension> -> [execute]")
+#param-desc(
+  [`<dimension>`（维度 `minecraft:dimension`）], [需要检测的维度命名空间ID。]
+)
+#example(
+  [判断玩家 `Mu_xian` 是否位于主世界。],
+  [
+    进行判断前，先要把命令执行维度改为 `Mu_xian` 所在的维度。根据@fig:tab:modify_subcommands，这时就不能只用子命令 `as`，而应该用 `at`：
+  ]
+)
+#codebox("execute at Mu_xian if dimension overworld")
+=== 实体条件：entity
+判断指定的一个或多个实体是否存在，语法为：
+#codebox("(if|unless) entity <entities> -> [execute]")
+#param-desc(
+  [`<entities>`（实体 `minecraft:entity`）], [需要检测的实体，可以为玩家名、UUID或目标选择器。]
+)
+#example(
+  [判断是否存在实体拥有记分板标签 `test`，如果是则测试通过。],
+  [
+    由于不存在直接判断记分板标签的方式，对于记分板标签的判断都可以转化为对实体的判断。因此命令为
+    #codebox("execute if entity @e[tag=test]")
+  ]
+)
+=== 函数条件：function
+判断给定函数或函数标签是否匹配返回值，语法为：
+#codebox("(if|unless) function <function> -> execute")
+#param-desc(
+  [`<function>`（函数 `minecraft:function`）], [可以是给定函数的命名空间ID，也可以是带 `#` 号的函数标签。用参数指定的函数均会运行，函数的运行结果不会对其他函数的运行产生影响。*当且仅当函数内命令 `/return` 的返回值不为 `0` 时，判定测试通过；若为返回值为 `0`，或此函数是Void类型的函数（没有返回值），则测试失败。*无论测试是否通过，指定的函数均会被执行一遍。若该参数使用函数标签指定了多个函数，则标签只要有任一函数中返回值非 `0`，则判定测试通过，标签中的后续函数将不再执行。]
+)
+*注意，该条件后续必须接入其他子命令，否则命令被视为不完整的命令而执行失败。*
+#example(
+  [判断函数 `minecraft:foo` 返回值是否非 `0`，是的话返回 `1`。],
+  [
+    命令为
+    #codebox("execute if function minecraft:foo run return 1")
+  ]
+)
+=== 物品条件：items
+判断给定实体或容器内的指定槽位或槽位区间内是否有指定物品，所有用法如下：
+===== 判断容器，语法为
+#codebox("(if|unless) items block <pos> <slots> <item_predicate> -> [execute]")
+#param-desc(
+  [`<pos>`（方块坐标 `minecraft:block_pos`）], [需要检测的容器方块坐标。],
+  [`<slots>`（物品栏槽位 `minecraft:item_slot`）], [指定的物品栏槽位，按@tab:slots 取用。也可以指定槽位区间，格式为 `<slot_type>.*`，此时所有拥有该槽位类别的槽位都会被检测，可用于检测一个特定容器或实体物品栏内的所有槽位。],
+  [`<item_predicate>`（物品谓词 `minecraft:item_predicate`）], [匹配的物品，按 `<type>[<test>,<test>,…]` 或 `<type>[<test>|<test>|…]` 的格式填写，语法见节@subsec:item_predicate。]
+)
+#example(
+  [判断位于$(0,70,0)$的箱子内是否有食物。],
+  [
+    不指定槽位的情况下，使用槽位区间，箱子使用的槽位类别为 `container`。食物即拥有组件 `minecraft:food` 的物品。所需命令为
+    #codebox("execute if items block 0 70 0 container.* *[food]")
+  ]
+)
+===== 判断实体物品栏，语法为
+#codebox("(if|unless) items entity <entities> <slots> <item_predicate> -> [execute]")
+#param-desc(
+  [`<entities>`（实体 `minecraft:entity`）], [需要检测的实体，可以为玩家名、UUID或目标选择器。可以选择多个实体。]
+)
+#example(
+  [判断当前玩家主手是否持有钻石剑。],
+  [
+    命令为
+    #codebox("execute if items entity @s weapon.mainhand diamond_sword")
+  ]
+)
+=== 加载条件：loaded
+判断给定位置是否已被加载，语法为：
+#codebox("(if|unless) loaded <pos> -> [execute]")
+#param-desc(
+  [`<pos>`（方块坐标 `minecraft:block_pos`）], [允许使用相对坐标或局部坐标。可用于检查区块加载情况，判断此处位置能否执行命令，并配合命令 `/forceload` 调整区块加载。]
+)
+#example(
+  [判断$(1000000,70,1000000)$处是否已被加载。],
+  [
+    命令为
+    #codebox("execute if loaded 1000000 70 1000000")
+  ]
+)
+=== 谓词条件：predicate
+判断指定谓词是否通过，语法为：
+#codebox("(if|unless) predicate <predicate> -> [execute]")
+#param-desc(
+  [`<predicate>`（战利品表谓词 `minecraft:loot_predicate`）], [指定谓词的命名空间ID，或是直接在此处以SNBT形式内联一个谓词。]
+)
+#example(
+  [编写命令使得当且仅当谓词 `tne:test1` 通过且谓词 `tne:test2` 不通过时测试成功。],
+  [
+    这里需要进行两次条件判断：
+    #codebox("execute if predicate tne:test1 unless tne:test2")
+  ]
+)
+=== 分数条件：score
+在节@sec:scoreboard_example 的例子中使用了 `if score` 子命令，它是记分板系统一个非常重要的功能。该子命令用于判断指定分数持有者在记分项上的分数是否满足一定的条件，一共有两条可用的语法。
+===== 判断指定分数持有者在指定记分项上的分数与源分数持有者在源记分项上的分数是否符合一定的运算关系，语法为
+#codebox("(if|unless) score <target> <targetObjective> (=|<|<=|>|>=) <source> <sourceObjective> -> [execute]")
+#param-desc(
+  [`<targets>`（分数持有者 `minecraft:score_holder`）], [目标分数持有者，可以是玩家名、UUID或目标选择器，这里 `*` 会判定失败。],
+  [`<targetObjective>`（记分项 `minecraft:objective`）], [目标记分项。],
+  [`(=|<|<=|>|>=)` ], [操作符，检查目标分数和源分数的关系，其中：\ `=`：目标分数等于源分数\ `<`：目标分数小于源分数\ `<=`：目标分数小于等于源分数\ `>`：目标分数大于源分数\ `>=`：目标分数大于等于源分数],
+  [`<source>`（分数持有者 `minecraft:score_holder`）], [源分数持有者，可以是玩家名、UUID或目标选择器，这里 `*` 会判定失败。],
+  [`<sourceObjective>`（记分项 `minecraft:objective`）], [源记分项。]
+)
+#example(
+  [比较 `Mu_xian` 和 `XVExodus` 两名玩家在记分项 `[score]` 上的分数，并在聊天栏返回高分玩家的胜利；如果分数一致，则在聊天栏返回平局。],
+  [
+    先检测高分玩家，假设 `Mu_xian` 是分数比较高的玩家：
+    #codebox("execute if score Mu_xian score > XVExodus score run tellraw @a \"Mu_xian胜出\"")
+    #h(-2em)再假设 `XVExodus` 是分数比较高的玩家：
+    #codebox("execute if score XVExodus score > Mu_xian score run tellraw @a \"XVExodus胜出\"")
+    #h(-2em)然后假设两者分数一致：
+    #codebox("execute if score Mu_xian score = XVExodus score run tellraw @a \"平局\"")
+    以上三条命令均需要高频执行。
+  ]
+)
+===== 判断指定对象在指定变量上的分数是否在某一范围内，语法为
+#codebox("(if|unless) score <target> <targetObjective> matches <range> -> [execute]")
+#param-desc(
+  [`<range>`（整数范围 `minecraft:int_range`）], [整型范围，有精确值（如 `1`）、单侧限制（如 `1..` 或 `..1`）和双侧限制（如 `0..1`）几种。表示范围时限制值也包含在内，即在数学上是闭区间。例如，`1..` 表示大于或等于1。]
+)
+#example(
+  [检测所有玩家在 `[point]` 上的分数，如果小于0，则对其输出大标题#text_component("Game Over")。],
+  [
+    不妨先将命令执行者更改为所有玩家，然后再进行分数判断，此时 `@s` 已被指定为当前玩家：
+    #codebox("execute as @a if score @s point matches ..-1 run title @s title \"Game Over\"")
+    由于分数不能为浮点数，小于0的范围（0不包含在内）等同于小于等于$-1$。当然，也可以使用 `unless` 子命令，这时范围参数与使用 `if` 子命令时相反：
+    #codebox("execute as @a if score @s point matches 0.. run title @s title \"Game Over\"")
   ]
 )
 #appendix
@@ -12769,7 +13086,12 @@ scoreboard players set @s marker 2"
     [26.1 Pre-Release 3], [101.1], [84.0],
     [26.1 Release Candidate 1], [101.0], [84.0],
     [26.1 Release Candidate 2], [101.0], [84.0],
-    [26.1 Release Candidate 3], [101.1], [84.0]
+    [26.1 Release Candidate 3], [101.1], [84.0],
+    [26.1], [101.1], [84.0],
+    [26.1.1 Release Candidate 1], [101.0], [84.0],
+    [26.1.1], [101.1], [84.0],
+    [26.1.2 Release Candidate 1], [101.0], [84.0],
+    [26.1.2], [101.1], [84.0]
   )
 )<tab:pack_format>
 == 方块状态<sec:block_state>
