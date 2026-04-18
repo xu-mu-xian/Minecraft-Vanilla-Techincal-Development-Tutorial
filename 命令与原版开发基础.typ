@@ -899,7 +899,7 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
 ===== #icon("json") `.json` 和 `.mcmeta` 文件
 `.json` 和 `.mcmeta` 文件都是使用JSON格式的文件。这些文件中的JSON格式是允许换行的，且为了美观、可读性，编写者在习惯上会在所有的 `.json` 和 `.mcmeta` 文件中使用换行，并使得同一层级的字段在行前缩进上保持一致。`.json` 和 `.mcmeta` 文件没有专门用于注释的语法，若需要注释，则使用游戏不需要、不会被游戏识别的键，如 `_comment1`、`_comment2`。
 ===== #icon("nbt") `.mca`、`.dat`、`.dat_old` 和 `.nbt` 文件
-`.mca`、`.dat`、`.dat_old` 和 `.nbt` 文件均是使用NBT格式的文件，通常用于存储世界的全局信息和结构信息。同样地，这两类文件不能用 #icon("dhp") DHP在编译软件内进行编辑，但可以在NBT编辑器内编辑，本教程推荐的编辑器为 #icon("nbtstudio") NbtStudio。一些无法由命令进行编辑的信息可以通过 #icon("nbtstudio") NbtStudio修改。
+`.mca`、`.dat`、`.dat_old` 和 `.nbt` 文件均是使用NBT格式的文件，通常用于存储世界的全局信息和结构信息。这些文件不能用 #icon("dhp") DHP在编译软件内进行编辑，但可以在NBT编辑器内编辑，本教程推荐的编辑器为 #icon("nbtstudio") NbtStudio。一些无法由命令进行编辑的信息可以通过 #icon("nbtstudio") NbtStudio修改。`.nbt` 格式的结构模板文件可以用 #icon("vscode") VS Code的扩展NBT Viewer打开并编辑。
 ===== #icon("png") `.png` 文件
 `.png` 文件是图片文件，被用于存储游戏中的绝大部分图像，包括但不限于图标、游戏截图、资源包纹理。可以使用Windows自带的 #icon("paint") 画图、#icon("ps") PS或 #icon("gimp") GIMP处理，但需要注意 #icon("paint") 画图不支持透明背景。
 ===== #icon("ogg") `.ogg` 文件
@@ -3248,7 +3248,7 @@ $ S=(abs(x_1-x_2)+1)(abs(y_1-y_2)+1)(abs(z_1-z_2)+1) $ <equ:source_region_volume
     在这个例子中，不妨可以使用 `/fill` 命令的filter模式，将所有的非红色混凝土替换为空气。首先需要在数据包内定义一个方块标签，将所有会在平台上出现的非红色混凝土写进去：
     #codefile(
       lang: "json",
-      title: "data > easecation > tags > block > not_red_concrete.json",
+      title: "data > pixel_party > tags > block > not_red_concrete.json",
       "{
   \"values\": [
     \"minecraft:brown_concrete\",
@@ -3266,7 +3266,7 @@ $ S=(abs(x_1-x_2)+1)(abs(y_1-y_2)+1)(abs(z_1-z_2)+1) $ <equ:source_region_volume
 }"
     )
     于是命令可以写为：
-    #codebox("fill 0 0 0 31 0 31 air replace #easecation:not_red_concrete")
+    #codebox("fill 0 0 0 31 0 31 air replace #pixel_party:not_red_concrete")
   ]
 )
 ==== 命令 `/clone`
@@ -4625,7 +4625,7 @@ NBT文件大部分遵循马库斯·阿列克谢·佩尔松（Notch）的原始�
 #codebox("{A,B',C}")
 === modify子命令
 `/data modify` 用于在原本方块实体、实体或命令存储的NBT数据基础上以标签为单位进行修改，修改后的值必须与原本的值不同，部分语法为：
-#codebox("data modify (block <targetPos>|entity <target>|storage <target>) <targetPath> (append|insert <index>|merge|pretend|set) …") <code:command_data_modify>
+#codebox("data modify (block <targetPos>|entity <target>|storage <target>) <targetPath> (append|insert <index>|merge|pretend|set) ...") <code:command_data_modify>
 #param-desc(
   [`<targetPath>`（NBT路径 `minecraft:nbt_path`）], [需要修改的标签，需要是合法的NBT路径。],
   [`(append|insert <index>|merge|pretend|set)` ], [规定NBT的修改方式，有五种不同的方式。若使用 `insert`，则需要指定一个 `<index>`（整型 `brigadier:integer`）值。]
@@ -11793,9 +11793,9 @@ title @s title \"欢迎\""
 #codebox("on (attacker|controller|leasher|origin|owner|passengers|target|vehicle) -> execute")
 #param-desc(
   [`attacker` ], [五秒内对当前命令执行者最后造成伤害的实体。],
-  [`controller` ], [控制当前命令执行者的实体。],
+  [`controller` ], [控制当前命令执行者的实体，比如骑乘并控制猪、马、乐魂移动的实体。以猪为例，手持胡萝卜钓竿的骑乘者即为控制者，不手持胡萝卜钓竿者不算。],
   [`leasher` ], [用栓绳牵引当前命令执行者的实体。],
-  [`origin` ], [#h(-2em)当前命令执行者的来源，按@tab:executor_origin 使用。#general-table(caption: "命令执行者的来源", colspan: 2, columns: (auto, auto), header: ([当前执行者], [来源实体]), [凋落物形式的物品], [掷出此物者], [弹射物], [发射者], [被激活的TNT], [点燃此TNT者], [恼鬼或尖牙], [召唤者，一般为唤魔师], [区域效果云], [来源者]) <tab:executor_origin>],
+  [`origin` ], [#h(-2em)当前命令执行者的来源，按@tab:executor_origin 使用。#general-table(caption: "命令执行者的来源", colspan: 2, columns: (auto, auto), header: ([当前执行者], [来源实体]), [掉落物形式的物品], [掷出此物者], [弹射物], [发射者], [被激活的TNT], [点燃此TNT者], [恼鬼或尖牙], [召唤者，一般为唤魔者], [区域效果云], [来源者]) <tab:executor_origin>],
   [`owner` ], [当前命令执行者的主人（如驯服宠物的玩家）。],
   [`passengers` ], [直接骑乘当前命令执行者的实体。],
   [`target` ], [当前命令执行者攻击的实体，若当前执行者为交互实体，则指向最后与之交互的玩家。],
@@ -12266,6 +12266,13 @@ particle minecraft:dust{color:[1.0,0.0,0.0],scale:1.0} ^ ^ ^1 0 0 0 1 1 force"
   ]
 )
 #example(
+  [为所有在积雪的平原（`minecraft:snowy_plains`）生物群系中的玩家施加缓慢I的效果],
+  [
+    将命令执行位置设为玩家的位置，然后再判断这个位置是否为指定的生物群系：
+    #codebox("execute as @a at @s if biome ~ ~ ~ minecraft:snowy_plains run effect give @s minecraft:slowness 0")
+  ]
+)
+#example(
   [
     制作一个小游戏“一箭必杀”（Dodgebolt），使其拥有如下的规则：
     + 对战双方分别有三名队员，当其中一个队伍的三名队员全部阵亡后，另一队伍获得本轮游戏的胜利；
@@ -12357,7 +12364,7 @@ scoreboard players reset #green rounds"
     )
     对于这个例子，本节提供的是利用条件子命令的方法，下节将提供解决这个问题的另一种思路，即使用存储子命令。
   ]
-)
+) <exa:dodgebolt>
 == 存储子命令
 存储子命令是一类能够将命令执行的成功次数和结果存储于一定媒介的子命令。存储子命令会对命令执行作量化处理，将命令执行过程中的定性分析转变为定量分析，是一种非常重要的子命令。
 === 存储格式
@@ -12391,7 +12398,7 @@ scoreboard players reset #green rounds"
   [predicate], table.cell(colspan: 2)[1],
   [score], table.cell(colspan: 2)[1],
   [stopwatch], table.cell(colspan: 2)[1]
-)
+) <tab:result_of_condition_subcommands>
 基本上所有其他的命令都能够输出一个结果和成功次数，下面列举了一些常用的命令语法及它们*成功执行*后返回的结果。
 #general-table(
   caption: "成功执行情况下的命令执行结果表",
@@ -12543,7 +12550,7 @@ scoreboard players reset #green rounds"
   [`... get`], [世界边界的大小，四舍五入至整数。],
   [`... set ...`], [世界边界的改变量，正数为增大，负数为减小。],
   [`...  warning time ...`], [`<time>`]
-)
+) <tab:result_of_command>
 === NBT数据存储
 命令执行结果和成功次数可以存储在NBT中，`store` 子命令一共提供了三种NBT存储的媒介，即方块实体格式、实体格式和命令存储格式。
 ==== 存储于方块实体
@@ -12593,6 +12600,207 @@ scoreboard players reset #green rounds"
   [
     命令为
     #codebox("execute store result storage custom:test a int 1 run scoreboard players get #test origin")
+  ]
+)
+=== Boss栏数据存储
+存储子命令还允许将数据存储在Boss栏中。在自定义的事件或Boss中可以实时将游戏的进度反应在Boss栏上。语法为：
+#codebox("store (result|success) bossbar <id> (value|max) -> execute")
+#param-desc(
+  [`<id>`（命名空间ID `minecraft:resource_location`）], [需要将返回值存入的Boss栏的命名空间ID。],
+  [`(value|max)` ], [将数据存储为指定Boss栏的当前值（`value`）或最大值（`max`）。]
+)
+#example(
+  [制作一个Boss栏 `hud:zombie` 以反应最近僵尸当前的血量。],
+  [
+    根据节@subsec:bossbar 的相应内容，先创建一个这样的Boss栏：
+    #codebox("bossbar add minecraft:zombie \"Zombie\"")
+    #h(-2em)由于Boss栏需要一个最大值和一个当前值，于是可以将僵尸的最大生命值的最终值存储为Boss栏的最大值。在 `run` 子命令中需要用到 `/attribute ... get` 命令：
+    #codebox("execute store result bossbar hud:zombie max run attribute @n[type=zombie] minecraft:max_health get")
+    #h(-2em)然后将僵尸的当前生命值存储为Boss栏的当前值：
+    #codebox("execute store result bossbar minecraft:zombie value run data get entity @n[type=zombie] health")
+  ]
+)
+=== 记分板数据存储
+存储子命令的记分板存储模式也是记分板系统的重要组成部分，通过使其他形式的数据与记分板分数联动，将其他形式的数据转换为可计算、统计的记分板分数，是命令系统处理数据的主要方式。语法为：
+#codebox("store (result|success) score <targets> <objective> -> execute")
+即将命令执行结果或成功次数存储为 `<targets>` 在 `<objective>` 上的分数。
+#example(
+  [比较玩家A和玩家B的生命值，并给生命值较大的玩家添加记分板标签 `powerful`。],
+  [
+    玩家生命值由NBT存储，先将NBT数据存储为记分板分数，目标记分项取 `[compare]`：
+    #codebox("execute as A store result score @s compare run data get entity @s health")
+    #codebox("execute as B store result score @s compare run data get entity @s health")
+    然后用 `if` 子命令比较这两个玩家各自在记分项 `[compare]` 上的分数，并执行子命令：
+    #codebox("execute if score A compare > B compare run tag A add powerful")
+    #codebox("execute if score B compare > A compare run tag B add powerful")
+  ]
+)
+#example(
+  [使用存储子命令以完成@exa:dodgebolt。],
+  [
+    @exa:dodgebolt 中的方法是基于纯粹的分数条件判断，其大体思路是：用特定准则的记分项判断队伍内单个成员的死亡信息，然后将这些信息汇总到代表整个队伍的假名分数中。注意到在整个小游戏的设计过程中，在一轮游戏已阵亡的玩家的游戏模式是旁观模式，不妨可以统计处于旁观模式的玩家数量，`if` 子命令判断实体条件时，命令执行结果为存在的符合要求的实体数量，若为3，则说明该队玩家全部阵亡，另一队获胜。
+
+    现在建立一个准则为虚拟型的记分项 `[deaths]`：
+    #codebox("scoreboard objectives add deaths dummy")
+    高频执行下面的命令，使得记分项 `[deaths]` 能够每游戏刻反映阵亡的玩家数量：
+    #codebox("execute store result score #blue deaths if entity @a[team=blue,gamemode=spectator]")
+    #codebox("execute store result score #green deaths if entity @a[team=green,gamemode=spectator]")
+    接下来的思路是高频判断假名 `#blue` 和 `#green` 的分数是否达到3，如果是则对方队伍在本轮游戏胜利。往后的思路便与@exa:dodgebolt 给出的方法完全一样了。不难发现，使用存储子命令的方法更简明、思路更清晰。
+  ]
+)
+=== 数据转换与处理
+Minecraft有很多种类型的数据，可以读取、写入的数据有NBT数据、记分板分数、Boss栏等。出于需要，有时候需要将数据转换为其他类型的数据。比如数据的运算需要依靠记分板的 `operation`，那么就需要将NBT数据转换为记分板分数；函数宏只接受NBT数据，那么就需要把记分板分数转换为NBT数据。下面总结了一些数据转换的方式：
+===== NBT数据之间的转换
+NBT数据包括方块实体数据、实体数据和命令存储数据，这些数据的无损转存可直接使用 `/data modify ... set from ...`，没必要使用 `store` 子命令。如果需要对数据做缩放再将数据存储在其他媒介中，`/data modify ... set from ...` 无法用 `<scale>` 指定缩放倍率，因此需要用 `/execute store result ... <scale> run data get ...`。
+#example(
+  [
+    按要求处理下列数据：
+    + 将存储 `tutorial:_` 内字段 #icon("nbt-int") `test` 的值存为字段 #icon("nbt-int") `test1` 的值；
+    + 将存储 `tutorial:_` 内字段 #icon("nbt-int") `test` 的值乘以0.5再存为字段 #icon("nbt-float") `test2` 的值；
+  ],
+  [
+    + 命令为
+      #codebox("data modify storage tutorial:_ test1 set from storage tutorial:_ test")
+    + 命令为
+      #codebox("execute store result storage tutorial:_ test2 float 0.5 run data get storage tutorial:_ test")
+  ]
+)
+===== 记分板分数之间的转换
+记分板系统内部的分数转换可直接使用 `/scoreboard players operation ...`，同样没必要使用 `store` 子命令。
+===== NBT数据和记分板分数之间的转换
+NBT数据转换为记分板分数：
+#codebox("execute store result score ... run data get ...`")
+记分板分数转换为NBT数据：
+#codebox("execute store result (block|entity|storage) ... run scoreboard players get ...")
+===== NBT数据和Boss栏数据之间的转换
+NBT数据转换为Boss栏数据：
+#codebox("execute store result bossbar ... run data get ...`")
+Boss栏数据转换为NBT数据：
+#codebox("execute store result (block|entity|storage) ... run bossbar get ...")
+===== 记分板分数和Boss栏数据之间的转换
+记分板分数转换为Boss栏数据：
+#codebox("execute store result bossbar ... run scoreboard players get ...`")
+Boss栏数据转换为记分板分数：
+#codebox("execute store result score ... run bossbar get ...")
+===== Boss栏之间数据的转换
+Boss栏是一个视觉性的物件，`/bossbar` 并没有提供不同Boss栏之间数据的转存，因此需要将提供数据的Boss栏内的数据转换为其他类型的数据，例如NBT数据或记分板数据，然后才能将这些数据存入目标Boss栏。
+#example(
+  [将Boss栏 `tutorial:_` 的当前值设为Boss栏 `tutorial:__` 的最大值。],
+  [
+    首先将 `tutorial:_` 的当前值存为假名 `#temp` 在 `[var]` 上的分数，首先需要保证记分项 `[var]` 存在：
+    #codebox("execute store result score #temp var run bossbar get value")
+    然后将这个分数存为 `tutorial:__` 的最大值：
+    #codebox("execute store result bossbar max run scoreboard players get #temp var")
+  ]
+)
+=== 应用实例
+下面举存储子命令应用的若干实例。
+#example(
+  [将当前执行者在 `[tutorial.var]` 记分项的分数设为1\~100（含）的随机值。],
+  [
+    随机数由命令 `/random` 产生，将结果存为记分板分数：
+    #codebox("execute store result score @s tutorial.var run random value 1..100")
+  ]
+)
+#example(
+  [判断当前游戏日内的时间是否为正午。],
+  [
+    不妨将由命令 `/time query` 获取到的时间存入记分项 `[time]`：
+    #codebox("execute store result score #time time run time query daytime")
+    如果此时是正午，则被存储在记分项 `[time]` 内的分数为6000，于是只需判断此分数是否严格等于6000：
+    #codebox("execute if score #time time matches 6000")
+  ]
+)
+#example(
+  [将 `#temp` 在记分项 `[tutorial.var]` 上的分数设为命令存储 `tutorial:_` 中列表 #icon("nbt-list") `list` 的长度。],
+  [
+    查@tab:result_of_command，`/data get` 取得列表时会返回列表中元素的数量。因此命令为
+    #codebox("execute store result #temp tutorial.var run data get storage tutorial:_ list")
+  ]
+)
+#index(index: "method", display: "返回服务器当前玩家总数", "fan3 hui2 fu2 wu4 qi4 dang1 qian2 wan2 jia1 zong3 shu4")
+#example(
+  [统计当前服务器内的游戏人数，把结果存入记分项 `[var]`。],
+  [
+    有两种方法：
+
+    *方法一*#h(1em)查@tab:result_of_condition_subcommands，`if entity` 的执行结果是存在的符合要求的实体数量，因此 `if entity @a` 能够返回玩家总数，命令为：
+    #codebox("execute store result score #player_count var if entity @a")
+    *方法二*#h(1em)查@tab:result_of_command，命令 `/list` 的执行结果是玩家总数，因此命令可以是
+    #codebox("execute store result score #player_count var run list")
+    \
+
+    在实际运行中，`/list` 的性能占优，因此更推荐使用方法二。
+  ]
+)
+#example(
+  [将所有拥有记分板标签 `vassal` 僵尸的最大血量相加并将和设为拥有 `boss` 标签僵尸的最大血量。],
+  [
+    首先建立一个虚拟型的记分项 `[max_health]`：
+    #codebox("scoreboard objectives add max_haelth dummy")
+    其次获取所有僵尸最大生命的属性值，然后将这些值存储为每个僵尸各自在记分项 `[max_health]` 上的分数。这里可以用修饰子命令 `as` 以精准记录每一个僵尸的最大生命值，其原理是选择了多个实体的修饰子命令会将每一个实体都作为单独的命令执行者分别执行后续的子命令：
+    #codebox("execute as @e[type=zombie,tag=vassal] store result score @s max_health run attribute @s minecraft:max_health get")
+    #h(-2em)这时只要将所有僵尸在 `[max_health]` 上的分数全部相加，即得最大血量相加的和，存入假名 `#boss` 的分数：
+    #codebox("scoreboard players operation #boss max_health += @e[type=zombie,tag=vassal] max_health")
+    接下来将假名 `#boss` 的分数提取出来，存储为拥有 `boss` 标签僵尸的最大生命属性值，这实际上是将记分板数据存储为NBT格式的数据。不难得到索引至最大生命属性值的NBT路径：`attributes[{id:"minecraft:max_health"}].base`，这里的次级节点用了 `base` 以省去了使用属性修饰符的麻烦，直接将值指定为属性基值即可。于是最后的命令为
+    #codebox("execute store entity @e[type=zombie,tag=boss,limit=1] attributes[{id:\"minecraft:max_health\"}].base double 1.0 run scoreboard players get #boss max_health")
+  ]
+)
+#example(
+  [将所有玩家往两倍于其原本$x$和$z$坐标值的坐标传送，而$y$坐标不改动。比如，若玩家原本位于$(5,70,5)$，则将该玩家传送至$(10,70,10)$。],
+  [
+    玩家的NBT是不能直接修改的，因此需要使用 `/tp` 传送玩家。可以用宏将处理过的坐标直接传入命令中，而宏只接受NBT数据，不妨获取玩家当前的$x$和$z$坐标，乘以2再存入存储中：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > double_coordinates > .mcfunction",
+      "execute as @a at @s run function tutorial:double_coordinates/data"
+    )
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > double_coordinates > data.mcfunction",
+      "execute store result storage tutorial:_ double_coordinates.x double 2 run data get entity @s Pos[0]
+execute store result storage tutorial:_ double_coordinates.z double 2 run data get entity @s Pos[2]
+function tutorial:double_coordinates/tp with storage tutorial:_ double_coordinates"
+    )
+    `tutorial:double_coordinates/tp` 是一个带宏的函数，用于传送玩家：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > double_coordinates > tp.mcfunction",
+      "$tp @s $(x) ~ $(z)"
+    )
+  ]
+)
+== 命令/execute的应用实例
+命令 `/execute` 是应用性最广的命令，本节将继续列举若干实例，同时展现社区中一些技术性开发专家的方案。
+#example(
+  [交换两个玩家的位置。],
+  [
+
+  ]
+)
+#example(
+  [设计两个胡萝卜钓竿，使玩家使用其中一个后能记录当前位置，使用另一个该胡萝卜钓竿时能够让玩家返回上次被记录的位置。],
+  [
+
+  ]
+)
+#example(
+  [设计“Move or die”生存挑战：检测玩家是否在一个位置不移动，若静止时间超过5秒，则在玩家所在位置产生爆炸。],
+  [
+    
+  ]
+)
+#example(
+  [
+    一张后室主题的冒险地图需要随机生成的房间，排列方式设计如下图所示：
+    #figure(
+      caption: "",
+      image("图片/execute应用实例后室.png", width: 12em)
+    ) <fig:execute_example_backrooms>
+    生成单位是$5 times 7 times 5$大小的房间，房间紧密排列。现预设16种不同结构的房间，用结构方块将它们分别存储在游戏文件中，这些文件在数据包内的地址分别为 #icon("nbt") `data > backroom > structure > level0 > 0.nbt` 至 #icon("nbt") `data > backroom > structure > level0 > 15.nbt`。尝试使用数据包按@fig:execute_example_backrooms 的排列方式随机生成这些房间，使得这些房间尽可能铺满整个地图。
+  ],
+  [
+
   ]
 )
 #appendix

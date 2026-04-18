@@ -985,9 +985,6 @@
   // 引用
   show: el.config.ref.with(supplement: "")
   show ref: it => {
-    if query(it.target).len() == 0 {
-      return text(fill: red, "<未找到引用" + str(it.target) + ">")
-    }
     if it.element == none {
       return it
     }
