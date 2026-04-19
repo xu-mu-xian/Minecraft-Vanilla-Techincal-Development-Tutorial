@@ -12907,7 +12907,7 @@ function tutorial:return/tp with storage tutorial:data teleport"
     具体的循环流程如下：
     #figure(
       caption: "",
-      image("图片/execute应用实例后室流程.png", width: 20em)
+      image("图片/execute应用实例后室流程.png", width: 24em)
     ) <fig:execute_example_backrooms_process>
     首先建立被 `#minecraft:load` 调用的函数：
     #codefile(
