@@ -449,7 +449,7 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
   [`(参数|参数)`], [（必须的）在显示的值中选择一个填写。语法介绍中这些值由竖线分隔], [命令 `/time query (daytime|gametime|day)` 的第3个参数是必填的，从 `daytime`、`gametime` 和 `day` 中选择一个填写。],
   [`[参数|参数]`], [（可选的）在显示的值中选择一个填写。语法介绍中这些值由竖线分隔], [命令 `/experience add <targets> <amount> [levels|points]` 的第5个参数虽然不是必写的，但仍可以从参数 `points` 和 `levels` 中选择一个填写。],
   [`-> 子命令`], [必须接入一条子命令], [命令 `/execute positioned <pos> -> execute` 的第6个参数是必填的，内容为命令 `/execute` 的一个子命令。],
-  [`-> [子命令]`], [可以接入一条子命令], [命令 `/execute (if|unless) block <pos> <block> -> [execute]` 的第7个参数可以填写 `/execute` 的子命令，也可以不填写。]
+  [`-> [子命令]`], [可以接入一条子命令], [命令 `/execute (if|unless) block <pos> <block> -> [execute]` 的第8个参数可以填写 `/execute` 的子命令，也可以不填写。]
 )
 下面举一实例以说明之：
 #example(
@@ -458,7 +458,7 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
   ],
   [
     语法中 `data` 为命令名，`get` 是字面量，这两者必须按语法指引中的字面量原样输入命令。
-    第3、4个参数必须从 `block <targetPos>`、`entity <target>` 和 `storage <target>` 中选则一种，且不得空缺。若使用 `block <targetPos>`，则 `block` 按原样输入，后续使用 `<targetPos>` 的自定义值，但不得在 `block` 后续使用 `<target>` 参数，因为 `<target>` 是 `entity` 或 `storage` 的后续参数。第5、6个参数 `[<path>]`、`[<scale>]` 可选并自定义值。使用该语法且实际可行的命令可以是：
+    第3、4个参数必须从 `block <targetPos>`、`entity <target>` 和 `storage <target>` 中选择一种，且不得空缺。若使用 `block <targetPos>`，则 `block` 按原样输入，后续使用 `<targetPos>` 的自定义值，但不得在 `block` 后续使用 `<target>` 参数，因为 `<target>` 是 `entity` 或 `storage` 的后续参数。第5、6个参数 `[<path>]`、`[<scale>]` 可选并自定义值。使用该语法且实际可行的命令可以是：
     #codebox("data get entity @s SelectedItem") <code:grammar_guideline_example>
     命令@code:grammar_guideline_example 使用了参数 `entity`，`@s` 是 `<target>` 使用的值，`SelectedItem` 是 `[<path>]` 使用的值，参数 `[<scale>]` 未使用。
   ]
@@ -473,7 +473,7 @@ Minecraft的历次版本更新都会对某一些特定的系统进行优化和�
 ===== #proper-noun(display: "单精度浮点数（Float）", "dan1 jing1 du4 fu2 dian3 shu4")
 使用占据4字节的浮点数，范围大约介于$-3.4 times 10^38$和$3.4 times 10^38$之间，在不同命令中使用单精度浮点数的参数规定的最大可用值和最小可用值不一致。一些单精度浮点数的示例有：`0`、`1.1`、`-1`、`.5` 等，小数形式的整数部分可以省略。在命令参数中使用的浮点数暂时不支持科学计数法#footnote[参见#link("https://bugs.mojang.com/browse/MC/issues/MC-130925")[MC-130925]。]。
 ===== #proper-noun(display: "双精度浮点数（Double）", "shuang1 jing1 du4 fu2 dian3 shu4")
-使用占据8字节的浮点数，范围大约介于$-1.8 times 10^108$和$1.8 times 10^108$之间。可以表示比单精度浮点数绝对值更大的有效数字。
+使用占据8字节的浮点数，范围大约介于$-1.8 times 10^308$和$1.8 times 10^308$之间。可以表示比单精度浮点数绝对值更大的有效数字。
 ===== #proper-noun(display: "字符串（String）", "zi4 fu2 chuan4")
 字符串是由多个字符组成的序列，可用于表示单词、句子或其他符号组合。
 ====== #proper-noun(display: "单个词（Single word）", "dan1 ge4 ci2")
@@ -517,7 +517,7 @@ Minecraft的命令有很多，可用 `/help` 命令查询任何可用命令的�
   image("图片/命令方块GUI.png", width: 28em)
 ) <fig:command_block_gui>
 ===== 在数据包函数文件中输入命令
-这种编写方式需要使用一定的编译软件，常用的编译软件有Windows自带的记事本、Visual Studio Code等。函数中的命令不能带有斜杠前缀。具体的内容可参阅《数据包》教程的描述。
+这种编写方式需要使用一定的文本编辑器，常用的编辑器有Windows自带的记事本、Visual Studio Code等。函数中的命令不能带有斜杠前缀。具体的内容可参阅《数据包》教程的描述。
 ===== 在服务器控制台中输入命令
 ===== 在带有 `run_command` 动作的点击事件的文本组件或对话框按钮中输入命令
 === 权限等级与限制条件
@@ -635,14 +635,14 @@ Minecraft的命令有很多，可用 `/help` 命令查询任何可用命令的�
 === 命令的解析 \*
 游戏处理命令的过程可分为*解析*和*执行*两个阶段。Minecraft使用*Brigadier*作为命令的解析器、派发器。
 
-命令的实质是一个根命令节点的直接量分支，这就意味着所有的命令都是一个树状结构，命令中每一个参数都作为一个节点，而命令名作为根节点使用。显然，一个节点可能会有两种类型：字面量和变量，反映到命令文本语法中分别为字面量参数和需要自定义值的参数。
+命令的实质是一个根命令节点 `RootCommandNode` 的直接量分支，这就意味着所有的命令都是一个树状结构，命令中每一个参数都作为一个节点，而命令名作为根节点的一级子节点使用。显然，一个节点可能会有两种类型：字面量和变量，反映到命令文本语法中分别为字面量参数和需要自定义值的参数。
 
 游戏在读取命令后，会首先解析根节点是否是已注册的命令，其次解析下一个参数即子节点是否可用，然后依次解析余下的节点。Brigadier读取到某一个节点时，会枚举其子节点的所有可行节点，并在聊天栏或命令方块控制台内显示为可读性较强的可视化参数列表。
 #figure(
   caption: [命令 `tag` 的所有结点和分支],
   image("图片/命令tag的所有结点和分支.png", width: 18em)
 ) <fig:branch_of_command_tag>
-以命令 `/tag` 为例，其命令树如@fig:branch_of_command_tag 所示。`tag` 是根命令，其子节点 `<target>` 是一个需要特定参数类型（这里是 `entity`）的节点，解析此节点的时候，会判断输入的参数是否为 `entity` 类型，若为否则解析异常，命令无法执行。2级子节点是已注册的字面量 `add`、`remove` 和 `list`，解析该级节点的工作比较简单：只需读取该节点的文本是否与注册的字面量吻合。若2级子节点的参数指定为 `add`、`remove`，则读取3级子节点 `<name>`，这个节点又是一个需要自定义的量；若2级子节点的参数指定为 `list`，则不能再添加后续参数。
+以命令 `/tag` 为例，其命令树如@fig:branch_of_command_tag 所示。`tag` 是 `RootCommandNode` 的一级子节点，其子节点 `<target>` 是一个需要特定参数类型（这里是 `entity`）的节点，解析此节点的时候，会判断输入的参数是否为 `entity` 类型，若为否则解析异常，命令无法执行。三级子节点是已注册的字面量 `add`、`remove` 和 `list`，解析该级节点的工作比较简单：只需读取该节点的文本是否与注册的字面量吻合。若三级子节点的参数指定为 `add`、`remove`，则读取四级子节点 `<name>`，这个节点又是一个需要自定义的量；若三级子节点的参数指定为 `list`，则不能再添加后续参数。
 === 命令上下文
 当一条命令被执行时，该命令一定有一个调用者以及调用环境，这一系列调用者及调用环境构成的集合被称为#proper-noun(display: "命令上下文（Command context）", "ming4 ling4 shang4 xia4 wen2")，或称#proper-noun(display: "执行上下文（Execution context）", "zhi2 xing2 shang4 xia4 wen2")、#proper-noun(display: "命令源（Command origin）", "ming4 ling4 yuan2")、#proper-noun(display: "命令来源堆叠（Command source stack）", "ming4 ling4 lai2 yuan2 dui1 die2")。
 
@@ -655,7 +655,7 @@ Minecraft的命令有很多，可用 `/help` 命令查询任何可用命令的�
 ===== #proper-noun(display: "执行朝向（Execution rotation）", "zhi2 xing2 chao2 xiang4")
 这个参数是命令执行时面向的方向，包含偏航角和俯仰角两个参数。
 ===== #proper-noun(display: "执行锚点（Execution anchor）", "zhi2 xing2 mao2 dian3")
-#proper-noun(display: "实体锚点（Entity anchor）", "shi2 ti3 mao2 dian3")是实体身上用于定位的*点*，有两个可用的实体锚点：脚部和眼部。故名思义，脚部位于实体碰撞箱的底部中心点，这个位置实际上就是实体本身的位置，也是*默认使用的实体锚点*。眼部位于实体眼睛高度处碰撞箱的中心点。眼部和脚部在水平方向上的位置是一样的，在$y$轴上，这个实体眼睛部位的高度就是眼部和脚部高度的差值。
+#proper-noun(display: "实体锚点（Entity anchor）", "shi2 ti3 mao2 dian3")是实体身上用于定位的*点*，有两个可用的实体锚点：脚部和眼部。顾名思义，脚部位于实体碰撞箱的底部中心点，这个位置实际上就是实体本身的位置，也是*默认使用的实体锚点*。眼部位于实体眼睛高度处碰撞箱的中心点。眼部和脚部在水平方向上的位置是一样的，在$y$轴上，这个实体眼睛部位的高度就是眼部和脚部高度的差值。
 #figure(
   caption: "玩家的实体锚点",
   image("图片/玩家的实体锚点.png", width: 9em)
@@ -663,7 +663,7 @@ Minecraft的命令有很多，可用 `/help` 命令查询任何可用命令的�
 对于玩家而言，其眼部与脚部的高度差约为1.62格，如上图所示。但是不同实体的眼部高度实际上是不一致的，不能笼统地认为所有实体的眼部高度均为1.62格。
 
 相应地，锚点也作为命令上下文参数的一部分，是为执行锚点。如果执行位置为一个实体所在的位置，则脚部与执行位置实际上是重合的。事实上在所有的命令中，*执行锚点默认都是脚部*。无论锚点是否被修改为眼部，执行位置一定是在实体碰撞箱的底部中心点，不会随着锚点的变化而发生变动。
-===== #proper-noun(display: "执行维度（Execution dimension）", "zhi2 xing2 wei3 du4")
+===== #proper-noun(display: "执行维度（Execution dimension）", "zhi2 xing2 wei2 du4")
 这个参数是命令执行所在的维度，执行位置位于这个维度内。
 ===== 执行输出反馈
 尝试执行命令会产生一定的执行效果，并在执行失败或执行成功时返回#proper-noun(display: "成功次数（Success）", "cheng2 gong1 ci4 shu4")和#proper-noun(display: "结果（Result）", "jie2 guo3")两个返回值。其中成功次数总是为0或1，结果一定为整数，遇到小数时则向下取整。下面讨论所有种类的命令执行效果：
@@ -903,7 +903,7 @@ JSON同时也支持Unicode，表示方式为 `\uxxxx`，其中每一个 `x` 都�
 ===== #icon("png") `.png` 文件
 `.png` 文件是图片文件，被用于存储游戏中的绝大部分图像，包括但不限于图标、游戏截图、资源包纹理。可以使用Windows自带的 #icon("paint") 画图、#icon("ps") PS或 #icon("gimp") GIMP处理，但需要注意 #icon("paint") 画图不支持透明背景。
 ===== #icon("ogg") `.ogg` 文件
-游戏中所有的声音文件都为 `.ogg` 格式，从外部导入声音时应注意格式转换。直接修改文件名后缀是无效的，可以使用
+游戏中所有的声音文件都为 `.ogg` 格式，从外部导入声音时应注意格式转换。直接修改文件名后缀是无效的，可以使用Audacity。
 ===== #icon("zip") `.zip` 文件
 压缩文件，即 `.zip` 文件，也是常用的文件格式，通常被用于数据包和资源包的压缩。读者可自行选择合适的压缩软件对数据包或资源包进行压缩。
 ===== 其他的文件格式
@@ -911,9 +911,9 @@ Minecraft还使用其他一些文件格式，如 `.jfr` 文件、`.log` 文件�
 === .minecraft文件夹 \*<subsec:.minecraft>
 `.minecraft` 文件夹，macOS上为 #icon("folder") `minecraft`，是存储Java版所有游戏数据的文件夹。
 
-对于Windows系统，这个文件夹默认位于 #icon("folder") `C: Users\Admin\AppData\Roaming\.minecraft`，其中 #icon("folder") `AppData` 文件夹一般是隐藏的，可以在文件资源管理器 `查看` 工具栏，在 `显示 > 隐藏` 一项勾选 `隐藏的项目` 以显示这个文件夹。
+对于Windows系统，这个文件夹默认位于 #icon("folder") `[C:] Users > Admin > AppData > Roaming > .minecraft`，其中 #icon("folder") `AppData` 文件夹一般是隐藏的，可以在文件资源管理器 `查看` 工具栏，在 `显示 > 隐藏` 一项勾选 `隐藏的项目` 以显示这个文件夹。
 
-对于Mac系统，这个文件夹默认位于 #icon("folder") `home\用户名\Library\Application Support\minecraft`。对于Linux系统，这个文件夹默认位于 #icon("folder") `home\用户名\.minecraft`，其中以 `.` 开头的文件夹默认是隐藏的，需要使用 `Ctrl` + `H` 切换是否可见。
+对于Mac系统，这个文件夹默认位于 #icon("folder") `home > 用户名 > Library > Application Support > minecraft`。对于Linux系统，这个文件夹默认位于 #icon("folder") `home > 用户名 > .minecraft`，其中以 `.` 开头的文件夹默认是隐藏的，需要使用 `Ctrl` + `H` 切换是否可见。
 
 第三方启动器会有其特殊的文件夹路径，具体见各启动器的设置。由官方启动器运行的游戏可以在启动器内手动修改存储路径，或者在默认存储路径处使用快捷方式重定向至自定义路径下。
 
@@ -934,7 +934,7 @@ Minecraft还使用其他一些文件格式，如 `.jfr` 文件、`.log` 文件�
   (2, [#icon("folder") *virtual*]),
   (1, [#tips(
   [
-    #icon("folder") `assets` 文件夹内的资源文件都是用#proper-noun(display: "哈希值（Hash value，散列值）", "ha1 xi1 zhi2")加密的，以哈希表的方式映射资源位置。要查询 #icon("folder") `assets` 内的任意一个资源文件，需按照以下步骤：
+    #icon("folder") `assets` 文件夹内的资源文件都是用#proper-noun(display: "哈希值（Hash value，散列值）", "ha1 xi1 zhi2")存储的，以哈希表的方式映射资源位置。要查询 #icon("folder") `assets` 内的任意一个资源文件，需按照以下步骤：
     + 打开 #icon("folder") `indexes` 文件夹，找到需要提取资源的 #icon("json") `<版本号>.json` 文件。其中的内容大致如下所示：
     
       #codefile(
@@ -1319,7 +1319,7 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
     [26.1], [101.1]
   )
 ) <tab:datapack_format>
-游戏允许编写者在元数据内指定数据包版本号的区间以使数据包兼容多个版本。但由于在不同版本中 #icon("json") `pack.mcmeta` 本身的格式也会发生变化，数据包版本号需要进行校验。不过，*这个校验仅仅作为“门槛”，数据包能否运行取决于其实际内容，而非元数据声明。*在26.1以前，校验失败会现实“已损坏或不兼容”；而在26.1以后，校验失败会直接认为元数据无效，从而不识别此数据包。
+游戏允许编写者在元数据内指定数据包版本号的区间以使数据包兼容多个版本。但由于在不同版本中 #icon("json") `pack.mcmeta` 本身的格式也会发生变化，数据包版本号需要进行校验。不过，*这个校验仅仅作为“门槛”，数据包能否运行取决于其实际内容，而非元数据声明。*在26.1以前，校验失败会显示“已损坏或不兼容”；而在26.1以后，校验失败会直接认为元数据无效，从而不识别此数据包。
 
 校验规则以25w31a（1.21.9）为分水岭实行“新旧双轨制”，以下分类讨论：
 ===== 如果数据包仅适用于25w31a之前，则元数据中：
@@ -2934,7 +2934,7 @@ Minecraft规定：大部分方块的长、宽和高均为1米，体积为1立方
 
 注意这里不使用“三维坐标根据方块坐标位于方块中心”的说法，是因为三维坐标的三个参数中整数和浮点数形式可以混用，并且使用小数形式的参数严格遵循实际坐标，整数形式的参数则使用中心校准。比如，位于 `5 56 17.0` 的玩家实际位于$(5.5,56,17.0)$。
 ==== 平面方块坐标
-故名思义，平面方块坐标 `minecraft:column_pos` 就是二维的方块坐标，以西北角的二维坐标作为一个方块纵列的平面坐标，两个元素均为整数。
+顾名思义，平面方块坐标 `minecraft:column_pos` 就是二维的方块坐标，以西北角的二维坐标作为一个方块纵列的平面坐标，两个元素均为整数。
 ==== 二维坐标
 即只由$x$坐标和$z$坐标构成的#proper-noun(display:"二维坐标（Two-dimensional coordinates）","er4 wei2 zuo4 biao1")。二维坐标的命令参数类型为 `minecraft:vec2`，两个元素均为双精度浮点数。二维坐标若为整数，则也使用中心校准。
 === 相对坐标#h(1em)局部坐标
@@ -11512,7 +11512,7 @@ title @s title \"欢迎\""
 + 对于@exa:scoreboard_display 的侧边栏，在侧边栏原本内容的基础上，将#text_component(background: black, text(white)[#text(yellow)[黄队]-#text(green)[√]])一行的内容改成#text_component(background: black, text(white)[#text(yellow)[黄队]-#text(red)[×]])，格式参考上下行的内容，且要求所处的行不变。
 + 设计一个能够在除法运算中输出带小数结果的记分板系统，要求精度为小数点后6位。
 = 命令/execute<chap:command_execute>
-前文已有说明，命令系统有一个非常重要的概念是#proper-noun(display: "执行上下文（Execution context）", "zhi2 xing2 shang4 xia4 wen2")，包括了#proper-noun(display: "执行者（Executor）", "zhi2 xing2 zhe3")、#proper-noun(display: "执行位置（Execution position）", "zhi2 xing2 wei4 zhi4")、#proper-noun(display: "执行朝向（Execution rotation）", "zhi2 xing2 chao2 xiang4")、#proper-noun(display: "执行锚点（Execution anchor）", "zhi2 xing2 mao2 dian3")和#proper-noun(display: "执行维度（Execution dimension）", "zhi2 xing2 wei3 du4")等参数。如果命令是由玩家在聊天栏中或由命令方块执行的，则执行命令时，执行者只能是执行命令的玩家本身或命令方块，而执行位置则为玩家所在的位置或命令方块所在的位置。
+前文已有说明，命令系统有一个非常重要的概念是#proper-noun(display: "执行上下文（Execution context）", "zhi2 xing2 shang4 xia4 wen2")，包括了#proper-noun(display: "执行者（Executor）", "zhi2 xing2 zhe3")、#proper-noun(display: "执行位置（Execution position）", "zhi2 xing2 wei4 zhi4")、#proper-noun(display: "执行朝向（Execution rotation）", "zhi2 xing2 chao2 xiang4")、#proper-noun(display: "执行锚点（Execution anchor）", "zhi2 xing2 mao2 dian3")和#proper-noun(display: "执行维度（Execution dimension）", "zhi2 xing2 wei2 du4")等参数。如果命令是由玩家在聊天栏中或由命令方块执行的，则执行命令时，执行者只能是执行命令的玩家本身或命令方块，而执行位置则为玩家所在的位置或命令方块所在的位置。
 
 现在假设一个场景——某玩家在聊天栏中输入如下的命令：
 #codebox("setblock ~ ~-1 ~ minecraft:stone")
@@ -13110,6 +13110,66 @@ kill @e[type=marker,tag=gen_trigger]"
   caption: "压力板的信号输出",
   image("图片/压力板的信号输出.png", width: 9em)
 )
+===== 红石火把
+红石火把可以作为电源使用。*当红石火把点亮时，它可以激活除附着方块外所有毗邻元件，并输出强度为15的信号，同时强充能其上方毗邻的方块，但侧方与下方的方块无法被充能。*
+#figure(
+  caption: "两种放置方式下红石火把的信号输出",
+  [#box(image("图片/两种放置方式下红石火把的信号输出1.png", width: 9em))#h(4em)#box(image("图片/两种放置方式下红石火把的信号输出2.png", width: 9em))]
+)
+红石火把自身也能被激活：当它被激活时则处于熄灭状态，未被激活时则处于点亮状态。基于这种特性，红石火把能够对输入的信号进行反相，从而制作出逻辑电路中的非门。红石火把在接受到信号至自身状态做出改变有1 rt的延迟，且接受到小于或等于1 rt的脉冲时自身状态不会发生改变。
+
+此外，当红石火把在60 gt内熄灭8次时，其会立即烧毁。
+===== 拉杆
+拉杆是能够控制开启和关闭的电源，其输出信号的方式与按钮类似。
+===== 绊线钩
+当绊线钩成对且中间铺设有绊线时，实体碰撞箱进入绊线可触发绊线钩，此时绊线钩能够激活所有毗邻的元件，同时强充能其依附的方块。
+===== 其他电源元件
+除了上述这些常用的电源元件外，红石系统中还有其他具有专门用途的电源，如阳关探测器、探测铁轨、讲台、侦测器、标靶、陷阱箱、唱片机、避雷针和幽匿感测体等。受于篇幅限制，这些专用电源不在本教程中叙述。
+==== 传输元件
+===== 红石粉
+红石粉是一种常见的用于传输红石信号的元件，当它被激活时，它会接受来自红石导体的充能等级并转化为自身的信号强度。红石粉能接受的信号等级介于0和15之间（含），对于输入的任何强度大于15的信号，均将其强度视为15；对于输入的任何强度小于0的信号，均将其强度视为0。*信号每传输一格，强度就降低1，直到信号强度降为0（无信号）。*
+当红石粉被激活时，它会弱充能下方毗邻的方块，同时根据它指向的方向使被指向的毗邻方块弱充能。红石粉被单个放置时，可以有点状红石和十字红石两种状态，其中点状红石只能弱充能下方毗邻的方块，十字红石能弱充能东、西、南、北、下五个方向毗邻位置的方块。
+#figure(
+  caption: "红石粉的信号输出",
+  image("图片/红石粉的信号输出.png", width: 9em)
+)
+#figure(
+  caption: "俯视图下点状红石（左）、十字红石（中）与任意指向的红石粉（右）的信号输出",
+  [#box(image("图片/俯视图下点状红石（左）、十字红石（中）与任意指向的红石粉（右）的信号输出1.png", width: 9em))#h(4em)#box(image("图片/俯视图下点状红石（左）、十字红石（中）与任意指向的红石粉（右）的信号输出2.png", width: 9em))#h(4em)#box(image("图片/俯视图下点状红石（左）、十字红石（中）与任意指向的红石粉（右）的信号输出3.png", width: 9em))]
+)
+===== 红石中继器
+#figure(
+  caption: "红石中继器",
+  image("图片/红石中继器.png", width: 18em)
+)
+红石中继器是一种可以中继信号、制造延迟、锁存信号的传输元件。红石中继器被激活后。能够强充能输出端的毗邻方块，并将充能等级提升为15，其他位置的毗邻方块不会作出响应。这样可以将红石粉在信号传输过程中受到损失的信号强度恢复至15。
+
+在中继信号的过程中，红石中继器也有自身的延迟。红石中继器有四个挡位，分别会将信号输入和输出之间的延迟设为*1 rt、2 rt、3 rt、4 rt*，同时也会将任何长度小于其延迟的脉冲增长到与它的延迟相符合。
+
+此外，如果红石中继器在其侧面接受到来自另一个红石中继器的信号，则该红石中继器处于锁存状态，其信号会一直保持锁存期间的情况直到锁存被解除。
+===== 红石比较器
+红石比较器拥有三个输入端，分别为背面的主输入端$I$、左右两个侧输入端$L$、$R$，还有一个输出端$O$。同时红石比较器有两种模式，即*比较模式（前端红石火把关闭）*和*减法模式（前端红石火把亮起）*。
+#figure(
+  caption: "红石比较器",
+  image("图片/红石比较器.png", width: 6em)
+)
+无论信号从哪个输入端输入红石比较器，输入与输出之间总有长达1 rt的延迟。红石比较器的三个输入端均只接受大于*1 rt*长度的脉冲。红石比较器被成功激活后，会强充能输出端$O$的毗邻方块。
+
+根据红石比较器自身的模式和性质，它一般有以下几个用途：
+====== 保持信号强度
+当侧输入端$L$、$R$没有信号输入时，*输出端$O$会保持与主输入端$I$一致的信号强度。*
+====== 比较信号强度
+当比较器处于比较模式时，比较器会比较主输入端$I$与侧输入端的信号强度。若任意侧输入大于主输入$I$，比较器不输出信号；反之则输出与主输入$I$相同的信号强度。公式为：
+$ O = cases(
+  0 &"," &I lt max(L,R),
+  I &"," &I gt.eq.slant max(L,R)
+) $
+#example(
+  [若一个红石比较器主输入端$I$的信号强度为13，侧输入$L$的信号强度为12，测输入$R$为14，则输出端$O$的信号为何？],
+  [两个侧输入中$R$为14，大于主输入13，因此输出$O$为0。]
+)
+====== 信号强度作差
+
 == 结构方块<sec:structure_block>
 = 数据库
 == 数据包和资源包版本号<sec:pack_format>
