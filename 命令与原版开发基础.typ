@@ -12772,22 +12772,109 @@ function tutorial:double_coordinates/tp with storage tutorial:_ double_coordinat
 )
 == 命令/execute的应用实例
 命令 `/execute` 是应用性最广的命令，本节将继续列举若干实例，同时展现社区中一些技术性开发专家的方案。
+#index(index: "method", display: "交换实体位置", "jiao1 huan4 shi2 ti3 wei4 zhi4")
 #example(
   [交换两个玩家的位置。],
   [
+    该写法由Underline（伊桑桑桑桑桑）提出，仅需一条命令。先给需要交换的两个玩家A、B添加标签 `swap`。
+    
+    通常认为交换两个变量需要一个“中间变量”（如：A$arrow.r$C, B$arrow.r$A, C$arrow.r$B），这是因为普通的程序逻辑是动态的：如果先移动了A，那么B在寻找“最远的人”时，看到的A已经换了位置。
 
+    根据 `/execute` 的执行准则，首先用 `at` 获取位置A和位置B，此时产生了2条分支。随后在不改变已存位置的前提下，用 `as` 寻找这两个位置对应的另一个位置的玩家 `@a[tag=swap,sort=furthest,limit=1]`，由于后续子命令无法影响先前已确定的分支，`/execute` 会分别为上述两个分支寻找执行者。此时2条分支会分别执行 `/tp`，故只需要一条命令就可以交换这两个玩家：
+    #codebox("execute at @a[tag=swap] as @a[tag=swap,sort=furthest,limit=1] run tp ~ ~ ~")
   ]
 )
+#index(index: "method", display: "记录当前位置并返回被记录的位置", "ji4 lu4 dang1 qian2 wei4 zhi4 bing4 fan3 hui2 bei4 ji4 lu4 de wei4 zhi4")
+#index(index: "method", display: "自增数字ID分配", "zi4 zeng1 shu4 zi4 ID fen1 pei4")
+#index(index: "method", display: "检测第一次进入服务器", "jian3 ce4 di1 yi1 ci4 jin4 ru4 fu2 wu4 qi4")
 #example(
   [设计两个胡萝卜钓竿，使玩家使用其中一个后能记录当前位置，使用另一个该胡萝卜钓竿时能够让玩家返回上次被记录的位置。],
   [
+    该例子的关键在于如何使提出请求的玩家与坐标建立数据联系，有一种思路是使用玩家的UUID，通过对比玩家的UUID和坐标记录的UUID，可以建立起玩家与坐标的联系。这时需要建立四个存储UUID的记分板，将UUID数据逐个比对，这样的方法可行但难免显得复杂。
 
-  ]
-)
-#example(
-  [设计“Move or die”生存挑战：检测玩家是否在一个位置不移动，若静止时间超过5秒，则在玩家所在位置产生爆炸。],
-  [
-    
+    数据包专家GalSergy提出的方案是为玩家分配自定义的数字ID，对比这些数字ID从而建立数据联系，此处介绍他的解决方案。首先设置一些初始化数据，让这个函数被 `#minecraft:load` 所调用：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > load.mcfunction",
+      "#按钮（胡萝卜钓竿）
+give @a carrot_on_a_stick[custom_name=\"右击以记录坐标\"]
+give @a carrot_on_a_stick[custom_name=\"右击以返回上一个坐标\"]
+scoreboard objectives add testfor minecraft.used:minecraft.carrot_on_a_stick
+#为玩家分配数字ID
+scoreboard objectives add ID dummy"
+    )
+    接下来为玩家分配数字ID，方法是每当有玩家第一次进入游戏时，就使计数器增加1并让增加的数字作为新玩家的ID。这里使用了进度，准则为 `minecraft:tick`，新玩家一旦进入游戏，会立即被赋予这个进度，在不手动撤销进度的情况下，此后他无论如何进入游戏都不会再被分配ID。进度的定义如下：
+    #codefile(
+      lang: "json",
+      title: "data > tutorial > advancement > first_join.json",
+      "{
+  \"criteria\": {
+    \"requirement\": {
+      \"trigger\": \"minecraft:tick\"
+    }
+  },
+  \"rewards\": {
+    \"function\": \"tutorial:first_join/\"
+  }
+}"
+    )
+    进度被触发后运行如下的函数：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > first_join > .mcfunction",
+      "data remove storage tutorial:data this
+#分数条件判断的目的是确保被赋予ID的玩家在此之前是没有ID的
+execute unless score @s ID = @s ID store result score @s ID run scoreboard players add #new ID 1
+execute store result storage tutorial:data this.ID int 1 run scoreboard players get @s ID
+function tutorial:first_join/init with storage tutorial:data this"
+    )
+    上述 #icon("nbt-compound") `this` 字段是新ID生成时临时使用的，现在需要将临时数据存储为正式的数据：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > first_join > init.mcfunction",
+      "$execute unless data storage tutorial:database players[{ID:$(ID)}] run data modify storage tutorial:database players append from storage tutorial:data this"
+    )
+    以上是制作整个系统前需要做的准备工作。当胡萝卜钓竿使用一次后，玩家在记分项 `[testfor]` 上的分数加1，这时可以用 `if` 子命令对分数进行判断。但是在这个系统中有两个胡萝卜钓竿，无论使用哪个都会让 `[testfor]` 上的分数增加，因此仅仅依靠分数条件是无法判断玩家究竟是在记录坐标还是返回上一个坐标。所以还需要对玩家手持物进行判断，因为玩家在使用一个胡萝卜钓竿时一定要手持它，这时可以判断该胡萝卜钓竿的自定义名称，胡萝卜钓竿所在槽位为 `weapon.mainhand`。对条件进行判断后，立刻将玩家在 `[testfor]` 上的分数清零以便于下一次的条件判断。于是需要编写被 `#minecraft:tick` 调用的函数：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > tick.mcfunction",
+      "$execute unless data storage tutorial:database players[{ID:$(ID)}] run data modify storage tutorial:database players append from storage tutorial:data this"
+    )
+    显然函数 `tutorial:record` 用于记录坐标。
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > record.mcfunction",
+      "scoreboard players reset @s testfor
+execute store result storage tutorial:macro teleport.ID int 1 run scoreboard players get @s ID
+function tutorial:return/ with storage tutorial:macro teleport"
+    )
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > teleport.mcfunction",
+      "data remove storage tutorial:data teleport
+data modify storage tutorial:data teleport.dimension set from entity @s Dimension
+data modify storage tutorial:data teleport.pos set from entity @s Pos
+data modify storage tutorial:data teleport.pos_x set from entity @s Pos[0]
+data modify storage tutorial:data teleport.pos_y set from entity @s Pos[1]
+data modify storage tutorial:data teleport.pos_z set from entity @s Pos[2]
+data modify storage tutorial:data teleport.rotation set from entity @s Rotation
+data modify storage tutorial:data teleport.yaw set from storage tutorial:data teleport.rotation[0]
+data modify storage tutorial:data teleport.pitch set from storage tutorial:data teleport.rotation[1]
+$data modify storage tutorial:database players[{ID:$(ID)}].teleport set from storage tutorial:data teleport"
+    )
+    函数 `tutorial:return/` 用于返回记录的坐标。
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > return > .mcfunction",
+      "data remove storage tutorial:data teleport
+$data modify storage tutorial:data teleport set from storage tutorial:database players[{ID:$(ID)}].teleport
+function tutorial:return/tp with storage tutorial:data teleport"
+    )
+    #codefile(
+      lang: "mcfunction",
+      title: "data > tutorial > function > return > tp.mcfunction",
+      "$execute in $(dimension) run tp @s $(pos_x) $(pos_y) $(pos_z) $(yaw) $(pitch)"
+    )
   ]
 )
 #example(
@@ -12800,9 +12887,146 @@ function tutorial:double_coordinates/tp with storage tutorial:_ double_coordinat
     生成单位是$5 times 7 times 5$大小的房间，房间紧密排列。现预设16种不同结构的房间，用结构方块将它们分别存储在游戏文件中，这些文件在数据包内的地址分别为 #icon("nbt") `data > backroom > structure > level0 > 0.nbt` 至 #icon("nbt") `data > backroom > structure > level0 > 15.nbt`。尝试使用数据包按@fig:execute_example_backrooms 的排列方式随机生成这些房间，使得这些房间尽可能铺满整个地图。
   ],
   [
+    以下方案由MrCube6提出：使地图在一瞬间加载完全不太可行，不妨可以考虑当玩家走到某一处时，使该玩家周围一定区域内的地图加载。此处需要标记来确定生成房间的位置：当检测到有玩家离标记一定距离（这里不妨设为80格）时，可以在该标记的东、南、西、北四个方向的5格远位置生成新的标记，并在该标记的位置随机生成16种房间中的任意一种。但是仅仅做到这一步是远远不够的，因为这样会使得标记无限生成，房间会持续更新，实体过多会让游戏卡顿甚至崩溃。因此务必要采取措施限制实体的数量。
 
+    对于一个标记A，其对应的房间A位置如@fig:execute_example_backrooms_1 的灰色阴影处。在该标记的四个方向的5格远位置生成新的标记后，新生成的标记位置如@fig:execute_example_backrooms_1 的白色方框所示。
+    #figure(
+      caption: "",
+      image("图片/execute应用实例后室1.png", width: 3em)
+    ) <fig:execute_example_backrooms_1>
+    现在需要在第一次新生成的标记外围再生成一圈标记，如@fig:execute_example_backrooms_2 所示，此时A位置（@fig:execute_example_backrooms_2）已经有了标记且房间已经生成完毕，因此无需再在此位置生成新的标记。
+    #figure(
+      caption: "",
+      image("图片/execute应用实例后室2.png", width: 5em)
+    ) <fig:execute_example_backrooms_2>
+    标记生成完毕后，再将A位置的标记清除。接下来在第二次新生成的标记周围再生成一圈标记，此时第一次生成的标记仍然存在，不必在这些位置再生成标记，如@fig:execute_example_backrooms_3 所示，以此循环。
+    #figure(
+      caption: "",
+      image("图片/execute应用实例后室3.png", width: 7em)
+    ) <fig:execute_example_backrooms_3>
+    具体的循环流程如下：
+    #figure(
+      caption: "",
+      image("图片/execute应用实例后室流程.png", width: 20em)
+    ) <fig:execute_example_backrooms_process>
+    首先建立被 `#minecraft:load` 调用的函数：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > backrooms > function > load.mcfunction",
+      "#在玩家所在的位置生成初始标记
+execute at @a run summon marker ~ ~-3 ~ {Tags:[\"gen\"]}"
+    )
+    然后根据@fig:execute_example_backrooms_process 所示的流程建立被 `#minecraft:tick` 调用的函数：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > backrooms > function > main.mcfunction",
+      "#生成标记
+execute as @e[type=marker,tag=gen] at @s if entity @p[tag=gaming,distance=..80] run tag @s add gen_trigger
+execute as @e[type=marker,tag=gen_trigger] at @s if entity @p[distance=..80] positioned ~ ~ ~-5 unless entity @e[type=marker,distance=..1] run summon marker ~ ~ ~ {Tags:[\"gen\"]}
+execute as @e[type=marker,tag=gen_trigger] at @s if entity @p[distance=..80] positioned ~ ~ ~5 unless entity @e[type=marker,distance=..1] run summon marker ~ ~ ~ {Tags:[\"gen\"]}
+execute as @e[type=marker,tag=gen_trigger] at @s if entity @p[distance=..80] positioned ~5 ~ ~ unless entity @e[type=marker,distance=..1] run summon marker ~ ~ ~ {Tags:[\"gen\"]}
+execute as @e[type=marker,tag=gen_trigger] at @s if entity @p[distance=..80] positioned ~-5 ~ ~ unless entity @e[type=marker,distance=..1] run summon marker ~ ~ ~ {Tags:[\"gen\"]}
+
+#随机生成房间序号，存入标记
+execute as @e[type=marker,tag=gen_trigger] store result entity @s data.room.index int 1 run random value 0..15
+
+#依照标记中的房间序号生成房间
+execute as @e[type=marker,tag=gen_trigger] at @s run function backrooms:random_room with entity @s data.room
+
+#清除原本的标记
+kill @e[type=marker,tag=gen_trigger]"
+    )
+    其中宏函数 `backrooms:random_room` 的内容如下，整个函数的执行位置为带有标签 `gen_trigger` 的标记的位置。由于结构 `.nbt` 文件的地址形如 #icon("nbt") `data > backroom > structure > level0 > <index>.nbt`，指定这些注册表对象需要使用的命名空间为 `backrooms:level0/<index>`，直接将标记数据传入 `<index>` 即可：
+    #codefile(
+      lang: "mcfunction",
+      title: "data > backrooms > function > random_room.mcfunction",
+      "$place template backrooms:level0/$(index)"
+    )
   ]
-)
+) <exa:execute_example_backrooms>
+#heading(level: 2, numbering: none, [第八章思考题与习题])
++ 判断下列说法是否正确。
+  + 同条 `/execute` 命令中 `run` 子命令一定不会对 `as` 子命令造成影响。
+  + 修饰子命令不能修饰命令执行朝向。
+  + 同一个 `/execute` 命令中，所有子命令可以重复使用多次。
+  + 在命令 `/execute` 中对调子命令的顺序一定会对执行结果有影响。
+  + 由于游戏会先处理修饰子命令和条件子命令，又因为子命令的执行按照从前到后的先后顺序，所以存储子命令放在末尾会有实际执行效果。
+  + 在命令 `/execute as @a[tag=a] as @a [tag=!a] run tp @a ~ ~1 ~` 中，由于修饰的命令执行者是所有不带标签 `a` 的玩家，因此子命令 `as @a[tag=a]` 没有被执行。
+  + 允许将存储子命令写在条件子命令的前面。
++ 若下面的命令中所有子命令均语法正确，判断下列命令是否符合编写原则、执行后有实际效果。
+  + `execute <run子命令> <as子命令>`
+  + `execute <at子命令> <at子命令> <if子命令>`
+  + `execute <if子命令> <store子命令> <run子命令>`
+  + `execute <store子命令> <store子命令>`
+  + `execute <store子命令> <store子命令> <run子命令>`
+  + `execute <as子命令> <run子命令> <run子命令>`
++ 某玩家想要检测是否存在拥有标签 `task` 的玩家，所以他在一个循环型命令方块的控制台内输入如下的命令：`execute as @a[tag=task]`，然后用一个红石比较器输出信号，结果发现无论如何都不会有信号输出。试分析存在的问题并对命令进行适当的改正。
++ 使用 `align` 子命令对下列坐标进行 `xyz` 取整，写出取整后的坐标：
+  + $(1234,-34,780)$
+  + $(-116.5,44.5,92.3)$
+  + $(0,70.0,-0.5)$
+  + $(27.3,-13.6,-79.0)$
++ 分别指出下列命令修饰的命令执行者、执行坐标、朝向、维度和锚点。
+  + `execute as @a positioned as @s run setblock ~ ~-1 ~ red_concrete`
+  + `execute anchored eyes run tp ^ ^ ^3`
+  + `execute at @a[x=0,y=70,z=0,distance=..5] run kill @s`
+  + `execute as @r at @s as @e[type=sheep,sort=random,limit=1] run tp ^ ^ ^3`
+  + `execute rotated as @s as @e[type=minecraft:villager] positioned as @s run tp @s ~ ~ ~ ~ ~`
+  + `execute as @a at @s facing 0 70 0 run tp @s ^ ^ ^0.1`
++ 子命令 `facing` 和子命令 `rotated` 的区别是什么？
++ 在所有玩家头顶放置一块沙。
++ 将所有朝向南方的玩家调整为朝向北方。
++ 对于距离坐标$(12,65,110)$最远的玩家，在聊天栏中提示文本#text_component("你距离中心点太远了！")。
++ 将任意位置的玩家向其各自的朝向移动3格远距离，并进行中心点校准。
++ 数据包内有一个已经设计好的自定义维度 `custom:galaxy`，当距离拥有标签 `dimension` 的标记1格以内时，将玩家传送至维度的对应位置。写出需要的命令。
++ 让所有的绵羊向着命令执行者的朝向移动一格。比如，玩家看着东边时，绵羊向东移动一格；玩家看着上方时，绵羊向上移动一格。#footnote[本题为Minecraft Wiki上的示例。]
++ 以实际坐标$(0,70,0)$为中心，用钻石块在$y=70$大致绘出半径为20格的圆形图案。
++ 在“效果跑酷”地图中，给予站在不同方块上的玩家不同的效果：
+  #general-table(
+    caption: "",
+    colspan: 3,
+    columns: (auto, auto, auto),
+    header: ([序号], [方块], [效果]),
+    [(1)], [蓝色混凝土], [速度II],
+    [(2)], [橙色混凝土], [跳跃提升II],
+    [(3)], [黑色混凝土], [失明],
+    [(4)], [红色混凝土], [清除当前玩家],
+    [(5)], [品红色混凝土], [漂浮I],
+    [(6)], [钻石块], [设置重生点],
+    [(7)], [黄色混凝土], [以每秒45度的速度使当前玩家顺时针旋转]
+  )
++ 清除站在所有非羊毛方块上的玩家。
++ 判断方块坐标$(-7,18.60)$和$(-14,10,65)$围成的区域与由$(27,48,80)$和$(20,40,85)$围成的区域是否相同。
++ 判断玩家周围10格范围内是否有苦力怕，若是则在主标题输出红色的感叹号文本。
++ 制作一个“不使用”煤的熔炉：一旦玩家在位于$(0,70,0)$的熔炉中放入煤炭，熔炉就将煤炭返还。
++ 使用命令 `/execute` 编写一个能够计算绝对值的计算器系统。
++ 编写一个小游戏“烫手的山芋”，有如下规则：
+  + 当玩家的物品栏中有土豆时，每过一秒钟给该玩家在记分项 `[Time]` 上的分数加1，当分数达到30时，判定该玩家游戏失败；<enu:hot_potato>
+  + 玩家可以通过手持土豆击打其他玩家以将自己在记分项 `[Time]` 上的分数清零，同时，土豆会被传递到被击打的玩家身上，被击打玩家按照@enu:hot_potato 中的规则开始计时（整个游戏过程中只会有一个土豆）。
++ 假设下列条件子命令测试通过，写出各自的返回值。
+  + `execute if block ~ ~ ~ ~2 ~3 ~2 0 0 0 all`
+  + `execute if score a s1 = b s2`
+  + `execute if block ~ ~ ~ sandstone`
+  + `execute if entity @e[type=marker,limit=2]`
++ 假设下列命令均执行成功，写出各自的返回值。
+  + `data get entity @s UUID[0]`
+  + `clone 0 70 0 3 73 3 5 75 5 replace`
+  + `give @p stick`
+  + `scoreboard players add @s test 3`
++ 将当前玩家物品栏中石头的数量存储为该玩家在记分项 `[count]` 上的分数。
++ 将当前玩家在记分项 `[count]` 上的分数存储为该玩家的最大生命值基值。
++ 使困难模式下苦力怕的爆炸引信时间缩短为0秒、爆炸半径增加为10格。
++ 检测当前玩家身上金锭的数量：若金锭数量小于5，则玩家不会受到任何影响；若为5个，则为该玩家施加缓慢I的效果，且金锭每增加5个缓慢的效果就增加一级。
++ 复制一个盔甲架，使得其姿势与被复制的盔甲架保持一致。
++ 尝试在动作栏显示当前Boss剩余的血量，以百分数表示，要求精确到个位。
++ 有一个趣味小游戏需要玩家在游戏中保持社交距离：当两个玩家距离小于10格时，将两个玩家沿连接形成的直线往各自相反的方向以每游戏刻0.1格的速度向外推开。用命令编写这一效果。
++ 判断谓词 `tne:boss` 是否通过，若通过则将命名空间ID为 `tne:boss` 的最大值修改为距离当前玩家最近的一个拥有标签boss的生物的最大血量值。
++ 制作一个小游戏，使得拥有 `speedrunner` 标签的玩家看向拥有 `hunter` 的玩家时能够将对方定在原地。
++ 一些结合了资源包的地图拥有如下的效果：当玩家指向某一图形按钮时，右键可以启动该按钮。实际上，这是由资源包和交互实体做成的。资源包先不讨论，编写命令以实现效果。
++ \*现在需要模拟一个新的状态效果“透视”：这个状态效果会给予以玩家为中心、棱长为11格的正方体范围内所有矿石发光轮廓线。设计相关命令，使得钻石矿石显示蓝色的轮廓线。
++ \*对于@exa:execute_example_backrooms，按下列要求尝试修改数据包框架。
+  + 引入后室的多个“层级”，在游戏中建立多个相应的维度 `backrooms:level1`、`backrooms:level2`、`backrooms:level3`、`backrooms:level4`、`backrooms:level5`，使得每个维度的房间生成规则与@exa:execute_example_backrooms 一致；
+  + 引入“重新开始游戏”的概念。使得玩家每次在地图内重新开始游戏时，重新生成新的无限地图房间。 
 #appendix
 = 命令方块与红石电路
 命令系统程序化运行的载体一般有两种：一是传统的命令方块电路；二是数据包。命令方块电路是具象化、实体化的命令系统构建模式，在命令系统未完善的早期版本，冒险地图作者就已经能够通过纯粹的红石电路搭建整个地图的机关。在命令方块随骇人更新加入游戏后，命令就能借助红石电路程序化执行了。在往后很长一段时间，命令通常被视为红石电路的一部分，社区中的命令玩家通常称呼自己为“CBer”，意味围绕命令方块玩游戏的玩家。而随着数据包的加入和完善，命令系统最终脱离了红石电路，拥有了更程序化的运行载体。
