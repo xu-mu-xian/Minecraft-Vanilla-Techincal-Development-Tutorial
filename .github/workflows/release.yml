@@ -1,0 +1,28 @@
+name: Build and Upload PDF
+
+on:
+  push:
+    tags:
+      - "v*" # 当你推送以 v 开头的标签时触发，如 v1.0.0
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 使用 Typst 官方/社区提供的 Action 进行编译
+      - name: Typst Render
+        uses: chiyadev/setup-typst@v1
+        
+      - name: Compile PDF
+        run: typst compile 命令与原版开发基础.typ # 这里的 main.typ 替换为你项目的主文件名
+
+      # 将生成的 PDF 上传到 Release
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: 命令与原版开发基础.pdf # 这里的 main.pdf 替换为编译出的文件名
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
