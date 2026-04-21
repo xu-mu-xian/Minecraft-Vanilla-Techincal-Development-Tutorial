@@ -14500,6 +14500,29 @@ $ mat(0, -1; 1, 0)mat(1, 0; 0, -1) = mat(0, 1; 1, 0) $
   )
 )<tab:pack_format>
 == 方块状态<sec:block_state>
+此章节收录所有方块可用的方块状态（液体状态），带黑色底纹的为该方块的默认值。
+==== 所有种类按钮、拉杆
+#general-table(
+  caption: "",
+  colspan: 3,
+  columns: (auto, auto, auto),
+  header: ([属性], [描述], [可用值]),
+  table.cell(rowspan: 3)[`face`], table.cell(rowspan: 3)[方块附着在其他方块的面], [`ceiling`], [`floor`], table.cell(fill: black)[`wall`],
+  table.cell(rowspan: 4)[`facing`], table.cell(rowspan: 4)[方块的朝向], [`east`], table.cell(fill: black)[`north`], [`south`], [`west`],
+  table.cell(rowspan: 2)[`powered`], table.cell(rowspan: 2)[是否提供红石信号], table.cell(fill: black)[`false`], [`true`]
+)
+==== 所有种类门
+#general-table(
+  caption: "",
+  colspan: 3,
+  columns: (auto, auto, auto),
+  header: ([属性], [描述], [可用值]),
+  table.cell(rowspan: 4)[`facing`], table.cell(rowspan: 4)[方块的朝向], [`east`], table.cell(fill: black)[`north`], [`south`], [`west`],
+  table.cell(rowspan: 2)[`half`], table.cell(rowspan: 2)[门的上下半扇], table.cell(fill: black)[`lower`], [`upper`],
+  table.cell(rowspan: 2)[`hinge`], table.cell(rowspan: 2)[门轴的位置], table.cell(fill: black)[`left`], [`right`],
+  table.cell(rowspan: 2)[`open`], table.cell(rowspan: 2)[门的开关], table.cell(fill: black)[`false`], [`true`],
+  table.cell(rowspan: 2)[`powered`], table.cell(rowspan: 2)[是否被激活], table.cell(fill: black)[`false`], [`true`]
+)
 == 方块实体数据<sec:block_entity_data>
 == 实体数据<sec:entity_data>
 == 数据组件类型<sec:data_components_type>
