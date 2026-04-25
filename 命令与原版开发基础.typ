@@ -1613,12 +1613,12 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
 #tree(
   (0, [#icon("json-object") 文件封装]),
   (1, [#icon("json-bool") *replace*: 指定此标签的引用是否覆盖较低优先级数据包中同命名空间内的同名标签，若设为 `true`，则忽略较低优先级数据包内的引用；若设为 `false`，则此标签内的引用作为对同名标签内引用内容的补充。默认为 `false`。]),
-  (2, [#icon("json-object") *#underline[values]*: 此标签引用的游戏资源，必须引用同类型的游戏资源。可以引用游戏资源本身，也可以引用其他的同类型数据包标签。]),
-  (3, [#icon("json-string") 一个被引用游戏资源的命名空间ID。]),
-  (3, [#icon("json-string") 一个被引用的同类型数据包标签，需要带 `#` 号。]),
-  (3, [#icon("json-object") 引用游戏资源的完整格式。]),
-  (4, [#icon("json-string") *#underline[id]*: 一个被引用游戏资源的命名空间ID或同类型数据包标签。]),
-  (4, [#icon("json-bool") *required*: 用 `false` 表示该条目是可选的，若该条目 #icon("json-string") `id` 所述内容不存在，则不会使标签加载失败。默认为 `true`。])
+  (1, [#icon("json-object") *#underline[values]*: 此标签引用的游戏资源，必须引用同类型的游戏资源。可以引用一个游戏资源，也可以引用其他的同类型数据包标签。]),
+  (2, [#icon("json-string") 一个被引用游戏资源的命名空间ID。]),
+  (2, [#icon("json-string") 一个被引用的同类型数据包标签，需要带 `#` 号。]),
+  (2, [#icon("json-object") 引用游戏资源的完整格式。]),
+  (3, [#icon("json-string") *#underline[id]*: 一个被引用游戏资源的命名空间ID或同类型数据包标签。]),
+  (3, [#icon("json-bool") *required*: 用 `false` 表示该条目是可选的，若该条目 #icon("json-string") `id` 所述内容不存在，则不会使标签加载失败。默认为 `true`。])
 )
 #example(
   [原版存在一个名为 `#air` 的方块标签，有三种方块属于这个标签：空气、洞穴空气和虚空空气，试编写这个标签。],
@@ -1888,6 +1888,29 @@ Minecraft的命令系统虽然完善，但其功能十分有限。例如，命�
   (2, [#icon("json") *regional_compliancies.json*: 地区合规性警告]),
   (2, [#icon("json") *sounds.json*: 声音事件定义文件]),
 )
+=== 可由资源包定义的文本内容
+原版游戏的部分文本可由资源包定义，这些内容被存储在 #icon("folder") `assets > minecraft > texts` 下，命名空间被固定为 `minecraft`，其他命名空间下的文本内容不会被原版游戏所识别。该文件夹内有以下4个文件：
+===== #icon("json") `credit.json`
+鸣谢名单，即在玩家首次进入返回传送门时出现的胜利屏幕中、终末之诗后的游戏制作人员名单，以JSON格式存储。格式如下：
+#tree(
+  (0, [#icon("json-array") 文件封装]),
+  (1, [#icon("json-object") 制作人员名单的一个部分。]),
+  (2, [#icon("json-string") *#underline[section]*: 该部分的标题，显示为黄色居中文本，上下各有一行 `============`。]),
+  (2, [#icon("json-array") *#underline[disciplines]*: 各个部门。]),
+  (3, [#icon("json-object") 一个部门。]),
+  (4, [#icon("json-string") *#underline[discipline]*: 该部门的名称，显示为黄色居中文本。可以为空 `""`。]),
+  (4, [#icon("json-array") *#underline[titles]*: 各个职位。]),
+  (5, [#icon("json-object") 一个职位。]),
+  (6, [#icon("json-string") *#underline[title]*: 该职位的名称，显示为灰色文本。]),
+  (6, [#icon("json-array") *#underline[names]*: 各个职员。]),
+  (7, [#icon("json-string") 一个职员的名字。])
+)
+===== #icon("text") `end.txt`
+终末之诗，其中所有的 `PLAYERNAME` 都会显示为当前玩家的名字，且允许为文本内容添加格式化代码。
+===== #icon("text") `postcredits.txt`
+胜利屏幕中显示在游戏制作人员名单之后的引言，同样其中所有的 `PLAYERNAME` 都会显示为当前玩家的名字，且允许为文本内容添加格式化代码。
+===== #icon("text") `splashes.txt`
+标题屏幕内的所有闪烁标语，每条闪烁标语都以行分隔符隔开，两端的空格会被去除，允许为文本内容添加格式化代码。以 `\` 开头的转义序列会被识别为纯文本。
 === GPU警告列表 \*
 资源包负责游戏的画面渲染。部分计算机显卡太旧、驱动版本不匹配，或者GPU属于某些已知会造成游戏崩溃的型号，因此资源包内存在 #icon("json") `gpu_warnlist.json` 这个用于自检硬件兼容性的配置文件。其格式如下所示：
 #tree(

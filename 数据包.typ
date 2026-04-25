@@ -70,11 +70,133 @@
 #h(-2em)其中 `<函数名称>` 不需要携带 `.mcfunction` 的后缀。如果省略了命名空间，游戏会在 `minecraft` 命名空间下索引函数文件。
 
 例如，一个函数文件的路径为 #icon("mcfunction") `data > tutorial > function > tick.mcfunction`，那么资源路径就应该写成
+#codebox("tutorial:tick")
+#h(-2em)函数文件的名称也可以为空，比如 #icon("mcfunction") `data > tutorial > function > .mcfunction`，它的资源路径为
+#codebox("tutorial:")
+命名空间是 #icon("mcfunction") `data` 目录下为函数文件分类的第一种手段，在 #icon("mcfunction") `function` 文件夹中，函数也可以进行二次分类。函数文件不必直接作为 #icon("mcfunction") `function` 文件夹的次层级文件，可以嵌套进多层文件夹中。此时函数的资源路径就需要带上其父文件夹的名称。例如，一个函数文件的路径为 #icon("mcfunction") `tutorial > function > test > main.mcfunction`，可以看到函数 #icon("mcfunction") `main.mcfunction` 位于文件夹 #icon("folder") `test`，而 #icon("folder") `test` 又是 #icon("folder") `function` 的子文件夹，那么资源路径就应该写成
+#codebox("tutorial:test/main")
+存放函数的文件夹可以多层嵌套，以对函数进行适当的分类，不建议直接把所有函数文件全部写在 #icon("folder") `function` 根目录下。例如，《跃动晶界2》地图所用的数据包采用了如下的分类模式#footnote[此处仅展示部分目录。]：
+#tree(
+  (0, [#icon("folder") *function*]),
+  (1, [#icon("folder") *dialog*: 所有对话框相关的逻辑。]),
+  (2, [#icon("folder") *main*: 主屏幕对话框的显示内容、配置数据。]),
+  (2, [#icon("folder") *pause*: 游戏暂停对话框的显示内容、配置数据。]),
+  (1, [#icon("folder") *game*: 正式游戏内容相关的逻辑。]),
+  (2, [#icon("folder") *checkpoint*: 所有难度不同关卡的记录点信息。]),
+  (2, [#icon("folder") *item*: 所有道具的行为逻辑。]),
+  (2, [#icon("folder") *over*: 游戏结束时需要执行的函数。]),
+  (2, [#icon("folder") *start*: 游戏开始时需要执行的函数。])
+)
+#h(-2em)不同的开发者有各自的分类方式，社区在这个议题上暂时没有统一标准。
+
+和其他资源一样，函数也可以通过数据包#proper-noun(display: "函数标签（Function tags）", "han2 shu4 biao1 qian1")分类。函数标签可以表示为
+#codebox("#<命名空间>:<ID>")
+原版数据包不存在任何内置的函数标签，因此需要在数据包中手动创建函数标签。标签文件的路径为 `data > <命名空间> > tags > function > <标签名>.json`。一个函数标签文件的内容如下所示：
+#tree(
+  (0, [#icon("json-object") 文件封装]),
+  (1, [#icon("json-bool") *replace*: 指定此标签的引用是否覆盖较低优先级数据包中同命名空间内的同名标签，若设为 `true`，则忽略较低优先级数据包内的引用；若设为 `false`，则此标签内的引用作为对同名标签内引用内容的补充。默认为 `false`。]),
+  (1, [#icon("json-object") *#underline[values]*: 此标签引用的函数，可以引用一个函数，也可以引用其他函数标签。]),
+  (2, [#icon("json-string") 一个函数的命名空间ID。]),
+  (2, [#icon("json-string") 一个函数标签，需要带 `#` 号。]),
+  (2, [#icon("json-object") 引用函数的完整格式。]),
+  (3, [#icon("json-string") *#underline[id]*: 一个函数的命名空间ID或函数标签。]),
+  (3, [#icon("json-bool") *required*: 用 `false` 表示该条目是可选的，若该条目 #icon("json-string") `id` 所述函数不存在，则不会使标签加载失败。默认为 `true`。])
+)
+#h(-2em)例如，一个函数标签的内容如下：
+#codefile(
+  lang: "json",
+  title: "data > minecraft > tags > function > load.json",
+  read("代码/教程数据包/data/minecraft/tags/function/load0.json")
+)
+#h(-2em)这时称函数 `tutorial:load` 和函数 `tutorial:game/load` 被标签 `#minecraft:load` 调用（引用）。
+=== 函数的格式
+==== 命令行与注释行
+在一个函数文件中，同一行内只允许有一条命令，每一个命令行的行首和行末可以添加若干空格和制表符，游戏在识别时会自动去除这些空格和制表符。这里的“一行”与输入的回车符挂钩，一些编译器视图中会有自动换行，视图中的自动换行不算作不同的行。函数文件中允许有空行，也允许在一行的开头使用 `#` 以表示该行是#proper-noun(display: "注释行（Comment line）", "zhu4 shi4 hang2")，可以添加#proper-noun(display: "注释（Comment）", "zhu4 shi4")。
+
+在函数文件中编写命令时，命令开头不允许使用斜杠 `/`，所有命令都必须语法正确，否则该函数无效。例如，函数 `leap_of_crystal_realm:registry` 的内容如下所示：
+#codefile(
+  lang: "mcfunction",
+  title: "data > leap_of_crystal_realm > function > registry.mcfunction",
+  read("代码/教程数据包/data/leap_of_crystal_realm/function/registry.mcfunction")
+)
+#h(-2em)这是一个有效的函数，现逐行分析：第1、4、7行是注释行，仅在编写函数时作为注释使用，不会对函数内容造成影响，但注释时必须在该行开头添加 `#` 符号。第2、5、8行是命令行，没有语法错误。第3和第6行是空行，不会对函数造成影响。
+
+单人游戏中函数的权限等级为2，因此函数内命令所需的权限等级不能超过2。但是如果函数在专用服务器上运行，#icon("file") `server.properties` 中的 `function-permission-level` 能调整函数的权限等级，届时函数就有能力执行所需权限等级更高的命令。
+
+在函数中，每一行命令的字符不受32500字符数的限制，但一个函数的命令总数会受到游戏规则 `max_command_sequence_length` 的限制。其计算方式见节@sec:max_command_sequence_length。
+==== 换行
+一般而言，一条有效的命令占据一行，如果在命令行行末添加反斜杠符 `\`，则可以在下一行继续书写该命令的后续部分。游戏在读取时会对上下行进行拼接，行末的反斜杠符 `\` 只会作为换行符号识别，不会识别为命令的一部分。函数文件允许连续换行，只要识别到反斜杠符，则下一行的内容就会被拼接到上一行。
+
+对于换行所用的反斜杠符 `\`，其后方不能再添加除空格、制表符外的其他字符，而该符号前的空格均会被识别为命令的一部分。下一行不能为注释行，且行首的空格和制表符在识别过程中会被直接忽略。因此如果需要在命令参数之间进行换行，则参数之间的空格应书写在换行前反斜杠符 `\` 的前面。
+
+例如，函数 `tutorial:line_break` 的内容如下所示：
+#codefile(
+  lang: "mcfunction",
+  title: "data > tutorial > function > line_break.mcfunction",
+  read("代码/教程数据包/data/tutorial/function/line_break.mcfunction")
+)
+#h(-2em)这是一个有效的含换行的函数。经过拼接，得到函数内的命令：
+#codebox("execute as @a store result score @s x run data get entity @s Pos[0]")
+适当运用换行可以对函数文件进行排版，便于函数的维护。上述的函数 `tutorial:line_break` 对 `/execute` 进行了换行，每条子命令分别位于一行。
+==== 宏行
+函数可以使用#proper-noun(display: "宏（Macro）", "hong2")，当一个命令行的行首有 `$` 字符时，该行被识别为#proper-noun(display: "宏行（Macro line）", "hong2 hang2")，函数则为#proper-noun(display: "宏函数（Macro function）", "hong2 han2 shu4")。`$` 与命令之间可以有空格和制表符，但 `$` 前面不能有任何空格和制表符。此时可以在该行使用可替代字段。可替代字段使用如下的格式：
+#codebox("$(<键>)")
+其中 `<键>` 可以接受的字符有：
++ 数字：`0123456789`；
++ 大写字母：`ABCDEFGHIJKLMNOPQRSTUVWXYZ`；
++ 小写字母：`abcdefghijklmnopqrstuvwxyz`；
++ 下划线：`_`。
+可代替字段区分大小写，大小写不同会被识别为不同的字段。
+
+例如，函数 `tutorial:macro` 是一个有效的宏函数：
+#codefile(
+  lang: "mcfunction",
+  title: "data > tutorial > function > macro.mcfunction",
+  read("代码/教程数据包/data/tutorial/function/macro.mcfunction")
+)
+在编写函数时，如果函数行内有可替代字段，该行开头的 `$` 不能缺失。
 == 调用函数
+函数可以以以下几种方式被调用：
+=== 函数标签
+调用一个函数标签则同时调用其中的函数，并按照函数标签定义的从上到下的顺序依次调用。若函数标签 `#tutorial:main` 有如下的内容：
+#codefile(
+  lang: "json",
+  title: "data > tutorial > tags > function > main.json",
+  read("代码/教程数据包/data/tutorial/tags/function/main.json")
+)
+调用标签 `#tutorial:test` 时，依次调用 `tutorial:test1` 和 `tutorial:test2` 两个函数。
+
+函数标签也可以嵌套在其他函数标签文件内，但要注意避免递归引用。例如，一个函数标签 `#tutorial:load` 的内容如下所示：
+#codefile(
+  lang: "json",
+  title: "data > tutorial > tags > function > load.json",
+  read("代码/教程数据包/data/tutorial/tags/function/load.json")
+)
+#h(-2em)其中 `#tutorial:main` 又依次引用了 `tutorial:test1` 和 `tutorial:test2` 两个函数，所以调用 `#tutorial:load` 后，会依次调用三个函数：`tutorial:test1`、`tutorial:test2` 和 `tutorial:test3`。
+
+如果一个标签多次引用了同一函数，则函数标签被调用时该函数只会被调用一次，且会按照该函数第一次出现的位置调用。例如，函数标签 `#tutorial:example` 的内容如下所示：
+#codefile(
+  lang: "json",
+  title: "data > tutorial > tags > function > example.json",
+  read("代码/教程数据包/data/tutorial/tags/function/example.json")
+)
+#h(-2em)则此标签会先调用 `tutorial:test1`，再调用函数 `tutorial:test2`。
+
+以下函数标签具有特殊行为：
+==== 标签 `#minecraft:load`
+*使用 `/reload` 或重新进入游戏使得数据包重新加载后，所有在函数标签 `#minecraft:load` 中引用的函数会被依次调用一遍。*这个标签的命名空间必须为 `minecraft`，不允许有其他的资源路径，函数标签的文件名必须为 `load`，路径必须为 #icon("json") `data > minecraft > tags > function > load.json`。
+
+若 `#minecraft:load` 的内容为
+#codefile(
+  lang: "json",
+  title: "data > minecraft > tags > function > load.json",
+  read("代码/教程数据包/data/minecraft/tags/function/load.json")
+)
+#h(-2em)则每次数据包重新加载后，当前的 `tutorial:test1`、`tutorial:test2` 都会依次被调用一遍。
 == 函数的运行及上下文
 == 回返机制
 == 宏
-== 命令连锁数量
+== 命令连锁数量 <sec:max_command_sequence_length>
 == 递归
 == 函数的应用实例
 = 谓词
@@ -87,3 +209,9 @@
 = 杂项游戏内容定义格式
 = 实体变种
 = 自定义世界生成
+#appendix
+= 索引
+== 专有名词（汉语拼音顺序）
+#columns(2)[
+  #make-index(indexes: ("Default",), use-page-counter: true)
+]
