@@ -193,6 +193,48 @@
   read("代码/教程数据包/data/minecraft/tags/function/load.json")
 )
 #h(-2em)则每次数据包重新加载后，当前的 `tutorial:test1`、`tutorial:test2` 都会依次被调用一遍。
+==== 标签 `#minecraft:tick`
+*所有在函数标签 `#minecraft:tick` 中引用的函数会在每游戏刻的开始被调用一次，是为高频调用*，实际效果和保持开启的循环型命令方块一致。和 `#minecraft:load` 一样，`#minecraft:tick` 的命名空间必须为 `minecraft`，不允许有其他的资源路径，函数标签的文件名必须为 `tick`，路径必须为 #icon("json") `data > minecraft > tags > function > tick.json`。
+
+例如，有函数标签 `#minecraft:tick`：
+#codefile(
+  lang: "json",
+  title: "data > tutorial > tags > function > example.json",
+  read("代码/教程数据包/data/minecraft/tags/function/tick.json")
+)
+#h(-2em)则每个游戏刻会依次调用 `tutorial:test1`、`tutorial:test2` 这两个函数。
+=== 命令/function与/execute
+命令 `/function` 用于主动调用一个函数或一个函数标签，需要的权限等级为2，它的其中一条语法为：
+#codebox("function <name>")
+#param-desc(
+  [`<name>`（函数 `minecraft:function`）], [一个函数的命名空间ID或一个函数标签。]
+)
+#example(
+  [调用函数 `tutorial:test1`。],
+  [
+    命令为
+    #codebox("function tutorial:test1")
+  ]
+)
+#example(
+  [调用函数标签 `#tutorial:main` 内的所有函数。],
+  [
+    命令为
+    #codebox("function #tutorial:main")
+  ]
+)
+命令 `/function` 也可以作为 `/execute` 的子命令并调用函数。而* `/execute` 的 `if function` 子命令在判断函数返回值的同时也会调用一次函数*。
+=== 命令/schedule
+在命令方块电路中，如果要使某一个命令延迟几秒再被执行，使用的手段则是红石中继器，每一个红石中继器最多可以提供4 rt的信号延迟。
+
+数据包同样提供了可以延迟执行命令的手段，即*以服务端为名义*，计划在未来的某一时间调用函数。这种手段就是命令 `/schedule`，命令 `/schedule` 的*执行者为服务端，命令执行位置被固定为世界出生点，这个位置不一定是$(0,0)$。同时，执行朝向为向南、执行维度为主世界。*这意味着在命令 `/execute` 上做出的执行上下文的更新在 `/schedule` 上是不起作用的。它需要的权限等级为2，以下是所有用法：
+===== 在经指定的时间后再运行函数，语法为
+#codebox("schedule function <function> <time> [append|replace]")
+#param-desc(
+  [`<name>`（函数 `minecraft:function`）], [一个函数的命名空间ID或一个函数标签。],
+  [`<time>`（时间 `minecraft:time`）], [确定将要运行的函数还需等待的计划时间。时间参数的格式为：`<单精度浮点数>[<单位>]`，单位可以为：`t`（游戏刻），`s`（秒）或 `d`（游戏日，1游戏日固定为24000游戏刻），若不写单位，则默认单位为游戏刻。],
+  [`[append|replace]` ], [可选，当拥有相同命名空间ID的函数被规定了多个不同的计划时间后，该参数定义了函数按照哪个计划运行。默认为 `replace`。]
+)
 == 函数的运行及上下文
 == 回返机制
 == 宏

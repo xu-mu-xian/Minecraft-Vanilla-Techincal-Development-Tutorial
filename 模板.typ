@@ -949,7 +949,7 @@
     )
   )
   show heading.where(level: 1): it => {
-    set text(size: 2em)
+    set text(font: "PaperBillow Grace", size: 2em)
     counter(figure.where(kind: image)).update(0)
     counter(figure.where(kind: table)).update(0)
     counter(math.equation).update(0)
