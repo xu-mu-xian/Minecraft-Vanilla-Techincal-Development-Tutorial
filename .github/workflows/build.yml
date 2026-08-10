@@ -8,11 +8,23 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: typst-community/setup-typst@v3
-      
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra
+
+      - name: List files for debugging
+        run: |
+          ls -R
+
+      - name: Setup Typst
+        uses: typst-community/setup-typst@v3
+
       - name: Compile
-        run: typst compile 命令与原版开发基础.typ 命令与原版开发基础.pdf
+        run: typst compile "命令与原版开发基础.typ" "命令与原版开发基础.pdf"
 
       - name: Upload PDF
         uses: actions/upload-artifact@v4

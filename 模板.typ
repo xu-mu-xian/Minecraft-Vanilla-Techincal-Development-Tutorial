@@ -578,7 +578,7 @@
     "nbt-long_array": box(image("图标/data/长整型数组.png", height:1em), baseline: 0pt, height:0.85em),
     "nbt-list": box(image("图标/data/列表.png", height:1em), baseline: 0pt, height:0.85em),
     "nbt-compound": box(image("图标/data/复合标签.png", height:1em), baseline: 0pt, height:0.85em),
-    "vscode": box(image("图标/VSCode.png", height:1em), baseline: 0pt, height:0.85em),
+    "vscode": box(image("图标/vscode.png", height:1em), baseline: 0pt, height:0.85em),
     "dhp": box(image("图标/DHP.png", height:1em), baseline: 0pt, height:0.85em),
     "nbtstudio": box(image("图标/NBTStudio.png", height:1em), baseline: 0pt, height:0.85em),
     "paint": box(image("图标/画图.png", height:1em), baseline: 0pt, height:0.85em),
