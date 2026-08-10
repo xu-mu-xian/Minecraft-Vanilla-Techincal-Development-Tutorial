@@ -198,7 +198,7 @@
   seperator: (),
   data: (),
 ) = {
- let col-widths = if type(original-cols) == array {
+  let col-widths = if type(original-cols) == array {
     original-cols
   } else {
     (1fr,) * original-cols
@@ -939,6 +939,8 @@
       it
     }
   }
+  // 链接
+  // show link: set text(fill: blue, font: ("Roboto", "Source Han Sans SC"))
   // 标题
   set heading(numbering: book-heading)
   show heading: set align(center)
@@ -949,7 +951,7 @@
     )
   )
   show heading.where(level: 1): it => {
-    set text(font: "PaperBillow Grace", size: 2em)
+    set text(font: "Source Han Serif", size: 2em)
     counter(figure.where(kind: image)).update(0)
     counter(figure.where(kind: table)).update(0)
     counter(math.equation).update(0)

@@ -1,563 +1,301 @@
 #import "模板.typ": *
 #show: template-style
-= a<subsec:tags_common_to_all_block_entities>
-?<data:item_data>?<data:tags_common_to_all_entities>
-#heading(level: 4, numbering: none, [所有种类旗帜（`banner`）#footnote[括号内为该方块实体的命名空间ID，`minecraft` 的命名空间前缀已省略。此值被存储在方块实体共通标签中的 #icon("nbt-string") `id` 中。]])
+#theme.update(red)
+#let theme_basic = red
+= 1<data:item_data>
+== <sec:entity_data>
+#heading(level: 4, numbering: none, [实体共通标签])<data:tags_common_to_all_entities>
+所有实体拥有以下字段：
 #tree(
   (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *CustomName*: 可选，该旗帜的自定义名称，需要为文本组件。]),
-  (1, [#icon("nbt-list") *patterns*: 可选，按顺序使用的旗帜图案。列表中复合标签的次序越靠前，其对应的图案在旗帜上的层级就越往下。]),
-  (2, [#icon("nbt-compound") 一个单独的旗帜图案。]),
-  (3, [#icon("nbt-string") *#underline[color]*: 图案的颜色。有效值有 `black`（黑色）、`blue`（蓝色）、`brown`（棕色）、`cyan`（青色）、`gray`（灰色）、`green`（绿色）、`light_blue`（淡蓝色）、`light_gray`（淡灰色）、`lime`（黄绿色）、`magenta`（品红色）、`orange`（橙色）、`pink`（粉红色）、`purple`（紫色）、`red`（红色）、`white`（白色）、`yellow`（黄色）。]),
-  (3, [#icon("nbt-string")#icon("nbt-compound") *#underline[pattern]*: 图案的类型，当使用 #icon("nbt-string") 字符串形式时，值为图案的命名空间ID。旗帜图案可由数据包自定义，在数据包内的相应文件为 #icon("json") `data > <命名空间> > banner_pattern > <ID>.json`。也可以以内联SNBT的形式直接在此处定义一个图案类型，此时使用 #icon("nbt-compound") 复合标签形式。]),
-  (4, [*若使用 #icon("nbt-compound") 复合标签形式，则以下字段：*], false),
-  (4, [#icon("nbt-string") *asset_id*: 资源包内旗帜图案纹理的命名空间ID，文件路径为 #icon("png") `assets > <命名空间> > textures > entity > banner > <路径>.png`。]),
-  (4, [#icon("nbt-string") *translation_key*: 该旗帜图案的翻译标识符前缀，游戏解析时会加上 #icon("nbt-string") `color` 字段的值作为后缀。])
+  (1, [#icon("nbt-short") *Air*: 该实体剩余的空气值。]),
+  (1, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *CustomName*: 该实体的自定义名称，未指定名称时该标签不存在。需要是一个文本组件。]),
+  (1, [#icon("nbt-bool") *CustomNameVisible*: 该实体的自定义名称能否总是显示在该实体的上方，未指定名称时不存在。]),
+  (1, [#icon("nbt-string")#icon("nbt-compound") *data*: 任意自定义数据。写入数据的时候可以使用 #icon("nbt-string") 字符串形式，但存储的时候一律存储为 #icon("nbt-compound") 复合标签形式。]),
+  (2, [自定义数据结构]),
+  (1, [#icon("nbt-double") *#underline[fall_distance]*: 该实体已下坠的距离。]),
+  (1, [#icon("nbt-short") *#underline[Fire]*: 该实体身上的火焰距熄灭的剩余游戏刻时长。对于未着火的玩家，此值为 `-20s`，对于未着火的其他实体，此值为 `-1s`。]),
+  (1, [#icon("nbt-bool") *Glowing*: 该实体是否发光。]),
+  (1, [#icon("nbt-bool") *HasVisualFire*: 该实体是否在外观上有着火效果。]),
+  (1, [#icon("nbt-string") *#underline[id]*: 该实体的命名空间ID，此值不可被修改，根实体的此字段无法被 `/data` 查询。]),
+  (1, [#icon("nbt-bool") *#underline[Invulnerable]*: 该实体是否会受到伤害。这里的伤害是指除创造模式玩家造成的伤害和属于伤害类型标签 `#bypasses_invulnerability` 以外的其他伤害。]),
+  (1, [#icon("nbt-list") *#underline[Motion]*: 列表中存在3个元素，均为双精度浮点数，用于表示该实体在当前游戏刻的速度。在三维空间中将速度矢量分解为沿3个坐标轴的速度矢量，即$"d"x$、$"d"y$和$"d"z$，分别用此列表第0、1、2个元素表示。]),
+  (1, [#icon("nbt-bool") *NoGravity*: 该实体是否会受到重力影响。]),
+  (1, [#icon("nbt-bool") *#underline[OnGround]*: 该实体是否接触地面。]),
+  (1, [#icon("nbt-list") *Passengers*: 骑乘该实体的实体。]),
+  (2, [#icon("nbt-compound") 一个骑乘该实体的实体。]),
+  (3, link(<sec:entity_data>)[实体格式]),
+  (1, [#icon("nbt-int") *#underline[PortalCooldown]*: 该实体距下次被允许穿过下界传送门前往另一维度的游戏刻。]),
+  (1, [#icon("nbt-list") *#underline[Pos]*: 该实体的三维坐标，列表内元素顺序不可改变。]),
+  (2, [#icon("nbt-double") $x$坐标。]),
+  (2, [#icon("nbt-double") $y$坐标。]),
+  (2, [#icon("nbt-double") $z$坐标。]),
+  (1, [#icon("nbt-list") *#underline[Rotation]*: 该实体的朝向，列表内元素顺序不可改变。]),
+  (2, [#icon("nbt-float") 偏航角。]),
+  (2, [#icon("nbt-float") 俯仰角。]),
+  (1, [#icon("nbt-bool") *Silent*: 该实体是否会发出声音。]),
+  (1, [#icon("nbt-list") *Tags*: 该实体的所有记分板标签。]),
+  (2, [#icon("nbt-compound") 一个记分板标签。]),
+  (1, [#icon("nbt-int") *TicksFrozen*: 可能不存在，表示实体已冷冻的时间。当实体在细雪中时每游戏刻增加 `1`，离开细雪则每游戏刻减少 `2`。为 `0` 时此标签不存在。]),
+  (1, [#icon("nbt-int_array") *#underline[UUID]*: 该实体的UUID。])
 )
-#heading(level: 4, numbering: none, [木桶（`barrel`）、箱子和所有种类铜箱子（`chest`）、发射器（`dispenser`）、投掷器（`dropper`）、潜影盒（`shulker_box`）、陷阱箱（`trapped_chest`）])
+#heading(level: 4, numbering: none, [生物共通标签（Java类名 `LivingEntity`）])
+所有属于生物一类的实体都拥有以下字段：
 #tree(
   (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *CustomName*: 该方块实体的名称，即该容器在GUI上显示的名称。使用文本组件。]),
-  (1, [#icon("nbt-list") *Items*: 箱子内的物品。列表中每个元素都是一个物品堆叠。]),
-  (2, [#icon("nbt-compound") 一个物品。]),
-  (3, link(<data:item_data>)[带槽位物品格式]),
-  (1, [#icon("nbt-compound") *lock*: 玩家可以用于打开该容器的物品，使用物品堆叠谓词来判断。]),
-  (2, [#icon("nbt-compound") *components*: 检查物品的堆叠组件，只有当物品堆叠组件完全相同时才匹配成功。]),
-  (3, [*\<组件名称>*: 一项组件及匹配的内容。]),
-  (2, [#icon("nbt-int")#icon("nbt-compound") *count*: 检查物品的堆叠数量，可以使用 #icon("nbt-int") 整数匹配一个精确值，也可以使用 #icon("nbt-compound") 复合标签匹配一个数量区间。]),
-  (3, [*若使用 #icon("nbt-compound") 复合标签形式，则包含以下字段：*], false),
-  (3, [#icon("nbt-int") *max*: 最大值。]),
-  (3, [#icon("nbt-int") *min*: 最小值。]),
-  (2, [#icon("nbt-string")#icon("nbt-list") *items*: 匹配的物品，可以是 #icon("nbt-string") 命名空间ID或物品数据包标签。也可以使用 #icon("nbt-list") 列表形式以尝试匹配列表中任意物品。]),
-  (3, [*若使用 #icon("nbt-list") 列表形式，则有以下字段：*], false),
-  (3, [#icon("nbt-string") 一项物品，可以是命名空间ID或物品数据包标签。]),
-  (2, [#icon("nbt-compound") *predicates*: 检查该物品是否匹配指定的数据组件谓词。]),
-  (3, [*\<数据组件谓词ID>*: 一项数据组件谓词及匹配的内容。]),
-  (1, [#icon("nbt-string") *LootTable*: 在此容器第一次被打开时为生成战利品所使用的战利品表，需要是战利品表的命名空间ID。战利品生成后此标签被删除。]),
-  (1, [#icon("nbt-long") *LootTableSeed*: 生成战利品使用的种子，如果不存在该标签或值为 `0l` 则使用随机序列。战利品生成后此标签被删除。])
-)
-#heading(level: 4, numbering: none, [信标（`beacon`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *CustomName*: 该方块实体的名称，即该信标在GUI上显示的名称。使用文本组件。]),
-  (1, [#icon("nbt-int") *Levels*: 金字塔的可用等级，无法被 `/data` 修改。]),
-  (1, [#icon("nbt-compound") *lock*: 玩家可以用于打开该信标的物品，使用物品堆叠谓词来判断。]),
-  (2, [#icon("nbt-compound") *components*: 检查物品的堆叠组件，只有当物品堆叠组件完全相同时才匹配成功。]),
-  (3, [*\<组件名称>*: 一项组件及匹配的内容。]),
-  (2, [#icon("nbt-int")#icon("nbt-compound") *count*: 检查物品的堆叠数量，可以使用 #icon("nbt-int") 整数匹配一个精确值，也可以使用 #icon("nbt-compound") 复合标签匹配一个数量区间。]),
-  (3, [*若使用 #icon("nbt-compound") 复合标签形式，则包含以下字段：*], false),
-  (3, [#icon("nbt-int") *max*: 最大值。]),
-  (3, [#icon("nbt-int") *min*: 最小值。]),
-  (2, [#icon("nbt-string")#icon("nbt-list") *items*: 匹配的物品，可以是 #icon("nbt-string") 命名空间ID或物品数据包标签。也可以使用 #icon("nbt-list") 列表形式以尝试匹配列表中任意物品。]),
-  (3, [*若使用 #icon("nbt-list") 列表形式，则有以下字段：*], false),
-  (3, [#icon("nbt-string") 一项物品，可以是命名空间ID或物品数据包标签。]),
-  (2, [#icon("nbt-compound") *predicates*: 检查该物品是否匹配指定的数据组件谓词。]),
-  (3, [*\<数据组件谓词ID>*: 一项数据组件谓词及匹配的内容。]),
-  (1, [#icon("nbt-string") *primary_effect*: 信标主效果的命名空间ID。]),
-  (1, [#icon("nbt-string") *secondary_effect*: 信标辅助效果的命名空间ID。])
-)
-#heading(level: 4, numbering: none, [床（`bed`）、钟（`bell`）、阳光探测器（`daylight_detector`）、末地传送门（`end_portal`）、末影箱（`ender_chest`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签])
-)
-#heading(level: 4, numbering: none, [蜂巢和蜂箱（`beehive`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-list") *#underline[bees]*: 蜂巢或蜂箱内的蜜蜂信息。]),
-  (2, [#icon("nbt-compound") 一只蜜蜂的数据。该实体必须为具有数据包标签 `#beehive_inhabitors` 的实体。]),
-  (3, [#icon("nbt-compound") *entity_data*: 此蜜蜂的部分实体数据。]),
-  (4, [#link(<data:tags_common_to_all_entities>)[实体格式]，其中不含以下标签：#icon("nbt-short") `Air`、#icon("nbt-compound") `Brain`、#icon("nbt-int") `CannotEnterHiveTicks`、#icon("nbt-bool") `CanPickUpLoot`、#icon("nbt-int") `CropsGrownSincePollination`、#icon("nbt-short") `DeathTime`、#icon("nbt-compound") `drop_chances`、#icon("nbt-compound") `equipment`、#icon("nbt-float") `FallDistance`、#icon("nbt-bool") `FallFlying`、#icon("nbt-short") `Fire`、#icon("nbt-int_array") `hive_pos`、#icon("nbt-int") `HurtByTimestamp`、#icon("nbt-short") `HurtTime`、#icon("nbt-int_array")#icon("nbt-compound") `leash`、#icon("nbt-bool") `LeftHanded`、#icon("nbt-list") `Motion`、#icon("nbt-bool") `NoGravity`、#icon("nbt-bool") `OnGround`、#icon("nbt-list") `Passengers`、#icon("nbt-int") `PortalCooldown`、#icon("nbt-list") `Pos`、#icon("nbt-list") `Rotation`、#icon("nbt-int_array") `sleeping_pos`、#icon("nbt-int") `TicksSincePollination`、#icon("nbt-int_array") `UUID`。]),
-  (3, [#icon("nbt-int") *#underline[min_ticks_in_hive]*: 蜜蜂在巢内停留的最短时间。]),
-  (3, [#icon("nbt-int") *#underline[ticks_in_hive]*: 蜜蜂在巢内已经停留的时间。]),
-  (1, [#icon("nbt-int_array") *flower_pos*: 花的位置，以供蜜蜂寻花，数组中元素依次为$x$、$y$、$z$坐标。])
-)
-#heading(level: 4, numbering: none, [高炉（`blast_furnace`）、熔炉（`furnace`）、烟熏炉（`smoker`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-short") *#underline[cooking_time_spent]*: 当前物品已被烧炼的时间。当该值达到 #icon("nbt-short") `cooking_total_time` 时，烧炼完毕，此值重置为 `0s`；当 `lit_time_remaining` 为 `0s` 时，此值每游戏刻减少 `2s`。当该值大于 #icon("nbt-short") `cooking_total_time` 时，无法完成烧炼。]),
-  (1, [#icon("nbt-short") *#underline[cooking_total_time]*: 当前物品烧炼完成需要花费的总时间。]),
-  (1, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *CustomName*: 该方块实体的名称，即该容器在GUI上显示的名称。使用文本组件。]),
-  (1, [#icon("nbt-list") *#underline[Items]*: 熔炉内的物品。列表中每个元素都是一个物品堆叠。]),
-  (2, [#icon("nbt-compound") 一个物品。]),
-  (3, link(<data:item_data>)[带槽位物品格式]),
-  (1, [#icon("nbt-short") *#underline[lit_time_remaining]*: 当前燃料离耗尽的时间。]),
-  (1, [#icon("nbt-short") *#underline[lit_total_time]*: 高炉、熔炉或烟熏炉应燃烧的总时长。]),
-  (1, [#icon("nbt-compound") *lock*: 玩家可以用于打开该容器的物品，使用物品堆叠谓词来判断。]),
-  (2, [#icon("nbt-compound") *components*: 检查物品的堆叠组件，只有当物品堆叠组件完全相同时才匹配成功。]),
-  (3, [*\<组件名称>*: 一项组件及匹配的内容。]),
-  (2, [#icon("nbt-int")#icon("nbt-compound") *count*: 检查物品的堆叠数量，可以使用 #icon("nbt-int") 整数匹配一个精确值，也可以使用 #icon("nbt-compound") 复合标签匹配一个数量区间。]),
-  (3, [*若使用 #icon("nbt-compound") 复合标签形式，则包含以下字段：*], false),
-  (3, [#icon("nbt-int") *max*: 最大值。]),
-  (3, [#icon("nbt-int") *min*: 最小值。]),
-  (2, [#icon("nbt-string")#icon("nbt-list") *items*: 匹配的物品，可以是 #icon("nbt-string") 命名空间ID或物品数据包标签。也可以使用 #icon("nbt-list") 列表形式以尝试匹配列表中任意物品。]),
-  (3, [*若使用 #icon("nbt-list") 列表形式，则有以下字段：*], false),
-  (3, [#icon("nbt-string") 一项物品，可以是命名空间ID或物品数据包标签。]),
-  (2, [#icon("nbt-compound") *predicates*: 检查该物品是否匹配指定的数据组件谓词。]),
-  (1, [#icon("nbt-compound") *RecipesUsed*: 熔炉从最后一次成品被玩家取出到现在已经完成的配方数，用于计算经验值。]),
-  (2, [#icon("nbt-int") *\<配方命名空间ID>*: 此配方烧炼成功的次数。])
-)
-#heading(level: 4, numbering: none, [酿造台（`brewing_stand`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-short") *#underline[BrewTime]*: 药水酿造完成还需的时间，为 `0s` 时酿造完成，不为 `0s` 时该值每游戏刻减少1。]),
-  (1, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *CustomName*: 该方块实体的名称，即该酿造台在GUI上显示的名称。使用文本组件。]),
-  (1, [#icon("nbt-compound") *lock*: 玩家可以用于打开该酿造台的物品，使用物品堆叠谓词来判断。]),
-  (2, [#icon("nbt-compound") *components*: 检查物品的堆叠组件，只有当物品堆叠组件完全相同时才匹配成功。]),
-  (3, [*\<组件名称>*: 一项组件及匹配的内容。]),
-  (2, [#icon("nbt-int")#icon("nbt-compound") *count*: 检查物品的堆叠数量，可以使用 #icon("nbt-int") 整数匹配一个精确值，也可以使用 #icon("nbt-compound") 复合标签匹配一个数量区间。]),
-  (3, [*若使用 #icon("nbt-compound") 复合标签形式，则包含以下字段：*], false),
-  (3, [#icon("nbt-int") *max*: 最大值。]),
-  (3, [#icon("nbt-int") *min*: 最小值。]),
-  (2, [#icon("nbt-string")#icon("nbt-list") *items*: 匹配的物品，可以是 #icon("nbt-string") 命名空间ID或物品数据包标签。也可以使用 #icon("nbt-list") 列表形式以尝试匹配列表中任意物品。]),
-  (3, [*若使用 #icon("nbt-list") 列表形式，则有以下字段：*], false),
-  (3, [#icon("nbt-string") 一项物品，可以是命名空间ID或物品数据包标签。]),
-  (2, [#icon("nbt-compound") *predicates*: 检查该物品是否匹配指定的数据组件谓词。]),
-  (1, [#icon("nbt-byte") *#underline[Fuel]*: 酿造台的剩余能量，每次酿造该值就减少1，小于 `0b` 时会消耗燃料，且此值会被重置为 `20b`。]),
-  (1, [#icon("nbt-list") *#underline[Items]*: 熔炉内的物品。列表中每个元素都是一个物品堆叠。]),
-  (2, [#icon("nbt-compound") 一个物品。]),
-  (3, link(<data:item_data>)[带槽位物品格式])
-)
-#heading(level: 4, numbering: none, [可疑的沙砾和可疑的沙子（`brushable_block`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-int") *hit_direction*: 清刷的方向，用于决定物品渲染的位置，此值无法被 `/data` 修改。可用值区间为 `0` 和 `5` 之间（含），从 `0` 到 `5` 分别为下、上、北、南、西、东方。]),
-  (1, [#icon("nbt-compound") *item*: 可疑的方块内含有的物品。]),
-  (2, link(<data:item_data>)[无槽位物品格式]),
-  (1, [#icon("nbt-string") *LootTable*: 在此方块第一次被清刷时为生成战利品所使用的战利品表，需要是战利品表的命名空间ID。战利品生成后此标签被删除。]),
-  (1, [#icon("nbt-long") *LootTableSeed*: 生成战利品使用的种子，如果不存在该标签或值为 `0l` 则使用随机序列。战利品生成后此标签被删除。])
-)
-#heading(level: 4, numbering: none, [校频幽匿感测体（`calibrated_sculk_sensor`）、幽匿感测体（`sculk_sensor`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-int") *#underline[last_vibration_frequency]*: 上次触发的振动频率。]),
-  (1, [#icon("nbt-compound") *listener*: 振动监听器的数据。]),
-  (2, [#icon("nbt-compound") *event*: 振动监听器正在监听的游戏事件。无监听内容时该标签不存在。]),
-  (3, [#icon("nbt-float") *#underline[distance]*: 振动监听器与振动源的距离。]),
-  (3, [#icon("nbt-string") *#underline[game_event]*: 该游戏事件的命名空间ID。]),
-  (3, [#icon("nbt-list") *#underline[pos]*: 振动源的位置。列表内元素依次为$x$、$y$、$z$坐标。]),
-  (4, [#icon("nbt-double") 一个坐标。]),
-  (3, [#icon("nbt-int_array") *projectile_owner*: 若产生振动的实体是弹射物，则此标签为弹射物的UUID。]),
-  (3, [#icon("nbt-int_array") *source*: 产生振动的实体的UUID。]),
-  (2, [#icon("nbt-int") *event_delay*: 离振动到达还需的时间。]),
-  (2, [#icon("nbt-compound") *#underline[selector]*: 振动选择器的数据。]),
-  (3, [#icon("nbt-long") *#underline[tick]*: 振动发生时的游戏时间，如果没有振动可供选择则为 `-1l`。]),
-  (3, [#icon("nbt-compound") *event*: 候选游戏事件，与上文所述 #icon("nbt-compound") `event` 的结构完全一致。])
-)
-#heading(level: 4, numbering: none, [营火和灵魂营火（`campfire`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-int_array") *CookingTimes*: 每个物品已被烹饪多长时间，一共有4个元素，依次对应槽位0 \~ 4。]),
-  (1, [#icon("nbt-int_array") *CookingTotalTimes*: 每个物品需要被烹饪的时间，一共有4个元素，依次对应槽位0 \~ 4。]),
-  (1, [#icon("nbt-list") *#underline[Items]*: 此营火上的物品。列表中每个元素都是一个物品堆叠。]),
-  (2, [#icon("nbt-compound") 一个物品。]),
-  (3, link(<data:item_data>)[带槽位物品格式])
-)
-#heading(level: 4, numbering: none, [雕纹书架（`chiseled_bookshelf`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-list") *#underline[Items]*: 此雕纹书架上的物品。列表中每个元素都是一个物品堆叠。]),
-  (2, [#icon("nbt-compound") 一个物品。]),
-  (3, link(<data:item_data>)[带槽位物品格式]),
-  (1, [#icon("nbt-int") *#underline[last_interacted_slot]*: 最后一次交互的槽位编号，可用范围为 `0` 至 `5`（含），槽位顺序为自左上角从左到右、从上到下。若雕纹书架从未使用过则为 `-1`。])
-)
-#heading(level: 4, numbering: none, [所有种类命令方块（`command_block`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-bool") *#underline[auto]*: 该命令方块是否保持开启。]),
-  (1, [#icon("nbt-string") *#underline[Command]*: 命令方块控制台内的命令。]),
-  (1, [#icon("nbt-bool") *#underline[conditionMet]*: 如果此命令方块为条件制约，用布尔值表示此命令方块是否满足条件，即指向它的命令方块是否成功执行命令。如果此命令方块为不受制约，则此值为 `false`。]),
-  (1, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *CustomName*: 该命令方块的名称，使用文本组件。默认名称为 `@`。]),
-  (1, [#icon("nbt-long") *LastExecution*: 上一条命令执行的时间戳，若 #icon("nbt-bool") `UpdateLastExecution` 为 `false` 时该标签不存在。]),
-  (1, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *LastOutput*: 上一条命令的输出，是一个文本组件。若 #icon("nbt-bool") `TrackOutput` 为 `false` 时该标签不存在。]),
-  (1, [#icon("nbt-bool") *#underline[powered]*: 该命令方块是否被激活。]),
-  (1, [#icon("nbt-int") *#underline[SuccessCount]*: 命令执行的成功次数。]),
-  (1, [#icon("nbt-bool") *TrackOutput*: 是否存储上一条命令的输出。]),
-  (1, [#icon("nbt-bool") *UpdateLastExecution*: 是否存储上一条命令执行的时间戳。])
-)
-#heading(level: 4, numbering: none, [红石比较器（`comparator`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-int") *#underline[OutputSignal]*: 此红石比较器输出的信号强度。])
-)
-#heading(level: 4, numbering: none, [潮涌核心（`conduit`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-int_array") *Target*: 此潮涌核心正在攻击的生物的UUID。])
-)
-#heading(level: 4, numbering: none, [所有种类铜傀儡像（`copper_golem_statue`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[除 #icon("nbt-compound") `components` 以外的方块实体共通标签]),
-  (1, [#icon("nbt-compound") *components*: 使用此方块实体对应的物品放置此方块实体时，如果物品带有非默认的且不会被继承处理的数据组件，则数据会被复制存储入此标签内。]),
-  (2, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *minecraft:custom_name*: 该铜傀儡像的自定义名称，使用文本组件。])
-)
-#heading(level: 4, numbering: none, [合成器（`crafter`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-int") *#underline[crafting_ticks_remaining]*: 合成器取消合成状态倒计时。当合成器成功合成物品后，此值被设置为6 gt（0.3秒），并将方块属性 `crafting` 设置为 `true`。当此值降低为 `0` 时，`crafting` 设置为 `false`。]),
-  (1, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *CustomName*: 该合成器的名称，即该合成器在GUI上显示的名称。需要为文本组件。]),
-  (1, [#icon("nbt-int_array") *#underline[disabled_slots]*: 合成器内禁用的槽位，使用槽位编号。]),
-  (1, [#icon("nbt-list") *Items*: 此合成器内的物品。列表中每个元素都是一个物品堆叠。]),
-  (2, [#icon("nbt-compound") 一个物品。]),
-  (3, link(<data:item_data>)[带槽位物品格式]),
-  (1, [#icon("nbt-compound") *lock*: 玩家可以用于打开该容器的物品，使用物品堆叠谓词来判断。]),
-  (2, [#icon("nbt-compound") *components*: 检查物品的堆叠组件，只有当物品堆叠组件完全相同时才匹配成功。]),
-  (3, [*\<组件名称>*: 一项组件及匹配的内容。]),
-  (2, [#icon("nbt-int")#icon("nbt-compound") *count*: 检查物品的堆叠数量，可以使用 #icon("nbt-int") 整数匹配一个精确值，也可以使用 #icon("nbt-compound") 复合标签匹配一个数量区间。]),
-  (3, [*若使用 #icon("nbt-compound") 复合标签形式，则包含以下字段：*], false),
-  (3, [#icon("nbt-int") *max*: 最大值。]),
-  (3, [#icon("nbt-int") *min*: 最小值。]),
-  (2, [#icon("nbt-string")#icon("nbt-list") *items*: 匹配的物品，可以是 #icon("nbt-string") 命名空间ID或物品数据包标签。也可以使用 #icon("nbt-list") 列表形式以尝试匹配列表中任意物品。]),
-  (3, [*若使用 #icon("nbt-list") 列表形式，则有以下字段：*], false),
-  (3, [#icon("nbt-string") 一项物品，可以是命名空间ID或物品数据包标签。]),
-  (2, [#icon("nbt-compound") *predicates*: 检查该物品是否匹配指定的数据组件谓词。]),
-  (3, [*\<数据组件谓词ID>*: 一项数据组件谓词及匹配的内容。]),
-  (1, [#icon("nbt-string") *LootTable*: 在此合成器第一次被打开时为生成战利品所使用的战利品表，需要是战利品表的命名空间ID。战利品生成后此标签被删除。]),
-  (1, [#icon("nbt-long") *LootTableSeed*: 生成战利品使用的种子，如果不存在该标签或值为 `0l` 则使用随机序列。战利品生成后此标签被删除。]),
-  (1, [#icon("nbt-int") *triggered*: 合成器是否被红石信号激活。`1` 代表是，其他值均代表否。])
-)
-#heading(level: 4, numbering: none, [嘎吱之心（`creaking_heart`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-int_array") *creaking*: 此嘎吱之心正在绑定的嘎吱的UUID。])
-)
-#heading(level: 4, numbering: none, [饰纹陶罐（`decorated_pot`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-compound") *item*: 饰纹陶罐内存储的物品。]),
-  (2, link(<data:item_data>)[无槽位物品格式]),
-  (1, [#icon("nbt-string") *LootTable*: 在此饰纹陶罐被打破时为生成战利品所使用的战利品表，需要是战利品表的命名空间ID。战利品生成后此标签被删除。]),
-  (1, [#icon("nbt-long") *LootTableSeed*: 生成战利品使用的种子，如果不存在该标签或值为 `0l` 则使用随机序列。战利品生成后此标签被删除。]),
-  (1, [#icon("nbt-list") *sherds*: 饰纹陶罐各个面的陶片样式，列表内四个元素分别存储后、左、右、前面。]),
-  (2, [#icon("nbt-string") 一个面陶片样式的命名空间ID。若此面没有陶片样式，则值为 `minecraft:brick`。])
-)
-#heading(level: 4, numbering: none, [附魔台（`enchanting_table`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *CustomName*: 可选，该附魔台的自定义名称，需要为文本组件。])
-)
-#heading(level: 4, numbering: none, [末地折跃门（`end_gateway`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-long") *#underline[Age]*: 末地折跃门方块的年龄，用于控制光柱的产生。当低于200 gt时，代表此时折跃门刚刚生成，它会发出一束品红色光柱；当此值可以被2400整除时，折跃门会产生40 gt传送冷却，并发出一束紫色光柱。]),
-  (1, [#icon("nbt-bool") *ExactTeleport*: 是否把实体准确传送到 #icon("nbt-int_array") `exit_portal` 指定的坐标而不是传送到这个坐标附近的位置。]),
-  (1, [#icon("nbt-int_array") *exit_portal*: 实体传送的目的坐标，数组内元素依次为$x$、$y$、$z$坐标。])
-)
-#heading(level: 4, numbering: none, [所有种类悬挂式告示牌（`hanging_sign`）、所有种类告示牌（`sign`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-compound") *back_text*: 告示牌背面的文本信息。]),
-  (2, [#icon("nbt-string") *color*: 文本的颜色，相当于用染料为告示牌文本染色。]),
-  (2, [#icon("nbt-list") *filtered_messages*: 告示牌被过滤的文字，含有四个元素，按顺序分别存储告示牌第一行、第二行、第三行和第四行的文本。]),
-  (3, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") 一行文本，必须使用文本组件。]),
-  (2, [#icon("nbt-bool") *has_glowing_text*: 告示牌文本是否发光。]),
-  (2, [#icon("nbt-list") *#underline[messages]*: 告示牌的文字，含有四个元素，按顺序分别存储告示牌第一行、第二行、第三行和第四行的文本。]),
-  (3, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") 一行文本，必须使用文本组件。]),
-  (1, [#icon("nbt-compound") *front_text*: 告示牌正面的文本信息。]),
-  (2, [#icon("nbt-string") *color*: 文本的颜色，相当于用染料为告示牌文本染色。]),
-  (2, [#icon("nbt-list") *filtered_messages*: 告示牌被过滤的文字，含有四个元素，按顺序分别存储告示牌第一行、第二行、第三行和第四行的文本。]),
-  (3, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") 一行文本，必须使用文本组件。]),
-  (2, [#icon("nbt-bool") *has_glowing_text*: 告示牌文本是否发光。]),
-  (2, [#icon("nbt-list") *#underline[messages]*: 告示牌的文字，含有四个元素，按顺序分别存储告示牌第一行、第二行、第三行和第四行的文本。]),
-  (3, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") 一行文本，必须使用文本组件。]),
-  (1, [#icon("nbt-bool") *#underline[is_waxed]*: 告示牌是否被涂蜡。被涂蜡后告示牌文本不能修改，但交互事件中的命令仍可以执行。])
-)
-#heading(level: 4, numbering: none, [漏斗（`hopper`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *CustomName*: 该漏斗的名称，即该漏斗在GUI上显示的名称。使用文本组件。]),
-  (1, [#icon("nbt-list") *Items*: 箱子内的物品。列表中每个元素都是一个物品堆叠。]),
-  (2, [#icon("nbt-compound") 一个物品。]),
-  (3, link(<data:item_data>)[带槽位物品格式]),
-  (1, [#icon("nbt-compound") *lock*: 玩家可以用于打开该容器的物品，使用物品堆叠谓词来判断。]),
-  (2, [#icon("nbt-compound") *components*: 检查物品的堆叠组件，只有当物品堆叠组件完全相同时才匹配成功。]),
-  (3, [*\<组件名称>*: 一项组件及匹配的内容。]),
-  (2, [#icon("nbt-int")#icon("nbt-compound") *count*: 检查物品的堆叠数量，可以使用 #icon("nbt-int") 整数匹配一个精确值，也可以使用 #icon("nbt-compound") 复合标签匹配一个数量区间。]),
-  (3, [*若使用 #icon("nbt-compound") 复合标签形式，则包含以下字段：*], false),
-  (3, [#icon("nbt-int") *max*: 最大值。]),
-  (3, [#icon("nbt-int") *min*: 最小值。]),
-  (2, [#icon("nbt-string")#icon("nbt-list") *items*: 匹配的物品，可以是 #icon("nbt-string") 命名空间ID或物品数据包标签。也可以使用 #icon("nbt-list") 列表形式以尝试匹配列表中任意物品。]),
-  (3, [*若使用 #icon("nbt-list") 列表形式，则有以下字段：*], false),
-  (3, [#icon("nbt-string") 一项物品，可以是命名空间ID或物品数据包标签。]),
-  (2, [#icon("nbt-compound") *predicates*: 检查该物品是否匹配指定的数据组件谓词。]),
-  (3, [*\<数据组件谓词ID>*: 一项数据组件谓词及匹配的内容。]),
-  (1, [#icon("nbt-string") *LootTable*: 在此容器第一次被打开时为生成战利品所使用的战利品表，需要是战利品表的命名空间ID。战利品生成后此标签被删除。]),
-  (1, [#icon("nbt-long") *LootTableSeed*: 生成战利品使用的种子，如果不存在该标签或值为 `0l` 则使用随机序列。战利品生成后此标签被删除。]),
-  (1, [#icon("nbt-int") *#underline[TransferCooldown]*: 传输物品的冷却时间。此值为 `0` 时物品会被传输，并将此值设置为 `8`，单位为游戏刻。默认值为 `-1`。])
-)
-#heading(level: 4, numbering: none, [拼图方块（`jigsaw`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-string") *#underline[name]*: 拼图方块的名称。]),
-  (1, [#icon("nbt-string") *#underline[final_state]*: 该拼图方块即将转变为的方块。]),
-  (1, [#icon("nbt-string") *#underline[joint]*: 拼接类型，可用值为 `rollable`（可旋转）和 `aligned`（固定）。]),
-  (1, [#icon("nbt-int") *#underline[placement_priority]*: 放置优先级。当放置拼图方块所对应的结构时，以放置优先级从大到小的顺序依次放置各个结构。如果两个结构具有相同的放置优先级，则以默认顺序放置。]),
-  (1, [#icon("nbt-string") *#underline[pool]*: 拼图方块的目标池。]),
-  (1, [#icon("nbt-string") *#underline[target]*: 当结构从目标池中生成时要对接的拼图方块名称。]),
-  (1, [#icon("nbt-int") *#underline[selection_priority]*: 选择优先级。当父级结构生成时，决定子级拼图方块的选择次序，按选择优先级从大到小排序依次选择。])
-)
-#heading(level: 4, numbering: none, [唱片机（`jukebox`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-compound") *RecordItem*: 唱片机内的唱片。]),
-  (2, link(<data:item_data>)[无槽位物品格式]),
-  (1, [#icon("nbt-long") *ticks_since_song_started*: 唱片已经播放的时间，单位为游戏刻。如果唱片机没有播放唱片，则该标签不存在。])
-)
-#heading(level: 4, numbering: none, [讲台（`lectern`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-compound") *Book*: 讲台上的书。]),
-  (2, link(<data:item_data>)[无槽位物品格式]),
-  (1, [#icon("nbt-int") *Page*: 讲台上的书目前翻开的页数，从 `0` 开始。])
-)
-#heading(level: 4, numbering: none, [刷怪笼（`mob_spawner`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-short") *#underline[Delay]*: 距离下次生成的时间。如果此值为 `-1s`，则玩家接近时此值会重置为一个随机的生成延迟；如果此值不大于 `0s`，则玩家接近时立刻生成。]),
-  (1, [#icon("nbt-short") *MaxNearbyEntities*: 生成实体的范围内具有与刷怪笼生成实体类型相同的实体的最大数量。如果附近符合条件的实体数量超过此值则刷怪笼不再生成实体，默认为 `6s`。]),
-  (1, [#icon("nbt-short") *MaxSpawnDelay*: 随机生成延迟的上限，默认为800 gt。]),
-  (1, [#icon("nbt-short") *MinSpawnDelay*: 随机生成延迟的上限，默认为200 gt。]),
-  (1, [#icon("nbt-short") *RequiredPlayerRange*: 玩家激活刷怪笼时与其之间的距离，默认为 `16s`。]),
-  (1, [#icon("nbt-short") *SpawnCount*: 每次尝试生成的实体数量，默认为 `4s`。]),
-  (1, [#icon("nbt-compound") *SpawnData*: 下一次生成实体的数据。此项的数据来源是 #icon("nbt-list") `SpawnPotentials`。]),
-  (2, [#icon("nbt-compound") *custom_spawn_rules*: 自定义生成规则。]),
-  (3, [#icon("nbt-int")#icon("nbt-list")#icon("nbt-compound") *block_light_limit*: 方块光照限制。若使用 #icon("nbt-int") 整型形式，则指定一个精确的光照等级；若使用 #icon("nbt-list") 列表形式，则指定光照等级的区间，数组内有2个元素，第0个元素为下限，第1个元素为上限。若使用 #icon("nbt-compound") 复合标签形式，则也可以指定光照等级的区间。]),
-  (4, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
-  (4, [#icon("nbt-int") *#underline[max_inclusive]*: 匹配的最大值。]),
-  (4, [#icon("nbt-int") *#underline[min_inclusive]*: 匹配的最小值。]),
-  (3, [#icon("nbt-int")#icon("nbt-list")#icon("nbt-compound") *sky_light_limit*: 天空光照限制。若使用 #icon("nbt-int") 整型形式，则指定一个精确的光照等级；若使用 #icon("nbt-list") 列表形式，则指定光照等级的区间，数组内有2个元素，第0个元素为下限，第1个元素为上限。若使用 #icon("nbt-compound") 复合标签形式，则也可以指定光照等级的区间。]),
-  (4, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
-  (4, [#icon("nbt-int") *#underline[max_inclusive]*: 匹配的最大值。]),
-  (4, [#icon("nbt-int") *#underline[min_inclusive]*: 匹配的最小值。]),
-  (2, [#icon("nbt-compound") *#underline[entity]*: 要生成的实体。]),
-  (3, link(<data:tags_common_to_all_entities>)[实体格式]),
-  (2, [#icon("nbt-compound") *equipment*: 实体生成时带有的装备。]),
-  (3, [#icon("nbt-string") *#underline[loot_table]*: 设置实体生成时身上装备的来源为战利品表，此值为战利品表的命名空间ID。]),
-  (3, [#icon("nbt-float")#icon("nbt-compound") *slot_drop_chances*: 各槽位上物品的掉落概率，默认为 `0f`。如果使用 #icon("nbt-float") 单精度浮点数形式，则所有槽位上的物品均以此概率掉落，如果使用 #icon("nbt-compound") 复合标签形式，则按槽位指定各自的掉落概率。]),
-  (4, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
-  (4, [#icon("nbt-float") *\<装备槽位>*: 该槽位上物品的掉落概率。]),
-  (1, [#icon("nbt-list") *SpawnPotentials*: 可用生成项目的列表。每次决定生成实体时 #icon("nbt-compound") `SpawnData` 的数据就从此列表内加权随机选择。如果该标签不存在，则尝试从 #icon("nbt-compound") `SpawnData` 获取数据。]),
-  (2, [#icon("nbt-compound") 一个可用的生成项目。]),
-  (3, [#icon("nbt-compound") *#underline[data]*: 此生成项的生成信息，与 #icon("nbt-compound") `SpawnData` 结构相同。]),
-  (3, [#icon("nbt-int") *#underline[weight]*: 该生成项的权重。值越大，该生成项越有可能被选择。]),
-  (1, [#icon("nbt-short") *SpawnRange*: 生成实体的范围，默认为 `4s`。])
-)
-#heading(level: 4, numbering: none, [移动的活塞（`piston`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-compound") *#underline[blockState]*: 被移动的方块的数据。]),
-  (2, [#icon("nbt-string") *#underline[Name]*: 方块的命名空间ID。]),
-  (2, [#icon("nbt-compound") *Properties*: 可选，由若干方块属性组成的方块状态。]),
-  (3, [#icon("nbt-string") *\<方块属性>*: 标签名为方块状态的属性，值使用字符串表示。]),
-  (1, [#icon("nbt-bool") *#underline[extending]*: 移动的活塞是否是由推出的活塞移动而被创建的。]),
-  (1, [#icon("nbt-int") *#underline[facing]*: 创建移动的活塞的活塞的方向。有以下可用值：`0`（下）、`1`（上）、`2`（北）、`3`（南）、`4`（西）、`5`（东）。]),
-  (1, [#icon("nbt-float") *#underline[progress]*: 活塞已经移动的进度，介于 `0f` 和 `1f` 之间（含），以 `1f` 为移动到位。]),
-  (1, [#icon("nbt-bool") *#underline[source]*: 移动的活塞是否为引发移动的活塞或活塞头。])
-)
-#heading(level: 4, numbering: none, [幽匿催发体（`sculk_catalyst`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-list") *#underline[cursors]*: 蔓延信号的列表。]),
-  (2, [#icon("nbt-compound") 一个蔓延信号。]),
-  (3, [#icon("nbt-int") *charge*: 该信号拥有的能量，介于 `0` 和 `1000` 之间（含）。]),
-  (3, [#icon("nbt-int") *decay_delay*: 信号经过了幽匿块或幽匿脉络后为 `1`，否则为 `0`。为 `1` 时，信号可以自由蔓延；为 `0` 时，若蔓延至非幽匿类方块，则信号中的所有能量丢失。非 `0` 和 `1` 的值会被校准为 `0` 或 `1`。]),
-  (3, [#icon("nbt-int_array") *#underline[pos]*: 信号所在的坐标，数组内元素依次为$x$、$y$、$z$坐标。]),
-  (3, [#icon("nbt-int") *update_delay*: 距离下一次蔓延的时间。]),
-  (3, [#icon("nbt-list") *facings*: 如果目前要转化的方块是空气或水，信号会尝试把这个方块转化为幽匿脉络，并储存幽匿脉络所有的面。如果要转化的方块不是空气或水，或者此列表为空时，信号会尝试向毗邻方块蔓延幽匿脉络。]),
-  (4, [一个方向。可用值 `north`、`south`、`east`、`west`、`up` 和 `down`。])
-)
-#heading(level: 4, numbering: none, [幽匿尖啸体（`sculk_shrieker`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-compound") *listener*: 振动监听器的数据。]),
-  (2, [#icon("nbt-compound") *event*: 振动监听器正在监听的游戏事件。无监听内容时该标签不存在。]),
-  (3, [#icon("nbt-float") *#underline[distance]*: 振动监听器与振动源的距离。]),
-  (3, [#icon("nbt-string") *#underline[game_event]*: 该游戏事件的命名空间ID。]),
-  (3, [#icon("nbt-list") *#underline[pos]*: 振动源的位置。列表内元素依次为$x$、$y$、$z$坐标。]),
-  (4, [#icon("nbt-double") 一个坐标。]),
-  (3, [#icon("nbt-int_array") *projectile_owner*: 若产生振动的实体是弹射物，则此标签为弹射物的UUID。]),
-  (3, [#icon("nbt-int_array") *source*: 产生振动的实体的UUID。]),
-  (2, [#icon("nbt-int") *event_delay*: 离振动到达还需的时间。]),
-  (2, [#icon("nbt-compound") *#underline[selector]*: 振动选择器的数据。]),
-  (3, [#icon("nbt-compound") *event*: 候选游戏事件，与上文所述 #icon("nbt-compound") `event` 的结构完全一致。]),
-  (3, [#icon("nbt-long") *#underline[tick]*: 振动发生时的游戏时间，如果没有振动可供选择则为 `-1l`。]),
-  (1, [#icon("nbt-int") *warning_level*: 警告等级。])
-)
-#heading(level: 4, numbering: none, [所有种类生物头颅（`skull`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *CustomName*: 可选，该生物头颅的自定义名称，需要为文本组件。]),
-  (1, [#icon("nbt-string") *note_block_sound*: 该生物头颅使用的音符盒声音的命名空间ID。]),
-  (1, [#icon("nbt-string")#icon("nbt-compound") *profile*: 玩家头颅使用的玩家游戏档案。有 #icon("nbt-string") 字符串和 #icon("nbt-compound") 复合标签两种格式。]),
-  (2, [*当使用 #icon("nbt-string") 字符串形式时，需要为玩家名称，格式要求与 #icon("nbt-compound") 形式中的 #icon("nbt-string") `name` 一致。*], false),
-  (2, [*当使用 #icon("nbt-compound") 复合标签形式时，具有以下字段：*], false),
-  (2, [#icon("nbt-int_array") *id*: 玩家的UUID。]),
-  (2, [#icon("nbt-string") *name*: 玩家名称，不能超过16个字符。若此项不使用，则按 #icon("nbt-int_array") `id` 字段确定玩家。]),
-  (2, [#icon("nbt-list")#icon("nbt-compound") *properties*: 玩家游戏档案。]),
-  (3, [*若使用 #icon("nbt-list") 列表/  数组形式，则可用带签名的游戏档案，并具有以下字段：*], false),
-  (3, [#icon("nbt-compound") 一项游戏档案属性。]),
-  (4, [#icon("nbt-string") *#underline[name]*: 该属性的名称。]),
-  (4, [#icon("nbt-string") *#underline[value]*: 该属性的值，是Base64编码的JSON数据。]),
-  (4, [#icon("nbt-string") *signature*: 该属性的签名。]),
-  (3, [*若使用 #icon("nbt-compound") 复合标签形式，则具有以下字段：*], false),
-  (3, [#icon("nbt-list") *\<游戏档案属性名称>*: 一个游戏档案属性。]),
-  (4, [#icon("nbt-string") 该属性的值，是Base64编码的JSON数据。]),
-  (2, [*以下字段均可选，若填写了则会在上述玩家档案数据的基础上进行修改，用于定制玩家皮肤。其中的纹理均可用资源包指定，对客户端有效。*], false),
-  (2, [#icon("nbt-string") *cape*: 披风的纹理，使用命名空间ID，地址从 #icon("folder") `assets\<命名空间>\textures` 开始计。]),
-  (2, [#icon("nbt-string") *elytra*: 鞘翅的纹理，使用命名空间ID，地址从 #icon("folder") `assets\<命名空间>\textures` 开始计。]),
-  (2, [#icon("nbt-string") *model*: 玩家模型的类型，有效值 `wide`（宽型）和 `slim`（纤细型）。]),
-  (2, [#icon("nbt-string") *texture*: 皮肤的纹理，使用命名空间ID，地址从 #icon("folder") `assets\<命名空间>\textures` 开始计。])
-)
-#heading(level: 4, numbering: none, [结构方块（`structure_block`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-string") *#underline[author]*: 结构方块的放置者。]),
-  (1, [#icon("nbt-bool") *#underline[ignoreEntities]*: 实体是否会被忽略。]),
-  (1, [#icon("nbt-float") *#underline[integrity]*: 结构完整度。]),
-  (1, [#icon("nbt-string") *#underline[metadata]*: 元数据，用于数据模式。]),
-  (1, [#icon("nbt-string") *#underline[mirror]*: 结构镜像的方式，有效值 `NONE`（无）、`LEFT_RIGHT`（`←→`）和 `FRONT_BACK`（`↑↓`）。]),
-  (1, [#icon("nbt-string") *#underline[mode]*: 结构方块的模式，有效值 `SAVE`（保存）、`LOAD`（加载）、`CORNER`（角落）和 `DATA`（数据）。]),
-  (1, [#icon("nbt-string") *#underline[name]*: 结构的命名空间ID。]),
-  (1, [#icon("nbt-int") *#underline[posX]*: 结构起始位置的$x$坐标。不能小于0，也不能大于48。]),
-  (1, [#icon("nbt-int") *#underline[posY]*: 结构起始位置的$y$坐标。不能小于0，也不能大于48。]),
-  (1, [#icon("nbt-int") *#underline[posZ]*: 结构起始位置的$z$坐标。不能小于0，也不能大于48。]),
-  (1, [#icon("nbt-bool") *#underline[powered]*: 结构方块是否被激活。]),
-  (1, [#icon("nbt-string") *#underline[rotation]*: 结构旋转的方式，有效值 `NONE`（无）、`CLOCKWISE_90`（`90`）、`CLOCKWISE_180`（`180`）或 `COUNTERCLOCKWISE_90`（`270`）。]),
-  (1, [#icon("nbt-long") *#underline[seed]*: 加载结构使用的种子，用于结构完整度。]),
-  (1, [#icon("nbt-int") *#underline[sizeX]*: 结构在$x$方向的大小。不能小于0，也不能大于48。]),
-  (1, [#icon("nbt-int") *#underline[sizeY]*: 结构在$y$方向的大小。不能小于0，也不能大于48。]),
-  (1, [#icon("nbt-int") *#underline[sizeZ]*: 结构在$z$方向的大小。不能小于0，也不能大于48。]),
-  (1, [#icon("nbt-bool") *#underline[showair]*: 是否显示隐形方块。]),
-  (1, [#icon("nbt-bool") *#underline[showboundingbox]*: 是否在创造模式显示边框。]),
-  (1, [#icon("nbt-bool") *#underline[strict]*: 是否禁用方块更新。])
-)
-#heading(level: 4, numbering: none, [测试方块（`test_block`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-string") *#underline[message]*: 测试方块中的信息。]),
-  (1, [#icon("nbt-string") *#underline[mode]*: 测试方块的模式，有效值 `accept`（接受）、`fail`（失败）、`log`（日志输出）、`start`（启动）。]),
-  (1, [#icon("nbt-bool") *#underline[powered]*: 测试方块是否被激活。])
-)
-#heading(level: 4, numbering: none, [测试实例方块（`test_instance_block`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-compound") *#underline[data]*: 测试实例的数据。]),
-  (2, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *error_message*: 测试完成后的错误信息，在 #icon("nbt-string") `status` 为 `finished` 时使用。是一个文本组件。]),
-  (2, [#icon("nbt-bool") *#underline[ignoreEntities]*: 实体是否会被忽略。]),
-  (2, [#icon("nbt-string") *#underline[rotation]*: 测试结构旋转的方式，有效值 `none`（无）、`clockwise_90`（`90`）、`clockwise_180`（`180`）或 `counterclockwise_90`（`270`）。]),
-  (2, [#icon("nbt-int_array") *#underline[size]*: 测试结构的大小，数组内依次为结构在$x$、$y$、$z$方向上的大小。]),
-  (2, [#icon("nbt-string") *#underline[status]*: 测试实例方块的状态，有效值 `cleared`（无任务）、`finished`（已完成）和 `running`（正在运行）。]),
-  (2, [#icon("nbt-string") *test*: 测试实例的命名空间ID。]),
-  (1, [#icon("nbt-list") *error*: 测试实例的错误标记。]),
-  (2, [#icon("nbt-compound") 一个错误标记。]),
-  (3, [#icon("nbt-int_array") *#underline[pos]*: 错误标记的位置，数组内依次为$x$、$y$、$z$坐标。]),
-  (3, [#icon("nbt-string")#icon("nbt-list")#icon("nbt-compound") *text*: 错误标记的内容，使用文本组件。])
-)
-#heading(level: 4, numbering: none, [试炼刷怪笼（`trial_spawner`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-long") *cooldown_ends_at*: 冷却的结束时间。]),
-  (1, [#icon("nbt-list") *current_mobs*: 当前还存活的由试炼刷怪笼生成的生物列表，如果不存在这些生物，则该标签不存在。]),
-  (2, [#icon("nbt-int_array") 一个生物的UUID。]),
-  (1, [#icon("nbt-string") *ejecting_loot_table*: 试炼刷怪笼喷出战利品时使用的战利品表的命名空间ID。]),
-  (1, [#icon("nbt-long") *next_mob_spawns_at*: 下一个生物生成的最早时间。]),
-  (1, [#icon("nbt-string")#icon("nbt-compound") *normal_config*: 普通试炼刷怪笼配置。可以使用 #icon("nbt-string") 字符串形式，此时值需要是炼刷怪笼配置的命名空间ID；也可以使用 #icon("nbt-compound") 复合标签形式以内联定义一个炼刷怪笼配置。]),
-  (2, [*若使用 #icon("nbt-compound") 复合标签形式，则包含以下字段：*], false),
-  (2, [#icon("nbt-string") *items_to_drop_when_ominous*: 不祥变种的试炼刷怪笼激活状态时随机在周围生成的不祥之物生成器实体内的物品。需要是一个战利品表的命名空间ID，默认值 `spawners/trial_chamber/items_to_drop_when_ominous`。]),
-  (2, [#icon("nbt-list") *loot_tables_to_eject*: 在试炼刷怪笼生成的所有生物被杀死后喷出物品所用的战利品表。]),
-  (3, [#icon("nbt-compound") 一项战利品。]),
-  (4, [#icon("nbt-string") *#underline[data]*: 此项所用战利品表的命名空间ID。]),
-  (4, [#icon("nbt-int") *#underline[weight]*: 该项的权重。值越大，该项越有可能被选择。]),
-  (2, [#icon("nbt-float") *simultaneous_mobs*: 必须大于0，默认为 `2f`。存储同时存活的由此试炼刷怪笼生成的生物最少数量，即在一个玩家加入试炼时同时存活的生物数量。]),
-  (2, [#icon("nbt-float") *simultaneous_mobs_added_per_player*: 必须大于0，默认为 `1f`。存储每增加一个加入试炼玩家，同时存活生物数量的增加值。]),
-  (2, [#icon("nbt-list") *spawn_potentials*: 可用生成项目的列表。每次决定生成实体时 #icon("nbt-compound") `spawn_data` 的数据就从此列表内加权随机选择。如果该标签不存在，则尝试从 #icon("nbt-compound") `spawn_data` 获取数据。]),
-  (3, [#icon("nbt-compound") 一个可用的生成项目。]),
-  (4, [#icon("nbt-compound") *#underline[data]*: 此生成项的生成信息，与 #icon("nbt-compound") `spawn_data` 结构相同。]),
-  (4, [#icon("nbt-int") *#underline[weight]*: 该生成项的权重。值越大，该生成项越有可能被选择。]),
-  (2, [#icon("nbt-int") *spawn_range*: 生成实体的范围，默认为 `4`。]),
-  (2, [#icon("nbt-int") *ticks_between_spawn*: 两次尝试生成生物的最小间隔时间，默认为40 gt。]),
-  (2, [#icon("nbt-list") *total_mobs*: 必须大于0，默认为 `6f`。存储生成生物的最少总数量，即在一个玩家加入试炼时生成的总生物数量。]),
-  (2, [#icon("nbt-list") *total_mobs_added_per_player*: 必须大于0，默认为 `2f`。每增加一个加入试炼玩家，生成生物总数量的增加值。]),
-  (1, [#icon("nbt-string")#icon("nbt-compound") *ominous_config*: 不详变种试炼刷怪笼配置。可以使用 #icon("nbt-string") 字符串形式，此时值需要是炼刷怪笼配置的命名空间ID；也可以使用 #icon("nbt-compound") 复合标签形式以内联定义一个炼刷怪笼配置，数据格式与 #icon("nbt-compound") `normal_config` 一致。]),
-  (1, [#icon("nbt-list") *registered_players*: 加入试炼的玩家列表。]),
-  (2, [#icon("nbt-int_array") 一个玩家的UUID。]),
-  (1, [#icon("nbt-int") *required_player_range*: 介于 `1` 和 `128` 之间（含），默认为 `4`。存储玩家距离试炼刷怪笼多少距离时触发试炼。]),
-  (1, [#icon("nbt-compound") *spawn_data*: 下一次生成实体的数据。此项的数据来源是 #icon("nbt-list") `spawn_potentials`。]),
-  (2, [#icon("nbt-compound") *custom_spawn_rules*: 自定义生成规则。]),
-  (3, [#icon("nbt-int")#icon("nbt-list")#icon("nbt-compound") *block_light_limit*: 方块光照限制。若使用 #icon("nbt-int") 整型形式，则指定一个精确的光照等级；若使用 #icon("nbt-list") 列表形式，则指定光照等级的区间，数组内有2个元素，第0个元素为下限，第1个元素为上限。若使用 #icon("nbt-compound") 复合标签形式，则也可以指定光照等级的区间。]),
-  (4, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
-  (4, [#icon("nbt-int") *#underline[max_inclusive]*: 匹配的最大值。]),
-  (4, [#icon("nbt-int") *#underline[min_inclusive]*: 匹配的最小值。]),
-  (3, [#icon("nbt-int")#icon("nbt-list")#icon("nbt-compound") *sky_light_limit*: 天空光照限制。若使用 #icon("nbt-int") 整型形式，则指定一个精确的光照等级；若使用 #icon("nbt-list") 列表形式，则指定光照等级的区间，数组内有2个元素，第0个元素为下限，第1个元素为上限。若使用 #icon("nbt-compound") 复合标签形式，则也可以指定光照等级的区间。]),
-  (4, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
-  (4, [#icon("nbt-int") *#underline[max_inclusive]*: 匹配的最大值。]),
-  (4, [#icon("nbt-int") *#underline[min_inclusive]*: 匹配的最小值。]),
-  (2, [#icon("nbt-compound") *#underline[entity]*: 要生成的实体。]),
-  (3, link(<data:tags_common_to_all_entities>)[实体格式]),
-  (2, [#icon("nbt-compound") *equipment*: 实体生成时带有的装备。]),
-  (3, [#icon("nbt-string") *#underline[loot_table]*: 设置实体生成时身上装备的来源为战利品表，此值为战利品表的命名空间ID。]),
-  (3, [#icon("nbt-float")#icon("nbt-compound") *slot_drop_chances*: 各槽位上物品的掉落概率，默认为 `0f`。如果使用 #icon("nbt-float") 单精度浮点数形式，则所有槽位上的物品均以此概率掉落，如果使用 #icon("nbt-compound") 复合标签形式，则按槽位指定各自的掉落概率。]),
-  (4, [*若使用 #icon("nbt-compound") 复合标签形式，则有以下字段：*], false),
-  (4, [#icon("nbt-float") *\<装备槽位>*: 该槽位上物品的掉落概率。]),
-  (1, [#icon("nbt-int") *target_cooldown_length*: 必须大于 `0`，默认为36000 gt。从试炼刷怪笼生成的所有生物被杀死开始，到下一次可以进行试炼的冷却时间。]),
-  (1, [#icon("nbt-int") *total_mobs_spawned*: 从试炼开始到现在生成的总生物数量，必须大于 `0`。])
-)
-#heading(level: 4, numbering: none, [宝库（`vault`）])
-#tree(
-  (0, [#icon("nbt-compound") 根标签]),
-  (1, link(<subsec:tags_common_to_all_block_entities>)[方块实体共通标签]),
-  (1, [#icon("nbt-compound") *config*: 宝库的配置数据。]),
-  (2, [#icon("nbt-double") *activation_range*: 默认为 `4d`，激活宝库的玩家检测范围。]),
-  (2, [#icon("nbt-double") *deactivation_range*: 默认为 `4.5d`，不得小于 #icon("nbt-double") `activation_range`，取消激活宝库的玩家检测范围。]),
-  (2, [#icon("nbt-compound") *key_item*: 用于解锁宝库的物品，若不存在则此宝库无法被解锁。]),
+  (1, [#icon("nbt-float") *#underline[AbsorptionAmount]*: 此生物的伤害吸收值。]),
+  (1, [#icon("nbt-list") *active_effects*: 该生物拥有的状态效果列表。]),
+  (2, [#icon("nbt-compound") 一个状态效果。]),
+  (3, [#icon("nbt-bool") *ambient*: 该状态效果是否由信标施加。]),
+  (3, [#icon("nbt-byte") *amplifier*: 该状态效果的倍率。若实际倍率大于127，设实际倍率为$s$，此标签存储的值为$127-s$。]),
+  (3, [#icon("nbt-int") *duration*: 状态效果的持续时间，单位为游戏刻。如果持续时间为无尽，则值为 `-1`。]),
+  (3, [#icon("nbt-compound") *hidden_effect*: 存储类型、命名空间ID相同但倍率较低的状态效果，在高倍率状态效果结束后该状态效果会出现，是为低倍率状态效果提供隐藏功能的标签。]),
+  (4, [不包含字段 #icon("nbt-string") `id` 的状态效果格式]),
+  (3, [#icon("nbt-string") *#underline[id]*: 该状态效果的ID。]),
+  (3, [#icon("nbt-bool") *show_icon*: 是否显示图标。]),
+  (3, [#icon("nbt-bool") *show_particles*: 是否显示粒子效果。]),
+  (1, [#icon("nbt-list") *attributes*: 该实体的属性列表。]),
+  (2, [#icon("nbt-compound") 一个属性。]),
+  (3, [#icon("nbt-double") *#underline[base]*: 该属性的基值。]),
+  (3, [#icon("nbt-string") *#underline[id]*: 该属性的名称，使用命名空间ID。]),
+  (3, [#icon("nbt-list") *modifiers*: 属性修饰符列表。]),
+  (4, [#icon("nbt-compound") 一个属性修饰符。]),
+  (5, [#icon("nbt-double") *#underline[amount]*: 该修饰符的修饰量。]),
+  (5, [#icon("nbt-string") *#underline[id]*: 该修饰符的命名空间ID。]),
+  (5, [#icon("nbt-string") *#underline[operation]*: 运算模式，可用值为 `add_value`（属性增量）、`add_multiplied_total`（倍率增量）和 `add_multiplied_base`（最终倍乘）。]),
+  (1, [#icon("nbt-compound") *Brain*: 生物记忆的相关信息，用于AI计算。不使用生物记忆的实体该项标签为空。]),
+  (2, [#icon("nbt-compound") *#underline[memories]*: 生物记忆。此处存储长期记忆，不存储短期记忆，短期记忆仅存在于内存中临时使用。]),
+  (3, [#icon("nbt-compound") *minecraft:admiring_disabled*: 适用于*猪灵*，当玩家伤害猪灵时猪灵获得该记忆，并收起金锭停止以物易物。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为400 gt，此值为 `0l` 时该记忆被删除。]),
+  (4, [#icon("nbt-bool") *value*: 猪灵是否拒绝以物易物，记忆存在时总是为 `true`。]),
+  (3, [#icon("nbt-compound") *minecraft:admiring_item*: 适用于*猪灵*以物易物时端详物品的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为119 gt，此值为 `0l` 时该记忆被删除。]),
+  (4, [#icon("nbt-bool") *value*: 猪灵是否正在端详物品，记忆存在时总是为 `true`。]),
+  (3, [#icon("nbt-compound") *minecraft:angry_at*: 适用于*猪灵*、*猪灵蛮兵*、*鹦鹉螺*和*僵尸鹦鹉螺*攻击目标的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为600 gt，此值为 `0l` 时该记忆被删除。]),
+  (4, [#icon("nbt-int_array") *value*: 该猪灵或猪灵蛮兵攻击目标的UUID。]),
+  (3, [#icon("nbt-compound") *minecraft:attack_target_cooldown*: 适用于*鹦鹉螺*、*僵尸鹦鹉螺*寻找攻击目标时的冷却状态的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间是介于400 gt和3600 gt之间（含）的随机数。]),
+  (4, [#icon("nbt-int") *value*: 该鹦鹉螺或僵尸鹦鹉螺是否处于寻找攻击目标的冷却状态。]),
+  (3, [#icon("nbt-compound") *minecraft:breeze_jump_cooldown*: 适用于*旋风人*进行长跳的冷却时间记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。长跳期间没有被其他生物伤害时，初始过期时间为2 gt，否则为10 gt。]),
+  (4, [#icon("nbt-compound") *value*: 无数据，空白复合标签。]),
+  (3, [#icon("nbt-compound") *minecraft:breeze_jump_inhaling*: 适用于*旋风人*长跳准备状态的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为10 gt。]),
+  (4, [#icon("nbt-compound") *value*: 无数据，空白复合标签。]),
+  (3, [#icon("nbt-compound") *minecraft:breeze_jump_target*: 适用于*旋风人*长跳目标位置的记忆。]),
+  (4, [#icon("nbt-int_array") *value*: 目标位置的方块坐标，列表内元素依次为$x$、$y$、$z$坐标。]),
+  (3, [#icon("nbt-compound") *minecraft:breeze_leaving_water*: 适用于*旋风人*离开水中的记忆的记忆。]),
+  (4, [#icon("nbt-compound") *value*: 无数据，空白复合标签。]),
+  (3, [#icon("nbt-compound") *minecraft:breeze_shoot*: 适用于*旋风人*发射风弹的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。如果具有攻击对象则获得此记忆，初始过期时间为60 gt。在长跳结束后，旋风人也会获得此记忆，初始过期时间为100 gt。当旋风人受困时也会获得此记忆，初始过期时间为100 gt。]),
+  (4, [#icon("nbt-compound") *value*: 无数据，空白复合标签。]),
+  (3, [#icon("nbt-compound") *minecraft:breeze_shoot_charging*: 适用于*旋风人*风弹蓄能状态的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为10 gt。]),
+  (4, [#icon("nbt-compound") *value*: 无数据，空白复合标签。]),
+  (3, [#icon("nbt-compound") *minecraft:breeze_shoot_cooldown*: 适用于*旋风人*风弹冷却状态的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为10 gt。]),
+  (4, [#icon("nbt-compound") *value*: 无数据，空白复合标签。]),
+  (3, [#icon("nbt-compound") *minecraft:breeze_shoot_recover*: 适用于*旋风人*风弹准备状态的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为4 gt。]),
+  (4, [#icon("nbt-compound") *value*: 无数据，空白复合标签。]),
+  (3, [#icon("nbt-compound") *minecraft:charge_cooldown_ticks*: 适用于*鹦鹉螺*、*僵尸鹦鹉螺*冲刺攻击时的冷却状态的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为80 gt。]),
+  (4, [#icon("nbt-int") *value*: 该鹦鹉螺或僵尸鹦鹉螺是否处于冲刺攻击的冷却状态。]),
+  (3, [#icon("nbt-compound") *minecraft:danger_detected_recently*: 适用于*犰狳*遇到危险蜷缩的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为60 gt。]),
+  (4, [#icon("nbt-bool") *value*: 犰狳遇到危险时是否应该蜷缩。]),
+  (3, [#icon("nbt-compound") *minecraft:dig_cooldown*: 适用于*监守者*钻入地下的倒计时的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为1200 gt。]),
+  (4, [#icon("nbt-compound") *value*: 无数据，空白复合标签。]),
+  (3, [#icon("nbt-compound") *minecraft:gaze_cooldown_ticks*: 适用于*骆驼*、*犰狳*、*铜傀儡*和*骆驼尸壳*凝视冷却时间的记忆。]),
+  (4, [#icon("nbt-int") *value*: 此值介于 `150` 和 `250` 之间（含），该生物随机选择一个方向凝视后获得此记忆，每游戏刻减1，为 `0` 时抹去该记忆。]),
+  (3, [#icon("nbt-compound") *minecraft:golem_detected_recently*: 适用于*村民*探测铁傀儡的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为599 gt。]),
+  (4, [#icon("nbt-bool") *value*: 此村民是否在近期探测到铁傀儡，记忆存在时总是为 `true`。]),
+  (3, [#icon("nbt-compound") *minecraft:has_hunting_cooldown*: 适用于*美西螈*、*青蛙*捕食冷却状态的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为2400 gt，为 `0l` 时生物才可以捕食。]),
+  (4, [#icon("nbt-bool") *value*: 此美西螈或青蛙是否处于捕食冷却的状态，记忆存在时总是为 `true`。]),
+  (3, [#icon("nbt-compound") *minecraft:home*: 适用于*村民*绑定床位置的记忆，也适用于*猪灵蛮兵*自身生成位置的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为2400 gt，为 `0l` 时生物才可以捕食。]),
+  (4, [#icon("nbt-compound") *value*: 位置信息。]),
+  (5, [#icon("nbt-string") *dimension*: 此位置所在的维度的命名空间ID。]),
+  (5, [#icon("nbt-int_array") *pos*: 目标位置的方块坐标，列表内元素依次为$x$、$y$、$z$坐标。]),
+  (3, [#icon("nbt-compound") *minecraft:hunted_recently*: 适用于*猪灵*猎捕疣猪兽的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间不定，介于600 gt和2400 gt之间（含）。]),
+  (4, [#icon("nbt-bool") *value*: 猪灵是否近期猎捕疣猪兽，记忆存在时总是为 `true`。]),
+  (3, [#icon("nbt-compound") *minecraft:is_emerging*: 适用于*监守者*钻出地面的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为134 gt。]),
+  (4, [#icon("nbt-compound") *value*: 无数据，空白复合标签。]),
+  (3, [#icon("nbt-compound") *minecraft:is_in_water*: 适用于*青蛙*在水中的记忆。]),
+  (4, [#icon("nbt-compound") *value*: 无数据，空白复合标签。]),
+  (3, [#icon("nbt-compound") *minecraft:is_panicking*: 适用于*山羊*、*美西螈*、*悦灵*、*青蛙*、*蝌蚪*、*骆驼*、*嗅探兽*、*犰狳*、*小恶魂*、*铜傀儡*、*鹦鹉螺*、*僵尸鹦鹉螺*和*骆驼尸壳*慌乱状态的记忆。]),
+  (4, [#icon("nbt-bool") *value*: 此生物是否处于慌乱状态，记忆存在时总是为 `true`。]),
+  (3, [#icon("nbt-compound") *minecraft:is_pregnant*: 适用于*青蛙*怀孕的记忆。]),
+  (4, [#icon("nbt-compound") *value*: 无数据，空白复合标签。]),
+  (3, [#icon("nbt-compound") *minecraft:is_sniffing*: 适用于*监守者*嗅探行为的记忆。]),
+  (4, [#icon("nbt-compound") *value*: 无数据，空白复合标签。]),
+  (3, [#icon("nbt-compound") *minecraft:is_tempted*: 适用于*山羊*、*美西螈*、*青蛙*、*蝌蚪*、*骆驼*、*嗅探兽*、*犰狳*、*小恶魂*、*鹦鹉螺*、*僵尸鹦鹉螺*和*骆驼尸壳*被吸引的记忆。]),
+  (4, [#icon("nbt-bool") *value*: 此生物是否被吸引。]),
+  (3, [#icon("nbt-compound") *minecraft:item_pickup_cooldown_ticks*: 适用于*悦灵*捡起物品冷却时间的记忆。村民和猪灵也可以使用此记忆，但无法主动获取该记忆。]),
+  (4, [#icon("nbt-int") *value*: 此生物捡起物品的冷却时间。捡起物品时此值被设为 `60`，此后该值每游戏刻减少 1，为 `0` 时去除此记忆。]),
+  (3, [#icon("nbt-compound") *minecraft:job_site*: 适用于*村民*绑定工作站点的记忆。]),
+  (4, [#icon("nbt-compound") *value*: 工作站点的位置信息。]),
+  (5, [#icon("nbt-string") *dimension*: 工作站点所在的维度的命名空间ID。]),
+  (5, [#icon("nbt-int_array") *pos*: 工作站点的方块坐标，列表内元素依次为$x$、$y$、$z$坐标。]),
+  (3, [#icon("nbt-compound") *minecraft:last_slept*: 适用于*村民*上次睡觉时间的记忆。]),
+  (4, [#icon("nbt-long") *value*: 该村民上次睡觉的游戏时间。]),
+  (3, [#icon("nbt-compound") *minecraft:last_woken*: 适用于*村民*上次睡醒时间的记忆。]),
+  (4, [#icon("nbt-long") *value*: 该村民上次睡醒的游戏时间。]),
+  (3, [#icon("nbt-compound") *minecraft:last_worked_at_poi*: 适用于*村民*上次工作时间的记忆。]),
+  (4, [#icon("nbt-long") *value*: 该村民上次睡醒的游戏时间。]),
+  (3, [#icon("nbt-compound") *minecraft:liked_noteblock*: 适用于*悦灵*喜爱的音符盒的记忆。]),
+  (4, [#icon("nbt-compound") *value*: 音符盒的位置信息。]),
+  (5, [#icon("nbt-string") *dimension*: 音符盒所在的维度的命名空间ID。]),
+  (5, [#icon("nbt-int_array") *pos*: 音符盒的方块坐标，列表内元素依次为$x$、$y$、$z$坐标。]),
+  (3, [#icon("nbt-compound") *minecraft:liked_noteblock_cooldown_ticks*: 适用于*悦灵*听到音符盒声音后冷却时间的记忆。]),
+  (4, [#icon("nbt-int") *value*: 悦灵捡起物品的冷却时间。悦灵捡起物品时此值被设为 `600`，此后该值每游戏刻减少1，为0时去除此记忆。]),
+  (3, [#icon("nbt-compound") *minecraft:liked_player*: 适用于*悦灵*对给予其物品的玩家的记忆。]),
+  (4, [#icon("nbt-int_array") *value*: 给予该悦灵物品的玩家的UUID。]),
+  (3, [#icon("nbt-compound") *minecraft:long_jump_cooling_down*: 适用于*山羊*、*青蛙*长跳倒计时的记忆。]),
+  (4, [#icon("nbt-int") *value*: 该生物的长跳倒计时。对于山羊，此项为介于600 gt和1200 gt之间（含）的值；对于青蛙，此项为介于100 gt和140 gt之间（含）的值。]),
+  (3, [#icon("nbt-compound") *minecraft:meeting_point*: 适用于*村民*对于村庄会合点的记忆。]),
+  (4, [#icon("nbt-compound") *value*: 村庄会合点的位置信息。]),
+  (5, [#icon("nbt-string") *dimension*: 村庄会合点所在的维度的命名空间ID。]),
+  (5, [#icon("nbt-int_array") *pos*: 村庄会合点的方块坐标，列表内元素依次为$x$、$y$、$z$坐标。]),
+  (3, [#icon("nbt-compound") *minecraft:play_dead_ticks*: 适用于*美西螈*装死时间的记忆。]),
+  (4, [#icon("nbt-int") *value*: 该美西螈装死的时间。美西螈准备装死时此值被设为 `200`，此后该值每游戏刻减少1，为 `0` 时去除此记忆。]),
+  (3, [#icon("nbt-compound") *minecraft:potential_job_site*: 适用于*村民*将要绑定工作站点的记忆。]),
+  (4, [#icon("nbt-compound") *value*: 该村民即将绑定的工作站点的位置信息。]),
+  (5, [#icon("nbt-string") *dimension*: 工作站点所在的维度的命名空间ID。]),
+  (5, [#icon("nbt-int_array") *pos*: 工作站点的方块坐标，列表内元素依次为$x$、$y$、$z$坐标。]),
+  (3, [#icon("nbt-compound") *minecraft:ram_cooldown_ticks*: 适用于*山羊*冲撞冷却时间的记忆。]),
+  (4, [#icon("nbt-int") *value*: 该山羊冲撞的冷却时间。当一次冲撞结束后，对于普通山羊该值介于600 gt和6000 gt之间（含），尖叫山羊介于100 gt与300 gt之间（含）。如果冲撞过程中目标消失，或者记忆值减为 `0` 时山羊未选择目标，对于普通山羊该值为600 gt，尖叫山羊为100 gt。该值每游戏刻减少1，为 `0` 时去除此记忆。]),
+  (3, [#icon("nbt-compound") *minecraft:recent_projectile*: 适用于*监守者*觉察到异常弹射物的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为100 gt。]),
+  (4, [#icon("nbt-compound") *value*: 无数据，空白复合标签。]),
+  (3, [#icon("nbt-compound") *minecraft:roar_sound_cooldown*: 适用于*监守者*怒吼冷却时间的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为59 gt。]),
+  (4, [#icon("nbt-compound") *value*: 无数据，空白复合标签。]),
+  (3, [#icon("nbt-compound") *minecraft:roar_sound_delay*: 适用于*监守者*怒吼倒计时的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为25 gt。]),
+  (4, [#icon("nbt-compound") *value*: 无数据，空白复合标签。]),
+  (3, [#icon("nbt-compound") *minecraft:sniff_cooldown*: 适用于*监守者*、*嗅探兽*嗅探行为冷却时间的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。对于监守者，初始过期时间为100 gt；对于监守者，初始过期时间为9600 gt。]),
+  (4, [#icon("nbt-compound") *value*: 无数据，空白复合标签。]),
+  (3, [#icon("nbt-compound") *minecraft:sniffer_explored_positions*: 适用于*嗅探兽*对以探索过的位置的记忆。]),
+  (4, [#icon("nbt-list") *value*: 该嗅探兽所有以探索过的位置信息。]),
+  (5, [#icon("nbt-compound") 一个位置。]),
+  (6, [#icon("nbt-string") *dimension*: 该位置所在的维度的命名空间ID。]),
+  (6, [#icon("nbt-int_array") *pos*: 该位置的方块坐标，列表内元素依次为$x$、$y$、$z$坐标。]),
+  (3, [#icon("nbt-compound") *minecraft:sonic_boom_cooldown*: 适用于*监守者*远程攻击的冷却时间的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。当监守者停止远程攻击或使用非远程攻击伤害生物时，初始过期时间为40 gt；当监守者察觉到目标时，初始过期时间为200 gt。]),
+  (4, [#icon("nbt-compound") *value*: 无数据，空白复合标签。]),
+  (3, [#icon("nbt-compound") *minecraft:sonic_boom_sound_cooldown*: 适用于*监守者*远程攻击充能前的冷却时间的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为26 gt。]),
+  (4, [#icon("nbt-compound") *value*: 无数据，空白复合标签。]),
+  (3, [#icon("nbt-compound") *minecraft:sonic_boom_sound_delay*: 适用于*监守者*远程攻击倒计时的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为34 gt。]),
+  (4, [#icon("nbt-compound") *value*: 无数据，空白复合标签。]),
+  (3, [#icon("nbt-compound") *minecraft:temptation_cooldown_ticks*: 适用于*山羊*、*美西螈*、*青蛙*、*蝌蚪*、*骆驼*、*犰狳*、*小恶魂*、*鹦鹉螺*、*僵尸鹦鹉螺*和*骆驼尸壳*被玩家吸引的冷却时间的记忆。]),
+  (4, [#icon("nbt-int") *value*: 该生物被玩家两次吸引的时间间隔，此值为 `100`，每游戏刻减少1，为 `0` 时去除此记忆。]),
+  (3, [#icon("nbt-compound") *minecraft:touch_cooldown*: 适用于*监守者*对推动感受的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为20 gt。]),
+  (4, [#icon("nbt-compound") *value*: 无数据，空白复合标签。]),
+  (3, [#icon("nbt-compound") *minecraft:universal_anger*: 适用于*猪灵*对玩家全局愤怒的记忆，游戏规则 `universal_anger` 为 `true` 时获得此记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为600 gt。]),
+  (4, [#icon("nbt-bool") *value*: 猪灵是否对玩家有着全局的愤怒，记忆存在时总是为 `true`。]),
+  (3, [#icon("nbt-compound") *minecraft:vibration_cooldown*: 适用于*监守者*监听振动冷却时间的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为40 gt。]),
+  (4, [#icon("nbt-compound") *value*: 无数据，空白复合标签。]),
+  (3, [#icon("nbt-compound") *minecraft:visited_block_positions*: 适用于*铜傀儡*对箱子的记忆。]),
+  (4, [#icon("nbt-long") *ttl*: 该记忆距离过期的游戏刻数。初始过期时间为6000 gt。]),
+  (4, [#icon("nbt-list") *value*: 该铜傀儡记忆的箱子位置信息。]),
+  (5, [#icon("nbt-compound") 一个箱子。]),
+  (6, [#icon("nbt-string") *dimension*: 该箱子所在的维度的命名空间ID。]),
+  (6, [#icon("nbt-int_array") *pos*: 该箱子的方块坐标，列表内元素依次为$x$、$y$、$z$坐标。]),
+  (1, [#icon("nbt-list") *current_explosion_impact_pos*: 此生物被所有形式的爆炸击退时的坐标，列表内元素顺序不可改变。#icon("nbt-int") `current_impulse_context_reset_grace_time` 为 `0` 时此字段被删除。]),
+  (2, [#icon("nbt-double") $x$坐标。]),
+  (2, [#icon("nbt-double") $y$坐标。]),
+  (2, [#icon("nbt-double") $z$坐标。]),
+  (1, [#icon("nbt-int") *#underline[current_impulse_context_reset_grace_time]*: 爆炸击退减少摔落伤害的最长时间，单位为游戏刻。]),
+  (1, [#icon("nbt-short") *#underline[DeathTime]*: 距离生物死亡而被删除的时间。生物存活时该值为 `0s`，死亡后每游戏刻增加 `1s`，直到该值达到 `20s` 时生物被删除。]),
+  (1, [#icon("nbt-compound") *equipment*: 生物的装备。]),
+  (2, [#icon("nbt-compound") *\<槽位>*: 在此槽位上装备的物品。有效的槽位有 `mainhand`、`offhand`、`feet`、`legs`、`chest`、​`head`、`body` 和 `saddle`。]),
   (3, link(<data:item_data>)[无槽位物品格式]),
-  (2, [#icon("nbt-string") *loot_table*: 此宝库使用的战利品表的命名空间ID。]),
-  (2, [#icon("nbt-string") *override_loot_table_to_display*: 宝库中展示战利品所使用的战利品表的命名空间ID。]),
-  (1, [#icon("nbt-compound") *server_data*: 服务端用于计算宝库行为的数据。]),
-  (2, [#icon("nbt-list") *items_to_eject*: 将要喷出的奖励物品。]),
-  (3, [#icon("nbt-compound") 一项奖励物品。]),
-  (4, link(<data:item_data>)[无槽位物品格式]),
-  (2, [#icon("nbt-list") *rewarded_players*: 已经接受奖励的玩家列表，总长度不超过128。]),
-  (3, [#icon("nbt-int_array") 一个玩家的UUID。]),
-  (2, [#icon("nbt-long") *state_updating_resumes_at*: 下一次更新宝库状态的时间。]),
-  (2, [#icon("nbt-int") *total_ejections_needed*: 本次奖励中将要喷出的奖励物品总数。]),
-  (1, [#icon("nbt-compound") *shared_data*: 客户端用于渲染宝库的数据。]),
-  (2, [#icon("nbt-double") *connected_particles_range*: 在此范围内与宝库相关联的玩家可以渲染相应的粒子，默认为 `4.5d`。]),
-  (2, [#icon("nbt-list") *connected_players*: 与此宝库相关联的玩家。]),
-  (3, [#icon("nbt-int_array") 一个玩家的UUID。]),
-  (2, [#icon("nbt-compound") *display_item*: 宝库内渲染的物品。]),
-  (3, link(<data:item_data>)[无槽位物品格式])
+  (1, [#icon("nbt-bool") *FallFlying*: 该生物是否处于滑翔状态。]),
+  (1, [#icon("nbt-float") *Health*: 该生物的生命值。]),
+  (1, [#icon("nbt-short") *#underline[HurtTime]*: 该生物受伤后伤害免疫阶段（变红）的剩余时间，初始为10 gt，每游戏刻减1。]),
+  (1, [#icon("nbt-int_array") *last_hurt_by_mob*: 当前最后一次攻击该生物的生物的UUID。]),
+  (1, [#icon("nbt-int_array") *last_hurt_by_player*: 当前最后一次攻击该生物的玩家的UUID。]),
+  (1, [#icon("nbt-int") *last_hurt_by_player_memory_time*: 生物被玩家攻击后该值为 `100`（单位为游戏刻），每游戏刻减少1，此值降到 `0` 以下后清除 #icon("nbt-int_array") `last_hurt_by_player` 的数据，并删除此字段。]),
+  (1, [#icon("nbt-compound") *locator_bar_icon*: 生物的路径点图标。]),
+  (2, [#icon("nbt-int")#icon("nbt-list") *color*: 此生物路径点的图标颜色，可以用 #icon("nbt-int") 整型指定RGB颜色，对二进制而言，每八位表示一个通道，从高到低依次为R、G、B通道。也可以用 #icon("nbt-list") 列表分别指定每个通道。游戏在存储时一律存储为 #icon("nbt-int") 整型。]),
+  (3, [*若使用 #icon("nbt-list") 列表形式，则包含以下字段：*], false),
+  (3, [#icon("nbt-float") R通道分量，表示红色值。]),
+  (3, [#icon("nbt-float") G通道分量，表示绿色值。]),
+  (3, [#icon("nbt-float") B通道分量，表示蓝色值。]),
+  (2, [#icon("nbt-string") *style*: 路径点样式的命名空间ID。]),
+  (1, [#icon("nbt-int_array") *sleeping_pos*: 该生物所睡床的坐标，依次为$x$、$y$、$z$坐标。此标签仅在该生物睡觉时存在。]),
+  (1, [#icon("nbt-string") *Team*: 可选，该生物所在的队伍。]),
+  (1, [#icon("nbt-int") *ticks_since_last_hurt_by_mob*: 生物最近一次被生物攻击后距离上次攻击的游戏刻数。])
+)
+#heading(level: 4, numbering: none, [AI生物共通标签（Java类名 `Mob`）])
+所有拥有AI的生物都拥有以下字段：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-bool") *#underline[CanPickUpLoot]*: 此生物是否可以捡起并使用战利品。]),
+  (1, [#icon("nbt-string") *DeathLootTable*: 此生物死亡时掉落物使用的战利品表。]),
+  (1, [#icon("nbt-long") *DeathLootTableSeed*: 生成战利品使用的种子，如果不存在该标签或值为 `0l` 则使用随机序列，仅当 #icon("nbt-string") `DeathLootTable` 存在时有效。]),
+  (1, [#icon("nbt-compound") *drop_chances*: 此生物死亡时各槽位的物品掉落的概率。]),
+  (2, [#icon("nbt-float") *\<装备槽位>*: 该槽位的物品掉落的概率，默认为 `0.85f`。]),
+  (1, [#icon("nbt-int_array") *home_pos*: 此生物活动范围的中心。]),
+  (1, [#icon("nbt-int") *home_radius*: 此生物活动范围的半径。]),
+  (1, [#icon("nbt-int_array")#icon("nbt-compound") *leash*: 当此生物被栓绳拴住时，存在该标签。]),
+  (2, [*若使用 #icon("nbt-int_array") 整型数组形式，则表示此生物被栓在栅栏上，数组内有3个元素，依次为栅栏的3个方块坐标值。*], false),
+  (2, [*若使用 #icon("nbt-compound") 复合标签形式，则表示此生物被栓在另一个实体上，且有以下字段：*], false),
+  (2, [#icon("nbt-int_array") *#underline[UUID]*: 拴住此生物的实体的UUID。]),
+  (1, [#icon("nbt-bool") *#underline[LeftHanded]*: 此生物的主手是否为左手。]),
+  (1, [#icon("nbt-bool") *NoAI*: 此生物的AI是否被禁用，注意禁用AI不会使此生物静音。]),
+  (1, [#icon("nbt-bool") *#underline[PersistenceRequired]*: 此生物是否会被自然删除。])
+)
+#heading(level: 4, numbering: none, [可成长生物共通标签（Java类名 `AgeableMob`）])
+所有可以由幼体成长为成体的生物都拥有以下字段：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-int") *#underline[Age]*: 此生物的年龄。若生物为幼体，该值为负数；若生物为成体，该值为非负数。正数表示此生物能再次繁衍的冷却时间。]),
+  (1, [#icon("nbt-bool") *#underline[AgeLocked]*: 此生物的年龄是否被冻结。]),
+  (1, [#icon("nbt-int") *#underline[ForcedAge]*: 此生物成年后被赋予的年龄值。])
+)
+#heading(level: 4, numbering: none, [动物共通标签（Java类名 `Animal`）])
+所有可以繁殖的生物都拥有以下字段：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-int") *#underline[InLove]*: 此生物距离求爱模式结束的剩余时间，单位为游戏刻。当生物进入求爱模式时，此值会被设为 `600`，每游戏刻减1，减为 `0` 时，终止求爱模式。只有当 #icon("nbt-int") `Age` 的值为 `0` 时，该字段才能设为正值。]),
+  (1, [#icon("nbt-int_array") *LoveCause*: 使此生物进入求爱模式的实体的UUID。])
+)
+#heading(level: 4, numbering: none, [中立型生物共通标签（Java类名 `NeutralMob`）])
+所有中立型生物都拥有以下字段：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-long") *#underline[anger_end_time]*: 此生物保持敌对状态的剩余时间。]),
+  (1, [#icon("nbt-int_array") *LoveCause*: 使此生物进入求爱模式的实体的UUID。])
+)
+#heading(level: 4, numbering: none, [袭击者共通标签（Java类名 `Raider`）])
+所有能够参与袭击的生物都拥有以下字段：
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-bool") *#underline[CanJoinRaid]*: 此生物能否参与袭击。]),
+  (1, [#icon("nbt-int_array") *patrol_target*: 灾厄巡逻队正在前往的位置，含有三个元素，依次为$x$、$y$、$z$坐标。]),
+  (1, [#icon("nbt-bool") *#underline[PatrolLeader]*: 此生物是否为灾厄巡逻队的袭击队长。]),
+  (1, [#icon("nbt-bool") *#underline[Patrolling]*: 此生物是否正在巡逻。]),
+  (1, [#icon("nbt-bool") *RaidId*: 此生物所属的袭击的ID。]),
+  (1, [#icon("nbt-bool") *#underline[Wave]*: 此生物所属的袭击波数。])
+)
+#heading(level: 4, numbering: none, [弹射物共通标签（Java类名 `Projectile`）])
+#tree(
+  (0, [#icon("nbt-compound") 根标签]),
+  (1, [#icon("nbt-bool") *#underline[HasBeenShot]*: 此弹射物存在时间是否超过1 gt。]),
+  (1, [#icon("nbt-bool") *LeftOwner*: 此弹射物是否已离开发射者的碰撞箱。]),
+  (1, [#icon("nbt-int_array") *Owner*: 此弹射物发射者的UUID。])
 )
