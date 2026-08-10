@@ -1,0 +1,27 @@
+name: Build and Release PDF
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Typst
+        uses: typst-community/setup-typst@v3
+
+      - name: Compile PDF
+        run: typst compile "命令与原版开发基础.typ"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: "命令与原版开发基础.pdf"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
